@@ -1,0 +1,65 @@
+
+> @orphac-athera/web@0.1.0 api:check
+> openapi-typescript ../../docs/contracts/openapi.v1.json -o .openapi.check.d.ts && diff -u src/lib/api/schema.d.ts .openapi.check.d.ts && rm -f .openapi.check.d.ts
+
+✨ openapi-typescript 7.13.0
+🚀 ../../docs/contracts/openapi.v1.json → .openapi.check.d.ts [18.8ms]
+
+> @orphac-athera/web@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @orphac-athera/web@0.1.0 lint
+> eslint .
+
+
+> @orphac-athera/web@0.1.0 test
+> vitest run
+
+
+ RUN  v5.1.0 /Users/macbook/Documents/orphac/Orphac.Athera/apps/web
+
+ ✓ src/__tests__/auth-ui.test.tsx (2 tests) 105ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  00:51:28
+   Duration  763ms (environment 47%, import 17%, tests 16%, setup 10%, transform 9%, worker 1%)
+
+
+> @orphac-athera/web@0.1.0 build
+> next build
+
+▲ Next.js 16.4.6 (Turbopack)
+✓ Running next.config.ts took 67ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 595ms
+  Running TypeScript ...
+  Finished TypeScript in 1344ms ...
+  Collecting page data using 6 workers ...
+  Generating static pages using 6 workers (0/3) ...
+✓ Generating static pages using 6 workers (3/3) in 252ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/[...path]
+└ ○ /login
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> @orphac-athera/web@0.1.0 e2e
+> playwright test
+
+
+Running 1 test using 1 worker
+
+  ✓  1 [chromium] › e2e/s00-auth.spec.ts:10:3 › S00 Authenticated Vertical Path › unauthenticated redirect, CSRF check, login failure/success, screenshots and sign out (1.7s)
+
+  1 passed (4.9s)
+found 0 vulnerabilities

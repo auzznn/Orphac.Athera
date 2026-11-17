@@ -7,6 +7,7 @@
 **/.next/
 **/.turbo/
 **/coverage/
+*.tsbuildinfo
 
 # IDE & OS files
 .vs/

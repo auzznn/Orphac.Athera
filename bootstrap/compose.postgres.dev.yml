@@ -12,7 +12,7 @@ services:
       POSTGRES_PASSWORD: ${ATHERA_PG_ADMIN_PASSWORD:-athera_dev_local_admin_pw}
       POSTGRES_DB: ${ATHERA_PG_DB:-athera_dev}
     volumes:
-      - athera_greenfield_pg_dev:/var/lib/postgresql/data
+      - athera_greenfield_pg_dev:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-athera_dev_admin} -d $${POSTGRES_DB:-athera_dev}"]
       interval: 5s

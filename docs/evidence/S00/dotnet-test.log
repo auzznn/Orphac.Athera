@@ -1,0 +1,123 @@
+Build started 18/11/2026 00.53.27.
+     1>Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" on node 1 (VSTest target(s)).
+     1>ValidateSolutionConfiguration:
+         Building solution configuration "Debug|Any CPU".
+Test run for /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/bin/Debug/net10.0/Orphac.Athera.UnitTests.dll (.NETCoreApp,Version=v10.0)
+Test run for /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/Orphac.Athera.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.A total of 1 test files matched the specified pattern.
+
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.04]   Discovering: Orphac.Athera.UnitTests
+[xUnit.net 00:00:00.05]   Discovering: Orphac.Athera.IntegrationTests
+[xUnit.net 00:00:00.07]   Discovered:  Orphac.Athera.IntegrationTests
+[xUnit.net 00:00:00.07]   Discovered:  Orphac.Athera.UnitTests
+[xUnit.net 00:00:00.08]   Starting:    Orphac.Athera.IntegrationTests
+[xUnit.net 00:00:00.08]   Starting:    Orphac.Athera.UnitTests
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.UserAccount_CreateAndDeactivate_TracksStateAndVersion [6 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "https://evil.example.net", host: "127.0.0.1:3200", expected: False) [2 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "not-a-uri", host: "127.0.0.1:3200", expected: False) [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "http://localhost:3200", host: "localhost:3200", expected: True) [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "http://127.0.0.1:3200", host: "127.0.0.1:3200", expected: True) [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "ID", expected: "id-ID") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "", expected: "id-ID") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "id-ID", expected: "id-ID") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: null, expected: "id-ID") [< 1 ms]
+[xUnit.net 00:00:00.12]   Finished:    Orphac.Athera.UnitTests
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "en", expected: "en-US") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "en-US", expected: "en-US") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ThrowsOnUnsupportedLocale [< 1 ms]
+
+Test Run Successful.
+Total tests: 12
+     Passed: 12
+ Total time: 0,4779 Seconds
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_01_HealthEndpointVerifiesPostgreSqlAsRuntimeRole [925 ms]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+[xUnit.net 00:00:02.70]   Finished:    Orphac.Athera.IntegrationTests
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_03_InvalidPasswordAndLockoutEnforced [801 ms]
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_PG_02_RuntimeRoleLacksSuperuserBypassAndTableOwnership [101 ms]
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_PG_01_MigrationUpDownUpRoundTripSucceeds [95 ms]
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_05b_DeactivatedUserAccountRejectedImmediately [367 ms]
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_02_04_05_CsrfLoginMeAndLogoutEndToEnd [316 ms]
+
+Test Run Successful.
+Total tests: 6
+     Passed: 6
+ Total time: 3,0553 Seconds
+     1>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" (VSTest target(s)).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.71
