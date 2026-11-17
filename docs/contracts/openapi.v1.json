@@ -3841,6 +3841,1021 @@
           }
         }
       }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/reference-data": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetProcurementReferenceData",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcurementReferenceDataResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ListPurchaseOrders",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CreatePurchaseOrder",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePurchaseOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetPurchaseOrderDetail",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "poId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "DeletePurchaseOrderForbidden",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "poId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions/{revisionId}": {
+      "put": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "UpdatePurchaseOrderDraftRevision",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "poId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "revisionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePurchaseOrderRevisionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CreatePurchaseOrderAmendmentRevision",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "poId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePoAmendmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions/{revisionId}/submit": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "SubmitPurchaseOrderRevision",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "poId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "revisionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SubmitPoRevisionRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions/{revisionId}/decide": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "DecidePurchaseOrderRevision",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "poId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "revisionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecidePoRevisionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/cancel": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CancelPurchaseOrder",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "poId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloseOrCancelPoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/short-close": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ShortClosePurchaseOrder",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "poId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloseOrCancelPoRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PurchaseOrderDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -4282,6 +5297,17 @@
           }
         }
       },
+      "CloseOrCancelPoRequest": {
+        "required": [
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
       "ConvertQuantityPreviewRequest": {
         "required": [
           "sourceUomId",
@@ -4675,6 +5701,84 @@
           }
         }
       },
+      "CreatePoAmendmentRequest": {
+        "required": [
+          "changeReason"
+        ],
+        "type": "object",
+        "properties": {
+          "changeReason": {
+            "type": "string"
+          }
+        }
+      },
+      "CreatePurchaseOrderRequest": {
+        "required": [
+          "supplierPartnerId",
+          "currencyCode",
+          "orderDate",
+          "expectedDeliveryDate",
+          "deliveryDestination",
+          "paymentTermsDays",
+          "tolerancePolicyId",
+          "notes",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "currencyCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "expectedDeliveryDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "deliveryDestination": {
+            "type": "string"
+          },
+          "paymentTermsDays": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "tolerancePolicyId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PoLineInputDto"
+            }
+          }
+        }
+      },
       "CreateTaxCodeRequest": {
         "required": [
           "code",
@@ -4865,6 +5969,144 @@
           },
           "reason": {
             "type": "string"
+          }
+        }
+      },
+      "DecidePoRevisionRequest": {
+        "required": [
+          "decision",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "DeliveryTolerancePolicyDto": {
+        "required": [
+          "policyId",
+          "code",
+          "name",
+          "mode",
+          "overdeliveryTolerancePercent",
+          "overdeliveryToleranceBaseQty",
+          "allowUnlimitedOverdelivery",
+          "reviewStatus",
+          "isDefault"
+        ],
+        "type": "object",
+        "properties": {
+          "policyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "mode": {
+            "type": "string"
+          },
+          "overdeliveryTolerancePercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "overdeliveryToleranceBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "allowUnlimitedOverdelivery": {
+            "type": "boolean"
+          },
+          "reviewStatus": {
+            "type": "string"
+          },
+          "isDefault": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DocumentApprovalDto": {
+        "required": [
+          "approvalId",
+          "policyId",
+          "status",
+          "requestSummary",
+          "requestedByUserId",
+          "requestedByEmail",
+          "requestedAtUtc",
+          "decidedByUserId",
+          "decidedByEmail",
+          "decidedAtUtc",
+          "decisionReason"
+        ],
+        "type": "object",
+        "properties": {
+          "approvalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "policyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "requestSummary": {
+            "type": "string"
+          },
+          "requestedByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestedByEmail": {
+            "type": "string"
+          },
+          "requestedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decidedByUserId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "decidedByEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "decidedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "decisionReason": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -6677,6 +7919,307 @@
           }
         }
       },
+      "PoHeaderFieldDiffDto": {
+        "required": [
+          "fieldKey",
+          "previousValue",
+          "currentValue"
+        ],
+        "type": "object",
+        "properties": {
+          "fieldKey": {
+            "type": "string"
+          },
+          "previousValue": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "currentValue": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PoLineDiffItemDto": {
+        "required": [
+          "lineageLineKey",
+          "changeKind",
+          "previousItemCode",
+          "currentItemCode",
+          "previousQuantity",
+          "currentQuantity",
+          "previousUomCode",
+          "currentUomCode",
+          "previousUnitPrice",
+          "currentUnitPrice",
+          "previousSubtotal",
+          "currentSubtotal"
+        ],
+        "type": "object",
+        "properties": {
+          "lineageLineKey": {
+            "type": "string"
+          },
+          "changeKind": {
+            "type": "string"
+          },
+          "previousItemCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "currentItemCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "previousUomCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "currentUomCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousUnitPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentUnitPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "previousSubtotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentSubtotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "PoLineInputDto": {
+        "required": [
+          "lineageLineKey",
+          "itemId",
+          "orderedUomId",
+          "orderedQuantity",
+          "unitPrice",
+          "taxCodeId"
+        ],
+        "type": "object",
+        "properties": {
+          "lineageLineKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderedUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderedQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unitPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxCodeId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "overdeliveryTolerancePercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double",
+            "default": 0
+          },
+          "overdeliveryToleranceBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double",
+            "default": 0
+          },
+          "allowUnlimitedOverdelivery": {
+            "type": "boolean",
+            "default": false
+          },
+          "lineDescription": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PoRevisionDiffReportDto": {
+        "required": [
+          "targetRevisionNumber",
+          "baselineRevisionNumber",
+          "headerChanges",
+          "lineChanges",
+          "previousGrandTotal",
+          "currentGrandTotal",
+          "grandTotalDelta",
+          "previousOrderedBaseQty",
+          "currentOrderedBaseQty",
+          "orderedBaseQtyDelta"
+        ],
+        "type": "object",
+        "properties": {
+          "targetRevisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "baselineRevisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "null",
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "headerChanges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PoHeaderFieldDiffDto"
+            }
+          },
+          "lineChanges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PoLineDiffItemDto"
+            }
+          },
+          "previousGrandTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentGrandTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "grandTotalDelta": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "previousOrderedBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentOrderedBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "orderedBaseQtyDelta": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
       "PostJournalRequest": {
         "required": [
           "postingDate",
@@ -6758,6 +8301,1079 @@
           }
         }
       },
+      "ProcurementItemOptionDto": {
+        "required": [
+          "itemId",
+          "itemCode",
+          "name",
+          "itemKind",
+          "baseUomId",
+          "baseUomCode",
+          "defaultPurchaseUomId",
+          "allowedUoms"
+        ],
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "itemKind": {
+            "type": "string"
+          },
+          "baseUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "defaultPurchaseUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "allowedUoms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProcurementItemUomOptionDto"
+            }
+          }
+        }
+      },
+      "ProcurementItemUomOptionDto": {
+        "required": [
+          "uomId",
+          "uomCode",
+          "name",
+          "factorToBase",
+          "precisionScale"
+        ],
+        "type": "object",
+        "properties": {
+          "uomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uomCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "factorToBase": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "precisionScale": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "ProcurementReferenceDataResponse": {
+        "required": [
+          "suppliers",
+          "items",
+          "taxCodes",
+          "tolerancePolicies",
+          "od01Notice",
+          "od02Notice"
+        ],
+        "type": "object",
+        "properties": {
+          "suppliers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProcurementSupplierOptionDto"
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProcurementItemOptionDto"
+            }
+          },
+          "taxCodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProcurementTaxOptionDto"
+            }
+          },
+          "tolerancePolicies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DeliveryTolerancePolicyDto"
+            }
+          },
+          "od01Notice": {
+            "type": "string"
+          },
+          "od02Notice": {
+            "type": "string"
+          }
+        }
+      },
+      "ProcurementSupplierOptionDto": {
+        "required": [
+          "partnerId",
+          "partnerCode",
+          "legalName",
+          "displayName",
+          "taxRegistrationNpwp",
+          "taxPkpStatus",
+          "defaultPaymentTermsDays",
+          "entityScopeMode"
+        ],
+        "type": "object",
+        "properties": {
+          "partnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "partnerCode": {
+            "type": "string"
+          },
+          "legalName": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "taxRegistrationNpwp": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "taxPkpStatus": {
+            "type": "string"
+          },
+          "defaultPaymentTermsDays": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "entityScopeMode": {
+            "type": "string"
+          }
+        }
+      },
+      "ProcurementTaxOptionDto": {
+        "required": [
+          "taxCodeId",
+          "code",
+          "name",
+          "taxFamily",
+          "direction",
+          "nominalRatePercent",
+          "taxableBaseRatioNumerator",
+          "taxableBaseRatioDenominator",
+          "requiresCounterpartyNpwp",
+          "effectiveFrom",
+          "effectiveTo",
+          "reviewStatus"
+        ],
+        "type": "object",
+        "properties": {
+          "taxCodeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "taxFamily": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string"
+          },
+          "nominalRatePercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxableBaseRatioNumerator": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "taxableBaseRatioDenominator": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "requiresCounterpartyNpwp": {
+            "type": "boolean"
+          },
+          "effectiveFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "effectiveTo": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "reviewStatus": {
+            "type": "string"
+          }
+        }
+      },
+      "PurchaseOrderDetailDto": {
+        "required": [
+          "purchaseOrderId",
+          "draftCode",
+          "poNumber",
+          "status",
+          "receivingProgress",
+          "supplierPartnerId",
+          "supplierCode",
+          "supplierName",
+          "currencyCode",
+          "orderDate",
+          "expectedDeliveryDate",
+          "deliveryDestination",
+          "paymentTermsDays",
+          "currentApprovedRevisionId",
+          "currentApprovedRevisionNumber",
+          "latestRevisionNumber",
+          "downstreamReferenceCount",
+          "approvedOrderedBaseQuantity",
+          "acceptedBaseQuantityTotal",
+          "remainingOpenBaseQuantity",
+          "closedByUserId",
+          "closedAtUtc",
+          "closureReason",
+          "cancelledByUserId",
+          "cancelledAtUtc",
+          "cancellationReason",
+          "createdByUserId",
+          "createdAtUtc",
+          "updatedAtUtc",
+          "version",
+          "revisions"
+        ],
+        "type": "object",
+        "properties": {
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "draftCode": {
+            "type": "string"
+          },
+          "poNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "receivingProgress": {
+            "type": "string"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "supplierName": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "expectedDeliveryDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "deliveryDestination": {
+            "type": "string"
+          },
+          "paymentTermsDays": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "currentApprovedRevisionId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "currentApprovedRevisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "latestRevisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "downstreamReferenceCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "approvedOrderedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "acceptedBaseQuantityTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingOpenBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "closedByUserId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "closedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "closureReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cancelledByUserId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "cancelledAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "cancellationReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "revisions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PurchaseOrderRevisionDto"
+            }
+          }
+        }
+      },
+      "PurchaseOrderLineDto": {
+        "required": [
+          "poLineId",
+          "lineNumber",
+          "lineageLineKey",
+          "itemId",
+          "itemCodeSnapshot",
+          "itemNameSnapshot",
+          "itemKindSnapshot",
+          "orderedUomId",
+          "orderedUomCodeSnapshot",
+          "baseUomId",
+          "baseUomCodeSnapshot",
+          "uomFactorToBaseSnapshot",
+          "orderedQuantity",
+          "orderedBaseQuantity",
+          "unitPrice",
+          "lineSubtotalAmount",
+          "taxCodeId",
+          "taxCodeSnapshot",
+          "taxFamilySnapshot",
+          "taxRatePercentSnapshot",
+          "taxableBaseAmount",
+          "taxAmount",
+          "overdeliveryTolerancePercent",
+          "overdeliveryToleranceBaseQty",
+          "allowUnlimitedOverdelivery",
+          "lineDescription"
+        ],
+        "type": "object",
+        "properties": {
+          "poLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lineageLineKey": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCodeSnapshot": {
+            "type": "string"
+          },
+          "itemNameSnapshot": {
+            "type": "string"
+          },
+          "itemKindSnapshot": {
+            "type": "string"
+          },
+          "orderedUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderedUomCodeSnapshot": {
+            "type": "string"
+          },
+          "baseUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "baseUomCodeSnapshot": {
+            "type": "string"
+          },
+          "uomFactorToBaseSnapshot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "orderedQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "orderedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unitPrice": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lineSubtotalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxCodeId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "taxCodeSnapshot": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "taxFamilySnapshot": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "taxRatePercentSnapshot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxableBaseAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "overdeliveryTolerancePercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "overdeliveryToleranceBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "allowUnlimitedOverdelivery": {
+            "type": "boolean"
+          },
+          "lineDescription": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PurchaseOrderListResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PurchaseOrderSummaryDto"
+            }
+          }
+        }
+      },
+      "PurchaseOrderRevisionDto": {
+        "required": [
+          "revisionId",
+          "revisionNumber",
+          "supersedesRevisionId",
+          "status",
+          "isFrozen",
+          "supplierPartnerId",
+          "supplierCodeSnapshot",
+          "supplierLegalNameSnapshot",
+          "supplierNpwpSnapshot",
+          "supplierPkpStatusSnapshot",
+          "currencyCode",
+          "orderDate",
+          "expectedDeliveryDate",
+          "deliveryDestination",
+          "paymentTermsDays",
+          "tolerancePolicyId",
+          "toleranceModeSnapshot",
+          "changeReason",
+          "notes",
+          "subtotalAmount",
+          "ppnTaxTotalAmount",
+          "withholdingTaxTotalAmount",
+          "grandTotalAmount",
+          "totalOrderedBaseQuantity",
+          "snapshotHash",
+          "createdByUserId",
+          "createdAtUtc",
+          "submittedByUserId",
+          "submittedAtUtc",
+          "decidedByUserId",
+          "decidedAtUtc",
+          "decisionReason",
+          "version",
+          "lines",
+          "approval",
+          "diffFromBaseline"
+        ],
+        "type": "object",
+        "properties": {
+          "revisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "revisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "supersedesRevisionId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
+          },
+          "isFrozen": {
+            "type": "boolean"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierCodeSnapshot": {
+            "type": "string"
+          },
+          "supplierLegalNameSnapshot": {
+            "type": "string"
+          },
+          "supplierNpwpSnapshot": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "supplierPkpStatusSnapshot": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "expectedDeliveryDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "deliveryDestination": {
+            "type": "string"
+          },
+          "paymentTermsDays": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "tolerancePolicyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "toleranceModeSnapshot": {
+            "type": "string"
+          },
+          "changeReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "subtotalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "ppnTaxTotalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "withholdingTaxTotalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "grandTotalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalOrderedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "snapshotHash": {
+            "type": "string"
+          },
+          "createdByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "submittedByUserId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "submittedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "decidedByUserId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "decidedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "decisionReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PurchaseOrderLineDto"
+            }
+          },
+          "approval": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/DocumentApprovalDto"
+              }
+            ]
+          },
+          "diffFromBaseline": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PoRevisionDiffReportDto"
+              }
+            ]
+          }
+        }
+      },
+      "PurchaseOrderSummaryDto": {
+        "required": [
+          "purchaseOrderId",
+          "draftCode",
+          "poNumber",
+          "status",
+          "receivingProgress",
+          "supplierPartnerId",
+          "supplierCode",
+          "supplierName",
+          "currencyCode",
+          "orderDate",
+          "expectedDeliveryDate",
+          "deliveryDestination",
+          "paymentTermsDays",
+          "currentApprovedRevisionNumber",
+          "latestRevisionNumber",
+          "hasOpenRevision",
+          "pendingApprovalRevisionId",
+          "pendingApprovalSubmittedByUserId",
+          "currentGrandTotalAmount",
+          "currentOrderedBaseQuantity",
+          "acceptedBaseQuantityTotal",
+          "remainingOpenBaseQuantity",
+          "downstreamReferenceCount",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "draftCode": {
+            "type": "string"
+          },
+          "poNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "receivingProgress": {
+            "type": "string"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "supplierName": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "expectedDeliveryDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "deliveryDestination": {
+            "type": "string"
+          },
+          "paymentTermsDays": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "currentApprovedRevisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "latestRevisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "hasOpenRevision": {
+            "type": "boolean"
+          },
+          "pendingApprovalRevisionId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "pendingApprovalSubmittedByUserId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "currentGrandTotalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentOrderedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "acceptedBaseQuantityTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingOpenBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "downstreamReferenceCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "ReverseJournalRequest": {
         "required": [
           "reversalPostingDate",
@@ -6771,6 +9387,20 @@
           },
           "reason": {
             "type": "string"
+          }
+        }
+      },
+      "SubmitPoRevisionRequest": {
+        "required": [
+          "poNumberOverride"
+        ],
+        "type": "object",
+        "properties": {
+          "poNumberOverride": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -7160,6 +9790,73 @@
               "string"
             ],
             "format": "int64"
+          }
+        }
+      },
+      "UpdatePurchaseOrderRevisionRequest": {
+        "required": [
+          "supplierPartnerId",
+          "orderDate",
+          "expectedDeliveryDate",
+          "deliveryDestination",
+          "paymentTermsDays",
+          "tolerancePolicyId",
+          "changeReason",
+          "notes",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "expectedDeliveryDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "deliveryDestination": {
+            "type": "string"
+          },
+          "paymentTermsDays": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "tolerancePolicyId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "changeReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PoLineInputDto"
+            }
           }
         }
       },

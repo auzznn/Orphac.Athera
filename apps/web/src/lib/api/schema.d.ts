@@ -644,6 +644,150 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/reference-data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetProcurementReferenceData"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListPurchaseOrders"];
+        put?: never;
+        post: operations["CreatePurchaseOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetPurchaseOrderDetail"];
+        put?: never;
+        post?: never;
+        delete: operations["DeletePurchaseOrderForbidden"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions/{revisionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdatePurchaseOrderDraftRevision"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreatePurchaseOrderAmendmentRevision"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions/{revisionId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SubmitPurchaseOrderRevision"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions/{revisionId}/decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DecidePurchaseOrderRevision"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CancelPurchaseOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/short-close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ShortClosePurchaseOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -760,6 +904,9 @@ export interface components {
             note: null | string;
             hardLock: boolean;
         };
+        CloseOrCancelPoRequest: {
+            reason: string;
+        };
         ConvertQuantityPreviewRequest: {
             /** Format: uuid */
             sourceUomId: string;
@@ -865,6 +1012,25 @@ export interface components {
             taxPkpStatus: string;
             entityScopeMode: string;
         };
+        CreatePoAmendmentRequest: {
+            changeReason: string;
+        };
+        CreatePurchaseOrderRequest: {
+            /** Format: uuid */
+            supplierPartnerId: string;
+            currencyCode: null | string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            expectedDeliveryDate: null | string;
+            deliveryDestination: string;
+            /** Format: int32 */
+            paymentTermsDays: number | string;
+            /** Format: uuid */
+            tolerancePolicyId: null | string;
+            notes: null | string;
+            lines: components["schemas"]["PoLineInputDto"][];
+        };
         CreateTaxCodeRequest: {
             code: string;
             name: string;
@@ -913,6 +1079,43 @@ export interface components {
         DecideApprovalCaseRequest: {
             decision: string;
             reason: string;
+        };
+        DecidePoRevisionRequest: {
+            decision: string;
+            reason: string;
+        };
+        DeliveryTolerancePolicyDto: {
+            /** Format: uuid */
+            policyId: string;
+            code: string;
+            name: string;
+            mode: string;
+            /** Format: double */
+            overdeliveryTolerancePercent: number | string;
+            /** Format: double */
+            overdeliveryToleranceBaseQty: number | string;
+            allowUnlimitedOverdelivery: boolean;
+            reviewStatus: string;
+            isDefault: boolean;
+        };
+        DocumentApprovalDto: {
+            /** Format: uuid */
+            approvalId: string;
+            /** Format: uuid */
+            policyId: string;
+            status: string;
+            requestSummary: string;
+            /** Format: uuid */
+            requestedByUserId: string;
+            requestedByEmail: string;
+            /** Format: date-time */
+            requestedAtUtc: string;
+            /** Format: uuid */
+            decidedByUserId: null | string;
+            decidedByEmail: null | string;
+            /** Format: date-time */
+            decidedAtUtc: null | string;
+            decisionReason: null | string;
         };
         EntityMemberDto: {
             /** Format: uuid */
@@ -1384,6 +1587,77 @@ export interface components {
             /** Format: int64 */
             version: number | string;
         };
+        PoHeaderFieldDiffDto: {
+            fieldKey: string;
+            previousValue: null | string;
+            currentValue: null | string;
+        };
+        PoLineDiffItemDto: {
+            lineageLineKey: string;
+            changeKind: string;
+            previousItemCode: null | string;
+            currentItemCode: null | string;
+            /** Format: double */
+            previousQuantity: null | number | string;
+            /** Format: double */
+            currentQuantity: null | number | string;
+            previousUomCode: null | string;
+            currentUomCode: null | string;
+            /** Format: double */
+            previousUnitPrice: null | number | string;
+            /** Format: double */
+            currentUnitPrice: null | number | string;
+            /** Format: double */
+            previousSubtotal: null | number | string;
+            /** Format: double */
+            currentSubtotal: null | number | string;
+        };
+        PoLineInputDto: {
+            lineageLineKey: null | string;
+            /** Format: uuid */
+            itemId: string;
+            /** Format: uuid */
+            orderedUomId: string;
+            /** Format: double */
+            orderedQuantity: number | string;
+            /** Format: double */
+            unitPrice: number | string;
+            /** Format: uuid */
+            taxCodeId: null | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            overdeliveryTolerancePercent: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            overdeliveryToleranceBaseQty: number | string;
+            /** @default false */
+            allowUnlimitedOverdelivery: boolean;
+            lineDescription?: null | string;
+        };
+        PoRevisionDiffReportDto: {
+            /** Format: int32 */
+            targetRevisionNumber: number | string;
+            /** Format: int32 */
+            baselineRevisionNumber: null | number | string;
+            headerChanges: components["schemas"]["PoHeaderFieldDiffDto"][];
+            lineChanges: components["schemas"]["PoLineDiffItemDto"][];
+            /** Format: double */
+            previousGrandTotal: null | number | string;
+            /** Format: double */
+            currentGrandTotal: number | string;
+            /** Format: double */
+            grandTotalDelta: number | string;
+            /** Format: double */
+            previousOrderedBaseQty: number | string;
+            /** Format: double */
+            currentOrderedBaseQty: number | string;
+            /** Format: double */
+            orderedBaseQtyDelta: number | string;
+        };
         PostJournalRequest: {
             /** Format: date */
             postingDate: string;
@@ -1403,10 +1677,275 @@ export interface components {
             detail?: null | string;
             instance?: null | string;
         };
+        ProcurementItemOptionDto: {
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            name: string;
+            itemKind: string;
+            /** Format: uuid */
+            baseUomId: string;
+            baseUomCode: string;
+            /** Format: uuid */
+            defaultPurchaseUomId: string;
+            allowedUoms: components["schemas"]["ProcurementItemUomOptionDto"][];
+        };
+        ProcurementItemUomOptionDto: {
+            /** Format: uuid */
+            uomId: string;
+            uomCode: string;
+            name: string;
+            /** Format: double */
+            factorToBase: number | string;
+            /** Format: int32 */
+            precisionScale: number | string;
+        };
+        ProcurementReferenceDataResponse: {
+            suppliers: components["schemas"]["ProcurementSupplierOptionDto"][];
+            items: components["schemas"]["ProcurementItemOptionDto"][];
+            taxCodes: components["schemas"]["ProcurementTaxOptionDto"][];
+            tolerancePolicies: components["schemas"]["DeliveryTolerancePolicyDto"][];
+            od01Notice: string;
+            od02Notice: string;
+        };
+        ProcurementSupplierOptionDto: {
+            /** Format: uuid */
+            partnerId: string;
+            partnerCode: string;
+            legalName: string;
+            displayName: string;
+            taxRegistrationNpwp: null | string;
+            taxPkpStatus: string;
+            /** Format: int32 */
+            defaultPaymentTermsDays: number | string;
+            entityScopeMode: string;
+        };
+        ProcurementTaxOptionDto: {
+            /** Format: uuid */
+            taxCodeId: string;
+            code: string;
+            name: string;
+            taxFamily: string;
+            direction: string;
+            /** Format: double */
+            nominalRatePercent: number | string;
+            /** Format: int32 */
+            taxableBaseRatioNumerator: number | string;
+            /** Format: int32 */
+            taxableBaseRatioDenominator: number | string;
+            requiresCounterpartyNpwp: boolean;
+            /** Format: date */
+            effectiveFrom: string;
+            /** Format: date */
+            effectiveTo: null | string;
+            reviewStatus: string;
+        };
+        PurchaseOrderDetailDto: {
+            /** Format: uuid */
+            purchaseOrderId: string;
+            draftCode: string;
+            poNumber: null | string;
+            status: string;
+            receivingProgress: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCode: string;
+            supplierName: string;
+            currencyCode: string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            expectedDeliveryDate: null | string;
+            deliveryDestination: string;
+            /** Format: int32 */
+            paymentTermsDays: number | string;
+            /** Format: uuid */
+            currentApprovedRevisionId: null | string;
+            /** Format: int32 */
+            currentApprovedRevisionNumber: number | string;
+            /** Format: int32 */
+            latestRevisionNumber: number | string;
+            /** Format: int32 */
+            downstreamReferenceCount: number | string;
+            /** Format: double */
+            approvedOrderedBaseQuantity: number | string;
+            /** Format: double */
+            acceptedBaseQuantityTotal: number | string;
+            /** Format: double */
+            remainingOpenBaseQuantity: number | string;
+            /** Format: uuid */
+            closedByUserId: null | string;
+            /** Format: date-time */
+            closedAtUtc: null | string;
+            closureReason: null | string;
+            /** Format: uuid */
+            cancelledByUserId: null | string;
+            /** Format: date-time */
+            cancelledAtUtc: null | string;
+            cancellationReason: null | string;
+            /** Format: uuid */
+            createdByUserId: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+            revisions: components["schemas"]["PurchaseOrderRevisionDto"][];
+        };
+        PurchaseOrderLineDto: {
+            /** Format: uuid */
+            poLineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            lineageLineKey: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCodeSnapshot: string;
+            itemNameSnapshot: string;
+            itemKindSnapshot: string;
+            /** Format: uuid */
+            orderedUomId: string;
+            orderedUomCodeSnapshot: string;
+            /** Format: uuid */
+            baseUomId: string;
+            baseUomCodeSnapshot: string;
+            /** Format: double */
+            uomFactorToBaseSnapshot: number | string;
+            /** Format: double */
+            orderedQuantity: number | string;
+            /** Format: double */
+            orderedBaseQuantity: number | string;
+            /** Format: double */
+            unitPrice: number | string;
+            /** Format: double */
+            lineSubtotalAmount: number | string;
+            /** Format: uuid */
+            taxCodeId: null | string;
+            taxCodeSnapshot: null | string;
+            taxFamilySnapshot: null | string;
+            /** Format: double */
+            taxRatePercentSnapshot: null | number | string;
+            /** Format: double */
+            taxableBaseAmount: number | string;
+            /** Format: double */
+            taxAmount: number | string;
+            /** Format: double */
+            overdeliveryTolerancePercent: number | string;
+            /** Format: double */
+            overdeliveryToleranceBaseQty: number | string;
+            allowUnlimitedOverdelivery: boolean;
+            lineDescription: null | string;
+        };
+        PurchaseOrderListResponse: {
+            items: components["schemas"]["PurchaseOrderSummaryDto"][];
+        };
+        PurchaseOrderRevisionDto: {
+            /** Format: uuid */
+            revisionId: string;
+            /** Format: int32 */
+            revisionNumber: number | string;
+            /** Format: uuid */
+            supersedesRevisionId: null | string;
+            status: string;
+            isFrozen: boolean;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCodeSnapshot: string;
+            supplierLegalNameSnapshot: string;
+            supplierNpwpSnapshot: null | string;
+            supplierPkpStatusSnapshot: string;
+            currencyCode: string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            expectedDeliveryDate: null | string;
+            deliveryDestination: string;
+            /** Format: int32 */
+            paymentTermsDays: number | string;
+            /** Format: uuid */
+            tolerancePolicyId: string;
+            toleranceModeSnapshot: string;
+            changeReason: null | string;
+            notes: null | string;
+            /** Format: double */
+            subtotalAmount: number | string;
+            /** Format: double */
+            ppnTaxTotalAmount: number | string;
+            /** Format: double */
+            withholdingTaxTotalAmount: number | string;
+            /** Format: double */
+            grandTotalAmount: number | string;
+            /** Format: double */
+            totalOrderedBaseQuantity: number | string;
+            snapshotHash: string;
+            /** Format: uuid */
+            createdByUserId: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: uuid */
+            submittedByUserId: null | string;
+            /** Format: date-time */
+            submittedAtUtc: null | string;
+            /** Format: uuid */
+            decidedByUserId: null | string;
+            /** Format: date-time */
+            decidedAtUtc: null | string;
+            decisionReason: null | string;
+            /** Format: int64 */
+            version: number | string;
+            lines: components["schemas"]["PurchaseOrderLineDto"][];
+            approval: null | components["schemas"]["DocumentApprovalDto"];
+            diffFromBaseline: null | components["schemas"]["PoRevisionDiffReportDto"];
+        };
+        PurchaseOrderSummaryDto: {
+            /** Format: uuid */
+            purchaseOrderId: string;
+            draftCode: string;
+            poNumber: null | string;
+            status: string;
+            receivingProgress: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCode: string;
+            supplierName: string;
+            currencyCode: string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            expectedDeliveryDate: null | string;
+            deliveryDestination: string;
+            /** Format: int32 */
+            paymentTermsDays: number | string;
+            /** Format: int32 */
+            currentApprovedRevisionNumber: number | string;
+            /** Format: int32 */
+            latestRevisionNumber: number | string;
+            hasOpenRevision: boolean;
+            /** Format: uuid */
+            pendingApprovalRevisionId: null | string;
+            /** Format: uuid */
+            pendingApprovalSubmittedByUserId: null | string;
+            /** Format: double */
+            currentGrandTotalAmount: number | string;
+            /** Format: double */
+            currentOrderedBaseQuantity: number | string;
+            /** Format: double */
+            acceptedBaseQuantityTotal: number | string;
+            /** Format: double */
+            remainingOpenBaseQuantity: number | string;
+            /** Format: int32 */
+            downstreamReferenceCount: number | string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+        };
         ReverseJournalRequest: {
             /** Format: date */
             reversalPostingDate: string;
             reason: string;
+        };
+        SubmitPoRevisionRequest: {
+            poNumberOverride: null | string;
         };
         TaxCodeDto: {
             /** Format: uuid */
@@ -1505,6 +2044,22 @@ export interface components {
             status: null | string;
             /** Format: int64 */
             expectedVersion: number | string;
+        };
+        UpdatePurchaseOrderRevisionRequest: {
+            /** Format: uuid */
+            supplierPartnerId: string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            expectedDeliveryDate: null | string;
+            deliveryDestination: string;
+            /** Format: int32 */
+            paymentTermsDays: number | string;
+            /** Format: uuid */
+            tolerancePolicyId: null | string;
+            changeReason: null | string;
+            notes: null | string;
+            lines: components["schemas"]["PoLineInputDto"][];
         };
         UpsertAccountMappingRequest: {
             purposeCode: string;
@@ -4091,6 +4646,652 @@ export interface operations {
             };
             /** @description Unauthorized */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetProcurementReferenceData: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProcurementReferenceDataResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListPurchaseOrders: {
+        parameters: {
+            query?: {
+                status?: string;
+                search?: string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PurchaseOrderListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreatePurchaseOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePurchaseOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PurchaseOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetPurchaseOrderDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                poId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PurchaseOrderDetailDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    DeletePurchaseOrderForbidden: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                poId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpdatePurchaseOrderDraftRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                poId: string;
+                revisionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePurchaseOrderRevisionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PurchaseOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreatePurchaseOrderAmendmentRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                poId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePoAmendmentRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PurchaseOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    SubmitPurchaseOrderRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                poId: string;
+                revisionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": null | components["schemas"]["SubmitPoRevisionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PurchaseOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    DecidePurchaseOrderRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                poId: string;
+                revisionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecidePoRevisionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PurchaseOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CancelPurchaseOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                poId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CloseOrCancelPoRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PurchaseOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ShortClosePurchaseOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                poId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CloseOrCancelPoRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PurchaseOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };

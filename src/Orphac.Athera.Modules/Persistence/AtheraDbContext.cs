@@ -9,6 +9,7 @@ using Orphac.Athera.Modules.Identity;
 using Orphac.Athera.Modules.Integration;
 using Orphac.Athera.Modules.Partners;
 using Orphac.Athera.Modules.Platform;
+using Orphac.Athera.Modules.Procurement;
 using Orphac.Athera.Modules.Tax;
 
 namespace Orphac.Athera.Modules.Persistence;
@@ -46,6 +47,12 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
     public DbSet<JournalEntry> JournalEntries => Set<JournalEntry>();
     public DbSet<JournalLine> JournalLines => Set<JournalLine>();
     public DbSet<TaxCode> TaxCodes => Set<TaxCode>();
+    public DbSet<DocumentApproval> DocumentApprovals => Set<DocumentApproval>();
+    public DbSet<DeliveryTolerancePolicy> DeliveryTolerancePolicies => Set<DeliveryTolerancePolicy>();
+    public DbSet<PoSequence> PoSequences => Set<PoSequence>();
+    public DbSet<PurchaseOrder> PurchaseOrders => Set<PurchaseOrder>();
+    public DbSet<PurchaseOrderRevision> PurchaseOrderRevisions => Set<PurchaseOrderRevision>();
+    public DbSet<PurchaseOrderLine> PurchaseOrderLines => Set<PurchaseOrderLine>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -1005,6 +1012,349 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
                 .HasForeignKey(x => new { x.TenantId, x.ItemId })
                 .HasPrincipalKey(i => new { i.TenantId, i.ItemId })
                 .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<TaxCode>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.TaxCodeId })
+                .HasPrincipalKey(tc => new { tc.TenantId, tc.LegalEntityId, tc.TaxCodeId })
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<DocumentApproval>(entity =>
+        {
+            entity.ToTable("document_approvals", "approval", t =>
+            {
+                t.HasCheckConstraint("ck_document_approvals_status", "status IN ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED')");
+                t.HasCheckConstraint("ck_document_approvals_revision", "revision_number >= 1");
+                t.HasCheckConstraint("ck_document_approvals_four_eyes", "decided_by_user_id IS NULL OR decided_by_user_id <> requested_by_user_id");
+            });
+
+            entity.HasKey(x => x.ApprovalId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.ApprovalId });
+
+            entity.Property(x => x.ApprovalId).HasColumnName("approval_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.PolicyId).HasColumnName("policy_id").IsRequired();
+            entity.Property(x => x.SourceModule).HasColumnName("source_module").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.SourceDocumentType).HasColumnName("source_document_type").HasMaxLength(48).IsRequired();
+            entity.Property(x => x.SourceDocumentId).HasColumnName("source_document_id").IsRequired();
+            entity.Property(x => x.SourceRevisionId).HasColumnName("source_revision_id").IsRequired();
+            entity.Property(x => x.RevisionNumber).HasColumnName("revision_number").IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(16).IsRequired();
+            entity.Property(x => x.RequestSummary).HasColumnName("request_summary").HasMaxLength(300).IsRequired();
+            entity.Property(x => x.RequestedByUserId).HasColumnName("requested_by_user_id").IsRequired();
+            entity.Property(x => x.RequestedAtUtc).HasColumnName("requested_at_utc").IsRequired();
+            entity.Property(x => x.DecidedByUserId).HasColumnName("decided_by_user_id");
+            entity.Property(x => x.DecidedAtUtc).HasColumnName("decided_at_utc");
+            entity.Property(x => x.DecisionReason).HasColumnName("decision_reason").HasMaxLength(500);
+            entity.Property(x => x.ApproverMfaVerified).HasColumnName("approver_mfa_verified").IsRequired();
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SourceModule, x.SourceDocumentType, x.SourceRevisionId })
+                .IsUnique()
+                .HasDatabaseName("ux_document_approvals_source_revision")
+                .HasFilter("status IN ('PENDING', 'APPROVED')");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.Status, x.RequestedAtUtc });
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<ApprovalPolicy>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PolicyId })
+                .HasPrincipalKey(p => new { p.TenantId, p.LegalEntityId, p.PolicyId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<TenantMembership>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.RequestedByUserId })
+                .HasPrincipalKey(m => new { m.TenantId, m.UserId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<DeliveryTolerancePolicy>(entity =>
+        {
+            entity.ToTable("delivery_tolerance_policies", "procurement", t =>
+            {
+                t.HasCheckConstraint("ck_delivery_tolerance_nonnegative", "overdelivery_tolerance_percent >= 0 AND overdelivery_tolerance_base_qty >= 0");
+                t.HasCheckConstraint("ck_delivery_tolerance_od01_safe", "overdelivery_tolerance_percent = 0 AND overdelivery_tolerance_base_qty = 0 AND allow_unlimited_overdelivery = false");
+                t.HasCheckConstraint("ck_delivery_tolerance_status", "status IN ('ACTIVE', 'INACTIVE')");
+            });
+
+            entity.HasKey(x => x.PolicyId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.PolicyId });
+
+            entity.Property(x => x.PolicyId).HasColumnName("policy_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.Code).HasColumnName("code").HasMaxLength(48).IsRequired();
+            entity.Property(x => x.Name).HasColumnName("name").HasMaxLength(160).IsRequired();
+            entity.Property(x => x.Mode).HasColumnName("mode").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.OverdeliveryTolerancePercent).HasColumnName("overdelivery_tolerance_percent").HasColumnType("numeric(7,4)").IsRequired();
+            entity.Property(x => x.OverdeliveryToleranceBaseQty).HasColumnName("overdelivery_tolerance_base_qty").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.AllowUnlimitedOverdelivery).HasColumnName("allow_unlimited_overdelivery").IsRequired();
+            entity.Property(x => x.ReviewStatus).HasColumnName("review_status").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.IsDefault).HasColumnName("is_default").IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(16).IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.Code }).IsUnique();
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PoSequence>(entity =>
+        {
+            entity.ToTable("po_sequences", "procurement", t =>
+            {
+                t.HasCheckConstraint("ck_po_sequences_nonnegative", "last_number >= 0");
+                t.HasCheckConstraint("ck_po_sequences_year", "fiscal_year >= 2000 AND fiscal_year <= 2100");
+            });
+
+            entity.HasKey(x => new { x.TenantId, x.LegalEntityId, x.FiscalYear });
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.FiscalYear).HasColumnName("fiscal_year").IsRequired();
+            entity.Property(x => x.LastNumber).HasColumnName("last_number").IsRequired();
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PurchaseOrder>(entity =>
+        {
+            entity.ToTable("purchase_orders", "procurement", t =>
+            {
+                t.HasCheckConstraint("ck_purchase_orders_status", "status IN ('DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'CLOSED', 'CANCELLED')");
+                t.HasCheckConstraint("ck_purchase_orders_downstream_nonnegative", "downstream_reference_count >= 0 AND accepted_base_quantity_total >= 0");
+                t.HasCheckConstraint("ck_purchase_orders_revisions_nonnegative", "latest_revision_number >= 1 AND current_approved_revision_number >= 0 AND current_approved_revision_number <= latest_revision_number");
+                t.HasCheckConstraint("ck_purchase_orders_terms", "payment_terms_days >= 0 AND payment_terms_days <= 365");
+            });
+
+            entity.HasKey(x => x.PurchaseOrderId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.PurchaseOrderId });
+
+            entity.Property(x => x.PurchaseOrderId).HasColumnName("purchase_order_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.DraftCode).HasColumnName("draft_code").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.PoNumber).HasColumnName("po_number").HasMaxLength(40);
+            entity.Property(x => x.SupplierPartnerId).HasColumnName("supplier_partner_id").IsRequired();
+            entity.Property(x => x.CurrencyCode).HasColumnName("currency_code").HasColumnType("char(3)").IsRequired();
+            entity.Property(x => x.OrderDate).HasColumnName("order_date").IsRequired();
+            entity.Property(x => x.ExpectedDeliveryDate).HasColumnName("expected_delivery_date");
+            entity.Property(x => x.DeliveryDestination).HasColumnName("delivery_destination").HasMaxLength(200).IsRequired();
+            entity.Property(x => x.PaymentTermsDays).HasColumnName("payment_terms_days").IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.CurrentApprovedRevisionId).HasColumnName("current_approved_revision_id");
+            entity.Property(x => x.CurrentApprovedRevisionNumber).HasColumnName("current_approved_revision_number").IsRequired();
+            entity.Property(x => x.LatestRevisionNumber).HasColumnName("latest_revision_number").IsRequired();
+            entity.Property(x => x.DownstreamReferenceCount).HasColumnName("downstream_reference_count").IsRequired();
+            entity.Property(x => x.AcceptedBaseQuantityTotal).HasColumnName("accepted_base_quantity_total").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.ClosedByUserId).HasColumnName("closed_by_user_id");
+            entity.Property(x => x.ClosedAtUtc).HasColumnName("closed_at_utc");
+            entity.Property(x => x.ClosureReason).HasColumnName("closure_reason").HasMaxLength(300);
+            entity.Property(x => x.CancelledByUserId).HasColumnName("cancelled_by_user_id");
+            entity.Property(x => x.CancelledAtUtc).HasColumnName("cancelled_at_utc");
+            entity.Property(x => x.CancellationReason).HasColumnName("cancellation_reason").HasMaxLength(300);
+            entity.Property(x => x.CreatedByUserId).HasColumnName("created_by_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.DraftCode }).IsUnique();
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.PoNumber })
+                .IsUnique()
+                .HasDatabaseName("ux_purchase_orders_entity_po_number")
+                .HasFilter("po_number IS NOT NULL");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.Status, x.OrderDate });
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<Partner>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.SupplierPartnerId })
+                .HasPrincipalKey(p => new { p.TenantId, p.PartnerId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<TenantMembership>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.CreatedByUserId })
+                .HasPrincipalKey(m => new { m.TenantId, m.UserId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PurchaseOrderRevision>(entity =>
+        {
+            entity.ToTable("purchase_order_revisions", "procurement", t =>
+            {
+                t.HasCheckConstraint("ck_po_revisions_status", "status IN ('DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'REJECTED', 'SUPERSEDED', 'CANCELLED')");
+                t.HasCheckConstraint("ck_po_revisions_number", "revision_number >= 1");
+                t.HasCheckConstraint("ck_po_revisions_four_eyes", "decided_by_user_id IS NULL OR submitted_by_user_id IS NULL OR decided_by_user_id <> submitted_by_user_id");
+                t.HasCheckConstraint("ck_po_revisions_totals_nonnegative", "subtotal_amount >= 0 AND ppn_tax_total_amount >= 0 AND withholding_tax_total_amount >= 0 AND grand_total_amount >= 0 AND total_ordered_base_quantity >= 0");
+            });
+
+            entity.HasKey(x => x.RevisionId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.RevisionId });
+
+            entity.Property(x => x.RevisionId).HasColumnName("revision_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.PurchaseOrderId).HasColumnName("purchase_order_id").IsRequired();
+            entity.Property(x => x.RevisionNumber).HasColumnName("revision_number").IsRequired();
+            entity.Property(x => x.SupersedesRevisionId).HasColumnName("supersedes_revision_id");
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.IsFrozen).HasColumnName("is_frozen").IsRequired();
+            entity.Property(x => x.SupplierPartnerId).HasColumnName("supplier_partner_id").IsRequired();
+            entity.Property(x => x.SupplierCodeSnapshot).HasColumnName("supplier_code_snapshot").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.SupplierLegalNameSnapshot).HasColumnName("supplier_legal_name_snapshot").HasMaxLength(200).IsRequired();
+            entity.Property(x => x.SupplierNpwpSnapshot).HasColumnName("supplier_npwp_snapshot").HasMaxLength(64);
+            entity.Property(x => x.SupplierPkpStatusSnapshot).HasColumnName("supplier_pkp_status_snapshot").HasMaxLength(16).IsRequired();
+            entity.Property(x => x.CurrencyCode).HasColumnName("currency_code").HasColumnType("char(3)").IsRequired();
+            entity.Property(x => x.OrderDate).HasColumnName("order_date").IsRequired();
+            entity.Property(x => x.ExpectedDeliveryDate).HasColumnName("expected_delivery_date");
+            entity.Property(x => x.DeliveryDestination).HasColumnName("delivery_destination").HasMaxLength(200).IsRequired();
+            entity.Property(x => x.PaymentTermsDays).HasColumnName("payment_terms_days").IsRequired();
+            entity.Property(x => x.TolerancePolicyId).HasColumnName("tolerance_policy_id").IsRequired();
+            entity.Property(x => x.ToleranceModeSnapshot).HasColumnName("tolerance_mode_snapshot").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.ChangeReason).HasColumnName("change_reason").HasMaxLength(300);
+            entity.Property(x => x.Notes).HasColumnName("notes").HasMaxLength(500);
+            entity.Property(x => x.SubtotalAmount).HasColumnName("subtotal_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.PpnTaxTotalAmount).HasColumnName("ppn_tax_total_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.WithholdingTaxTotalAmount).HasColumnName("withholding_tax_total_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.GrandTotalAmount).HasColumnName("grand_total_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.TotalOrderedBaseQuantity).HasColumnName("total_ordered_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.SnapshotHash).HasColumnName("snapshot_hash").HasMaxLength(64).IsRequired();
+            entity.Property(x => x.CreatedByUserId).HasColumnName("created_by_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.SubmittedByUserId).HasColumnName("submitted_by_user_id");
+            entity.Property(x => x.SubmittedAtUtc).HasColumnName("submitted_at_utc");
+            entity.Property(x => x.ApprovalRecordId).HasColumnName("approval_record_id");
+            entity.Property(x => x.DecidedByUserId).HasColumnName("decided_by_user_id");
+            entity.Property(x => x.DecidedAtUtc).HasColumnName("decided_at_utc");
+            entity.Property(x => x.DecisionReason).HasColumnName("decision_reason").HasMaxLength(500);
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.PurchaseOrderId, x.RevisionNumber }).IsUnique();
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.ApprovalRecordId })
+                .IsUnique()
+                .HasDatabaseName("ux_po_revisions_approval_record")
+                .HasFilter("approval_record_id IS NOT NULL");
+
+            entity.HasOne<PurchaseOrder>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PurchaseOrderId })
+                .HasPrincipalKey(po => new { po.TenantId, po.LegalEntityId, po.PurchaseOrderId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<PurchaseOrderRevision>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.SupersedesRevisionId })
+                .HasPrincipalKey(r => new { r.TenantId, r.LegalEntityId, r.RevisionId })
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<Partner>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.SupplierPartnerId })
+                .HasPrincipalKey(p => new { p.TenantId, p.PartnerId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<DeliveryTolerancePolicy>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.TolerancePolicyId })
+                .HasPrincipalKey(tp => new { tp.TenantId, tp.LegalEntityId, tp.PolicyId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<DocumentApproval>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ApprovalRecordId })
+                .HasPrincipalKey(da => new { da.TenantId, da.LegalEntityId, da.ApprovalId })
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PurchaseOrderLine>(entity =>
+        {
+            entity.ToTable("purchase_order_lines", "procurement", t =>
+            {
+                t.HasCheckConstraint("ck_po_lines_number", "line_number >= 1");
+                t.HasCheckConstraint("ck_po_lines_positive_qty_price", "ordered_quantity > 0 AND ordered_base_quantity > 0 AND uom_factor_to_base_snapshot > 0 AND unit_price > 0 AND line_subtotal_amount > 0");
+                t.HasCheckConstraint("ck_po_lines_od01_zero_tolerance", "overdelivery_tolerance_percent = 0 AND overdelivery_tolerance_base_qty = 0 AND allow_unlimited_overdelivery = false");
+            });
+
+            entity.HasKey(x => x.PoLineId);
+
+            entity.Property(x => x.PoLineId).HasColumnName("po_line_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.PurchaseOrderId).HasColumnName("purchase_order_id").IsRequired();
+            entity.Property(x => x.RevisionId).HasColumnName("revision_id").IsRequired();
+            entity.Property(x => x.LineNumber).HasColumnName("line_number").IsRequired();
+            entity.Property(x => x.LineageLineKey).HasColumnName("lineage_line_key").HasMaxLength(48).IsRequired();
+            entity.Property(x => x.ItemId).HasColumnName("item_id").IsRequired();
+            entity.Property(x => x.ItemCodeSnapshot).HasColumnName("item_code_snapshot").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.ItemNameSnapshot).HasColumnName("item_name_snapshot").HasMaxLength(200).IsRequired();
+            entity.Property(x => x.ItemKindSnapshot).HasColumnName("item_kind_snapshot").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.OrderedUomId).HasColumnName("ordered_uom_id").IsRequired();
+            entity.Property(x => x.OrderedUomCodeSnapshot).HasColumnName("ordered_uom_code_snapshot").HasMaxLength(16).IsRequired();
+            entity.Property(x => x.BaseUomId).HasColumnName("base_uom_id").IsRequired();
+            entity.Property(x => x.BaseUomCodeSnapshot).HasColumnName("base_uom_code_snapshot").HasMaxLength(16).IsRequired();
+            entity.Property(x => x.UomFactorToBaseSnapshot).HasColumnName("uom_factor_to_base_snapshot").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.OrderedQuantity).HasColumnName("ordered_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.OrderedBaseQuantity).HasColumnName("ordered_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.UnitPrice).HasColumnName("unit_price").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.LineSubtotalAmount).HasColumnName("line_subtotal_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.TaxCodeId).HasColumnName("tax_code_id");
+            entity.Property(x => x.TaxCodeSnapshot).HasColumnName("tax_code_snapshot").HasMaxLength(32);
+            entity.Property(x => x.TaxFamilySnapshot).HasColumnName("tax_family_snapshot").HasMaxLength(16);
+            entity.Property(x => x.TaxRatePercentSnapshot).HasColumnName("tax_rate_percent_snapshot").HasColumnType("numeric(7,4)");
+            entity.Property(x => x.TaxableBaseAmount).HasColumnName("taxable_base_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.TaxAmount).HasColumnName("tax_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.OverdeliveryTolerancePercent).HasColumnName("overdelivery_tolerance_percent").HasColumnType("numeric(7,4)").IsRequired();
+            entity.Property(x => x.OverdeliveryToleranceBaseQty).HasColumnName("overdelivery_tolerance_base_qty").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.AllowUnlimitedOverdelivery).HasColumnName("allow_unlimited_overdelivery").IsRequired();
+            entity.Property(x => x.LineDescription).HasColumnName("line_description").HasMaxLength(240);
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.RevisionId, x.LineNumber }).IsUnique();
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.RevisionId, x.LineageLineKey }).IsUnique();
+
+            entity.HasOne<PurchaseOrderRevision>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.RevisionId })
+                .HasPrincipalKey(r => new { r.TenantId, r.LegalEntityId, r.RevisionId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<Item>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.ItemId })
+                .HasPrincipalKey(i => new { i.TenantId, i.ItemId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<UnitOfMeasure>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.OrderedUomId })
+                .HasPrincipalKey(u => new { u.TenantId, u.UomId })
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne<TaxCode>()

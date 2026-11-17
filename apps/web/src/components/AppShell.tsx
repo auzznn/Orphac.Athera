@@ -337,6 +337,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       active: pathname.endsWith("/approvals"),
     },
     {
+      key: "procurement",
+      label: t.shell.navItems.procurement,
+      icon: ShoppingCart,
+      href:
+        baseEntityPath &&
+        (permissionSet.has("procurement.read") ||
+          permissionSet.has("procurement.manage") ||
+          permissionSet.has("procurement.approve"))
+          ? `${baseEntityPath}/procurement`
+          : null,
+      permitted:
+        permissionSet.has("procurement.read") ||
+        permissionSet.has("procurement.manage") ||
+        permissionSet.has("procurement.approve"),
+      active: pathname.endsWith("/procurement"),
+    },
+    {
       key: "finance",
       label: t.shell.navItems.finance,
       icon: Landmark,
@@ -364,12 +381,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   ];
 
   const plannedModuleItems = [
-    {
-      key: "procurement",
-      label: t.shell.navItems.procurement,
-      icon: ShoppingCart,
-      permitted: permissionSet.has("procurement.read"),
-    },
     {
       key: "inventory",
       label: t.shell.navItems.inventory,

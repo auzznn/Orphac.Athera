@@ -16,6 +16,8 @@ public static class PermissionCodes
 {
     public const string WorkspaceView = "workspace.view";
     public const string ProcurementRead = "procurement.read";
+    public const string ProcurementManage = "procurement.manage";
+    public const string ProcurementApprove = "procurement.approve";
     public const string InventoryRead = "inventory.read";
     public const string SalesRead = "sales.read";
     public const string FinanceRead = "finance.read";
@@ -34,6 +36,8 @@ public static class PermissionCodes
     [
         WorkspaceView,
         ProcurementRead,
+        ProcurementManage,
+        ProcurementApprove,
         InventoryRead,
         SalesRead,
         FinanceRead,

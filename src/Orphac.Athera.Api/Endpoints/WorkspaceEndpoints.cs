@@ -232,7 +232,7 @@ public static class WorkspaceEndpoints
             new("partners", "AVAILABLE", set.Contains(PermissionCodes.PartnersRead) || set.Contains(PermissionCodes.PartnersManage), PermissionCodes.PartnersRead),
             new("catalog", "AVAILABLE", set.Contains(PermissionCodes.CatalogRead) || set.Contains(PermissionCodes.CatalogManage), PermissionCodes.CatalogRead),
             new("approvals", "AVAILABLE", set.Contains(PermissionCodes.WorkspaceView) || set.Contains(PermissionCodes.ApprovalRequest) || set.Contains(PermissionCodes.ApprovalDecide), PermissionCodes.ApprovalRequest),
-            new("procurement", "PLANNED_S05_S08", set.Contains(PermissionCodes.ProcurementRead), PermissionCodes.ProcurementRead),
+            new("procurement", "AVAILABLE", set.Contains(PermissionCodes.ProcurementRead) || set.Contains(PermissionCodes.ProcurementManage) || set.Contains(PermissionCodes.ProcurementApprove), PermissionCodes.ProcurementRead),
             new("inventory", "PLANNED_S06_S08", set.Contains(PermissionCodes.InventoryRead), PermissionCodes.InventoryRead),
             new("sales", "PLANNED_S12_S14", set.Contains(PermissionCodes.SalesRead), PermissionCodes.SalesRead),
             new("finance", "AVAILABLE", set.Contains(PermissionCodes.FinanceRead) || set.Contains(PermissionCodes.FinanceConfigManage) || set.Contains(PermissionCodes.FinanceJournalPost), PermissionCodes.FinanceRead),

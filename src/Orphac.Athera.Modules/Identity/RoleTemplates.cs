@@ -14,11 +14,11 @@ public static class RoleTemplates
 
     private static readonly Dictionary<string, IReadOnlyList<string>> Bundles = new(StringComparer.Ordinal)
     {
-        [ProcurementOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.CatalogManage, PermissionCodes.ApprovalRequest],
+        [ProcurementOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.ProcurementManage, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.CatalogManage, PermissionCodes.ApprovalRequest],
         [SalesOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.SalesRead, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
         [InventoryClerk] = [PermissionCodes.WorkspaceView, PermissionCodes.InventoryRead, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
         [FinanceOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.FinanceRead, PermissionCodes.FinanceConfigManage, PermissionCodes.FinanceJournalPost, PermissionCodes.PartnersRead, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
-        [EntityApprover] = [PermissionCodes.WorkspaceView, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide],
+        [EntityApprover] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.ProcurementApprove, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide],
         [EntityAdmin] = [PermissionCodes.WorkspaceView, PermissionCodes.AdminRead, PermissionCodes.AdminManage, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide]
     };
 

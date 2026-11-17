@@ -569,6 +569,167 @@ export interface Dictionary {
     };
     errors: Record<string, string>;
   };
+  procurement: {
+    pageTitle: string;
+    backToOverview: string;
+    loadErrorTitle: string;
+    retryButton: string;
+    readOnlyBanner: string;
+    governanceNotice: string;
+    tabListLabel: string;
+    tabs: {
+      list: string;
+      editor: string;
+    };
+    searchPlaceholder: string;
+    allStatusesOption: string;
+    poListHeading: string;
+    emptyList: string;
+    colPoNumber: string;
+    colSupplier: string;
+    colDates: string;
+    colRevision: string;
+    colTotals: string;
+    colStatus: string;
+    colAction: string;
+    orderDateShort: string;
+    expectedDateShort: string;
+    revisionPrefix: string;
+    openDraftBadge: string;
+    openQtySuffix: string;
+    manageActionButton: string;
+    pendingSelfActionButton: string;
+    reviewActionButton: string;
+    readOnlyActionButton: string;
+    selectPoPrompt: string;
+    detailHeadingPrefix: string;
+    snapshotHashLabel: string;
+    destinationLabel: string;
+    termsLabel: string;
+    termsDaysSuffix: string;
+    toleranceLabel: string;
+    createdByLabel: string;
+    submittedByLabel: string;
+    decidedByLabel: string;
+    changeReasonLabel: string;
+    notesLabel: string;
+    commitmentHeading: string;
+    orderedBaseLabel: string;
+    acceptedBaseLabel: string;
+    remainingOpenLabel: string;
+    receivingProgressLabel: string;
+    downstreamRefsLabel: string;
+    revisionHistoryLabel: string;
+    frozenBadge: string;
+    editableBadge: string;
+    lineTableHeading: string;
+    colLineNo: string;
+    colItem: string;
+    colQtyUom: string;
+    colBaseConversion: string;
+    colUnitPrice: string;
+    colTax: string;
+    colLineTotal: string;
+    subtotalLabel: string;
+    ppnTotalLabel: string;
+    whtTotalLabel: string;
+    grandTotalLabel: string;
+    diffHeading: string;
+    diffHeaderTitle: string;
+    diffLinesTitle: string;
+    diffTotalDeltaLabel: string;
+    diffBaseQtyDeltaLabel: string;
+    diffNoHeaderChanges: string;
+    colDiffLineKey: string;
+    colDiffChange: string;
+    colDiffPrevious: string;
+    colDiffCurrent: string;
+    colDiffSubtotal: string;
+    stickyBarHeading: string;
+    selfApprovalBlockedBanner: string;
+    pendingApprovalNote: string;
+    decisionReasonLabel: string;
+    decisionReasonPlaceholder: string;
+    approveRevisionButton: string;
+    approveRevisionBusy: string;
+    rejectRevisionButton: string;
+    rejectRevisionBusy: string;
+    editDraftButton: string;
+    submitRevisionButton: string;
+    submitRevisionBusy: string;
+    amendmentHeading: string;
+    amendmentReasonLabel: string;
+    amendmentReasonPlaceholder: string;
+    createAmendmentButton: string;
+    createAmendmentBusy: string;
+    shortCloseHeading: string;
+    closeReasonLabel: string;
+    closeReasonPlaceholder: string;
+    shortCloseButton: string;
+    shortCloseBusy: string;
+    cancelPoHeading: string;
+    cancelReasonLabel: string;
+    cancelReasonPlaceholder: string;
+    cancelPoButton: string;
+    cancelPoBusy: string;
+    cancelBlockedNote: string;
+    terminalPoControlNote: string;
+    editorCreateTitle: string;
+    editorEditDraftTitle: string;
+    supplierLabel: string;
+    selectSupplierOption: string;
+    orderDateLabel: string;
+    expectedDateLabel: string;
+    destinationInputLabel: string;
+    destinationPlaceholder: string;
+    termsInputLabel: string;
+    toleranceSelectLabel: string;
+    editorNotesLabel: string;
+    editorNotesPlaceholder: string;
+    editorChangeReasonLabel: string;
+    editorChangeReasonPlaceholder: string;
+    linesSectionHeading: string;
+    addLineButton: string;
+    removeLineButton: string;
+    lineItemLabel: string;
+    selectItemOption: string;
+    lineUomLabel: string;
+    lineQtyLabel: string;
+    linePriceLabel: string;
+    lineTaxLabel: string;
+    noTaxOption: string;
+    lineDescLabel: string;
+    lineDescPlaceholder: string;
+    linePreviewBasePrefix: string;
+    linePreviewTaxPrefix: string;
+    od01NoticeLine: string;
+    saveDraftOnlyButton: string;
+    saveAndSubmitButton: string;
+    editorBusy: string;
+    cancelEditorButton: string;
+    poStatusLabels: Record<string, string>;
+    revisionStatusLabels: Record<string, string>;
+    receivingProgressLabels: Record<string, string>;
+    diffChangeLabels: Record<string, string>;
+    headerFieldLabels: Record<string, string>;
+    itemKindLabels: Record<string, string>;
+    validation: {
+      supplierRequired: string;
+      orderDateRequired: string;
+      expectedDateBeforeOrder: string;
+      destinationRequired: string;
+      paymentTermsInvalid: string;
+      linesRequired: string;
+      lineItemRequired: string;
+      lineQtyInvalid: string;
+      linePriceInvalid: string;
+      decisionReasonRequired: string;
+      amendmentReasonRequired: string;
+      closeReasonRequired: string;
+      cancelReasonRequired: string;
+    };
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -738,7 +899,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Modul Operasional",
       colPermission: "Kode Izin",
       colReadiness: "Status Kesiapan",
-      availableState: "Tersedia (S01–S04)",
+      availableState: "Tersedia (S01–S05)",
       permittedPlannedPrefix: "Diizinkan · Tahap",
       notGrantedState: "Tidak Diizinkan",
       loadingEntity: "Memuat ruang kerja entitas terisolasi...",
@@ -1306,6 +1467,217 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         insufficient_entity_permission: "Anda tidak memiliki izin keuangan yang diperlukan pada entitas ini.",
       },
     },
+    procurement: {
+      pageTitle: "Pesanan Pembelian (PO), Revisi & Empat Mata",
+      backToOverview: "Ringkasan Entitas",
+      loadErrorTitle: "Gagal memuat modul Pengadaan & PO",
+      retryButton: "Coba Muat Ulang",
+      readOnlyBanner: "Mode baca saja: Anda memiliki izin lihat (procurement.read) tanpa hak buat draf, revisi, atau persetujuan empat mata.",
+      governanceNotice: "Kebijakan OD-01 & OD-02: Toleransi berlebih terkunci pada 0% (kuantitas tepat) dan setiap pengajuan wajib disetujui oleh pejabat independen.",
+      tabListLabel: "Navigasi Pesanan Pembelian",
+      tabs: {
+        list: "Daftar & Rincian PO",
+        editor: "Buat & Edit Draf PO",
+      },
+      searchPlaceholder: "Cari nomor PO / draf / tujuan...",
+      allStatusesOption: "Semua Status PO",
+      poListHeading: "Daftar Pesanan Pembelian Entitas",
+      emptyList: "Belum ada Pesanan Pembelian yang cocok dengan filter entitas ini.",
+      colPoNumber: "Nomor PO / Draf",
+      colSupplier: "Pemasok & Tujuan",
+      colDates: "Tanggal & Termin",
+      colRevision: "Revisi",
+      colTotals: "Total & Basis Qty",
+      colStatus: "Status & Penerimaan",
+      colAction: "Rincian",
+      orderDateShort: "Tgl Order",
+      expectedDateShort: "Estimasi Tiba",
+      revisionPrefix: "Rev",
+      openDraftBadge: "Ada revisi terbuka",
+      openQtySuffix: "terbuka",
+      manageActionButton: "Kelola & Revisi",
+      pendingSelfActionButton: "Pantau Status",
+      reviewActionButton: "Tinjau & Putuskan",
+      readOnlyActionButton: "Lihat Rincian & Riwayat",
+      selectPoPrompt: "Pilih baris Pesanan Pembelian di atas untuk melihat snapshot revisi, perbandingan diff perubahan, dan kontrol komitmen.",
+      detailHeadingPrefix: "Rincian Pesanan Pembelian",
+      snapshotHashLabel: "Hash Snapshot:",
+      destinationLabel: "Tujuan Pengiriman:",
+      termsLabel: "Termin Pembayaran:",
+      termsDaysSuffix: "hari",
+      toleranceLabel: "Kebijakan Toleransi (OD-01):",
+      createdByLabel: "Dibuat oleh pengguna:",
+      submittedByLabel: "Diajukan empat mata oleh:",
+      decidedByLabel: "Keputusan persetujuan oleh:",
+      changeReasonLabel: "Alasan Perubahan Revisi:",
+      notesLabel: "Catatan Komersial:",
+      commitmentHeading: "Ringkasan Komitmen Penerimaan (Tanpa Posting Stok S05)",
+      orderedBaseLabel: "Total Dipesan (Disetujui)",
+      acceptedBaseLabel: "Diterima Bernilai (S07)",
+      remainingOpenLabel: "Sisa Komitmen Terbuka",
+      receivingProgressLabel: "Progres Penerimaan",
+      downstreamRefsLabel: "Referensi Hilir Terhubung:",
+      revisionHistoryLabel: "Riwayat Versi Snapshot PO",
+      frozenBadge: "Snapshot Beku Permanen",
+      editableBadge: "Draf Dapat Diedit",
+      lineTableHeading: "Baris Item & Snapshot Pajak",
+      colLineNo: "#",
+      colItem: "Kode & Nama Item",
+      colQtyUom: "Qty & Satuan Order",
+      colBaseConversion: "Konversi Unit Dasar",
+      colUnitPrice: "Harga Satuan",
+      colTax: "Pajak (OD-07)",
+      colLineTotal: "Subtotal Baris",
+      subtotalLabel: "Subtotal DPP Komersial:",
+      ppnTotalLabel: "Total PPN Masukan:",
+      whtTotalLabel: "Estimasi PPh Pemotongan:",
+      grandTotalLabel: "Total Komitmen Bruto (Grand Total):",
+      diffHeading: "Perbandingan Perubahan Revisi",
+      diffHeaderTitle: "Perubahan Header Komersial",
+      diffLinesTitle: "Perbandingan Baris Item (per Kunci Silsilah)",
+      diffTotalDeltaLabel: "Selisih Nilai Bruto:",
+      diffBaseQtyDeltaLabel: "Selisih Qty Dasar:",
+      diffNoHeaderChanges: "Tidak ada perubahan kolom header komersial dibanding revisi acuan.",
+      colDiffLineKey: "Kunci Baris",
+      colDiffChange: "Status Ubah",
+      colDiffPrevious: "Nilai Acuan Sebelumnya",
+      colDiffCurrent: "Nilai Revisi Ini",
+      colDiffSubtotal: "Perubahan Subtotal",
+      stickyBarHeading: "Panel Kontrol Komitmen & Persetujuan Empat Mata",
+      selfApprovalBlockedBanner: "Kontrol Empat Mata (OD-02): Anda adalah pengaju revisi ini sehingga tombol persetujuan dikunci otomatis. Minta pejabat penyetuju independen lain untuk memutuskan.",
+      pendingApprovalNote: "Revisi telah dibekukan permanen menunggu keputusan persetujuan empat mata.",
+      decisionReasonLabel: "Catatan Keputusan Persetujuan / Penolakan",
+      decisionReasonPlaceholder: "Harga & termin diverifikasi",
+      approveRevisionButton: "Setujui Revisi PO",
+      approveRevisionBusy: "Menyetujui...",
+      rejectRevisionButton: "Tolak Revisi",
+      rejectRevisionBusy: "Menolak...",
+      editDraftButton: "Lanjut Edit Draf",
+      submitRevisionButton: "Bekukan & Ajukan Persetujuan",
+      submitRevisionBusy: "Mengajukan...",
+      amendmentHeading: "Buat Revisi Baru dari PO Disetujui",
+      amendmentReasonLabel: "Alasan Revisi / Perubahan Termin",
+      amendmentReasonPlaceholder: "Alasan penyesuaian harga / qty",
+      createAmendmentButton: "Buat Draf Revisi Baru",
+      createAmendmentBusy: "Membuat Revisi...",
+      shortCloseHeading: "Tutup Sisa Komitmen Resmi (Short-Close)",
+      closeReasonLabel: "Alasan Penutupan Komitmen",
+      closeReasonPlaceholder: "Contoh: Sisa barang dibatalkan supplier berdasarkan kesepakatan",
+      shortCloseButton: "Tutup Sisa Komitmen (Short-Close)",
+      shortCloseBusy: "Menutup...",
+      cancelPoHeading: "Batalkan Pesanan Pembelian (Tanpa Penerimaan)",
+      cancelReasonLabel: "Alasan Pembatalan PO",
+      cancelReasonPlaceholder: "Contoh: Dibatalkan sebelum ada kedatangan gudang",
+      cancelPoButton: "Batalkan PO",
+      cancelPoBusy: "Membatalkan...",
+      cancelBlockedNote: "PO sudah memiliki referensi penerimaan/hilir dan tidak boleh dibatalkan atau dihapus; gunakan Penutupan Sisa Komitmen (Short-Close).",
+      terminalPoControlNote: "Komitmen pesanan pembelian ini sudah berada pada status akhir (Ditutup / Dibatalkan); snapshot revisi terkunci permanen dan tidak ada tindakan perubahan lebih lanjut.",
+      editorCreateTitle: "Susun Draf Pesanan Pembelian Baru",
+      editorEditDraftTitle: "Ubah Draf Revisi Pesanan Pembelian",
+      supplierLabel: "Pemasok Layak Entitas",
+      selectSupplierOption: "— Pilih Pemasok Aktif —",
+      orderDateLabel: "Tanggal Order",
+      expectedDateLabel: "Estimasi Tiba",
+      destinationInputLabel: "Tujuan Pengiriman (Gudang / Lokasi)",
+      destinationPlaceholder: "Gudang Pusat Jakarta",
+      termsInputLabel: "Termin Pembayaran (Hari)",
+      toleranceSelectLabel: "Kebijakan Toleransi Lebih (OD-01)",
+      editorNotesLabel: "Catatan Komersial PO",
+      editorNotesPlaceholder: "Instruksi pengiriman, syarat garansi, atau referensi penawaran",
+      editorChangeReasonLabel: "Alasan Perubahan Revisi",
+      editorChangeReasonPlaceholder: "Ringkas perubahan harga, qty, atau jadwal pengiriman",
+      linesSectionHeading: "Daftar Baris Pembelian (Konversi UoM & Pajak Eksplisit)",
+      addLineButton: "Tambah Baris Item",
+      removeLineButton: "Hapus Baris",
+      lineItemLabel: "Item Katalog",
+      selectItemOption: "— Pilih Item Layak Beli —",
+      lineUomLabel: "Satuan Beli (UoM)",
+      lineQtyLabel: "Kuantitas Order",
+      linePriceLabel: "Harga Satuan (IDR)",
+      lineTaxLabel: "Kode Pajak (OD-07)",
+      noTaxOption: "Tanpa Pajak",
+      lineDescLabel: "Keterangan Baris",
+      lineDescPlaceholder: "Detail pos atau ukuran kemasan",
+      linePreviewBasePrefix: "Basis Stok:",
+      linePreviewTaxPrefix: "Pajak:",
+      od01NoticeLine: "OD-01: Toleransi overdelivery dikunci 0% pada setiap baris.",
+      saveDraftOnlyButton: "Simpan sebagai Draf",
+      saveAndSubmitButton: "Simpan & Ajukan Persetujuan",
+      editorBusy: "Memproses PO...",
+      cancelEditorButton: "Kembali ke Daftar PO",
+      poStatusLabels: {
+        DRAFT: "Draf",
+        PENDING_APPROVAL: "Menunggu Persetujuan",
+        APPROVED: "Disetujui",
+        CLOSED: "Ditutup",
+        CANCELLED: "Dibatalkan",
+      },
+      revisionStatusLabels: {
+        DRAFT: "Draf",
+        PENDING_APPROVAL: "Menunggu Persetujuan",
+        APPROVED: "Disetujui",
+        REJECTED: "Ditolak",
+        SUPERSEDED: "Digantikan",
+        CANCELLED: "Dibatalkan",
+      },
+      receivingProgressLabels: {
+        NOT_APPLICABLE: "Belum Berlaku",
+        NOT_RECEIVED: "Belum Diterima",
+        PARTIALLY_RECEIVED: "Diterima Sebagian",
+        FULLY_RECEIVED: "Lengkap Diterima",
+        SHORT_CLOSED: "Ditutup Cepat (Short-Close)",
+      },
+      diffChangeLabels: {
+        ADDED: "Ditambahkan",
+        MODIFIED: "Diubah",
+        REMOVED: "Dihapus",
+        UNCHANGED: "Tetap",
+      },
+      headerFieldLabels: {
+        supplier: "Pemasok",
+        orderDate: "Tanggal Order",
+        expectedDeliveryDate: "Estimasi Tiba",
+        deliveryDestination: "Tujuan Pengiriman",
+        paymentTermsDays: "Termin (Hari)",
+      },
+      itemKindLabels: {
+        STOCKED_GOOD: "Barang Persediaan",
+        NON_STOCK_SERVICE: "Jasa / Non-Stok",
+      },
+      validation: {
+        supplierRequired: "Pilih pemasok aktif yang layak untuk entitas ini.",
+        orderDateRequired: "Tentukan tanggal pesanan pembelian.",
+        expectedDateBeforeOrder: "Tanggal estimasi tiba tidak boleh sebelum tanggal order.",
+        destinationRequired: "Masukkan gudang atau alamat tujuan pengiriman.",
+        paymentTermsInvalid: "Termin pembayaran harus bilangan bulat antara 0 dan 365 hari.",
+        linesRequired: "Tambahkan minimal satu baris item pembelian yang valid.",
+        lineItemRequired: "Setiap baris harus memilih item katalog.",
+        lineQtyInvalid: "Kuantitas pembelian harus lebih besar dari nol.",
+        linePriceInvalid: "Harga satuan harus lebih besar dari nol.",
+        decisionReasonRequired: "Tuliskan alasan persetujuan atau penolakan empat mata.",
+        amendmentReasonRequired: "Tuliskan alasan pembuatan revisi baru.",
+        closeReasonRequired: "Tuliskan alasan penutupan sisa komitmen PO.",
+        cancelReasonRequired: "Tuliskan alasan pembatalan PO.",
+      },
+      errors: {
+        supplier_not_eligible_for_entity: "Pemasok nonaktif atau dibatasi agar tidak digunakan pada entitas hukum ini.",
+        item_not_eligible_for_entity_purchase: "Item tidak aktif atau tidak diizinkan untuk pembelian di entitas ini.",
+        unsupported_uom_conversion: "Satuan beli tidak memiliki konversi aktif untuk item yang dipilih.",
+        fractional_discrete_base_quantity: "Kuantitas satuan dasar diskrit menghasilkan pecahan desimal yang tidak diizinkan.",
+        od01_overdelivery_tolerance_blocked: "OD-01 memblokir toleransi lebih atau overdelivery tanpa batas sebelum disetujui Product Owner.",
+        four_eyes_self_approval_forbidden: "Kebijakan empat mata (OD-02) melarang pengaju menyetujui atau memutuskan revisinya sendiri.",
+        approval_already_decided: "Permintaan persetujuan revisi PO ini sudah diputuskan sebelumnya.",
+        po_revision_frozen_immutable: "Snapshot revisi sudah dibekukan permanen; buat revisi baru untuk mengubah ketentuan.",
+        po_has_downstream_references: "PO sudah memiliki referensi hilir dan tidak dapat dibatalkan; gunakan Short-Close.",
+        po_has_open_revision_before_close: "Putuskan atau tutup revisi terbuka sebelum menutup sisa komitmen PO.",
+        po_open_revision_exists: "Sudah ada revisi draf atau menunggu persetujuan yang masih terbuka pada PO ini.",
+        duplicate_po_number: "Nomor PO tersebut sudah terdaftar pada entitas hukum ini.",
+        po_delete_forbidden: "Dokumen PO tidak boleh dihapus dari basis data; gunakan Batal atau Short-Close.",
+        counterparty_npwp_required_for_rate: "Kode pajak terpilih mewajibkan NPWP pemasok yang valid.",
+        tax_code_not_effective_on_date: "Kode pajak tidak aktif pada tanggal order yang dipilih.",
+        insufficient_entity_permission: "Anda tidak memiliki izin pengadaan atau persetujuan yang diperlukan di entitas ini.",
+      },
+    },
   },
   "en-US": {
     appName: "Orphac Athera",
@@ -1473,7 +1845,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Operational Module",
       colPermission: "Permission Code",
       colReadiness: "Readiness State",
-      availableState: "Available (S01–S04)",
+      availableState: "Available (S01–S05)",
       permittedPlannedPrefix: "Permitted · Stage",
       notGrantedState: "Not Granted",
       loadingEntity: "Loading isolated entity workspace...",
@@ -2039,6 +2411,217 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         tax_code_not_effective_on_date: "Selected tax code is inactive or outside its effective window.",
         tax_code_conflict: "A tax code with the same code and effective date already exists.",
         insufficient_entity_permission: "You do not hold required finance permissions on this entity.",
+      },
+    },
+    procurement: {
+      pageTitle: "Purchase Orders (PO), Revisions & Four-Eyes",
+      backToOverview: "Entity Overview",
+      loadErrorTitle: "Failed to load Procurement & PO workspace",
+      retryButton: "Reload Data",
+      readOnlyBanner: "Read-only mode: You hold procurement.read without draft creation, revision, or four-eyes approval rights.",
+      governanceNotice: "OD-01 & OD-02 Policy: Overdelivery tolerance is locked at 0% (exact quantity) and every commitment requires independent four-eyes approval.",
+      tabListLabel: "Purchase Order Navigation",
+      tabs: {
+        list: "PO Register & Detail",
+        editor: "Create & Edit PO Draft",
+      },
+      searchPlaceholder: "Search PO, draft, or destination...",
+      allStatusesOption: "All PO Statuses",
+      poListHeading: "Entity Purchase Orders Register",
+      emptyList: "No Purchase Orders match the current filter in this entity.",
+      colPoNumber: "PO / Draft Number",
+      colSupplier: "Supplier & Destination",
+      colDates: "Dates & Terms",
+      colRevision: "Revision",
+      colTotals: "Total & Base Qty",
+      colStatus: "Status & Receiving",
+      colAction: "Inspect",
+      orderDateShort: "Order Date",
+      expectedDateShort: "Expected",
+      revisionPrefix: "Rev",
+      openDraftBadge: "Open revision",
+      openQtySuffix: "open",
+      manageActionButton: "Manage & Revise",
+      pendingSelfActionButton: "View Status",
+      reviewActionButton: "Review & Decide",
+      readOnlyActionButton: "Inspect Lines & History",
+      selectPoPrompt: "Select a Purchase Order row above to inspect immutable revision snapshots, comparison diffs, and commitment controls.",
+      detailHeadingPrefix: "Purchase Order Detail",
+      snapshotHashLabel: "Snapshot Hash:",
+      destinationLabel: "Delivery Destination:",
+      termsLabel: "Payment Terms:",
+      termsDaysSuffix: "days",
+      toleranceLabel: "Tolerance Policy (OD-01):",
+      createdByLabel: "Created by user:",
+      submittedByLabel: "Submitted for four-eyes by:",
+      decidedByLabel: "Decision recorded by:",
+      changeReasonLabel: "Revision Change Reason:",
+      notesLabel: "Commercial Notes:",
+      commitmentHeading: "Receiving Commitment Summary (Zero Stock Impact in S05)",
+      orderedBaseLabel: "Approved Ordered Base Qty",
+      acceptedBaseLabel: "Valued Accepted (S07)",
+      remainingOpenLabel: "Remaining Open Commitment",
+      receivingProgressLabel: "Receiving Progress",
+      downstreamRefsLabel: "Downstream References:",
+      revisionHistoryLabel: "PO Snapshot Revisions",
+      frozenBadge: "Frozen Snapshot",
+      editableBadge: "Editable Draft",
+      lineTableHeading: "Line Items & Tax Snapshots",
+      colLineNo: "#",
+      colItem: "Item Code & Name",
+      colQtyUom: "Order Qty & UoM",
+      colBaseConversion: "Base Unit Conversion",
+      colUnitPrice: "Unit Price",
+      colTax: "Tax (OD-07)",
+      colLineTotal: "Line Subtotal",
+      subtotalLabel: "Commercial Subtotal:",
+      ppnTotalLabel: "Input VAT (PPN) Total:",
+      whtTotalLabel: "Estimated Withholding Tax:",
+      grandTotalLabel: "Gross Commitment Total:",
+      diffHeading: "Approval Comparison Diff",
+      diffHeaderTitle: "Commercial Header Changes",
+      diffLinesTitle: "Line Item Changes (Matched by Lineage Key)",
+      diffTotalDeltaLabel: "Grand Total Delta:",
+      diffBaseQtyDeltaLabel: "Base Qty Delta:",
+      diffNoHeaderChanges: "No commercial header field changes versus baseline revision.",
+      colDiffLineKey: "Line Key",
+      colDiffChange: "Change",
+      colDiffPrevious: "Previous Baseline",
+      colDiffCurrent: "Current Revision",
+      colDiffSubtotal: "Subtotal Change",
+      stickyBarHeading: "Four-Eyes Commitment & Lifecycle Controls",
+      selfApprovalBlockedBanner: "Four-Eyes Control (OD-02): You submitted this revision, so approval controls are locked. Ask an independent authorized approver to decide.",
+      pendingApprovalNote: "This revision snapshot is permanently frozen pending independent four-eyes review.",
+      decisionReasonLabel: "Four-Eyes Decision Reason",
+      decisionReasonPlaceholder: "Pricing & terms verified",
+      approveRevisionButton: "Approve PO Revision",
+      approveRevisionBusy: "Approving...",
+      rejectRevisionButton: "Reject Revision",
+      rejectRevisionBusy: "Rejecting...",
+      editDraftButton: "Resume Draft Edit",
+      submitRevisionButton: "Freeze & Submit for Approval",
+      submitRevisionBusy: "Submitting...",
+      amendmentHeading: "Create Amendment Revision from Approved PO",
+      amendmentReasonLabel: "Amendment / Revision Reason",
+      amendmentReasonPlaceholder: "Reason for price / qty update",
+      createAmendmentButton: "Create Draft Amendment",
+      createAmendmentBusy: "Creating Revision...",
+      shortCloseHeading: "Authorize Remaining Commitment Close (Short-Close)",
+      closeReasonLabel: "Short-Close Justification",
+      closeReasonPlaceholder: "e.g., Supplier discontinued remaining units by mutual agreement",
+      shortCloseButton: "Short-Close Remaining Commitment",
+      shortCloseBusy: "Closing...",
+      cancelPoHeading: "Cancel Purchase Order (No Downstream Receipts)",
+      cancelReasonLabel: "Cancellation Reason",
+      cancelReasonPlaceholder: "e.g., Cancelled prior to supplier dispatch",
+      cancelPoButton: "Cancel PO",
+      cancelPoBusy: "Cancelling...",
+      cancelBlockedNote: "Downstream receiving or billing references exist, so cancellation/deletion is blocked; use authorized Short-Close instead.",
+      terminalPoControlNote: "This purchase order commitment is in a terminal state (Closed / Cancelled); revision snapshots remain permanently locked with no further mutation actions.",
+      editorCreateTitle: "Draft New Purchase Order",
+      editorEditDraftTitle: "Edit Draft Purchase Order Revision",
+      supplierLabel: "Entity-Eligible Supplier",
+      selectSupplierOption: "— Select Active Supplier —",
+      orderDateLabel: "Order Date",
+      expectedDateLabel: "Expected Delivery",
+      destinationInputLabel: "Delivery Destination",
+      destinationPlaceholder: "Jakarta Central Warehouse",
+      termsInputLabel: "Payment Terms (Days)",
+      toleranceSelectLabel: "Overdelivery Tolerance Policy (OD-01)",
+      editorNotesLabel: "PO Commercial Notes",
+      editorNotesPlaceholder: "Delivery instructions, warranty terms, or quotation ref",
+      editorChangeReasonLabel: "Revision Change Reason",
+      editorChangeReasonPlaceholder: "Summarize pricing, quantity, or schedule updates",
+      linesSectionHeading: "Purchase Lines (UoM Conversion & Explicit Tax)",
+      addLineButton: "Add Line Item",
+      removeLineButton: "Remove Line",
+      lineItemLabel: "Catalogue Item",
+      selectItemOption: "— Select Purchase-Eligible Item —",
+      lineUomLabel: "Order UoM",
+      lineQtyLabel: "Order Qty",
+      linePriceLabel: "Unit Price (IDR)",
+      lineTaxLabel: "Tax Code (OD-07)",
+      noTaxOption: "No Tax",
+      lineDescLabel: "Line Description",
+      lineDescPlaceholder: "Line notes or packaging details",
+      linePreviewBasePrefix: "Base Qty:",
+      linePreviewTaxPrefix: "Tax:",
+      od01NoticeLine: "OD-01: Overdelivery tolerance locked at 0% on all lines.",
+      saveDraftOnlyButton: "Save Draft",
+      saveAndSubmitButton: "Save & Submit for Approval",
+      editorBusy: "Saving PO...",
+      cancelEditorButton: "Back to PO List",
+      poStatusLabels: {
+        DRAFT: "Draft",
+        PENDING_APPROVAL: "Pending Approval",
+        APPROVED: "Approved",
+        CLOSED: "Closed",
+        CANCELLED: "Cancelled",
+      },
+      revisionStatusLabels: {
+        DRAFT: "Draft",
+        PENDING_APPROVAL: "Pending Approval",
+        APPROVED: "Approved",
+        REJECTED: "Rejected",
+        SUPERSEDED: "Superseded",
+        CANCELLED: "Cancelled",
+      },
+      receivingProgressLabels: {
+        NOT_APPLICABLE: "Not Applicable",
+        NOT_RECEIVED: "Not Received",
+        PARTIALLY_RECEIVED: "Partially Received",
+        FULLY_RECEIVED: "Fully Received",
+        SHORT_CLOSED: "Short-Closed",
+      },
+      diffChangeLabels: {
+        ADDED: "Added",
+        MODIFIED: "Modified",
+        REMOVED: "Removed",
+        UNCHANGED: "Unchanged",
+      },
+      headerFieldLabels: {
+        supplier: "Supplier",
+        orderDate: "Order Date",
+        expectedDeliveryDate: "Expected Delivery",
+        deliveryDestination: "Delivery Destination",
+        paymentTermsDays: "Payment Terms (Days)",
+      },
+      itemKindLabels: {
+        STOCKED_GOOD: "Stocked Good",
+        NON_STOCK_SERVICE: "Service / Non-Stock",
+      },
+      validation: {
+        supplierRequired: "Select an eligible active supplier for this legal entity.",
+        orderDateRequired: "Choose an order date.",
+        expectedDateBeforeOrder: "Expected delivery date cannot precede the order date.",
+        destinationRequired: "Enter a delivery warehouse or destination.",
+        paymentTermsInvalid: "Payment terms must be an integer between 0 and 365 days.",
+        linesRequired: "Add at least one valid purchase order line item.",
+        lineItemRequired: "Each line requires selecting an eligible catalogue item.",
+        lineQtyInvalid: "Order quantity must be greater than zero.",
+        linePriceInvalid: "Unit price must be greater than zero.",
+        decisionReasonRequired: "Provide a written four-eyes approval or rejection reason.",
+        amendmentReasonRequired: "Enter a written reason for creating the amendment revision.",
+        closeReasonRequired: "Enter a written justification for short-closing the PO.",
+        cancelReasonRequired: "Enter a written reason for cancelling this PO.",
+      },
+      errors: {
+        supplier_not_eligible_for_entity: "Selected partner is inactive or restricted from supplying this legal entity.",
+        item_not_eligible_for_entity_purchase: "Selected item is inactive or restricted from purchasing in this entity.",
+        unsupported_uom_conversion: "No active UoM conversion factor exists for the selected item and unit.",
+        fractional_discrete_base_quantity: "Discrete base quantity cannot evaluate to a fractional decimal.",
+        od01_overdelivery_tolerance_blocked: "OD-01 blocks non-zero overdelivery tolerance or unlimited flags until Product Owner sign-off.",
+        four_eyes_self_approval_forbidden: "Four-eyes policy (OD-02) prohibits approving or deciding your own submitted PO revision.",
+        approval_already_decided: "This purchase order approval request has already been decided.",
+        po_revision_frozen_immutable: "This revision snapshot is permanently frozen; create a new revision instead.",
+        po_has_downstream_references: "PO already has downstream references and cannot be cancelled; use Short-Close.",
+        po_has_open_revision_before_close: "Decide or cancel open draft/pending revisions before short-closing.",
+        po_open_revision_exists: "An open draft or pending approval revision already exists for this PO.",
+        duplicate_po_number: "This PO number already exists inside this legal entity.",
+        po_delete_forbidden: "Purchase orders are immutable and cannot be deleted; use Cancel or Short-Close.",
+        counterparty_npwp_required_for_rate: "Selected tax rule requires a valid supplier NPWP.",
+        tax_code_not_effective_on_date: "Selected tax code is inactive on this PO order date.",
+        insufficient_entity_permission: "Your active grants do not permit this procurement or approval operation.",
       },
     },
   },

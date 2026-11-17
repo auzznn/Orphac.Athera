@@ -152,6 +152,7 @@ app.MapWorkspaceEndpoints();
 app.MapAdminAndApprovalEndpoints();
 app.MapMasterDataEndpoints();
 app.MapFinanceEndpoints();
+app.MapProcurementEndpoints();
 
 if (isMigrateMode)
 {

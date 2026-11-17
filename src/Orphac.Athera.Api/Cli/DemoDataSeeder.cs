@@ -7,6 +7,7 @@ using Orphac.Athera.Modules.Identity;
 using Orphac.Athera.Modules.Partners;
 using Orphac.Athera.Modules.Persistence;
 using Orphac.Athera.Modules.Platform;
+using Orphac.Athera.Modules.Procurement;
 using Orphac.Athera.Modules.Tax;
 
 namespace Orphac.Athera.Api.Cli;
@@ -114,9 +115,10 @@ public static class DemoDataSeeder
         await EnsureMembershipAsync(db, nusaId, u2Id, nowUtc, ct);
         await EnsureMembershipAsync(db, smdrId, u2Id, nowUtc, ct);
 
-        // U1: NUSA-JKT only (NUSA-SBY and SMDR-BDG remain inaccessible)
+        // U1: NUSA-JKT only (NUSA-SBY and SMDR-BDG remain inaccessible; SoD: no approval or finance grants)
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.WorkspaceView, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ProcurementRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ProcurementManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.PartnersRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.CatalogRead, nowUtc, ct);
@@ -136,13 +138,18 @@ public static class DemoDataSeeder
             await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.CatalogRead, nowUtc, ct);
             await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, "SENSITIVE_ACCESS_CHANGE", "Sensitive Entity Access Change", requiresFourEyes: true, requiresApproverMfa: false, nowUtc, ct);
             await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, "HIGH_RISK_PRIVILEGE_ESCALATION", "High-Risk Privilege Escalation (MFA)", requiresFourEyes: true, requiresApproverMfa: true, nowUtc, ct);
+            await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, PurchaseOrderWorkflowService.PoApprovalPolicyCode, "Purchase Order Commitment Four-Eyes Approval", requiresFourEyes: true, requiresApproverMfa: false, nowUtc, ct);
+            await EnsureTolerancePolicyAsync(db, scopePair.Item1, scopePair.Item2, "EXACT_QTY_OD01_SAFE", "Exact Approved Quantity Only (OD-01 Safe Default)", nowUtc, ct);
         }
 
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ProcurementRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ProcurementManage, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ProcurementApprove, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.CatalogManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.FinanceConfigManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.FinanceJournalPost, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.ProcurementRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.InventoryRead, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.CatalogManage, nowUtc, ct);
@@ -254,6 +261,17 @@ public static class DemoDataSeeder
         await EnsureFinanceConfigurationAsync(db, nusaId, nusaJktId, u2Id, "IDR", seedInitialJournal: true, nowUtc, ct);
         await EnsureFinanceConfigurationAsync(db, nusaId, nusaSbyId, u2Id, "IDR", seedInitialJournal: true, nowUtc, ct);
         await EnsureFinanceConfigurationAsync(db, smdrId, smdrBdgId, u2Id, "IDR", seedInitialJournal: true, nowUtc, ct);
+
+        await db.SaveChangesAsync(ct);
+
+        // S05 procurement PO fixtures
+        var supNusa = await db.Partners.AsNoTracking().SingleAsync(p => p.TenantId == nusaId && p.PartnerCode == "PT-SUP-001", ct);
+        var supSmdr = await db.Partners.AsNoTracking().SingleAsync(p => p.TenantId == smdrId && p.PartnerCode == "SMDR-SUP-01", ct);
+        var smdrItem = await db.Items.AsNoTracking().SingleAsync(i => i.TenantId == smdrId && i.ItemCode == "SMDR-ITM-01", ct);
+
+        await EnsureApprovedSeedPoAsync(db, nusaId, nusaJktId, supNusa.PartnerId, pkgItem.ItemId, nusaBox.UomId, 2m, 480_000m, "Gudang Pusat Jakarta", u1Id, u2Id, approve: true, nowUtc, ct);
+        await EnsureApprovedSeedPoAsync(db, nusaId, nusaSbyId, supNusa.PartnerId, pkgItem.ItemId, nusaBox.UomId, 3m, 485_000m, "Gudang Regional Surabaya", u1Id, u2Id, approve: true, nowUtc, ct);
+        await EnsureApprovedSeedPoAsync(db, smdrId, smdrBdgId, supSmdr.PartnerId, smdrItem.ItemId, smdrPcs.UomId, 50m, 120_000m, "Gudang Samudra Bandung", u2Id, u2Id, approve: false, nowUtc, ct);
 
         await db.SaveChangesAsync(ct);
     }
@@ -846,5 +864,125 @@ public static class DemoDataSeeder
                 nowUtc));
             await db.SaveChangesAsync(ct);
         }
+    }
+
+    private static async Task EnsureTolerancePolicyAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        Guid entityId,
+        string code,
+        string name,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
+        var exists = await db.DeliveryTolerancePolicies.AnyAsync(
+            p => p.TenantId == tenantId && p.LegalEntityId == entityId && p.Code == code,
+            ct);
+        if (!exists)
+        {
+            db.DeliveryTolerancePolicies.Add(DeliveryTolerancePolicy.CreateSafeDefault(
+                Guid.NewGuid(),
+                tenantId,
+                entityId,
+                code,
+                name,
+                0m,
+                0m,
+                allowUnlimitedOverdelivery: false,
+                isDefault: true,
+                nowUtc));
+            await db.SaveChangesAsync(ct);
+        }
+    }
+
+    private static async Task EnsureApprovedSeedPoAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        Guid entityId,
+        Guid supplierPartnerId,
+        Guid itemId,
+        Guid orderedUomId,
+        decimal orderedQty,
+        decimal unitPrice,
+        string destination,
+        Guid requesterUserId,
+        Guid approverUserId,
+        bool approve,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
+        var anyPo = await db.PurchaseOrders.AnyAsync(p => p.TenantId == tenantId && p.LegalEntityId == entityId, ct);
+        if (anyPo)
+        {
+            return;
+        }
+
+        var taxId = await db.TaxCodes.AsNoTracking()
+            .Where(t => t.TenantId == tenantId && t.LegalEntityId == entityId && t.Code == "PPN-IN-11" && t.Status == MasterStatuses.Active)
+            .Select(t => (Guid?)t.TaxCodeId)
+            .FirstOrDefaultAsync(ct);
+
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        var draftOutcome = await PurchaseOrderWorkflowService.CreateDraftAsync(
+            db,
+            new CreatePoDraftCommand(
+                tenantId,
+                entityId,
+                "IDR",
+                "IDR",
+                supplierPartnerId,
+                new DateOnly(2026, 11, 1),
+                new DateOnly(2026, 11, 15),
+                destination,
+                30,
+                null,
+                "Seeded S05 purchase commitment",
+                [new PoLineInput("L001", itemId, orderedUomId, orderedQty, unitPrice, taxId, 0m, 0m, false, "Pengadaan kemasan awal (Demo S05)")],
+                requesterUserId,
+                nowUtc),
+            ct);
+
+        if (!draftOutcome.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed seeding S05 PO draft: {draftOutcome.ErrorCode} {draftOutcome.ErrorDetail}");
+        }
+
+        if (approve)
+        {
+            var submitOutcome = await PurchaseOrderWorkflowService.SubmitRevisionAsync(
+                db,
+                new SubmitPoRevisionCommand(
+                    tenantId,
+                    entityId,
+                    draftOutcome.PurchaseOrder!.PurchaseOrderId,
+                    draftOutcome.Revision!.RevisionId,
+                    null,
+                    requesterUserId,
+                    nowUtc.AddMinutes(1)),
+                ct);
+            if (!submitOutcome.Succeeded)
+            {
+                throw new InvalidOperationException($"Failed seeding S05 PO submit: {submitOutcome.ErrorCode} {submitOutcome.ErrorDetail}");
+            }
+
+            var decideOutcome = await PurchaseOrderWorkflowService.DecideRevisionAsync(
+                db,
+                new DecidePoRevisionCommand(
+                    tenantId,
+                    entityId,
+                    draftOutcome.PurchaseOrder.PurchaseOrderId,
+                    draftOutcome.Revision.RevisionId,
+                    ApprovalDecisions.Approved,
+                    "Disetujui sebagai baseline komitmen PO Demo S05",
+                    approverUserId,
+                    nowUtc.AddMinutes(2)),
+                ct);
+            if (!decideOutcome.Succeeded)
+            {
+                throw new InvalidOperationException($"Failed seeding S05 PO approval: {decideOutcome.ErrorCode} {decideOutcome.ErrorDetail}");
+            }
+        }
+
+        await tx.CommitAsync(ct);
     }
 }

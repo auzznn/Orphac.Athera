@@ -242,3 +242,138 @@ public sealed class ApprovalDecision
         };
     }
 }
+
+public static class DocumentApprovalStatuses
+{
+    public const string Pending = "PENDING";
+    public const string Approved = "APPROVED";
+    public const string Rejected = "REJECTED";
+    public const string Cancelled = "CANCELLED";
+
+    public static readonly IReadOnlyList<string> All = [Pending, Approved, Rejected, Cancelled];
+}
+
+/// <summary>
+/// Document-scoped four-eyes approval record tying commercial document revisions (e.g. PO revisions)
+/// to an entity ApprovalPolicy without mutating applicant module snapshots.
+/// </summary>
+public sealed class DocumentApproval
+{
+    public Guid ApprovalId { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public Guid PolicyId { get; private set; }
+    public string SourceModule { get; private set; } = string.Empty;
+    public string SourceDocumentType { get; private set; } = string.Empty;
+    public Guid SourceDocumentId { get; private set; }
+    public Guid SourceRevisionId { get; private set; }
+    public int RevisionNumber { get; private set; }
+    public string Status { get; private set; } = DocumentApprovalStatuses.Pending;
+    public string RequestSummary { get; private set; } = string.Empty;
+    public Guid RequestedByUserId { get; private set; }
+    public DateTimeOffset RequestedAtUtc { get; private set; }
+    public Guid? DecidedByUserId { get; private set; }
+    public DateTimeOffset? DecidedAtUtc { get; private set; }
+    public string? DecisionReason { get; private set; }
+    public bool ApproverMfaVerified { get; private set; }
+    public long Version { get; private set; }
+
+    private DocumentApproval()
+    {
+    }
+
+    public static DocumentApproval Create(
+        Guid approvalId,
+        Guid tenantId,
+        Guid legalEntityId,
+        Guid policyId,
+        string sourceModule,
+        string sourceDocumentType,
+        Guid sourceDocumentId,
+        Guid sourceRevisionId,
+        int revisionNumber,
+        string requestSummary,
+        Guid requestedByUserId,
+        DateTimeOffset nowUtc)
+    {
+        if (approvalId == Guid.Empty) throw new ArgumentException("ApprovalId must not be empty.", nameof(approvalId));
+        if (tenantId == Guid.Empty) throw new ArgumentException("TenantId must not be empty.", nameof(tenantId));
+        if (legalEntityId == Guid.Empty) throw new ArgumentException("LegalEntityId must not be empty.", nameof(legalEntityId));
+        if (policyId == Guid.Empty) throw new ArgumentException("PolicyId must not be empty.", nameof(policyId));
+        if (sourceDocumentId == Guid.Empty) throw new ArgumentException("SourceDocumentId must not be empty.", nameof(sourceDocumentId));
+        if (sourceRevisionId == Guid.Empty) throw new ArgumentException("SourceRevisionId must not be empty.", nameof(sourceRevisionId));
+        if (requestedByUserId == Guid.Empty) throw new ArgumentException("RequestedByUserId must not be empty.", nameof(requestedByUserId));
+        if (revisionNumber < 1) throw new ArgumentOutOfRangeException(nameof(revisionNumber), "RevisionNumber must be >= 1.");
+
+        var normalizedModule = sourceModule?.Trim().ToUpperInvariant() ?? string.Empty;
+        if (string.IsNullOrEmpty(normalizedModule) || normalizedModule.Length > 40)
+            throw new ArgumentException("SourceModule must be 1..40 chars.", nameof(sourceModule));
+
+        var normalizedDocType = sourceDocumentType?.Trim().ToUpperInvariant() ?? string.Empty;
+        if (string.IsNullOrEmpty(normalizedDocType) || normalizedDocType.Length > 48)
+            throw new ArgumentException("SourceDocumentType must be 1..48 chars.", nameof(sourceDocumentType));
+
+        var trimmedSummary = requestSummary?.Trim() ?? string.Empty;
+        if (string.IsNullOrEmpty(trimmedSummary) || trimmedSummary.Length > 300)
+            throw new ArgumentException("RequestSummary must be between 1 and 300 characters.", nameof(requestSummary));
+
+        return new DocumentApproval
+        {
+            ApprovalId = approvalId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            PolicyId = policyId,
+            SourceModule = normalizedModule,
+            SourceDocumentType = normalizedDocType,
+            SourceDocumentId = sourceDocumentId,
+            SourceRevisionId = sourceRevisionId,
+            RevisionNumber = revisionNumber,
+            Status = DocumentApprovalStatuses.Pending,
+            RequestSummary = trimmedSummary,
+            RequestedByUserId = requestedByUserId,
+            RequestedAtUtc = nowUtc,
+            Version = 1L
+        };
+    }
+
+    public void RecordDecision(
+        Guid decidedByUserId,
+        string decision,
+        string reason,
+        bool mfaVerified,
+        DateTimeOffset nowUtc)
+    {
+        if (decidedByUserId == Guid.Empty) throw new ArgumentException("DecidedByUserId must not be empty.", nameof(decidedByUserId));
+        if (Status != DocumentApprovalStatuses.Pending)
+            throw new InvalidOperationException($"approval_already_decided: Approval '{ApprovalId}' is already {Status}.");
+        if (decidedByUserId == RequestedByUserId)
+            throw new InvalidOperationException("four_eyes_self_approval_forbidden: Submitter cannot approve or decide their own document revision.");
+
+        var normalizedDecision = decision?.Trim().ToUpperInvariant() ?? string.Empty;
+        if (normalizedDecision != ApprovalDecisions.Approved && normalizedDecision != ApprovalDecisions.Rejected)
+            throw new ArgumentException("Decision must be APPROVED or REJECTED.", nameof(decision));
+
+        var trimmedReason = reason?.Trim() ?? string.Empty;
+        if (string.IsNullOrEmpty(trimmedReason) || trimmedReason.Length > 500)
+            throw new ArgumentException("Decision reason must be between 1 and 500 characters.", nameof(reason));
+
+        Status = normalizedDecision == ApprovalDecisions.Approved
+            ? DocumentApprovalStatuses.Approved
+            : DocumentApprovalStatuses.Rejected;
+        DecidedByUserId = decidedByUserId;
+        DecidedAtUtc = nowUtc;
+        DecisionReason = trimmedReason;
+        ApproverMfaVerified = mfaVerified;
+        Version++;
+    }
+
+    public void Cancel(DateTimeOffset nowUtc)
+    {
+        if (Status != DocumentApprovalStatuses.Pending)
+            throw new InvalidOperationException($"approval_already_decided: Approval '{ApprovalId}' is already {Status} and cannot be cancelled.");
+
+        Status = DocumentApprovalStatuses.Cancelled;
+        DecidedAtUtc = nowUtc;
+        Version++;
+    }
+}

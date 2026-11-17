@@ -77,6 +77,29 @@ export type PagedJournalsResponse = components["schemas"]["PagedJournalsResponse
 export type JournalLineDto = components["schemas"]["JournalLineDto"];
 export type JournalDetailDto = components["schemas"]["JournalDetailDto"];
 
+export type ProcurementReferenceDataResponse = components["schemas"]["ProcurementReferenceDataResponse"];
+export type ProcurementSupplierOptionDto = components["schemas"]["ProcurementSupplierOptionDto"];
+export type ProcurementItemOptionDto = components["schemas"]["ProcurementItemOptionDto"];
+export type ProcurementItemUomOptionDto = components["schemas"]["ProcurementItemUomOptionDto"];
+export type ProcurementTaxOptionDto = components["schemas"]["ProcurementTaxOptionDto"];
+export type DeliveryTolerancePolicyDto = components["schemas"]["DeliveryTolerancePolicyDto"];
+export type PurchaseOrderListResponse = components["schemas"]["PurchaseOrderListResponse"];
+export type PurchaseOrderSummaryDto = components["schemas"]["PurchaseOrderSummaryDto"];
+export type PurchaseOrderDetailDto = components["schemas"]["PurchaseOrderDetailDto"];
+export type PurchaseOrderRevisionDto = components["schemas"]["PurchaseOrderRevisionDto"];
+export type PurchaseOrderLineDto = components["schemas"]["PurchaseOrderLineDto"];
+export type DocumentApprovalDto = components["schemas"]["DocumentApprovalDto"];
+export type PoRevisionDiffReportDto = components["schemas"]["PoRevisionDiffReportDto"];
+export type PoHeaderFieldDiffDto = components["schemas"]["PoHeaderFieldDiffDto"];
+export type PoLineDiffItemDto = components["schemas"]["PoLineDiffItemDto"];
+export type PoLineInputDto = components["schemas"]["PoLineInputDto"];
+export type CreatePurchaseOrderRequest = components["schemas"]["CreatePurchaseOrderRequest"];
+export type UpdatePurchaseOrderRevisionRequest = components["schemas"]["UpdatePurchaseOrderRevisionRequest"];
+export type CreatePoAmendmentRequest = components["schemas"]["CreatePoAmendmentRequest"];
+export type SubmitPoRevisionRequest = components["schemas"]["SubmitPoRevisionRequest"];
+export type DecidePoRevisionRequest = components["schemas"]["DecidePoRevisionRequest"];
+export type CloseOrCancelPoRequest = components["schemas"]["CloseOrCancelPoRequest"];
+
 export interface ApiProblemError {
   status: number;
   errorCode: string;
@@ -1114,6 +1137,229 @@ export async function reverseJournal(
     "/api/workspaces/{tenantId}/entities/{entityId}/finance/journals/{journalId}/reverse",
     {
       params: { path: { tenantId, entityId, journalId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchProcurementReferenceData(
+  tenantId: string,
+  entityId: string,
+): Promise<ProcurementReferenceDataResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/reference-data",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function fetchPurchaseOrders(
+  tenantId: string,
+  entityId: string,
+  filters?: { status?: string; search?: string },
+): Promise<PurchaseOrderListResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query: {
+          status: filters?.status || undefined,
+          search: filters?.search || undefined,
+        },
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function fetchPurchaseOrderDetail(
+  tenantId: string,
+  entityId: string,
+  poId: string,
+): Promise<PurchaseOrderDetailDto> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}",
+    {
+      params: { path: { tenantId, entityId, poId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function createPurchaseOrder(
+  tenantId: string,
+  entityId: string,
+  payload: CreatePurchaseOrderRequest,
+): Promise<PurchaseOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function updatePurchaseOrderDraftRevision(
+  tenantId: string,
+  entityId: string,
+  poId: string,
+  revisionId: string,
+  payload: UpdatePurchaseOrderRevisionRequest,
+): Promise<PurchaseOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions/{revisionId}",
+    {
+      params: { path: { tenantId, entityId, poId, revisionId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function createPurchaseOrderAmendment(
+  tenantId: string,
+  entityId: string,
+  poId: string,
+  payload: CreatePoAmendmentRequest,
+): Promise<PurchaseOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions",
+    {
+      params: { path: { tenantId, entityId, poId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function submitPurchaseOrderRevision(
+  tenantId: string,
+  entityId: string,
+  poId: string,
+  revisionId: string,
+  payload?: SubmitPoRevisionRequest,
+): Promise<PurchaseOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions/{revisionId}/submit",
+    {
+      params: { path: { tenantId, entityId, poId, revisionId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload ?? { poNumberOverride: null },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function decidePurchaseOrderRevision(
+  tenantId: string,
+  entityId: string,
+  poId: string,
+  revisionId: string,
+  payload: DecidePoRevisionRequest,
+): Promise<PurchaseOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/revisions/{revisionId}/decide",
+    {
+      params: { path: { tenantId, entityId, poId, revisionId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function cancelPurchaseOrder(
+  tenantId: string,
+  entityId: string,
+  poId: string,
+  payload: CloseOrCancelPoRequest,
+): Promise<PurchaseOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/cancel",
+    {
+      params: { path: { tenantId, entityId, poId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function shortClosePurchaseOrder(
+  tenantId: string,
+  entityId: string,
+  poId: string,
+  payload: CloseOrCancelPoRequest,
+): Promise<PurchaseOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/short-close",
+    {
+      params: { path: { tenantId, entityId, poId } },
       headers: { "X-CSRF-Token": csrf },
       body: payload,
       cache: "no-store",
