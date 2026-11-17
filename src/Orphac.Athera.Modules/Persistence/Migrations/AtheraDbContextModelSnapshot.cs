@@ -390,6 +390,270 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                     b.ToTable("audit_events", "audit");
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Catalog.Item", b =>
+                {
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("item_id");
+
+                    b.Property<Guid>("BaseUomId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("base_uom_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<DateTimeOffset?>("DeactivatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deactivated_at_utc");
+
+                    b.Property<Guid>("DefaultPurchaseUomId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("default_purchase_uom_id");
+
+                    b.Property<Guid>("DefaultSalesUomId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("default_sales_uom_id");
+
+                    b.Property<string>("EntityScopeMode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("entity_scope_mode");
+
+                    b.Property<string>("ItemCode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("item_code");
+
+                    b.Property<string>("ItemKind")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("item_kind");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("ItemId");
+
+                    b.HasIndex("TenantId", "BaseUomId");
+
+                    b.HasIndex("TenantId", "DefaultPurchaseUomId");
+
+                    b.HasIndex("TenantId", "DefaultSalesUomId");
+
+                    b.HasIndex("TenantId", "ItemCode")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "Status");
+
+                    b.ToTable("items", "catalog", t =>
+                        {
+                            t.HasCheckConstraint("ck_items_kind", "item_kind IN ('STOCKED_GOOD', 'NON_STOCK_SERVICE')");
+
+                            t.HasCheckConstraint("ck_items_scope", "entity_scope_mode IN ('ALL_ENTITIES', 'RESTRICTED_ENTITIES')");
+
+                            t.HasCheckConstraint("ck_items_status", "status IN ('ACTIVE', 'INACTIVE')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Catalog.ItemEntityPolicy", b =>
+                {
+                    b.Property<Guid>("PolicyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("policy_id");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("item_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("notes");
+
+                    b.Property<bool>("PurchaseAllowed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("purchase_allowed");
+
+                    b.Property<bool>("SalesAllowed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("sales_allowed");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("PolicyId");
+
+                    b.HasIndex("TenantId", "ItemId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ItemId")
+                        .IsUnique();
+
+                    b.ToTable("item_entity_policies", "catalog");
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Catalog.ItemUom", b =>
+                {
+                    b.Property<Guid>("ItemUomId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("item_uom_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<decimal>("FactorToBase")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("factor_to_base");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("item_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("UomId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("uom_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("ItemUomId");
+
+                    b.HasIndex("TenantId", "UomId");
+
+                    b.HasIndex("TenantId", "ItemId", "UomId")
+                        .IsUnique();
+
+                    b.ToTable("item_uom_conversions", "catalog", t =>
+                        {
+                            t.HasCheckConstraint("ck_item_uoms_factor", "factor_to_base > 0");
+
+                            t.HasCheckConstraint("ck_item_uoms_status", "status IN ('ACTIVE', 'INACTIVE')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Catalog.UnitOfMeasure", b =>
+                {
+                    b.Property<Guid>("UomId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("uom_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.Property<int>("QuantityPrecisionScale")
+                        .HasColumnType("integer")
+                        .HasColumnName("quantity_precision_scale");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<string>("UomCode")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("uom_code");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("UomId");
+
+                    b.HasIndex("TenantId", "UomCode")
+                        .IsUnique();
+
+                    b.ToTable("units_of_measure", "catalog", t =>
+                        {
+                            t.HasCheckConstraint("ck_uoms_scale", "quantity_precision_scale BETWEEN 0 AND 6");
+
+                            t.HasCheckConstraint("ck_uoms_status", "status IN ('ACTIVE', 'INACTIVE')");
+                        });
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Identity.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -912,6 +1176,226 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Partners.Partner", b =>
+                {
+                    b.Property<Guid>("PartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("partner_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<DateTimeOffset?>("DeactivatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deactivated_at_utc");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("display_name");
+
+                    b.Property<string>("EntityScopeMode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("entity_scope_mode");
+
+                    b.Property<bool>("IsCustomer")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_customer");
+
+                    b.Property<bool>("IsSupplier")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_supplier");
+
+                    b.Property<string>("LegalName")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("legal_name");
+
+                    b.Property<string>("PartnerCode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("partner_code");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("TaxPkpStatus")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("tax_pkp_status");
+
+                    b.Property<string>("TaxRegistrationNpwp")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("tax_registration_npwp");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("PartnerId");
+
+                    b.HasIndex("TenantId", "PartnerCode")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "Status");
+
+                    b.ToTable("partners", "partners", t =>
+                        {
+                            t.HasCheckConstraint("ck_partners_role", "is_supplier OR is_customer");
+
+                            t.HasCheckConstraint("ck_partners_scope", "entity_scope_mode IN ('ALL_ENTITIES', 'RESTRICTED_ENTITIES')");
+
+                            t.HasCheckConstraint("ck_partners_status", "status IN ('ACTIVE', 'INACTIVE')");
+
+                            t.HasCheckConstraint("ck_partners_tax_pkp", "tax_pkp_status IN ('UNKNOWN', 'PKP', 'NON_PKP')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Partners.PartnerContact", b =>
+                {
+                    b.Property<Guid>("ContactId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("contact_id");
+
+                    b.Property<string>("ContactName")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("contact_name");
+
+                    b.Property<string>("ContactRole")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("contact_role");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("email");
+
+                    b.Property<bool>("IsPrimary")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_primary");
+
+                    b.Property<Guid>("PartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("partner_id");
+
+                    b.Property<string>("Phone")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("phone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("ContactId");
+
+                    b.HasIndex("TenantId", "PartnerId");
+
+                    b.ToTable("partner_contacts", "partners", t =>
+                        {
+                            t.HasCheckConstraint("ck_partner_contacts_role", "contact_role IN ('COMMERCIAL', 'BILLING', 'RECEIVING_DISPATCH')");
+
+                            t.HasCheckConstraint("ck_partner_contacts_status", "status IN ('ACTIVE', 'INACTIVE')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Partners.PartnerEntityProfile", b =>
+                {
+                    b.Property<Guid>("ProfileId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("profile_id");
+
+                    b.Property<bool>("CustomerEligible")
+                        .HasColumnType("boolean")
+                        .HasColumnName("customer_eligible");
+
+                    b.Property<int>("DefaultPaymentTermsDays")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("default_payment_terms_days");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("notes");
+
+                    b.Property<Guid>("PartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("partner_id");
+
+                    b.Property<bool>("SupplierEligible")
+                        .HasColumnType("boolean")
+                        .HasColumnName("supplier_eligible");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("ProfileId");
+
+                    b.HasIndex("TenantId", "PartnerId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PartnerId")
+                        .IsUnique();
+
+                    b.ToTable("partner_entity_profiles", "partners", t =>
+                        {
+                            t.HasCheckConstraint("ck_partner_entity_profiles_terms", "default_payment_terms_days BETWEEN 0 AND 365");
+                        });
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Platform.LegalEntity", b =>
                 {
                     b.Property<Guid>("LegalEntityId")
@@ -1157,6 +1641,79 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Catalog.Item", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Catalog.UnitOfMeasure", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "BaseUomId")
+                        .HasPrincipalKey("TenantId", "UomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Catalog.UnitOfMeasure", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "DefaultPurchaseUomId")
+                        .HasPrincipalKey("TenantId", "UomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Catalog.UnitOfMeasure", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "DefaultSalesUomId")
+                        .HasPrincipalKey("TenantId", "UomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Catalog.ItemEntityPolicy", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Catalog.Item", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "ItemId")
+                        .HasPrincipalKey("TenantId", "ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Catalog.ItemUom", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Catalog.Item", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "ItemId")
+                        .HasPrincipalKey("TenantId", "ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Catalog.UnitOfMeasure", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "UomId")
+                        .HasPrincipalKey("TenantId", "UomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Catalog.UnitOfMeasure", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Identity.EntityAccessGrant", b =>
                 {
                     b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
@@ -1241,6 +1798,42 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("TenantId", "LegalEntityId")
                         .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Partners.Partner", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.Tenant", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Partners.PartnerContact", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Partners.Partner", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "PartnerId")
+                        .HasPrincipalKey("TenantId", "PartnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Partners.PartnerEntityProfile", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Partners.Partner", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "PartnerId")
+                        .HasPrincipalKey("TenantId", "PartnerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

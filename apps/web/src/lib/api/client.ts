@@ -28,6 +28,31 @@ export type CreateApprovalCaseRequest = components["schemas"]["CreateApprovalCas
 export type DecideApprovalCaseRequest = components["schemas"]["DecideApprovalCaseRequest"];
 export type OutboxDispatchResponse = components["schemas"]["OutboxDispatchResponse"];
 
+export type PartnerContactDto = components["schemas"]["PartnerContactDto"];
+export type PartnerEntityProfileDto = components["schemas"]["PartnerEntityProfileDto"];
+export type PartnerListItemDto = components["schemas"]["PartnerListItemDto"];
+export type PartnerDetailDto = components["schemas"]["PartnerDetailDto"];
+export type PagedPartnersResponse = components["schemas"]["PagedPartnersResponse"];
+export type CreatePartnerRequest = components["schemas"]["CreatePartnerRequest"];
+export type UpdatePartnerRequest = components["schemas"]["UpdatePartnerRequest"];
+export type CreatePartnerContactRequest = components["schemas"]["CreatePartnerContactRequest"];
+export type UpsertPartnerEntityProfileRequest = components["schemas"]["UpsertPartnerEntityProfileRequest"];
+
+export type UnitOfMeasureDto = components["schemas"]["UnitOfMeasureDto"];
+export type UomListResponse = components["schemas"]["UomListResponse"];
+export type CreateUomRequest = components["schemas"]["CreateUomRequest"];
+export type ItemUomDto = components["schemas"]["ItemUomDto"];
+export type ItemEntityPolicyDto = components["schemas"]["ItemEntityPolicyDto"];
+export type ItemListItemDto = components["schemas"]["ItemListItemDto"];
+export type ItemDetailDto = components["schemas"]["ItemDetailDto"];
+export type PagedItemsResponse = components["schemas"]["PagedItemsResponse"];
+export type CreateItemRequest = components["schemas"]["CreateItemRequest"];
+export type UpdateItemRequest = components["schemas"]["UpdateItemRequest"];
+export type UpsertItemUomRequest = components["schemas"]["UpsertItemUomRequest"];
+export type UpsertItemEntityPolicyRequest = components["schemas"]["UpsertItemEntityPolicyRequest"];
+export type ConvertQuantityPreviewRequest = components["schemas"]["ConvertQuantityPreviewRequest"];
+export type ConvertQuantityPreviewResponse = components["schemas"]["ConvertQuantityPreviewResponse"];
+
 export interface ApiProblemError {
   status: number;
   errorCode: string;
@@ -400,6 +425,356 @@ export async function dispatchEntityOutbox(
     {
       params: { path: { tenantId, entityId } },
       headers: { "X-CSRF-Token": csrf },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchPartners(
+  tenantId: string,
+  entityId: string,
+  filters?: {
+    q?: string;
+    role?: string;
+    status?: string;
+    eligibleOnly?: boolean;
+    page?: number;
+    pageSize?: number;
+  },
+): Promise<PagedPartnersResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/partners",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query: {
+          q: filters?.q || undefined,
+          role: filters?.role || undefined,
+          status: filters?.status || undefined,
+          eligibleOnly: filters?.eligibleOnly || undefined,
+          page: filters?.page ?? 1,
+          pageSize: filters?.pageSize ?? 50,
+        },
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function fetchPartnerDetail(
+  tenantId: string,
+  entityId: string,
+  partnerId: string,
+): Promise<PartnerDetailDto> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/partners/{partnerId}",
+    {
+      params: { path: { tenantId, entityId, partnerId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function createPartner(
+  tenantId: string,
+  entityId: string,
+  payload: CreatePartnerRequest,
+): Promise<PartnerDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/partners",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function updatePartner(
+  tenantId: string,
+  entityId: string,
+  partnerId: string,
+  payload: UpdatePartnerRequest,
+): Promise<PartnerDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/partners/{partnerId}",
+    {
+      params: { path: { tenantId, entityId, partnerId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function createPartnerContact(
+  tenantId: string,
+  entityId: string,
+  partnerId: string,
+  payload: CreatePartnerContactRequest,
+): Promise<PartnerDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/partners/{partnerId}/contacts",
+    {
+      params: { path: { tenantId, entityId, partnerId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function upsertPartnerEntityProfile(
+  tenantId: string,
+  entityId: string,
+  partnerId: string,
+  payload: UpsertPartnerEntityProfileRequest,
+): Promise<PartnerDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/partners/{partnerId}/entity-profile",
+    {
+      params: { path: { tenantId, entityId, partnerId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchUnitsOfMeasure(
+  tenantId: string,
+  entityId: string,
+): Promise<UomListResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/uoms",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function createUnitOfMeasure(
+  tenantId: string,
+  entityId: string,
+  payload: CreateUomRequest,
+): Promise<UnitOfMeasureDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/uoms",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchCatalogItems(
+  tenantId: string,
+  entityId: string,
+  filters?: {
+    q?: string;
+    itemKind?: string;
+    status?: string;
+    eligibleOnly?: boolean;
+    page?: number;
+    pageSize?: number;
+  },
+): Promise<PagedItemsResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query: {
+          q: filters?.q || undefined,
+          itemKind: filters?.itemKind || undefined,
+          status: filters?.status || undefined,
+          eligibleOnly: filters?.eligibleOnly || undefined,
+          page: filters?.page ?? 1,
+          pageSize: filters?.pageSize ?? 50,
+        },
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function fetchCatalogItemDetail(
+  tenantId: string,
+  entityId: string,
+  itemId: string,
+): Promise<ItemDetailDto> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items/{itemId}",
+    {
+      params: { path: { tenantId, entityId, itemId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function createCatalogItem(
+  tenantId: string,
+  entityId: string,
+  payload: CreateItemRequest,
+): Promise<ItemDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function updateCatalogItem(
+  tenantId: string,
+  entityId: string,
+  itemId: string,
+  payload: UpdateItemRequest,
+): Promise<ItemDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items/{itemId}",
+    {
+      params: { path: { tenantId, entityId, itemId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function upsertItemUomConversion(
+  tenantId: string,
+  entityId: string,
+  itemId: string,
+  payload: UpsertItemUomRequest,
+): Promise<ItemDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items/{itemId}/conversions",
+    {
+      params: { path: { tenantId, entityId, itemId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function upsertItemEntityPolicy(
+  tenantId: string,
+  entityId: string,
+  itemId: string,
+  payload: UpsertItemEntityPolicyRequest,
+): Promise<ItemDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items/{itemId}/entity-policy",
+    {
+      params: { path: { tenantId, entityId, itemId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function previewItemUomConversion(
+  tenantId: string,
+  entityId: string,
+  itemId: string,
+  payload: ConvertQuantityPreviewRequest,
+): Promise<ConvertQuantityPreviewResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items/{itemId}/convert-preview",
+    {
+      params: { path: { tenantId, entityId, itemId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
       cache: "no-store",
     },
   );

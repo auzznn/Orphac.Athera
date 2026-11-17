@@ -150,6 +150,7 @@ app.MapOpenApi("/openapi/{documentName}.json");
 app.MapHealthAndAuthEndpoints();
 app.MapWorkspaceEndpoints();
 app.MapAdminAndApprovalEndpoints();
+app.MapMasterDataEndpoints();
 
 if (isMigrateMode)
 {
@@ -157,7 +158,10 @@ if (isMigrateMode)
     var db = scope.ServiceProvider.GetRequiredService<AtheraDbContext>();
     await db.Database.MigrateAsync();
     Console.WriteLine("PostgreSQL migrations applied successfully.");
-    return;
+    if (!isSeedDemoMode)
+    {
+        return;
+    }
 }
 
 if (isSeedDemoMode)

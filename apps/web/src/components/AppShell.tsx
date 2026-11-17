@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   ChevronDown,
   FolderKanban,
+  Handshake,
   KeyRound,
   Landmark,
   LayoutGrid,
@@ -21,6 +22,7 @@ import {
   RefreshCw,
   ShieldCheck,
   ShoppingCart,
+  Tags,
   Users,
   X,
 } from "lucide-react";
@@ -281,6 +283,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const authorizedCount = Number(workspaces?.totalAuthorizedEntities ?? 0);
   const permissionSet = new Set(activeScope?.entity.permissions ?? []);
 
+  const baseEntityPath = activeScope
+    ? `/w/${activeScope.tenant.tenantId}/${activeScope.entity.legalEntityId}`
+    : null;
+
   const topNavItems = [
     {
       key: "overview",
@@ -294,7 +300,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       href: "/workspaces",
       label: t.shell.navItems.workspaces,
       icon: FolderKanban,
-      active: pathname === "/workspaces" || (pathname.startsWith("/w/") && !pathname.endsWith("/approvals") && !pathname.endsWith("/admin")),
+      active: pathname === "/workspaces" || (baseEntityPath !== null && pathname === baseEntityPath),
     },
     {
       key: "invitations",
@@ -305,11 +311,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     },
   ];
 
-  const baseEntityPath = activeScope
-    ? `/w/${activeScope.tenant.tenantId}/${activeScope.entity.legalEntityId}`
-    : null;
-
   const liveEntityModules = [
+    {
+      key: "partners",
+      label: t.shell.navItems.partners,
+      icon: Handshake,
+      href: baseEntityPath && (permissionSet.has("partners.read") || permissionSet.has("partners.manage")) ? `${baseEntityPath}/partners` : null,
+      permitted: permissionSet.has("partners.read") || permissionSet.has("partners.manage"),
+      active: pathname.endsWith("/partners"),
+    },
+    {
+      key: "catalog",
+      label: t.shell.navItems.catalog,
+      icon: Tags,
+      href: baseEntityPath && (permissionSet.has("catalog.read") || permissionSet.has("catalog.manage")) ? `${baseEntityPath}/catalog` : null,
+      permitted: permissionSet.has("catalog.read") || permissionSet.has("catalog.manage"),
+      active: pathname.endsWith("/catalog"),
+    },
     {
       key: "approvals",
       label: t.shell.navItems.approvals,

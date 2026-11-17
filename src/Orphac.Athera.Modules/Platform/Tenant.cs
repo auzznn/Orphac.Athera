@@ -24,8 +24,85 @@ public static class LegalEntityStatuses
     public static readonly IReadOnlyList<string> All = TenantStatuses.All;
 }
 
+public static class EntityScopeModes
+{
+    public const string AllEntities = "ALL_ENTITIES";
+    public const string RestrictedEntities = "RESTRICTED_ENTITIES";
+
+    public static readonly IReadOnlyList<string> All = [AllEntities, RestrictedEntities];
+
+    public static string Normalize(string? raw)
+    {
+        var value = raw?.Trim().ToUpperInvariant() ?? AllEntities;
+        if (value is not (AllEntities or RestrictedEntities))
+        {
+            throw new ArgumentException($"Unsupported entity scope mode '{raw}'.", nameof(raw));
+        }
+
+        return value;
+    }
+}
+
+public static class MasterStatuses
+{
+    public const string Active = "ACTIVE";
+    public const string Inactive = "INACTIVE";
+
+    public static readonly IReadOnlyList<string> All = [Active, Inactive];
+
+    public static string Normalize(string? raw)
+    {
+        var value = raw?.Trim().ToUpperInvariant() ?? Active;
+        if (value is not (Active or Inactive))
+        {
+            throw new ArgumentException($"Unsupported master lifecycle status '{raw}'.", nameof(raw));
+        }
+
+        return value;
+    }
+}
+
 internal static class GuardValidation
 {
+    public static Guid RequireNonEmptyGuid(Guid id, string paramName)
+    {
+        if (id == Guid.Empty)
+        {
+            throw new ArgumentException($"{paramName} must not be empty.", paramName);
+        }
+
+        return id;
+    }
+
+    public static string RequireMasterCode(string? raw, string paramName, int minLength = 2, int maxLength = 32)
+    {
+        var trimmed = RequireCode(raw, paramName, maxLength);
+        if (trimmed.Length < minLength || !trimmed.All(c => char.IsAsciiLetterOrDigit(c) || c is '.' or '_' or '-'))
+        {
+            throw new ArgumentException(
+                $"{paramName} must be {minLength}–{maxLength} uppercase ASCII letters, digits, '.', '_' or '-'.",
+                paramName);
+        }
+
+        return trimmed;
+    }
+
+    public static string? NormalizeOptional(string? raw, int maxLength, string paramName)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            return null;
+        }
+
+        var trimmed = raw.Trim();
+        if (trimmed.Length > maxLength)
+        {
+            throw new ArgumentException($"{paramName} must not exceed {maxLength} characters.", paramName);
+        }
+
+        return trimmed;
+    }
+
     public static string RequireCode(string? raw, string paramName, int maxLength = 64)
     {
         var trimmed = raw?.Trim().ToUpperInvariant() ?? string.Empty;

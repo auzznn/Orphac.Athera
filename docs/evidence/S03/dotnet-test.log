@@ -1,0 +1,1070 @@
+Build started 18/11/2026 02.50.30.
+     1>Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" on node 1 (Restore target(s)).
+     1>ValidateSolutionConfiguration:
+         Building solution configuration "Debug|Any CPU".
+       _GetAllRestoreProjectPathItems:
+         Determining projects to restore...
+     1>Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" (1) is building "/Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api/Orphac.Athera.Api.csproj" (5:7) on node 2 (_GenerateProjectRestoreGraph target(s)).
+     5>AddPrunePackageReferences:
+         Loading prune package data from PrunePackageData folder
+         Failed to load prune package data from PrunePackageData folder, loading from targeting packs instead
+     1>Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" (1) is building "/Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Modules/Orphac.Athera.Modules.csproj" (2:8) on node 1 (_GenerateProjectRestoreGraph target(s)).
+     2>AddPrunePackageReferences:
+         Loading prune package data from PrunePackageData folder
+         Failed to load prune package data from PrunePackageData folder, loading from targeting packs instead
+     5>AddPrunePackageReferences:
+         Looking for targeting packs in /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref
+         Pack directories found: /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.12
+     2>AddPrunePackageReferences:
+         Looking for targeting packs in /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref
+     1>Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" (1) is building "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/Orphac.Athera.UnitTests.csproj" (3:5) on node 4 (_GenerateProjectRestoreGraph target(s)).
+     3>AddPrunePackageReferences:
+         Loading prune package data from PrunePackageData folder
+     2>AddPrunePackageReferences:
+         Pack directories found: /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.12
+     3>AddPrunePackageReferences:
+         Failed to load prune package data from PrunePackageData folder, loading from targeting packs instead
+         Looking for targeting packs in /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref
+         Pack directories found: /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.12
+     2>AddPrunePackageReferences:
+         Found package overrides file /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.12/data/PackageOverrides.txt
+     5>AddPrunePackageReferences:
+         Found package overrides file /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.12/data/PackageOverrides.txt
+     3>AddPrunePackageReferences:
+         Found package overrides file /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.12/data/PackageOverrides.txt
+     1>Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" (1) is building "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/Orphac.Athera.IntegrationTests.csproj" (4:5) on node 3 (_GenerateProjectRestoreGraph target(s)).
+     4>AddPrunePackageReferences:
+         Loading prune package data from PrunePackageData folder
+         Failed to load prune package data from PrunePackageData folder, loading from targeting packs instead
+     5>AddPrunePackageReferences:
+         Loading prune package data from PrunePackageData folder
+         Failed to load prune package data from PrunePackageData folder, loading from targeting packs instead
+         Looking for targeting packs in /usr/local/share/dotnet/packs/Microsoft.AspNetCore.App.Ref
+         Pack directories found: /usr/local/share/dotnet/packs/Microsoft.AspNetCore.App.Ref/10.0.12
+         Found package overrides file /usr/local/share/dotnet/packs/Microsoft.AspNetCore.App.Ref/10.0.12/data/PackageOverrides.txt
+     4>AddPrunePackageReferences:
+         Looking for targeting packs in /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref
+         Pack directories found: /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.12
+         Found package overrides file /usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref/10.0.12/data/PackageOverrides.txt
+     2>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Modules/Orphac.Athera.Modules.csproj" (_GenerateProjectRestoreGraph target(s)).
+     3>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/Orphac.Athera.UnitTests.csproj" (_GenerateProjectRestoreGraph target(s)).
+     5>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api/Orphac.Athera.Api.csproj" (_GenerateProjectRestoreGraph target(s)).
+     4>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/Orphac.Athera.IntegrationTests.csproj" (_GenerateProjectRestoreGraph target(s)).
+     1>Restore:
+         X.509 certificate chain validation will use the fallback certificate bundle at '/usr/local/share/dotnet/sdk/10.0.401/trustedroots/codesignctl.pem'.
+         X.509 certificate chain validation will use the fallback certificate bundle at '/usr/local/share/dotnet/sdk/10.0.401/trustedroots/timestampctl.pem'.
+         Assets file has not changed. Skipping assets file writing. Path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api/obj/project.assets.json
+         Restored /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api/Orphac.Athera.Api.csproj (in 15 ms).
+         Assets file has not changed. Skipping assets file writing. Path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Modules/obj/project.assets.json
+         Restored /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Modules/Orphac.Athera.Modules.csproj (in 18 ms).
+         Assets file has not changed. Skipping assets file writing. Path: /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/obj/project.assets.json
+         Restored /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/Orphac.Athera.UnitTests.csproj (in 19 ms).
+         Assets file has not changed. Skipping assets file writing. Path: /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/obj/project.assets.json
+         Restored /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/Orphac.Athera.IntegrationTests.csproj (in 19 ms).
+         
+         NuGet Config files used:
+             /Users/macbook/.nuget/NuGet/NuGet.Config
+         
+         Feeds used:
+             https://api.nuget.org/v3/index.json
+         All projects are up-to-date for restore.
+     1>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" (Restore target(s)).
+   1:2>Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" on node 1 (VSTest target(s)).
+     1>ValidateSolutionConfiguration:
+         Building solution configuration "Debug|Any CPU".
+   1:2>Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" (1:2) is building "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/Orphac.Athera.UnitTests.csproj" (3:6) on node 4 (VSTest target(s)).
+     3>BuildProject:
+         Build started, please wait...
+   1:2>Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" (1:2) is building "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/Orphac.Athera.IntegrationTests.csproj" (4:6) on node 3 (VSTest target(s)).
+     4>BuildProject:
+         Build started, please wait...
+   4:6>Project "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/Orphac.Athera.IntegrationTests.csproj" (4:6) is building "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/Orphac.Athera.IntegrationTests.csproj" (4:7) on node 3 (default targets).
+   4:7>Project "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/Orphac.Athera.IntegrationTests.csproj" (4:7) is building "/Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Modules/Orphac.Athera.Modules.csproj" (2:12) on node 1 (default targets).
+     2>GenerateTargetFrameworkMonikerAttribute:
+       Skipping target "GenerateTargetFrameworkMonikerAttribute" because all output files are up-to-date with respect to the input files.
+       CoreGenerateAssemblyInfo:
+       Skipping target "CoreGenerateAssemblyInfo" because all output files are up-to-date with respect to the input files.
+       _GenerateSourceLinkFile:
+         Source Link file 'obj/Debug/net10.0/Orphac.Athera.Modules.sourcelink.json' is up-to-date.
+       CoreCompile:
+       Skipping target "CoreCompile" because all output files are up-to-date with respect to the input files.
+       GenerateBuildDependencyFile:
+       Skipping target "GenerateBuildDependencyFile" because all output files are up-to-date with respect to the input files.
+       CopyFilesToOutputDirectory:
+         Orphac.Athera.Modules -> /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Modules/bin/Debug/net10.0/Orphac.Athera.Modules.dll
+     2>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Modules/Orphac.Athera.Modules.csproj" (default targets).
+   4:7>Project "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/Orphac.Athera.IntegrationTests.csproj" (4:7) is building "/Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api/Orphac.Athera.Api.csproj" (5:11) on node 2 (default targets).
+     5>GenerateTargetFrameworkMonikerAttribute:
+       Skipping target "GenerateTargetFrameworkMonikerAttribute" because all output files are up-to-date with respect to the input files.
+       CoreGenerateAssemblyInfo:
+       Skipping target "CoreGenerateAssemblyInfo" because all output files are up-to-date with respect to the input files.
+       _DiscoverMvcApplicationParts:
+       Skipping target "_DiscoverMvcApplicationParts" because all output files are up-to-date with respect to the input files.
+       _GenerateSourceLinkFile:
+         Source Link file 'obj/Debug/net10.0/Orphac.Athera.Api.sourcelink.json' is up-to-date.
+       CoreCompile:
+       Skipping target "CoreCompile" because all output files are up-to-date with respect to the input files.
+       _CreateAppHost:
+       Skipping target "_CreateAppHost" because all output files are up-to-date with respect to the input files.
+       _ProcessScopedCssFiles:
+       Skipping target "_ProcessScopedCssFiles" because it has no outputs.
+       _ProcessScopedCssFiles:
+       Skipping target "_ProcessScopedCssFiles" because it has no outputs.
+       _BuildCopyStaticWebAssetsPreserveNewest:
+       Skipping target "_BuildCopyStaticWebAssetsPreserveNewest" because it has no outputs.
+       _CopyOutOfDateSourceItemsToOutputDirectory:
+       Skipping target "_CopyOutOfDateSourceItemsToOutputDirectory" because all output files are up-to-date with respect to the input files.
+       GenerateBuildDependencyFile:
+       Skipping target "GenerateBuildDependencyFile" because all output files are up-to-date with respect to the input files.
+       GenerateBuildRuntimeConfigurationFiles:
+       Skipping target "GenerateBuildRuntimeConfigurationFiles" because all output files are up-to-date with respect to the input files.
+       CopyFilesToOutputDirectory:
+         Orphac.Athera.Api -> /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api/bin/Debug/net10.0/Orphac.Athera.Api.dll
+     5>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api/Orphac.Athera.Api.csproj" (default targets).
+   3:6>Project "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/Orphac.Athera.UnitTests.csproj" (3:6) is building "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/Orphac.Athera.UnitTests.csproj" (3:7) on node 4 (default targets).
+     3>GenerateTargetFrameworkMonikerAttribute:
+       Skipping target "GenerateTargetFrameworkMonikerAttribute" because all output files are up-to-date with respect to the input files.
+       CoreGenerateAssemblyInfo:
+       Skipping target "CoreGenerateAssemblyInfo" because all output files are up-to-date with respect to the input files.
+     4>GenerateTargetFrameworkMonikerAttribute:
+       Skipping target "GenerateTargetFrameworkMonikerAttribute" because all output files are up-to-date with respect to the input files.
+     3>_GenerateSourceLinkFile:
+         Source Link file 'obj/Debug/net10.0/Orphac.Athera.UnitTests.sourcelink.json' is up-to-date.
+       CoreCompile:
+       Skipping target "CoreCompile" because all output files are up-to-date with respect to the input files.
+     4>CoreGenerateAssemblyInfo:
+       Skipping target "CoreGenerateAssemblyInfo" because all output files are up-to-date with respect to the input files.
+     3>_CopyOutOfDateSourceItemsToOutputDirectory:
+       Skipping target "_CopyOutOfDateSourceItemsToOutputDirectory" because all output files are up-to-date with respect to the input files.
+       GenerateBuildDependencyFile:
+       Skipping target "GenerateBuildDependencyFile" because all output files are up-to-date with respect to the input files.
+       GenerateBuildRuntimeConfigurationFiles:
+       Skipping target "GenerateBuildRuntimeConfigurationFiles" because all output files are up-to-date with respect to the input files.
+       CopyFilesToOutputDirectory:
+         Orphac.Athera.UnitTests -> /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/bin/Debug/net10.0/Orphac.Athera.UnitTests.dll
+     4>_GenerateSourceLinkFile:
+         Source Link file 'obj/Debug/net10.0/Orphac.Athera.IntegrationTests.sourcelink.json' is up-to-date.
+     3>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/Orphac.Athera.UnitTests.csproj" (default targets).
+     4>CoreCompile:
+       Skipping target "CoreCompile" because all output files are up-to-date with respect to the input files.
+     3>BuildProject:
+         Build completed.
+         
+Test run for /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/bin/Debug/net10.0/Orphac.Athera.UnitTests.dll (.NETCoreApp,Version=v10.0)
+     4>_CopyOutOfDateSourceItemsToOutputDirectory:
+       Building target "_CopyOutOfDateSourceItemsToOutputDirectory" partially, because some output files are out of date with respect to their input files.
+         Copying file from "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/obj/Debug/net10.0/MvcTestingAppManifest.json" to "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/MvcTestingAppManifest.json".
+       GenerateBuildDependencyFile:
+       Skipping target "GenerateBuildDependencyFile" because all output files are up-to-date with respect to the input files.
+       GenerateBuildRuntimeConfigurationFiles:
+       Skipping target "GenerateBuildRuntimeConfigurationFiles" because all output files are up-to-date with respect to the input files.
+       CopyFilesToOutputDirectory:
+         Orphac.Athera.IntegrationTests -> /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/Orphac.Athera.IntegrationTests.dll
+       _MvcCopyDependencyFiles:
+         Copying file from "/Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api/bin/Debug/net10.0/Orphac.Athera.Api.deps.json" to "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/Orphac.Athera.Api.deps.json".
+         Copying file from "/Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Modules/bin/Debug/net10.0/Orphac.Athera.Modules.deps.json" to "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/Orphac.Athera.Modules.deps.json".
+     4>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/Orphac.Athera.IntegrationTests.csproj" (default targets).
+     4>BuildProject:
+         Build completed.
+         
+Test run for /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/Orphac.Athera.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.05]   Discovering: Orphac.Athera.UnitTests
+[xUnit.net 00:00:00.07]   Discovering: Orphac.Athera.IntegrationTests
+[xUnit.net 00:00:00.07]   Discovered:  Orphac.Athera.UnitTests
+[xUnit.net 00:00:00.10]   Discovered:  Orphac.Athera.IntegrationTests
+[xUnit.net 00:00:00.10]   Starting:    Orphac.Athera.UnitTests
+[xUnit.net 00:00:00.11]   Starting:    Orphac.Athera.IntegrationTests
+  Passed Orphac.Athera.UnitTests.S02AdminApprovalOutboxTests.PermissionCodesAndRoleTemplates_RejectEscalatedOrUnknownPermissions [8 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.Tenant_Create_NormalizesCodeAndNameAndDefaultsToActive [8 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.UserAccount_CreateAndDeactivate_TracksStateAndVersion [8 ms]
+  Passed Orphac.Athera.UnitTests.S03PartnersCatalogueUomTests.UomConverter_PerformsExactRoundTripRejectsFractionalDiscreteAndCapturesImmutableSnapshot [8 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.TenantMembership_SuspendAndRevokeTransitionStateAndRecordRevocationTimestamp [2 ms]
+  Passed Orphac.Athera.UnitTests.S03PartnersCatalogueUomTests.Partner_NormalizesCodeRequiresRoleAndEnforcesEntityScopeAndDeactivation [2 ms]
+  Passed Orphac.Athera.UnitTests.S03PartnersCatalogueUomTests.S03PermissionCodesAndRoleTemplates_ExposeMasterDataAndSalesOfficerSafely [< 1 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.EntityAccessGrant_EnforcesValidityWindowAndStatusIndependently [1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "https://evil.example.net", host: "127.0.0.1:3200", expected: False) [3 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "not-a-uri", host: "127.0.0.1:3200", expected: False) [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "http://localhost:3200", host: "localhost:3200", expected: True) [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "http://127.0.0.1:3200", host: "127.0.0.1:3200", expected: True) [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "ID", expected: "id-ID") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "", expected: "id-ID") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "id-ID", expected: "id-ID") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: null, expected: "id-ID") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "en", expected: "en-US") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "en-US", expected: "en-US") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.Tenant_Create_RejectsInvalidIdentifiersAndBlankFields [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ThrowsOnUnsupportedLocale [< 1 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.LegalEntity_Create_RejectsEmptyTenantOrInvalidIsoCodes [1 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.LegalEntity_Create_DefaultsIndonesianContextAndValidatesCodes [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S02AdminApprovalOutboxTests.UserInvitation_Create_HashesTokenAndEnforcesExpiryAndStateTransitions [7 ms]
+[xUnit.net 00:00:00.15]   Finished:    Orphac.Athera.UnitTests
+  Passed Orphac.Athera.UnitTests.S02AdminApprovalOutboxTests.ApprovalCaseAndDecision_ForbidSelfApprovalAndDoubleDecision [1 ms]
+
+Test Run Successful.
+Total tests: 24
+     Passed: 24
+ Total time: 0,5378 Seconds
+     3>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/Orphac.Athera.UnitTests.csproj" (VSTest target(s)).
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_01_M01MigrationUpDownAndReapplySucceeds [1 s]
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_01_HealthEndpointVerifiesPostgreSqlAsRuntimeRole [1 s]
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_03_MissingTenantContextDeniesReadsAndRejectsWrites [1 s]
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_03_InvalidPasswordAndLockoutEnforced [1 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_PG_02_RuntimeRoleLacksSuperuserBypassAndTableOwnership [348 ms]
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_API_02_PrivilegeEscalationAndEntityBoundariesBlocked [3 s]
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_API_03_HostileTenantEntityAndReadOnlyPermissionsFailSafely [3 s]
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_PG_01_MigrationUpDownUpRoundTripSucceeds [536 ms]
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_API_04_MembershipRevocationTakesImmediateEffectDespiteActiveGrant [1 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+fail: Microsoft.EntityFrameworkCore.Update[10000]
+      An exception occurred in the database while saving changes for context type 'Orphac.Athera.Modules.Persistence.AtheraDbContext'.
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "IX_partners_tenant_id_partner_code"
+         at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+         at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+        Exception data:
+          Severity: ERROR
+          SqlState: 23505
+          MessageText: duplicate key value violates unique constraint "IX_partners_tenant_id_partner_code"
+          SchemaName: partners
+          TableName: partners
+          ConstraintName: IX_partners_tenant_id_partner_code
+          File: nbtinsert.c
+          Line: 666
+          Routine: _bt_check_unique
+         --- End of inner exception stack trace ---
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "IX_partners_tenant_id_partner_code"
+         at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+         at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+        Exception data:
+          Severity: ERROR
+          SqlState: 23505
+          MessageText: duplicate key value violates unique constraint "IX_partners_tenant_id_partner_code"
+          SchemaName: partners
+          TableName: partners
+          ConstraintName: IX_partners_tenant_id_partner_code
+          File: nbtinsert.c
+          Line: 666
+          Routine: _bt_check_unique
+         --- End of inner exception stack trace ---
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+      Failed executing DbCommand (17ms) [Parameters=[@p4='?' (DbType = Guid), @p0='?' (DbType = DateTime), @p1='?' (DbType = Guid), @p2='?', @p3='?' (DbType = Int64), @p5='?' (DbType = Int64), @p6='?' (DbType = Guid), @p7='?' (DbType = Boolean), @p8='?' (DbType = Guid), @p9='?' (DbType = DateTime), @p10='?' (DbType = Guid), @p11='?', @p12='?' (DbType = Guid), @p13='?', @p14='?' (DbType = Guid), @p15='?' (DbType = Guid), @p16='?' (DbType = Guid), @p17='?' (DbType = Guid), @p18='?', @p19='?' (DbType = Guid), @p20='?' (DbType = DateTime), @p21='?' (DbType = Object), @p22='?', @p23='?', @p24='?', @p25='?' (DbType = Guid), @p26='?' (DbType = Guid), @p27='?' (DbType = DateTime), @p28='?' (DbType = Guid), @p29='?', @p30='?' (DbType = DateTime), @p31='?', @p32='?' (DbType = Guid), @p33='?' (DbType = DateTime), @p34='?' (DbType = Guid), @p35='?' (DbType = DateTime), @p36='?' (DbType = DateTime), @p37='?' (DbType = Int64), @p38='?' (DbType = Guid), @p39='?' (DbType = DateTime), @p40='?', @p41='?' (DbType = Guid), @p42='?' (DbType = DateTime), @p43='?' (DbType = Object), @p44='?' (DbType = DateTime), @p45='?', @p46='?', @p47='?' (DbType = Guid), @p48='?', @p49='?' (DbType = Int64)], CommandType='Text', CommandTimeout='30']
+      UPDATE approval.approval_cases SET decided_at_utc = @p0, decided_by_user_id = @p1, status = @p2, version = @p3
+      WHERE case_id = @p4 AND version = @p5;
+      INSERT INTO approval.approval_decisions (decision_id, approver_mfa_verified, case_id, decided_at_utc, decided_by_user_id, decision, legal_entity_id, reason, requested_by_user_id, tenant_id)
+      VALUES (@p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15);
+      INSERT INTO audit.audit_events (event_id, actor_user_id, event_type, legal_entity_id, occurred_at_utc, payload_json, subject_id, subject_type, summary, tenant_id)
+      VALUES (@p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, @p24, @p25);
+      INSERT INTO identity.entity_access_grants (grant_id, created_at_utc, legal_entity_id, permission_code, revoked_at_utc, status, tenant_id, updated_at_utc, user_id, valid_from_utc, valid_until_utc, version)
+      VALUES (@p26, @p27, @p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, @p36, @p37);
+      INSERT INTO integration.outbox_messages (message_id, created_at_utc, last_error, legal_entity_id, next_attempt_at_utc, payload_json, processed_at_utc, source_key, status, tenant_id, topic, version)
+      VALUES (@p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45, @p46, @p47, @p48, @p49)
+      RETURNING attempt_count;
+fail: Microsoft.EntityFrameworkCore.Update[10000]
+      An exception occurred in the database while saving changes for context type 'Orphac.Athera.Modules.Persistence.AtheraDbContext'.
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "IX_approval_decisions_tenant_id_legal_entity_id_case_id"
+         at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+         at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+        Exception data:
+          Severity: ERROR
+          SqlState: 23505
+          MessageText: duplicate key value violates unique constraint "IX_approval_decisions_tenant_id_legal_entity_id_case_id"
+          SchemaName: approval
+          TableName: approval_decisions
+          ConstraintName: IX_approval_decisions_tenant_id_legal_entity_id_case_id
+          File: nbtinsert.c
+          Line: 666
+          Routine: _bt_check_unique
+         --- End of inner exception stack trace ---
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "IX_approval_decisions_tenant_id_legal_entity_id_case_id"
+         at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+         at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+        Exception data:
+          Severity: ERROR
+          SqlState: 23505
+          MessageText: duplicate key value violates unique constraint "IX_approval_decisions_tenant_id_legal_entity_id_case_id"
+          SchemaName: approval
+          TableName: approval_decisions
+          ConstraintName: IX_approval_decisions_tenant_id_legal_entity_id_case_id
+          File: nbtinsert.c
+          Line: 666
+          Routine: _bt_check_unique
+         --- End of inner exception stack trace ---
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_05b_DeactivatedUserAccountRejectedImmediately [1 s]
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_API_01_DualPartnerLifecycleDuplicateCodeRestrictionAndAudit [2 s]
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_API_03_FourEyesApprovalIdempotencyConcurrencyAndMfaEnforcement [2 s]
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_02_04_05_CsrfLoginMeAndLogoutEndToEnd [895 ms]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_PG_02_MigrationM03UpDownUpRoundTripSucceeds [637 ms]
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_API_01_02_03_AuthorizedWorkspacesHostileProbesSpoofedHeadersAndMultiTenantSwitch [1 s]
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_02_RuntimeRolePrivilegesAndForcedRlsVerified [445 ms]
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_PG_04_TenantSafeOutboxRetryIdempotencyAndZeroPoolLeakage [1 s]
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_PG_01_MissingContextDeniesAndCrossTenantMastersIsolatedUnderForcedRls [1 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_05_CompositeForeignKeysBlockCrossTenantLinksEvenUnderMigrator [967 ms]
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_API_01_InvitationExpiryRevocationAndRejoinNeverReactivatesStaleGrants [1 s]
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_06_ConcurrentPoolAndRollbackExecutionHasZeroTenantLeakage [1 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+[xUnit.net 00:00:10.31]   Finished:    Orphac.Athera.IntegrationTests
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_API_02_CatalogItemExactUomRoundTripFractionalRejectAndRestriction [1 s]
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_04_TenantScopedAppConnectionBlocksCrossTenantReadsAndWrites [1 s]
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_PG_02_AuditEventsAndApprovalDecisionsAreAppendOnlyUnderRuntimeRole [1 s]
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_PG_03_RuntimeRoleCannotHardDeletePartnersOrItems [961 ms]
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_PG_01_M02MigrationUpDownUpAndForcedRlsVerified [429 ms]
+
+Test Run Successful.
+Total tests: 26
+     Passed: 26
+ Total time: 10,7431 Seconds
+     4>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/Orphac.Athera.IntegrationTests.csproj" (VSTest target(s)).
+     1>Done Building Project "/Users/macbook/Documents/orphac/Orphac.Athera/Orphac.Athera.sln" (VSTest target(s)).
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:12.28

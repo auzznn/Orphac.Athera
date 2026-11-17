@@ -324,6 +324,166 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/partners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListPartners"];
+        put?: never;
+        post: operations["CreatePartner"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/partners/{partnerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetPartnerDetail"];
+        put: operations["UpdatePartner"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/partners/{partnerId}/contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreatePartnerContact"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/partners/{partnerId}/entity-profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpsertPartnerEntityProfile"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/uoms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListUnitsOfMeasure"];
+        put?: never;
+        post: operations["CreateUnitOfMeasure"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListCatalogItems"];
+        put?: never;
+        post: operations["CreateCatalogItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items/{itemId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCatalogItemDetail"];
+        put: operations["UpdateCatalogItem"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items/{itemId}/conversions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpsertItemUomConversion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items/{itemId}/entity-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpsertItemEntityPolicy"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items/{itemId}/convert-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ConvertItemQuantityPreview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -417,6 +577,35 @@ export interface components {
             user: components["schemas"]["CurrentUserResponse"];
             csrfToken: string;
         };
+        ConvertQuantityPreviewRequest: {
+            /** Format: uuid */
+            sourceUomId: string;
+            /** Format: double */
+            quantity: number | string;
+        };
+        ConvertQuantityPreviewResponse: {
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            /** Format: double */
+            inputQuantity: number | string;
+            inputUomCode: string;
+            /** Format: double */
+            factorToBase: number | string;
+            /** Format: double */
+            exactBaseQuantity: number | string;
+            /** Format: double */
+            convertedBaseQuantity: number | string;
+            /** Format: double */
+            roundingResidual: number | string;
+            baseUomCode: string;
+            /** Format: int32 */
+            basePrecisionScale: number | string;
+            /** Format: double */
+            roundTripInputQuantity: number | string;
+            /** Format: date-time */
+            capturedAtUtc: string;
+        };
         CreateApprovalCaseRequest: {
             policyCode: string;
             targetPermissionCode: string;
@@ -442,6 +631,41 @@ export interface components {
             /** Format: date-time */
             expiresAtUtc: string;
             inviteToken: string;
+        };
+        CreateItemRequest: {
+            itemCode: string;
+            name: string;
+            itemKind: string;
+            /** Format: uuid */
+            baseUomId: string;
+            /** Format: uuid */
+            defaultPurchaseUomId: null | string;
+            /** Format: uuid */
+            defaultSalesUomId: null | string;
+            entityScopeMode: string;
+        };
+        CreatePartnerContactRequest: {
+            contactName: string;
+            contactRole: string;
+            email: null | string;
+            phone: null | string;
+            isPrimary: boolean;
+        };
+        CreatePartnerRequest: {
+            partnerCode: string;
+            legalName: string;
+            displayName: string;
+            isSupplier: boolean;
+            isCustomer: boolean;
+            taxRegistrationNpwp: null | string;
+            taxPkpStatus: string;
+            entityScopeMode: string;
+        };
+        CreateUomRequest: {
+            uomCode: string;
+            name: string;
+            /** Format: int32 */
+            quantityPrecisionScale: number | string;
         };
         CsrfTokenResponse: {
             headerName: string;
@@ -507,6 +731,96 @@ export interface components {
             /** Format: date-time */
             revokedAtUtc: null | string;
         };
+        ItemDetailDto: {
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            name: string;
+            itemKind: string;
+            /** Format: uuid */
+            baseUomId: string;
+            baseUomCode: string;
+            /** Format: int32 */
+            basePrecisionScale: number | string;
+            /** Format: uuid */
+            defaultPurchaseUomId: string;
+            defaultPurchaseUomCode: string;
+            /** Format: uuid */
+            defaultSalesUomId: string;
+            defaultSalesUomCode: string;
+            entityScopeMode: string;
+            status: string;
+            effectivePurchaseAllowed: boolean;
+            effectiveSalesAllowed: boolean;
+            currentEntityPolicy: null | components["schemas"]["ItemEntityPolicyDto"];
+            conversions: components["schemas"]["ItemUomDto"][];
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: date-time */
+            deactivatedAtUtc: null | string;
+            /** Format: int64 */
+            version: number | string;
+        };
+        ItemEntityPolicyDto: {
+            /** Format: uuid */
+            policyId: string;
+            /** Format: uuid */
+            legalEntityId: string;
+            purchaseAllowed: boolean;
+            salesAllowed: boolean;
+            notes: null | string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+        };
+        ItemListItemDto: {
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            name: string;
+            itemKind: string;
+            /** Format: uuid */
+            baseUomId: string;
+            baseUomCode: string;
+            /** Format: int32 */
+            basePrecisionScale: number | string;
+            /** Format: uuid */
+            defaultPurchaseUomId: string;
+            defaultPurchaseUomCode: string;
+            /** Format: uuid */
+            defaultSalesUomId: string;
+            defaultSalesUomCode: string;
+            entityScopeMode: string;
+            status: string;
+            effectivePurchaseAllowed: boolean;
+            effectiveSalesAllowed: boolean;
+            /** Format: int32 */
+            conversionCount: number | string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+        };
+        ItemUomDto: {
+            /** Format: uuid */
+            itemUomId: string;
+            /** Format: uuid */
+            uomId: string;
+            uomCode: string;
+            uomName: string;
+            /** Format: int32 */
+            quantityPrecisionScale: number | string;
+            /** Format: double */
+            factorToBase: number | string;
+            status: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+        };
         LegalEntityDto: {
             /** Format: uuid */
             legalEntityId: string;
@@ -561,6 +875,95 @@ export interface components {
             /** Format: int32 */
             failedCount: number | string;
         };
+        PagedItemsResponse: {
+            items: components["schemas"]["ItemListItemDto"][];
+            /** Format: int32 */
+            totalCount: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+        };
+        PagedPartnersResponse: {
+            items: components["schemas"]["PartnerListItemDto"][];
+            /** Format: int32 */
+            totalCount: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+        };
+        PartnerContactDto: {
+            /** Format: uuid */
+            contactId: string;
+            contactName: string;
+            contactRole: string;
+            email: null | string;
+            phone: null | string;
+            isPrimary: boolean;
+            status: string;
+        };
+        PartnerDetailDto: {
+            /** Format: uuid */
+            partnerId: string;
+            partnerCode: string;
+            legalName: string;
+            displayName: string;
+            isSupplier: boolean;
+            isCustomer: boolean;
+            taxRegistrationNpwp: null | string;
+            taxPkpStatus: string;
+            entityScopeMode: string;
+            status: string;
+            effectiveSupplierEligible: boolean;
+            effectiveCustomerEligible: boolean;
+            currentEntityProfile: null | components["schemas"]["PartnerEntityProfileDto"];
+            contacts: components["schemas"]["PartnerContactDto"][];
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: date-time */
+            deactivatedAtUtc: null | string;
+            /** Format: int64 */
+            version: number | string;
+        };
+        PartnerEntityProfileDto: {
+            /** Format: uuid */
+            profileId: string;
+            /** Format: uuid */
+            legalEntityId: string;
+            supplierEligible: boolean;
+            customerEligible: boolean;
+            /** Format: int32 */
+            defaultPaymentTermsDays: number | string;
+            notes: null | string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+        };
+        PartnerListItemDto: {
+            /** Format: uuid */
+            partnerId: string;
+            partnerCode: string;
+            legalName: string;
+            displayName: string;
+            isSupplier: boolean;
+            isCustomer: boolean;
+            taxRegistrationNpwp: null | string;
+            taxPkpStatus: string;
+            entityScopeMode: string;
+            status: string;
+            effectiveSupplierEligible: boolean;
+            effectiveCustomerEligible: boolean;
+            /** Format: int32 */
+            contactCount: number | string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+        };
         ProblemDetails: {
             type?: null | string;
             title?: null | string;
@@ -581,6 +984,65 @@ export interface components {
             code: string;
             name: string;
             status: string;
+        };
+        UnitOfMeasureDto: {
+            /** Format: uuid */
+            uomId: string;
+            uomCode: string;
+            name: string;
+            /** Format: int32 */
+            quantityPrecisionScale: number | string;
+            status: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+        };
+        UomListResponse: {
+            items: components["schemas"]["UnitOfMeasureDto"][];
+        };
+        UpdateItemRequest: {
+            name: string;
+            itemKind: string;
+            /** Format: uuid */
+            defaultPurchaseUomId: string;
+            /** Format: uuid */
+            defaultSalesUomId: string;
+            entityScopeMode: string;
+            status: null | string;
+            /** Format: int64 */
+            expectedVersion: number | string;
+        };
+        UpdatePartnerRequest: {
+            legalName: string;
+            displayName: string;
+            isSupplier: boolean;
+            isCustomer: boolean;
+            taxRegistrationNpwp: null | string;
+            taxPkpStatus: string;
+            entityScopeMode: string;
+            status: null | string;
+            /** Format: int64 */
+            expectedVersion: number | string;
+        };
+        UpsertItemEntityPolicyRequest: {
+            purchaseAllowed: boolean;
+            salesAllowed: boolean;
+            notes: null | string;
+        };
+        UpsertItemUomRequest: {
+            /** Format: uuid */
+            uomId: string;
+            /** Format: double */
+            factorToBase: number | string;
+            status: string;
+        };
+        UpsertPartnerEntityProfileRequest: {
+            supplierEligible: boolean;
+            customerEligible: boolean;
+            /** Format: int32 */
+            defaultPaymentTermsDays: number | string;
+            notes: null | string;
         };
         WorkspacesResponse: {
             tenants: components["schemas"]["AuthorizedTenantDto"][];
@@ -1246,6 +1708,981 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OutboxDispatchResponse"];
+                };
+            };
+        };
+    };
+    ListPartners: {
+        parameters: {
+            query?: {
+                q?: string;
+                role?: string;
+                status?: string;
+                eligibleOnly?: boolean;
+                page?: number | string;
+                pageSize?: number | string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedPartnersResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreatePartner: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePartnerRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetPartnerDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                partnerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerDetailDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpdatePartner: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                partnerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePartnerRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreatePartnerContact: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                partnerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePartnerContactRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpsertPartnerEntityProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                partnerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertPartnerEntityProfileRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListUnitsOfMeasure: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UomListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateUnitOfMeasure: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateUomRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnitOfMeasureDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListCatalogItems: {
+        parameters: {
+            query?: {
+                q?: string;
+                itemKind?: string;
+                status?: string;
+                eligibleOnly?: boolean;
+                page?: number | string;
+                pageSize?: number | string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedItemsResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateCatalogItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateItemRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetCatalogItemDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemDetailDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpdateCatalogItem: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateItemRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpsertItemUomConversion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertItemUomRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpsertItemEntityPolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertItemEntityPolicyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ConvertItemQuantityPreview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConvertQuantityPreviewRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConvertQuantityPreviewResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
                 };
             };
         };

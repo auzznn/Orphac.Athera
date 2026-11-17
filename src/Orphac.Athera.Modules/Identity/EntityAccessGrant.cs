@@ -24,6 +24,10 @@ public static class PermissionCodes
     public const string AdminManage = "admin.manage";
     public const string ApprovalRequest = "approval.request";
     public const string ApprovalDecide = "approval.decide";
+    public const string PartnersRead = "partners.read";
+    public const string PartnersManage = "partners.manage";
+    public const string CatalogRead = "catalog.read";
+    public const string CatalogManage = "catalog.manage";
 
     public static readonly IReadOnlyList<string> KnownAll =
     [
@@ -36,7 +40,11 @@ public static class PermissionCodes
         AdminRead,
         AdminManage,
         ApprovalRequest,
-        ApprovalDecide
+        ApprovalDecide,
+        PartnersRead,
+        PartnersManage,
+        CatalogRead,
+        CatalogManage
     ];
 
     private static readonly HashSet<string> KnownSet = new(KnownAll, StringComparer.Ordinal);

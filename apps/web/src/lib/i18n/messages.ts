@@ -42,6 +42,8 @@ export interface Dictionary {
       overview: string;
       workspaces: string;
       invitations: string;
+      partners: string;
+      catalog: string;
       approvals: string;
       procurement: string;
       inventory: string;
@@ -235,6 +237,179 @@ export interface Dictionary {
     emptyAudit: string;
     errors: Record<string, string>;
   };
+  partners: {
+    heading: string;
+    lead: string;
+    backToEntity: string;
+    readOnlyNotice: string;
+    od07MetadataNotice: string;
+    filterCardTitle: string;
+    searchLabel: string;
+    searchPlaceholder: string;
+    roleFilterLabel: string;
+    roleFilterAll: string;
+    roleFilterSupplier: string;
+    roleFilterCustomer: string;
+    statusFilterLabel: string;
+    statusFilterAll: string;
+    eligibleOnlyLabel: string;
+    createCardTitle: string;
+    codeLabel: string;
+    codePlaceholder: string;
+    legalNameLabel: string;
+    legalNamePlaceholder: string;
+    displayNameLabel: string;
+    displayNamePlaceholder: string;
+    rolesLabel: string;
+    roleSupplierCheck: string;
+    roleCustomerCheck: string;
+    npwpLabel: string;
+    npwpPlaceholder: string;
+    pkpLabel: string;
+    scopeModeLabel: string;
+    createButton: string;
+    createBusy: string;
+    listCardTitle: string;
+    emptyList: string;
+    colCodeName: string;
+    colRoles: string;
+    colScopeTax: string;
+    colEligibility: string;
+    colStatusAction: string;
+    inspectButton: string;
+    viewDetailsButton: string;
+    roleBothBadge: string;
+    roleSupplierBadge: string;
+    roleCustomerBadge: string;
+    supplierEligibleTag: string;
+    customerEligibleTag: string;
+    ineligibleTag: string;
+    detailCardTitle: string;
+    deactivateButton: string;
+    activateButton: string;
+    scopeAllOption: string;
+    scopeRestrictedOption: string;
+    updateScopeLabel: string;
+    updateScopeButton: string;
+    contactsTitle: string;
+    emptyContacts: string;
+    contactNameLabel: string;
+    contactNamePlaceholder: string;
+    contactRoleLabel: string;
+    contactEmailLabel: string;
+    contactEmailPlaceholder: string;
+    contactPhoneLabel: string;
+    contactPhonePlaceholder: string;
+    contactPrimaryLabel: string;
+    addContactButton: string;
+    addContactBusy: string;
+    profileTitle: string;
+    profileSupplierCheck: string;
+    profileCustomerCheck: string;
+    profileTermsLabel: string;
+    profileNotesLabel: string;
+    profileNotesPlaceholder: string;
+    saveProfileButton: string;
+    saveProfileBusy: string;
+    statusLabels: Record<string, string>;
+    scopeLabels: Record<string, string>;
+    pkpLabels: Record<string, string>;
+    contactRoleLabels: Record<string, string>;
+    validation: {
+      codeRequired: string;
+      legalNameRequired: string;
+      roleRequired: string;
+      contactNameRequired: string;
+      profileTermsInvalid: string;
+    };
+    errors: Record<string, string>;
+  };
+  catalog: {
+    heading: string;
+    lead: string;
+    backToEntity: string;
+    readOnlyNotice: string;
+    uomCardTitle: string;
+    uomCodeLabel: string;
+    uomCodePlaceholder: string;
+    uomNameLabel: string;
+    uomNamePlaceholder: string;
+    uomScaleLabel: string;
+    createUomButton: string;
+    createUomBusy: string;
+    scaleDiscreteHint: string;
+    createItemCardTitle: string;
+    itemCodeLabel: string;
+    itemCodePlaceholder: string;
+    itemNameLabel: string;
+    itemNamePlaceholder: string;
+    itemKindLabel: string;
+    baseUomLabel: string;
+    purchaseUomLabel: string;
+    salesUomLabel: string;
+    scopeModeLabel: string;
+    createItemButton: string;
+    createItemBusy: string;
+    filterCardTitle: string;
+    searchLabel: string;
+    searchPlaceholder: string;
+    kindFilterLabel: string;
+    kindFilterAll: string;
+    statusFilterLabel: string;
+    statusFilterAll: string;
+    eligibleOnlyLabel: string;
+    listCardTitle: string;
+    emptyList: string;
+    colItem: string;
+    colKind: string;
+    colUoms: string;
+    colEligibility: string;
+    colAction: string;
+    inspectButton: string;
+    viewItemButton: string;
+    purchaseEligibleTag: string;
+    salesEligibleTag: string;
+    ineligibleTag: string;
+    detailCardTitle: string;
+    deactivateButton: string;
+    activateButton: string;
+    toggleScopeButton: string;
+    conversionsTitle: string;
+    baseImplicitNote: string;
+    emptyConversions: string;
+    convUomLabel: string;
+    convFactorLabel: string;
+    convFactorPlaceholder: string;
+    addConvButton: string;
+    addConvBusy: string;
+    converterTitle: string;
+    converterUomLabel: string;
+    converterQtyLabel: string;
+    converterQtyPlaceholder: string;
+    convertButton: string;
+    convertBusy: string;
+    convertResultLabel: string;
+    convertRoundTripLabel: string;
+    policyTitle: string;
+    policyPurchaseCheck: string;
+    policySalesCheck: string;
+    policyNotesLabel: string;
+    policyNotesPlaceholder: string;
+    savePolicyButton: string;
+    savePolicyBusy: string;
+    statusLabels: Record<string, string>;
+    kindLabels: Record<string, string>;
+    scopeLabels: Record<string, string>;
+    validation: {
+      uomCodeRequired: string;
+      uomNameRequired: string;
+      itemCodeRequired: string;
+      itemNameRequired: string;
+      factorInvalid: string;
+      quantityInvalid: string;
+    };
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -292,6 +467,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         overview: "Ringkasan Sesi",
         workspaces: "Ruang Kerja Entitas",
         invitations: "Terima Undangan",
+        partners: "Mitra Bisnis",
+        catalog: "Katalog & Satuan",
         approvals: "Persetujuan",
         procurement: "Pengadaan",
         inventory: "Persediaan",
@@ -402,7 +579,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Modul Operasional",
       colPermission: "Kode Izin",
       colReadiness: "Status Kesiapan",
-      availableState: "Tersedia (S01–S02)",
+      availableState: "Tersedia (S01–S03)",
       permittedPlannedPrefix: "Diizinkan · Tahap",
       notGrantedState: "Tidak Diizinkan",
       loadingEntity: "Memuat ruang kerja entitas terisolasi...",
@@ -415,6 +592,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       returnWorkspaces: "Kembali ke Direktori Ruang Kerja",
       moduleNames: {
         overview: "Ringkasan Entitas & Tata Kelola",
+        partners: "Mitra Pemasok & Pelanggan",
+        catalog: "Katalog Barang & Satuan UoM",
         approvals: "Kotak Masuk & Persetujuan Empat Mata",
         procurement: "Pengadaan (PO, GRN, Pemasok)",
         inventory: "Persediaan & Buku Besar Stok",
@@ -519,6 +698,215 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         grant_already_exists: "Izin tersebut sudah aktif dimiliki pengguna.",
       },
     },
+    partners: {
+      heading: "Mitra Bisnis (Pemasok & Pelanggan)",
+      lead: "Data induk mitra dipakai bersama per tenant, sedangkan kelayakan operasional dikunci per entitas hukum.",
+      backToEntity: "Ringkasan Entitas",
+      readOnlyNotice: "Mode baca saja: Anda memiliki izin lihat (partners.read) tanpa hak ubah (partners.manage).",
+      od07MetadataNotice: "Catatan kebijakan OD-07: NPWP dan status PKP dicatat sebagai metadata master saja; perhitungan tarif PPN/PPh ditangani terpisah pada modul pajak (S04+).",
+      filterCardTitle: "Cari & Saring Mitra Bisnis",
+      searchLabel: "Cari Kode / Nama",
+      searchPlaceholder: "Contoh: PT-DUAL-01 atau Mitra Niaga",
+      roleFilterLabel: "Peran Mitra",
+      roleFilterAll: "Semua Peran",
+      roleFilterSupplier: "Pemasok",
+      roleFilterCustomer: "Pelanggan",
+      statusFilterLabel: "Status",
+      statusFilterAll: "Semua Status",
+      eligibleOnlyLabel: "Hanya layak di entitas ini",
+      createCardTitle: "Daftarkan Mitra Bisnis Baru",
+      codeLabel: "Kode Mitra",
+      codePlaceholder: "PT-DAGANG-01",
+      legalNameLabel: "Nama Badan Hukum",
+      legalNamePlaceholder: "PT Dagang Serba Usaha Nusantara",
+      displayNameLabel: "Nama Tampilan",
+      displayNamePlaceholder: "Dagang Serba Usaha",
+      rolesLabel: "Peran Transaksi",
+      roleSupplierCheck: "Pemasok (Supplier)",
+      roleCustomerCheck: "Pelanggan (Customer)",
+      npwpLabel: "NPWP (Opsional)",
+      npwpPlaceholder: "01.333.444.5-011.000",
+      pkpLabel: "Metadata PKP",
+      scopeModeLabel: "Cakupan Entitas",
+      createButton: "Simpan Mitra Baru",
+      createBusy: "Menyimpan mitra...",
+      listCardTitle: "Daftar Mitra Bisnis Tenant",
+      emptyList: "Tidak ada mitra yang sesuai dengan filter.",
+      colCodeName: "Kode & Nama Mitra",
+      colRoles: "Peran",
+      colScopeTax: "Cakupan & Metadata PKP",
+      colEligibility: "Kelayakan Entitas Aktif",
+      colStatusAction: "Status & Rincian",
+      inspectButton: "Kelola Rincian",
+      viewDetailsButton: "Lihat Rincian",
+      roleBothBadge: "Pemasok & Pelanggan",
+      roleSupplierBadge: "Pemasok",
+      roleCustomerBadge: "Pelanggan",
+      supplierEligibleTag: "Bisa Beli (AP)",
+      customerEligibleTag: "Bisa Jual (AR)",
+      ineligibleTag: "Tidak Layak di Entitas Ini",
+      detailCardTitle: "Rincian Mitra, Kontak & Kelayakan Entitas",
+      deactivateButton: "Nonaktifkan Mitra",
+      activateButton: "Aktifkan Kembali",
+      scopeAllOption: "Semua Entitas Aktif",
+      scopeRestrictedOption: "Entitas Terpilih Saja",
+      updateScopeLabel: "Ubah Mode Cakupan",
+      updateScopeButton: "Terapkan Mode Cakupan",
+      contactsTitle: "Daftar Kontak Mitra",
+      emptyContacts: "Belum ada kontak terdaftar untuk mitra ini.",
+      contactNameLabel: "Nama Kontak",
+      contactNamePlaceholder: "Dian Permata",
+      contactRoleLabel: "Peran Kontak",
+      contactEmailLabel: "Email Kontak",
+      contactEmailPlaceholder: "dian@mitra.co.id",
+      contactPhoneLabel: "Telepon",
+      contactPhonePlaceholder: "+62-21-555-0199",
+      contactPrimaryLabel: "Kontak utama",
+      addContactButton: "Tambah Kontak",
+      addContactBusy: "Menambah kontak...",
+      profileTitle: "Kelayakan Entitas Hukum Saat Ini",
+      profileSupplierCheck: "Izinkan sebagai Pemasok pada entitas ini",
+      profileCustomerCheck: "Izinkan sebagai Pelanggan pada entitas ini",
+      profileTermsLabel: "Termin Pembayaran (Hari)",
+      profileNotesLabel: "Catatan Kebijakan Entitas",
+      profileNotesPlaceholder: "Contoh: Pemasok resmi gudang Jakarta",
+      saveProfileButton: "Simpan Profil Entitas",
+      saveProfileBusy: "Menyimpan profil...",
+      statusLabels: {
+        ACTIVE: "Aktif",
+        INACTIVE: "Nonaktif",
+      },
+      scopeLabels: {
+        ALL_ENTITIES: "Semua Entitas",
+        RESTRICTED_ENTITIES: "Terbatas per Entitas",
+      },
+      pkpLabels: {
+        UNKNOWN: "Belum Diketahui",
+        PKP: "PKP (Metadata)",
+        NON_PKP: "Non-PKP",
+      },
+      contactRoleLabels: {
+        COMMERCIAL: "Komersial / Sales",
+        BILLING: "Penagihan / Pajak",
+        RECEIVING_DISPATCH: "Gudang / Penerimaan",
+      },
+      validation: {
+        codeRequired: "Masukkan kode mitra (2–32 karakter huruf besar/angka).",
+        legalNameRequired: "Masukkan nama badan hukum mitra.",
+        roleRequired: "Pilih minimal satu peran: Pemasok atau Pelanggan.",
+        contactNameRequired: "Masukkan nama kontak terlebih dahulu.",
+        profileTermsInvalid: "Termin pembayaran harus bilangan bulat 0–365 hari.",
+      },
+      errors: {
+        duplicate_partner_code: "Kode mitra sudah digunakan dalam tenant ini.",
+        partner_role_incompatible: "Kelayakan entitas tidak boleh melampaui peran dasar mitra (Pemasok/Pelanggan).",
+        concurrency_conflict: "Data mitra diubah pengguna lain. Muat ulang terlebih dahulu.",
+        insufficient_entity_permission: "Anda tidak memiliki izin partners.manage pada entitas ini.",
+      },
+    },
+    catalog: {
+      heading: "Katalog Barang & Satuan UoM",
+      lead: "Kelola kamus satuan terukur, katalog barang tanpa saldo stok, faktor konversi desimal eksak, dan kelayakan per entitas.",
+      backToEntity: "Ringkasan Entitas",
+      readOnlyNotice: "Mode baca saja: Anda memiliki izin lihat (catalog.read) tanpa hak ubah (catalog.manage).",
+      uomCardTitle: "Kamus Satuan Ukur (UoM)",
+      uomCodeLabel: "Kode UoM",
+      uomCodePlaceholder: "CTN",
+      uomNameLabel: "Nama Satuan",
+      uomNamePlaceholder: "Karton Induk",
+      uomScaleLabel: "Skala Desimal",
+      createUomButton: "Tambah Satuan",
+      createUomBusy: "Menyimpan satuan...",
+      scaleDiscreteHint: "0 = diskrit utuh (seperti PCS); 1–6 = kontinu (seperti KG)",
+      createItemCardTitle: "Daftarkan Barang / Jasa Baru",
+      itemCodeLabel: "Kode Barang",
+      itemCodePlaceholder: "ITM-KRD-01",
+      itemNameLabel: "Nama Barang / Jasa",
+      itemNamePlaceholder: "Kardus Induk 60x40x40 cm",
+      itemKindLabel: "Jenis Item",
+      baseUomLabel: "Satuan Dasar (Base)",
+      purchaseUomLabel: "Satuan Beli Default",
+      salesUomLabel: "Satuan Jual Default",
+      scopeModeLabel: "Cakupan Entitas",
+      createItemButton: "Simpan Item Katalog",
+      createItemBusy: "Menyimpan item...",
+      filterCardTitle: "Cari & Saring Katalog",
+      searchLabel: "Cari Kode / Nama Barang",
+      searchPlaceholder: "Contoh: ITM-PKG-001 atau Karton",
+      kindFilterLabel: "Jenis Item",
+      kindFilterAll: "Semua Jenis",
+      statusFilterLabel: "Status",
+      statusFilterAll: "Semua Status",
+      eligibleOnlyLabel: "Hanya diizinkan di entitas ini",
+      listCardTitle: "Daftar Barang & Satuan Tenant",
+      emptyList: "Tidak ada item katalog yang cocok dengan filter.",
+      colItem: "Kode & Nama Item",
+      colKind: "Jenis",
+      colUoms: "Base · Beli · Jual",
+      colEligibility: "Kebijakan Entitas",
+      colAction: "Status & Rincian",
+      inspectButton: "Kelola UoM & Kebijakan",
+      viewItemButton: "Lihat UoM & Kebijakan",
+      purchaseEligibleTag: "Beli Diizinkan",
+      salesEligibleTag: "Jual Diizinkan",
+      ineligibleTag: "Diblokir di Entitas Ini",
+      detailCardTitle: "Konversi UoM Eksak & Kebijakan Entitas",
+      deactivateButton: "Nonaktifkan Item",
+      activateButton: "Aktifkan Kembali",
+      toggleScopeButton: "Terapkan Mode Cakupan",
+      conversionsTitle: "Aturan Konversi ke Satuan Dasar",
+      baseImplicitNote: "Satuan dasar selalu bernilai faktor 1 secara implisit.",
+      emptyConversions: "Belum ada satuan alternatif tambahan (menggunakan satuan dasar 1:1).",
+      convUomLabel: "Satuan Sumber",
+      convFactorLabel: "Faktor ke Satuan Dasar",
+      convFactorPlaceholder: "24",
+      addConvButton: "Simpan Konversi",
+      addConvBusy: "Menyimpan...",
+      converterTitle: "Uji Konversi Desimal Eksak (Server Verified)",
+      converterUomLabel: "Dari Satuan",
+      converterQtyLabel: "Kuantitas Sumber",
+      converterQtyPlaceholder: "3",
+      convertButton: "Hitung ke Satuan Dasar",
+      convertBusy: "Menghitung...",
+      convertResultLabel: "Hasil Dasar Eksak",
+      convertRoundTripLabel: "Balik ke Satuan Asal",
+      policyTitle: "Kebijakan Penggunaan pada Entitas Ini",
+      policyPurchaseCheck: "Izinkan Pengadaan (PO) pada entitas ini",
+      policySalesCheck: "Izinkan Penjualan (SO) pada entitas ini",
+      policyNotesLabel: "Catatan Kebijakan",
+      policyNotesPlaceholder: "Contoh: Aktif untuk gudang Jakarta",
+      savePolicyButton: "Simpan Kebijakan Entitas",
+      savePolicyBusy: "Menyimpan kebijakan...",
+      statusLabels: {
+        ACTIVE: "Aktif",
+        INACTIVE: "Nonaktif",
+      },
+      kindLabels: {
+        STOCKED_GOOD: "Barang Stok",
+        NON_STOCK_SERVICE: "Jasa Non-Stok",
+      },
+      scopeLabels: {
+        ALL_ENTITIES: "Semua Entitas",
+        RESTRICTED_ENTITIES: "Terbatas per Entitas",
+      },
+      validation: {
+        uomCodeRequired: "Masukkan kode UoM (1–16 karakter).",
+        uomNameRequired: "Masukkan nama satuan ukur.",
+        itemCodeRequired: "Masukkan kode barang (2–32 karakter).",
+        itemNameRequired: "Masukkan nama barang.",
+        factorInvalid: "Faktor konversi harus lebih besar dari nol.",
+        quantityInvalid: "Masukkan kuantitas numerik lebih dari nol.",
+      },
+      errors: {
+        duplicate_uom_code: "Kode satuan UoM sudah ada dalam tenant ini.",
+        duplicate_item_code: "Kode item sudah digunakan dalam tenant ini.",
+        base_uom_conversion_not_needed: "Satuan dasar selalu memiliki faktor konversi implisit 1.",
+        fractional_discrete_base_quantity: "Kuantitas menghasilkan pecahan untuk satuan dasar diskrit (skala 0).",
+        unsupported_uom_conversion: "Tidak ada konversi aktif antara item ini dan satuan tersebut.",
+        concurrency_conflict: "Item diubah pengguna lain. Muat ulang terlebih dahulu.",
+        insufficient_entity_permission: "Anda tidak memiliki izin catalog.manage pada entitas ini.",
+      },
+    },
   },
   "en-US": {
     appName: "Orphac Athera",
@@ -574,6 +962,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         overview: "Session Overview",
         workspaces: "Entity Workspaces",
         invitations: "Accept Invitation",
+        partners: "Partners",
+        catalog: "Catalogue & UoM",
         approvals: "Approvals",
         procurement: "Procurement",
         inventory: "Inventory",
@@ -684,7 +1074,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Operational Module",
       colPermission: "Permission Code",
       colReadiness: "Readiness State",
-      availableState: "Available (S01–S02)",
+      availableState: "Available (S01–S03)",
       permittedPlannedPrefix: "Permitted · Stage",
       notGrantedState: "Not Granted",
       loadingEntity: "Loading isolated entity workspace...",
@@ -697,6 +1087,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       returnWorkspaces: "Return to Workspace Directory",
       moduleNames: {
         overview: "Entity Overview & Governance",
+        partners: "Business Partners (Suppliers & Customers)",
+        catalog: "Item Catalogue & UoM Conversions",
         approvals: "Four-Eyes Approval Inbox",
         procurement: "Procurement (PO, GRN, Vendors)",
         inventory: "Inventory & Stock Ledger",
@@ -799,6 +1191,215 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       errors: {
         invalid_permission_code: "Permission code is not in the approved catalog.",
         grant_already_exists: "Member already holds this active permission.",
+      },
+    },
+    partners: {
+      heading: "Business Partners (Suppliers & Customers)",
+      lead: "Tenant-shared partner masters with per-legal-entity operational eligibility and metadata-only tax registration.",
+      backToEntity: "Entity Summary",
+      readOnlyNotice: "Read-only mode: you hold view permission (partners.read) without edit rights (partners.manage).",
+      od07MetadataNotice: "OD-07 policy notice: NPWP and PKP status are stored strictly as master metadata; statutory Indonesian PPN/PPh rate determination applies in the Tax module (S04+).",
+      filterCardTitle: "Search & Filter Partners",
+      searchLabel: "Search Code / Name",
+      searchPlaceholder: "e.g., PT-DUAL-01 or Mitra Niaga",
+      roleFilterLabel: "Partner Role",
+      roleFilterAll: "All Roles",
+      roleFilterSupplier: "Suppliers",
+      roleFilterCustomer: "Customers",
+      statusFilterLabel: "Status",
+      statusFilterAll: "All Statuses",
+      eligibleOnlyLabel: "Eligible in active entity only",
+      createCardTitle: "Register New Business Partner",
+      codeLabel: "Partner Code",
+      codePlaceholder: "PT-DAGANG-01",
+      legalNameLabel: "Legal Entity Name",
+      legalNamePlaceholder: "PT Dagang Serba Usaha Nusantara",
+      displayNameLabel: "Display Name",
+      displayNamePlaceholder: "Dagang Serba Usaha",
+      rolesLabel: "Commercial Roles",
+      roleSupplierCheck: "Supplier (Purchasing & AP)",
+      roleCustomerCheck: "Customer (Sales & AR)",
+      npwpLabel: "Tax ID / NPWP (Optional)",
+      npwpPlaceholder: "01.333.444.5-011.000",
+      pkpLabel: "PKP Metadata",
+      scopeModeLabel: "Entity Scope",
+      createButton: "Save New Partner",
+      createBusy: "Saving partner...",
+      listCardTitle: "Tenant Business Partners",
+      emptyList: "No partners match the current filter criteria.",
+      colCodeName: "Code & Partner Name",
+      colRoles: "Roles",
+      colScopeTax: "Scope & PKP Metadata",
+      colEligibility: "Active Entity Eligibility",
+      colStatusAction: "Status & Actions",
+      inspectButton: "Inspect & Configure",
+      viewDetailsButton: "View Details",
+      roleBothBadge: "Supplier & Customer",
+      roleSupplierBadge: "Supplier",
+      roleCustomerBadge: "Customer",
+      supplierEligibleTag: "Purchasing Eligible",
+      customerEligibleTag: "Sales Eligible",
+      ineligibleTag: "Ineligible Here",
+      detailCardTitle: "Partner Detail, Contacts & Entity Eligibility",
+      deactivateButton: "Deactivate Partner",
+      activateButton: "Reactivate Partner",
+      scopeAllOption: "All Active Entities",
+      scopeRestrictedOption: "Restricted Entities Only",
+      updateScopeLabel: "Entity Scope Policy",
+      updateScopeButton: "Apply Scope Mode",
+      contactsTitle: "Registered Contacts",
+      emptyContacts: "No contacts recorded for this partner yet.",
+      contactNameLabel: "Contact Name",
+      contactNamePlaceholder: "Dian Permata",
+      contactRoleLabel: "Contact Role",
+      contactEmailLabel: "Contact Email",
+      contactEmailPlaceholder: "dian@partner.co.id",
+      contactPhoneLabel: "Phone",
+      contactPhonePlaceholder: "+62-21-555-0199",
+      contactPrimaryLabel: "Primary contact",
+      addContactButton: "Add Contact",
+      addContactBusy: "Adding contact...",
+      profileTitle: "Current Legal-Entity Eligibility Profile",
+      profileSupplierCheck: "Allow as Supplier in this entity",
+      profileCustomerCheck: "Allow as Customer in this entity",
+      profileTermsLabel: "Payment Terms (Days)",
+      profileNotesLabel: "Entity Policy Notes",
+      profileNotesPlaceholder: "e.g., Approved vendor for Jakarta hub",
+      saveProfileButton: "Save Entity Profile",
+      saveProfileBusy: "Saving profile...",
+      statusLabels: {
+        ACTIVE: "Active",
+        INACTIVE: "Inactive",
+      },
+      scopeLabels: {
+        ALL_ENTITIES: "All Entities",
+        RESTRICTED_ENTITIES: "Restricted Entities",
+      },
+      pkpLabels: {
+        UNKNOWN: "Unknown",
+        PKP: "PKP (Metadata)",
+        NON_PKP: "Non-PKP",
+      },
+      contactRoleLabels: {
+        COMMERCIAL: "Commercial / Sales",
+        BILLING: "Billing / Tax",
+        RECEIVING_DISPATCH: "Receiving / Dispatch",
+      },
+      validation: {
+        codeRequired: "Enter a partner code (2–32 uppercase characters).",
+        legalNameRequired: "Enter the partner legal name.",
+        roleRequired: "Select at least one role: Supplier or Customer.",
+        contactNameRequired: "Enter a contact name before submitting.",
+        profileTermsInvalid: "Payment terms must be an integer between 0 and 365 days.",
+      },
+      errors: {
+        duplicate_partner_code: "Partner code already exists in this tenant.",
+        partner_role_incompatible: "Entity eligibility cannot enable a role not assigned to this partner.",
+        concurrency_conflict: "Partner was modified by another session. Reload before saving.",
+        insufficient_entity_permission: "You do not hold partners.manage permission on this entity.",
+      },
+    },
+    catalog: {
+      heading: "Item Catalogue & Units of Measure",
+      lead: "Maintain tenant units of measure, stock-free item definitions, exact decimal conversions, and per-entity purchase/sales policies.",
+      backToEntity: "Entity Summary",
+      readOnlyNotice: "Read-only mode: you hold view permission (catalog.read) without edit rights (catalog.manage).",
+      uomCardTitle: "Unit of Measure Dictionary",
+      uomCodeLabel: "UoM Code",
+      uomCodePlaceholder: "CTN",
+      uomNameLabel: "Unit Name",
+      uomNamePlaceholder: "Master Carton",
+      uomScaleLabel: "Decimal Scale",
+      createUomButton: "Add UoM",
+      createUomBusy: "Saving UoM...",
+      scaleDiscreteHint: "0 = discrete integer units (e.g. PCS); 1–6 = continuous decimals (e.g. KG)",
+      createItemCardTitle: "Register New Catalogue Item",
+      itemCodeLabel: "Item Code",
+      itemCodePlaceholder: "ITM-CTN-01",
+      itemNameLabel: "Item / Service Name",
+      itemNamePlaceholder: "Corrugated Shipping Carton 60x40x40 cm",
+      itemKindLabel: "Item Kind",
+      baseUomLabel: "Base UoM",
+      purchaseUomLabel: "Default Purchase UoM",
+      salesUomLabel: "Default Sales UoM",
+      scopeModeLabel: "Entity Scope",
+      createItemButton: "Save Catalogue Item",
+      createItemBusy: "Saving item...",
+      filterCardTitle: "Search & Filter Catalogue",
+      searchLabel: "Search Code / Item Name",
+      searchPlaceholder: "e.g., ITM-PKG-001 or Carton",
+      kindFilterLabel: "Item Kind",
+      kindFilterAll: "All Kinds",
+      statusFilterLabel: "Status",
+      statusFilterAll: "All Statuses",
+      eligibleOnlyLabel: "Eligible in active entity only",
+      listCardTitle: "Tenant Item Catalogue",
+      emptyList: "No catalogue items match the current filter criteria.",
+      colItem: "Code & Item Name",
+      colKind: "Kind",
+      colUoms: "Base · Purchase · Sales",
+      colEligibility: "Active Entity Policy",
+      colAction: "Status & Actions",
+      inspectButton: "Configure UoM & Policy",
+      viewItemButton: "View UoM & Policy",
+      purchaseEligibleTag: "Purchase Allowed",
+      salesEligibleTag: "Sales Allowed",
+      ineligibleTag: "Blocked Here",
+      detailCardTitle: "Exact UoM Conversions & Entity Policy",
+      deactivateButton: "Deactivate Item",
+      activateButton: "Reactivate Item",
+      toggleScopeButton: "Apply Scope Mode",
+      conversionsTitle: "Unit Conversions to Base UoM",
+      baseImplicitNote: "Base UoM implicitly converts with factor 1.",
+      emptyConversions: "No extra unit conversions configured yet (base 1:1 only).",
+      convUomLabel: "Source UoM",
+      convFactorLabel: "Factor to Base UoM",
+      convFactorPlaceholder: "24",
+      addConvButton: "Save Conversion",
+      addConvBusy: "Saving...",
+      converterTitle: "Verify Exact Decimal Conversion (Server-Evaluated)",
+      converterUomLabel: "From Unit",
+      converterQtyLabel: "Source Quantity",
+      converterQtyPlaceholder: "3",
+      convertButton: "Convert to Base UoM",
+      convertBusy: "Converting...",
+      convertResultLabel: "Exact Base Quantity",
+      convertRoundTripLabel: "Round-Trip Check",
+      policyTitle: "Current Legal-Entity Eligibility Policy",
+      policyPurchaseCheck: "Allow Procurement (PO) in this entity",
+      policySalesCheck: "Allow Sales (SO) in this entity",
+      policyNotesLabel: "Policy Notes",
+      policyNotesPlaceholder: "e.g., Active for Jakarta warehouse",
+      savePolicyButton: "Save Entity Policy",
+      savePolicyBusy: "Saving policy...",
+      statusLabels: {
+        ACTIVE: "Active",
+        INACTIVE: "Inactive",
+      },
+      kindLabels: {
+        STOCKED_GOOD: "Stocked Good",
+        NON_STOCK_SERVICE: "Non-Stock Service",
+      },
+      scopeLabels: {
+        ALL_ENTITIES: "All Entities",
+        RESTRICTED_ENTITIES: "Restricted Entities",
+      },
+      validation: {
+        uomCodeRequired: "Enter a unit code (1–16 characters).",
+        uomNameRequired: "Enter the unit name.",
+        itemCodeRequired: "Enter an item code (2–32 characters).",
+        itemNameRequired: "Enter the item name.",
+        factorInvalid: "Conversion factor must be strictly positive.",
+        quantityInvalid: "Enter a positive numeric quantity.",
+      },
+      errors: {
+        duplicate_uom_code: "Unit of measure code already exists in this tenant.",
+        duplicate_item_code: "Item code already exists in this tenant.",
+        base_uom_conversion_not_needed: "Base unit already has implicit factor 1.",
+        fractional_discrete_base_quantity: "Conversion produces a fractional quantity for a discrete scale-0 base UoM.",
+        unsupported_uom_conversion: "No active conversion is registered between this item and unit.",
+        concurrency_conflict: "Item was modified by another session. Reload before saving.",
+        insufficient_entity_permission: "You do not hold catalog.manage permission on this entity.",
       },
     },
   },

@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Orphac.Athera.Modules.Approval;
+using Orphac.Athera.Modules.Catalog;
 using Orphac.Athera.Modules.Identity;
+using Orphac.Athera.Modules.Partners;
 using Orphac.Athera.Modules.Persistence;
 using Orphac.Athera.Modules.Platform;
 
@@ -113,6 +115,10 @@ public static class DemoDataSeeder
         // U1: NUSA-JKT only (NUSA-SBY and SMDR-BDG remain inaccessible)
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.WorkspaceView, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ProcurementRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.PartnersRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.PartnersManage, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.CatalogRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.CatalogManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ApprovalRequest, nowUtc, ct);
 
         // U2: Multi-entity controller & org admin across NUSA and SMDR
@@ -124,12 +130,119 @@ public static class DemoDataSeeder
             await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.AdminManage, nowUtc, ct);
             await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.ApprovalRequest, nowUtc, ct);
             await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.ApprovalDecide, nowUtc, ct);
+            await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.PartnersRead, nowUtc, ct);
+            await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.CatalogRead, nowUtc, ct);
             await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, "SENSITIVE_ACCESS_CHANGE", "Sensitive Entity Access Change", requiresFourEyes: true, requiresApproverMfa: false, nowUtc, ct);
             await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, "HIGH_RISK_PRIVILEGE_ESCALATION", "High-Risk Privilege Escalation (MFA)", requiresFourEyes: true, requiresApproverMfa: true, nowUtc, ct);
         }
 
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ProcurementRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.PartnersManage, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.CatalogManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.InventoryRead, nowUtc, ct);
+        await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.PartnersManage, nowUtc, ct);
+        await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.CatalogManage, nowUtc, ct);
+
+        // S03 master data fixtures (NUSA)
+        var nusaPcs = await EnsureUomAsync(db, nusaId, "PCS", "Pieces (Satuan Diskrit)", 0, nowUtc, ct);
+        var nusaBox = await EnsureUomAsync(db, nusaId, "BOX", "Box Karton", 0, nowUtc, ct);
+        await EnsureUomAsync(db, nusaId, "KG", "Kilogram", 3, nowUtc, ct);
+
+        await EnsurePartnerAsync(
+            db,
+            nusaId,
+            "PT-SUP-001",
+            "PT Sumber Makmur Kemasan",
+            "Sumber Makmur",
+            isSupplier: true,
+            isCustomer: false,
+            npwp: "01.888.221.4-012.000",
+            taxPkpStatus: TaxPkpStatuses.Pkp,
+            entityScopeMode: EntityScopeModes.AllEntities,
+            eligibleEntityId: null,
+            contactName: "Sari Indah",
+            contactEmail: "sales@sumbermakmur.demo.local",
+            nowUtc,
+            ct);
+
+        await EnsurePartnerAsync(
+            db,
+            nusaId,
+            "PT-DUAL-001",
+            "PT Mitra Niaga Nusantara",
+            "Mitra Niaga Nusantara",
+            isSupplier: true,
+            isCustomer: true,
+            npwp: "01.999.456.7-011.000",
+            taxPkpStatus: TaxPkpStatuses.Pkp,
+            entityScopeMode: EntityScopeModes.RestrictedEntities,
+            eligibleEntityId: nusaJktId,
+            contactName: "Arman Hakim",
+            contactEmail: "commercial@mitraniaga.demo.local",
+            nowUtc,
+            ct);
+
+        var pkgItem = await EnsureItemAsync(
+            db,
+            nusaId,
+            "ITM-PKG-001",
+            "Karton Lipat Polos 40x30x25 cm",
+            ItemKinds.StockedGood,
+            nusaPcs.UomId,
+            nusaBox.UomId,
+            nusaPcs.UomId,
+            EntityScopeModes.AllEntities,
+            eligibleEntityId: null,
+            nowUtc,
+            ct);
+        await EnsureItemConversionAsync(db, nusaId, pkgItem.ItemId, nusaBox.UomId, 24m, nowUtc, ct);
+
+        var tapeItem = await EnsureItemAsync(
+            db,
+            nusaId,
+            "ITM-RES-002",
+            "Lakban Industri Bening 48mm",
+            ItemKinds.StockedGood,
+            nusaPcs.UomId,
+            nusaBox.UomId,
+            nusaPcs.UomId,
+            EntityScopeModes.RestrictedEntities,
+            eligibleEntityId: nusaJktId,
+            nowUtc,
+            ct);
+        await EnsureItemConversionAsync(db, nusaId, tapeItem.ItemId, nusaBox.UomId, 36m, nowUtc, ct);
+
+        // S03 master data fixtures (SMDR - foreign tenant isolation checks)
+        var smdrPcs = await EnsureUomAsync(db, smdrId, "PCS", "Pieces (Samudra)", 0, nowUtc, ct);
+        await EnsurePartnerAsync(
+            db,
+            smdrId,
+            "SMDR-SUP-01",
+            "CV Logistik Priangan",
+            "Logistik Priangan",
+            isSupplier: true,
+            isCustomer: false,
+            npwp: "02.444.111.2-421.000",
+            taxPkpStatus: TaxPkpStatuses.NonPkp,
+            entityScopeMode: EntityScopeModes.AllEntities,
+            eligibleEntityId: null,
+            contactName: "Dedi Kusuma",
+            contactEmail: "admin@priangan.demo.local",
+            nowUtc,
+            ct);
+        await EnsureItemAsync(
+            db,
+            smdrId,
+            "SMDR-ITM-01",
+            "Palet Kayu Ekspor Standard",
+            ItemKinds.StockedGood,
+            smdrPcs.UomId,
+            smdrPcs.UomId,
+            smdrPcs.UomId,
+            EntityScopeModes.AllEntities,
+            eligibleEntityId: null,
+            nowUtc,
+            ct);
 
         await db.SaveChangesAsync(ct);
     }
@@ -299,6 +412,180 @@ public static class DemoDataSeeder
                 name,
                 requiresFourEyes,
                 requiresApproverMfa,
+                nowUtc));
+            await db.SaveChangesAsync(ct);
+        }
+    }
+
+    private static async Task<UnitOfMeasure> EnsureUomAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        string code,
+        string name,
+        int scale,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
+        var existing = await db.UnitsOfMeasure.SingleOrDefaultAsync(
+            u => u.TenantId == tenantId && u.UomCode == code,
+            ct);
+        if (existing is not null)
+        {
+            return existing;
+        }
+
+        var created = UnitOfMeasure.Create(Guid.NewGuid(), tenantId, code, name, scale, nowUtc);
+        db.UnitsOfMeasure.Add(created);
+        await db.SaveChangesAsync(ct);
+        return created;
+    }
+
+    private static async Task EnsurePartnerAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        string partnerCode,
+        string legalName,
+        string displayName,
+        bool isSupplier,
+        bool isCustomer,
+        string? npwp,
+        string taxPkpStatus,
+        string entityScopeMode,
+        Guid? eligibleEntityId,
+        string contactName,
+        string contactEmail,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
+        var partner = await db.Partners.SingleOrDefaultAsync(
+            p => p.TenantId == tenantId && p.PartnerCode == partnerCode,
+            ct);
+        if (partner is null)
+        {
+            partner = Partner.Create(
+                Guid.NewGuid(),
+                tenantId,
+                partnerCode,
+                legalName,
+                displayName,
+                isSupplier,
+                isCustomer,
+                npwp,
+                taxPkpStatus,
+                entityScopeMode,
+                nowUtc);
+            db.Partners.Add(partner);
+            db.PartnerContacts.Add(PartnerContact.Create(
+                Guid.NewGuid(),
+                tenantId,
+                partner.PartnerId,
+                contactName,
+                PartnerContactRoles.Commercial,
+                contactEmail,
+                "+62-21-5550-0100",
+                isPrimary: true,
+                nowUtc));
+            await db.SaveChangesAsync(ct);
+        }
+
+        if (eligibleEntityId is { } entityId)
+        {
+            var hasProfile = await db.PartnerEntityProfiles.AnyAsync(
+                x => x.TenantId == tenantId && x.LegalEntityId == entityId && x.PartnerId == partner.PartnerId,
+                ct);
+            if (!hasProfile)
+            {
+                db.PartnerEntityProfiles.Add(PartnerEntityProfile.CreateForPartner(
+                    Guid.NewGuid(),
+                    partner,
+                    entityId,
+                    supplierEligible: isSupplier,
+                    customerEligible: isCustomer,
+                    defaultPaymentTermsDays: 30,
+                    notes: "Seeded S03 eligible entity profile",
+                    nowUtc: nowUtc));
+                await db.SaveChangesAsync(ct);
+            }
+        }
+    }
+
+    private static async Task<Item> EnsureItemAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        string itemCode,
+        string name,
+        string itemKind,
+        Guid baseUomId,
+        Guid defaultPurchaseUomId,
+        Guid defaultSalesUomId,
+        string entityScopeMode,
+        Guid? eligibleEntityId,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
+        var item = await db.Items.SingleOrDefaultAsync(
+            i => i.TenantId == tenantId && i.ItemCode == itemCode,
+            ct);
+        if (item is null)
+        {
+            item = Item.Create(
+                Guid.NewGuid(),
+                tenantId,
+                itemCode,
+                name,
+                itemKind,
+                baseUomId,
+                defaultPurchaseUomId,
+                defaultSalesUomId,
+                entityScopeMode,
+                nowUtc);
+            db.Items.Add(item);
+            await db.SaveChangesAsync(ct);
+        }
+
+        if (eligibleEntityId is { } entityId)
+        {
+            var hasPolicy = await db.ItemEntityPolicies.AnyAsync(
+                x => x.TenantId == tenantId && x.LegalEntityId == entityId && x.ItemId == item.ItemId,
+                ct);
+            if (!hasPolicy)
+            {
+                db.ItemEntityPolicies.Add(ItemEntityPolicy.Create(
+                    Guid.NewGuid(),
+                    tenantId,
+                    entityId,
+                    item.ItemId,
+                    purchaseAllowed: true,
+                    salesAllowed: true,
+                    notes: "Seeded S03 eligible entity policy",
+                    nowUtc: nowUtc));
+                await db.SaveChangesAsync(ct);
+            }
+        }
+
+        return item;
+    }
+
+    private static async Task EnsureItemConversionAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        Guid itemId,
+        Guid uomId,
+        decimal factorToBase,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
+        var exists = await db.ItemUomConversions.AnyAsync(
+            c => c.TenantId == tenantId && c.ItemId == itemId && c.UomId == uomId,
+            ct);
+        if (!exists)
+        {
+            db.ItemUomConversions.Add(ItemUom.Create(
+                Guid.NewGuid(),
+                tenantId,
+                itemId,
+                uomId,
+                factorToBase,
                 nowUtc));
             await db.SaveChangesAsync(ct);
         }

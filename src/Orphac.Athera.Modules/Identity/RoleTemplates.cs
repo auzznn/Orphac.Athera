@@ -6,6 +6,7 @@ namespace Orphac.Athera.Modules.Identity;
 public static class RoleTemplates
 {
     public const string ProcurementOfficer = "PROCUREMENT_OFFICER";
+    public const string SalesOfficer = "SALES_OFFICER";
     public const string InventoryClerk = "INVENTORY_CLERK";
     public const string FinanceOfficer = "FINANCE_OFFICER";
     public const string EntityApprover = "ENTITY_APPROVER";
@@ -13,8 +14,9 @@ public static class RoleTemplates
 
     private static readonly Dictionary<string, IReadOnlyList<string>> Bundles = new(StringComparer.Ordinal)
     {
-        [ProcurementOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.ApprovalRequest],
-        [InventoryClerk] = [PermissionCodes.WorkspaceView, PermissionCodes.InventoryRead, PermissionCodes.ApprovalRequest],
+        [ProcurementOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.CatalogManage, PermissionCodes.ApprovalRequest],
+        [SalesOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.SalesRead, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
+        [InventoryClerk] = [PermissionCodes.WorkspaceView, PermissionCodes.InventoryRead, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
         [FinanceOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.FinanceRead, PermissionCodes.ApprovalRequest],
         [EntityApprover] = [PermissionCodes.WorkspaceView, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide],
         [EntityAdmin] = [PermissionCodes.WorkspaceView, PermissionCodes.AdminRead, PermissionCodes.AdminManage, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide]
