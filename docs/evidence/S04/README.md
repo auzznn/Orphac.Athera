@@ -7,7 +7,7 @@
 - **Product Owner Acceptance:** **PENDING** (Agent never self-approves; awaiting human four-pillar review)
 - **Git Branch:** `greenfield/mvp`
 - **Prerequisite S03 SHA:** `287d7e5` (ledger `b8eaba1`)
-- **S04 Implementation SHA:** `<pending S04 commit>`
+- **S04 Implementation SHA:** `0fcb7b5`
 
 ---
 
