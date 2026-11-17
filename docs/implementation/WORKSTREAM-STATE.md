@@ -2,18 +2,18 @@
 
 **Initial state:** 2026-11-17 | New repository / planning documents only | No code, tests, migrations or PO acceptance exist yet.
 
-- Stack: Next.js + ASP.NET Core 10 + PostgreSQL.
-- Current target: **S00 — Greenfield full-stack bootstrap and authenticated vertical path**.
-- Current Git commit SHA: NOT YET CREATED / VERIFIED.
-- PostgreSQL test instance: NOT YET VERIFIED.
-- Ponytail skill availability: NOT YET VERIFIED.
-- Impeccable skill availability: NOT YET VERIFIED.
-- First Owner acceptance document: NOT SIGNED.
+- Stack: Next.js 16.4.6 + ASP.NET Core 10 + PostgreSQL 18.
+- Current target: **S01 — Tenant, Legal Entity, Membership, and Workspace Switcher** (S00 implementation committed at `920bc78`, PO acceptance pending).
+- Current Git commit SHA: `920bc78` (`greenfield/mvp`; baseline `e25008f`).
+- PostgreSQL test instance: VERIFIED (`athera-greenfield-pg` healthy on `127.0.0.1:55433/athera_dev`; low-privilege `athera_app` + `athera_migrator` verified).
+- Ponytail skill availability: AVAILABLE (`v5.3.3` `full`).
+- Impeccable skill availability: AVAILABLE (`v4.9.1`).
+- First Owner acceptance document: NOT SIGNED (S00 PO acceptance packet staged at `docs/evidence/S00/README.md`).
 
 | Slice | Implementation | Engineering verification | PO acceptance | SHA | Blocker / evidence |
 |---|---|---|---|---|---|
-| S00 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
-| S01 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
+| S00 | CODE_COMPLETE | PASS | PENDING | 920bc78 | [S00 Evidence Packet](../evidence/S00/README.md) |
+| S01 | IN_PROGRESS | NOT_RUN | NOT_REQUESTED | — | [S01 Design](../design/slices/S01-design.md) |
 | S02 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
 | S03 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
 | S04 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |

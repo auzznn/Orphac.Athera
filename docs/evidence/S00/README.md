@@ -2,11 +2,11 @@
 
 - **Slice:** S00 — Greenfield Full-Stack Foundation and Authenticated Path (`docs/implementation/slices/S00_greenfield_full_stack_foundation.md`)
 - **Design spec:** [S00-design.md](../../design/slices/S00-design.md)
-- **Engineering Verification:** PASS (pending final SHA & Impeccable documenter check)
+- **Engineering Verification:** PASS
 - **Product Owner Acceptance:** **PENDING** (Agent never self-approves; awaiting human four-pillar review)
 - **Git Branch:** `greenfield/mvp`
 - **Baseline SHA:** `e25008f`
-- **S00 Implementation SHA:** `[RECORDED IN FOLLOW-UP LEDGER COMMIT]`
+- **S00 Implementation SHA:** `920bc78`
 
 ---
 
