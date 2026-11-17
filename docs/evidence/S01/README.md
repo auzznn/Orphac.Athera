@@ -6,7 +6,7 @@
 - **Product Owner Acceptance:** **PENDING** (Agent never self-approves; awaiting human four-pillar review)
 - **Git Branch:** `greenfield/mvp`
 - **Prerequisite S00 SHA:** `920bc78` (ledger `b863561`)
-- **S01 Implementation SHA:** `[RECORDED IN FOLLOW-UP LEDGER COMMIT]`
+- **S01 Implementation SHA:** `737971a`
 
 ---
 
