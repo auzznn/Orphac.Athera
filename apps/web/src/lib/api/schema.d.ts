@@ -484,6 +484,166 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListGlAccounts"];
+        put?: never;
+        post: operations["CreateGlAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/accounts/{accountId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdateGlAccount"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/periods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListFinancialPeriods"];
+        put?: never;
+        post: operations["CreateFinancialPeriod"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/periods/{periodId}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CloseFinancialPeriod"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/account-mappings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListAccountMappings"];
+        put: operations["UpsertAccountMapping"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/tax-codes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListTaxCodes"];
+        put?: never;
+        post: operations["CreateTaxCode"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/tax-codes/evaluate-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["EvaluateTaxPreview"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/journals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListJournals"];
+        put?: never;
+        post: operations["PostJournal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/journals/{journalId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetJournalDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/journals/{journalId}/reverse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReverseJournal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -499,6 +659,25 @@ export interface components {
             tenantCode: string;
             entityCode: string;
             grantedPermissions: string[];
+        };
+        AccountMappingDto: {
+            /** Format: uuid */
+            mappingId: string;
+            purposeCode: string;
+            /** Format: uuid */
+            accountId: string;
+            accountCode: string;
+            accountName: string;
+            accountType: string;
+            notes: null | string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+        };
+        AccountMappingListResponse: {
+            items: components["schemas"]["AccountMappingDto"][];
+            requiredPurposes: string[];
         };
         AdminOverviewResponse: {
             members: components["schemas"]["EntityMemberDto"][];
@@ -577,6 +756,10 @@ export interface components {
             user: components["schemas"]["CurrentUserResponse"];
             csrfToken: string;
         };
+        CloseFinancialPeriodRequest: {
+            note: null | string;
+            hardLock: boolean;
+        };
         ConvertQuantityPreviewRequest: {
             /** Format: uuid */
             sourceUomId: string;
@@ -612,6 +795,27 @@ export interface components {
             reason: string;
             /** Format: uuid */
             targetUserId?: null | string;
+        };
+        CreateFinancialPeriodRequest: {
+            periodCode: string;
+            /** Format: int32 */
+            fiscalYear: number | string;
+            /** Format: int32 */
+            periodNumber: number | string;
+            /** Format: date */
+            startDate: string;
+            /** Format: date */
+            endDate: string;
+        };
+        CreateGlAccountRequest: {
+            accountCode: string;
+            name: string;
+            accountType: string;
+            accountCategory: string;
+            /** Format: uuid */
+            parentAccountId: null | string;
+            allowPosting: boolean;
+            isControlAccount: boolean;
         };
         CreateInvitationRequest: {
             email: string;
@@ -661,6 +865,28 @@ export interface components {
             taxPkpStatus: string;
             entityScopeMode: string;
         };
+        CreateTaxCodeRequest: {
+            code: string;
+            name: string;
+            taxFamily: string;
+            direction: string;
+            treatmentClass: string;
+            /** Format: double */
+            nominalRatePercent: number | string;
+            /** Format: int32 */
+            taxableBaseRatioNumerator: number | string;
+            /** Format: int32 */
+            taxableBaseRatioDenominator: number | string;
+            requiresDocumentaryEvidence: boolean;
+            requiresCounterpartyNpwp: boolean;
+            /** Format: uuid */
+            taxAccountId: null | string;
+            /** Format: date */
+            effectiveFrom: string;
+            /** Format: date */
+            effectiveTo: null | string;
+            statutoryReferenceNote: null | string;
+        };
         CreateUomRequest: {
             uomCode: string;
             name: string;
@@ -704,6 +930,88 @@ export interface components {
             navigationCapabilities: components["schemas"]["ModuleNavigationItemDto"][];
             /** Format: date-time */
             serverTimestampUtc: string;
+        };
+        EvaluateTaxPreviewRequest: {
+            /** Format: uuid */
+            taxCodeId: null | string;
+            /** Format: double */
+            grossAmount: number | string;
+            /** Format: date */
+            transactionDate: string;
+            hasCounterpartyNpwp: boolean;
+            evidenceProvided: boolean;
+        };
+        EvaluateTaxPreviewResponse: {
+            /** Format: uuid */
+            taxCodeId: string;
+            code: string;
+            taxFamily: string;
+            direction: string;
+            treatmentClass: string;
+            /** Format: double */
+            grossAmount: number | string;
+            /** Format: double */
+            taxableBaseAmount: number | string;
+            /** Format: double */
+            nominalRatePercent: number | string;
+            /** Format: double */
+            effectiveRatePercent: number | string;
+            /** Format: double */
+            taxAmount: number | string;
+            reviewStatus: string;
+            evidenceStatus: string;
+            isBlocked: boolean;
+            blockedReason: null | string;
+            governanceDisclaimer: string;
+        };
+        FinancialPeriodDto: {
+            /** Format: uuid */
+            periodId: string;
+            periodCode: string;
+            /** Format: int32 */
+            fiscalYear: number | string;
+            /** Format: int32 */
+            periodNumber: number | string;
+            /** Format: date */
+            startDate: string;
+            /** Format: date */
+            endDate: string;
+            status: string;
+            /** Format: date-time */
+            closedAtUtc: null | string;
+            /** Format: uuid */
+            closedByUserId: null | string;
+            closeNote: null | string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+        };
+        FinancialPeriodListResponse: {
+            items: components["schemas"]["FinancialPeriodDto"][];
+        };
+        GlAccountDto: {
+            /** Format: uuid */
+            accountId: string;
+            accountCode: string;
+            name: string;
+            accountType: string;
+            accountCategory: string;
+            normalBalance: string;
+            /** Format: uuid */
+            parentAccountId: null | string;
+            allowPosting: boolean;
+            isControlAccount: boolean;
+            status: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+        };
+        GlAccountListResponse: {
+            items: components["schemas"]["GlAccountDto"][];
         };
         GrantPermissionRequest: {
             /** Format: uuid */
@@ -821,6 +1129,109 @@ export interface components {
             /** Format: int64 */
             version: number | string;
         };
+        JournalDetailDto: {
+            /** Format: uuid */
+            journalId: string;
+            /** Format: uuid */
+            periodId: string;
+            periodCode: string;
+            journalNumber: string;
+            entryKind: string;
+            /** Format: date */
+            postingDate: string;
+            currencyCode: string;
+            description: string;
+            sourceModule: string;
+            sourceDocumentType: string;
+            sourceDocumentId: string;
+            sourceEventKey: string;
+            payloadHash: string;
+            /** Format: uuid */
+            reversalOfJournalId: null | string;
+            isReversed: boolean;
+            /** Format: uuid */
+            reversedByJournalId: null | string;
+            /** Format: double */
+            totalDebit: number | string;
+            /** Format: double */
+            totalCredit: number | string;
+            /** Format: int32 */
+            lineCount: number | string;
+            /** Format: uuid */
+            postedByUserId: string;
+            /** Format: date-time */
+            postedAtUtc: string;
+            idempotentReplay: boolean;
+            lines: components["schemas"]["JournalLineDto"][];
+        };
+        JournalLineDto: {
+            /** Format: uuid */
+            lineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: uuid */
+            accountId: string;
+            accountCode: string;
+            accountName: string;
+            description: null | string;
+            /** Format: double */
+            debitAmount: number | string;
+            /** Format: double */
+            creditAmount: number | string;
+            /** Format: uuid */
+            partnerId: null | string;
+            /** Format: uuid */
+            itemId: null | string;
+            /** Format: uuid */
+            taxCodeId: null | string;
+        };
+        JournalLineInputDto: {
+            /** Format: uuid */
+            accountId: string;
+            description: null | string;
+            /** Format: double */
+            debitAmount: number | string;
+            /** Format: double */
+            creditAmount: number | string;
+            /** Format: uuid */
+            partnerId: null | string;
+            /** Format: uuid */
+            itemId: null | string;
+            /** Format: uuid */
+            taxCodeId: null | string;
+        };
+        JournalListItemDto: {
+            /** Format: uuid */
+            journalId: string;
+            /** Format: uuid */
+            periodId: string;
+            periodCode: string;
+            journalNumber: string;
+            entryKind: string;
+            /** Format: date */
+            postingDate: string;
+            currencyCode: string;
+            description: string;
+            sourceModule: string;
+            sourceDocumentType: string;
+            sourceDocumentId: string;
+            sourceEventKey: string;
+            /** Format: uuid */
+            reversalOfJournalId: null | string;
+            isReversed: boolean;
+            /** Format: uuid */
+            reversedByJournalId: null | string;
+            /** Format: double */
+            totalDebit: number | string;
+            /** Format: double */
+            totalCredit: number | string;
+            /** Format: int32 */
+            lineCount: number | string;
+            /** Format: uuid */
+            postedByUserId: string;
+            /** Format: date-time */
+            postedAtUtc: string;
+        };
         LegalEntityDto: {
             /** Format: uuid */
             legalEntityId: string;
@@ -877,6 +1288,15 @@ export interface components {
         };
         PagedItemsResponse: {
             items: components["schemas"]["ItemListItemDto"][];
+            /** Format: int32 */
+            totalCount: number | string;
+            /** Format: int32 */
+            page: number | string;
+            /** Format: int32 */
+            pageSize: number | string;
+        };
+        PagedJournalsResponse: {
+            items: components["schemas"]["JournalListItemDto"][];
             /** Format: int32 */
             totalCount: number | string;
             /** Format: int32 */
@@ -964,6 +1384,17 @@ export interface components {
             /** Format: int64 */
             version: number | string;
         };
+        PostJournalRequest: {
+            /** Format: date */
+            postingDate: string;
+            currencyCode: string;
+            description: string;
+            sourceModule: string;
+            sourceDocumentType: string;
+            sourceDocumentId: string;
+            sourceEventKey: string;
+            lines: components["schemas"]["JournalLineInputDto"][];
+        };
         ProblemDetails: {
             type?: null | string;
             title?: null | string;
@@ -971,6 +1402,45 @@ export interface components {
             status?: null | number | string;
             detail?: null | string;
             instance?: null | string;
+        };
+        ReverseJournalRequest: {
+            /** Format: date */
+            reversalPostingDate: string;
+            reason: string;
+        };
+        TaxCodeDto: {
+            /** Format: uuid */
+            taxCodeId: string;
+            code: string;
+            name: string;
+            taxFamily: string;
+            direction: string;
+            treatmentClass: string;
+            /** Format: double */
+            nominalRatePercent: number | string;
+            /** Format: int32 */
+            taxableBaseRatioNumerator: number | string;
+            /** Format: int32 */
+            taxableBaseRatioDenominator: number | string;
+            requiresDocumentaryEvidence: boolean;
+            requiresCounterpartyNpwp: boolean;
+            /** Format: uuid */
+            taxAccountId: null | string;
+            /** Format: date */
+            effectiveFrom: string;
+            /** Format: date */
+            effectiveTo: null | string;
+            reviewStatus: string;
+            statutoryReferenceNote: null | string;
+            status: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+        };
+        TaxCodeListResponse: {
+            items: components["schemas"]["TaxCodeDto"][];
+            governanceNotice: string;
         };
         TenantEntitiesResponse: {
             tenant: components["schemas"]["TenantSummaryDto"];
@@ -1001,6 +1471,17 @@ export interface components {
         UomListResponse: {
             items: components["schemas"]["UnitOfMeasureDto"][];
         };
+        UpdateGlAccountRequest: {
+            name: string;
+            accountCategory: string;
+            /** Format: uuid */
+            parentAccountId: null | string;
+            allowPosting: boolean;
+            isControlAccount: boolean;
+            status: null | string;
+            /** Format: int64 */
+            expectedVersion: number | string;
+        };
         UpdateItemRequest: {
             name: string;
             itemKind: string;
@@ -1024,6 +1505,12 @@ export interface components {
             status: null | string;
             /** Format: int64 */
             expectedVersion: number | string;
+        };
+        UpsertAccountMappingRequest: {
+            purposeCode: string;
+            /** Format: uuid */
+            accountId: string;
+            notes: null | string;
         };
         UpsertItemEntityPolicyRequest: {
             purchaseAllowed: boolean;
@@ -2678,6 +3165,959 @@ export interface operations {
             };
             /** @description Not Found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListGlAccounts: {
+        parameters: {
+            query?: {
+                type?: string;
+                status?: string;
+                postableOnly?: boolean;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlAccountListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateGlAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateGlAccountRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlAccountDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpdateGlAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                accountId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateGlAccountRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GlAccountDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListFinancialPeriods: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FinancialPeriodListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateFinancialPeriod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFinancialPeriodRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FinancialPeriodDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CloseFinancialPeriod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                periodId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CloseFinancialPeriodRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FinancialPeriodDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListAccountMappings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountMappingListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpsertAccountMapping: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertAccountMappingRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountMappingDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListTaxCodes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaxCodeListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateTaxCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTaxCodeRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaxCodeDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    EvaluateTaxPreview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EvaluateTaxPreviewRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvaluateTaxPreviewResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListJournals: {
+        parameters: {
+            query?: {
+                periodId?: string;
+                entryKind?: string;
+                q?: string;
+                page?: number | string;
+                pageSize?: number | string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PagedJournalsResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    PostJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostJournalRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JournalDetailDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JournalDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetJournalDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                journalId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JournalDetailDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ReverseJournal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                journalId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReverseJournalRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JournalDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

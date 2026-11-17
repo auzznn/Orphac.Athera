@@ -337,6 +337,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       active: pathname.endsWith("/approvals"),
     },
     {
+      key: "finance",
+      label: t.shell.navItems.finance,
+      icon: Landmark,
+      href:
+        baseEntityPath &&
+        (permissionSet.has("finance.read") ||
+          permissionSet.has("finance.config.manage") ||
+          permissionSet.has("finance.journal.post"))
+          ? `${baseEntityPath}/finance`
+          : null,
+      permitted:
+        permissionSet.has("finance.read") ||
+        permissionSet.has("finance.config.manage") ||
+        permissionSet.has("finance.journal.post"),
+      active: pathname.endsWith("/finance"),
+    },
+    {
       key: "admin",
       label: t.shell.navItems.admin,
       icon: Users,
@@ -364,12 +381,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       label: t.shell.navItems.sales,
       icon: Receipt,
       permitted: permissionSet.has("sales.read"),
-    },
-    {
-      key: "finance",
-      label: t.shell.navItems.finance,
-      icon: Landmark,
-      permitted: permissionSet.has("finance.read") || permissionSet.has("finance.journal.post"),
     },
   ];
 

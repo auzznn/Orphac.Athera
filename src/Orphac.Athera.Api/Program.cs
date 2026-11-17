@@ -151,6 +151,7 @@ app.MapHealthAndAuthEndpoints();
 app.MapWorkspaceEndpoints();
 app.MapAdminAndApprovalEndpoints();
 app.MapMasterDataEndpoints();
+app.MapFinanceEndpoints();
 
 if (isMigrateMode)
 {

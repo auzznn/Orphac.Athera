@@ -654,6 +654,479 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.AccountMapping", b =>
+                {
+                    b.Property<Guid>("MappingId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("mapping_id");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("account_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("notes");
+
+                    b.Property<string>("PurposeCode")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)")
+                        .HasColumnName("purpose_code");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<Guid>("UpdatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("updated_by_user_id");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("MappingId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "AccountId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PurposeCode")
+                        .IsUnique();
+
+                    b.ToTable("account_mappings", "gl");
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.FinancialPeriod", b =>
+                {
+                    b.Property<Guid>("PeriodId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("period_id");
+
+                    b.Property<string>("CloseNote")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("close_note");
+
+                    b.Property<DateTimeOffset?>("ClosedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("closed_at_utc");
+
+                    b.Property<Guid?>("ClosedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("closed_by_user_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<DateOnly>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("PeriodCode")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("period_code");
+
+                    b.Property<int>("PeriodNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("period_number");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("PeriodId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PeriodCode")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "LegalEntityId", "FiscalYear", "PeriodNumber")
+                        .IsUnique();
+
+                    b.ToTable("financial_periods", "gl", t =>
+                        {
+                            t.HasCheckConstraint("ck_gl_periods_dates", "end_date >= start_date");
+
+                            t.HasCheckConstraint("ck_gl_periods_number", "period_number >= 1 AND period_number <= 13");
+
+                            t.HasCheckConstraint("ck_gl_periods_status", "status IN ('OPEN', 'CLOSED', 'LOCKED')");
+
+                            t.HasCheckConstraint("ck_gl_periods_year", "fiscal_year >= 2000 AND fiscal_year <= 2100");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.GlAccount", b =>
+                {
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("account_id");
+
+                    b.Property<string>("AccountCategory")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("account_category");
+
+                    b.Property<string>("AccountCode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("account_code");
+
+                    b.Property<string>("AccountType")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("account_type");
+
+                    b.Property<bool>("AllowPosting")
+                        .HasColumnType("boolean")
+                        .HasColumnName("allow_posting");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<bool>("IsControlAccount")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_control_account");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("NormalBalance")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("character varying(12)")
+                        .HasColumnName("normal_balance");
+
+                    b.Property<Guid?>("ParentAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("parent_account_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("AccountId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "AccountCode")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ParentAccountId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "AccountType", "Status");
+
+                    b.ToTable("accounts", "gl", t =>
+                        {
+                            t.HasCheckConstraint("ck_gl_accounts_header_no_post", "account_category <> 'HEADER_GROUP' OR allow_posting = false");
+
+                            t.HasCheckConstraint("ck_gl_accounts_no_self_parent", "parent_account_id IS NULL OR parent_account_id <> account_id");
+
+                            t.HasCheckConstraint("ck_gl_accounts_normal_balance", "normal_balance IN ('DEBIT', 'CREDIT')");
+
+                            t.HasCheckConstraint("ck_gl_accounts_status", "status IN ('ACTIVE', 'INACTIVE')");
+
+                            t.HasCheckConstraint("ck_gl_accounts_type", "account_type IN ('ASSET', 'LIABILITY', 'EQUITY', 'REVENUE', 'EXPENSE')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.JournalEntry", b =>
+                {
+                    b.Property<Guid>("JournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("journal_id");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasColumnType("char(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("EntryKind")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("entry_kind");
+
+                    b.Property<string>("JournalNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("journal_number");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("LineCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("line_count");
+
+                    b.Property<string>("PayloadHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("payload_hash");
+
+                    b.Property<Guid>("PeriodId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("period_id");
+
+                    b.Property<DateTimeOffset>("PostedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("posted_at_utc");
+
+                    b.Property<Guid>("PostedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("posted_by_user_id");
+
+                    b.Property<DateOnly>("PostingDate")
+                        .HasColumnType("date")
+                        .HasColumnName("posting_date");
+
+                    b.Property<Guid?>("ReversalOfJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reversal_of_journal_id");
+
+                    b.Property<string>("SourceDocumentId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("source_document_id");
+
+                    b.Property<string>("SourceDocumentType")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)")
+                        .HasColumnName("source_document_type");
+
+                    b.Property<string>("SourceEventKey")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("source_event_key");
+
+                    b.Property<string>("SourceModule")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("source_module");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("TotalCredit")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_credit");
+
+                    b.Property<decimal>("TotalDebit")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_debit");
+
+                    b.HasKey("JournalId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "JournalNumber")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PeriodId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PostingDate");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReversalOfJournalId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_journal_entries_single_reversal")
+                        .HasFilter("reversal_of_journal_id IS NOT NULL");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SourceModule", "SourceEventKey")
+                        .IsUnique()
+                        .HasDatabaseName("ux_journal_entries_source_event");
+
+                    b.ToTable("journal_entries", "gl", t =>
+                        {
+                            t.HasCheckConstraint("ck_gl_journals_balanced", "total_debit > 0 AND total_debit = total_credit");
+
+                            t.HasCheckConstraint("ck_gl_journals_kind", "entry_kind IN ('STANDARD', 'REVERSAL')");
+
+                            t.HasCheckConstraint("ck_gl_journals_line_count", "line_count >= 2");
+
+                            t.HasCheckConstraint("ck_gl_journals_no_self_reversal", "reversal_of_journal_id IS NULL OR reversal_of_journal_id <> journal_id");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.JournalLine", b =>
+                {
+                    b.Property<Guid>("LineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("line_id");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("account_id");
+
+                    b.Property<decimal>("CreditAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("credit_amount");
+
+                    b.Property<decimal>("DebitAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("debit_amount");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(240)
+                        .HasColumnType("character varying(240)")
+                        .HasColumnName("description");
+
+                    b.Property<Guid?>("ItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("item_id");
+
+                    b.Property<Guid>("JournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("journal_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("LineNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("line_number");
+
+                    b.Property<Guid?>("PartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("partner_id");
+
+                    b.Property<Guid?>("TaxCodeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tax_code_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("LineId");
+
+                    b.HasIndex("TenantId", "ItemId");
+
+                    b.HasIndex("TenantId", "PartnerId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "AccountId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "TaxCodeId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "JournalId", "LineNumber")
+                        .IsUnique();
+
+                    b.ToTable("journal_lines", "gl", t =>
+                        {
+                            t.HasCheckConstraint("ck_gl_lines_nonnegative", "debit_amount >= 0 AND credit_amount >= 0");
+
+                            t.HasCheckConstraint("ck_gl_lines_number", "line_number >= 1");
+
+                            t.HasCheckConstraint("ck_gl_lines_single_sided", "(debit_amount > 0 AND credit_amount = 0) OR (credit_amount > 0 AND debit_amount = 0)");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.JournalSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<Guid>("PeriodId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("period_id");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "PeriodId");
+
+                    b.ToTable("journal_sequences", "gl", t =>
+                        {
+                            t.HasCheckConstraint("ck_gl_journal_sequences_nonnegative", "last_number >= 0");
+                        });
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Identity.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1529,6 +2002,141 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Tax.TaxCode", b =>
+                {
+                    b.Property<Guid>("TaxCodeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tax_code_id");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("code");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("Direction")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("direction");
+
+                    b.Property<DateOnly>("EffectiveFrom")
+                        .HasColumnType("date")
+                        .HasColumnName("effective_from");
+
+                    b.Property<DateOnly?>("EffectiveTo")
+                        .HasColumnType("date")
+                        .HasColumnName("effective_to");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<decimal>("NominalRatePercent")
+                        .HasColumnType("numeric(7,4)")
+                        .HasColumnName("nominal_rate_percent");
+
+                    b.Property<bool>("RequiresCounterpartyNpwp")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_counterparty_npwp");
+
+                    b.Property<bool>("RequiresDocumentaryEvidence")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_documentary_evidence");
+
+                    b.Property<string>("ReviewStatus")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("review_status");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("StatutoryReferenceNote")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("statutory_reference_note");
+
+                    b.Property<Guid?>("TaxAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tax_account_id");
+
+                    b.Property<string>("TaxFamily")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("tax_family");
+
+                    b.Property<int>("TaxableBaseRatioDenominator")
+                        .HasColumnType("integer")
+                        .HasColumnName("taxable_base_ratio_denominator");
+
+                    b.Property<int>("TaxableBaseRatioNumerator")
+                        .HasColumnType("integer")
+                        .HasColumnName("taxable_base_ratio_numerator");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<string>("TreatmentClass")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("treatment_class");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("TaxCodeId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "TaxAccountId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "Code", "EffectiveFrom")
+                        .IsUnique();
+
+                    b.ToTable("tax_codes", "tax", t =>
+                        {
+                            t.HasCheckConstraint("ck_tax_codes_dates", "effective_to IS NULL OR effective_to >= effective_from");
+
+                            t.HasCheckConstraint("ck_tax_codes_direction", "direction IN ('INPUT', 'OUTPUT', 'WITHHOLDING')");
+
+                            t.HasCheckConstraint("ck_tax_codes_family", "tax_family IN ('PPN', 'PPH')");
+
+                            t.HasCheckConstraint("ck_tax_codes_rate", "nominal_rate_percent >= 0 AND nominal_rate_percent <= 100");
+
+                            t.HasCheckConstraint("ck_tax_codes_ratio", "taxable_base_ratio_numerator >= 1 AND taxable_base_ratio_denominator >= taxable_base_ratio_numerator");
+
+                            t.HasCheckConstraint("ck_tax_codes_review", "review_status IN ('UNREVIEWED_CONFIGURABLE', 'REVIEWED_INTERNAL')");
+
+                            t.HasCheckConstraint("ck_tax_codes_status", "status IN ('ACTIVE', 'INACTIVE')");
+
+                            t.HasCheckConstraint("ck_tax_codes_treatment", "treatment_class IN ('STANDARD_TAXABLE', 'SPECIAL_DPP_11_12', 'ZERO_RATED', 'EXEMPT', 'NOT_COLLECTED_FACILITY', 'WITHHOLDING_DEDUCTION')");
+                        });
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Orphac.Athera.Modules.Identity.ApplicationRole", null)
@@ -1714,6 +2322,110 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.AccountMapping", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.GlAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "AccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.FinancialPeriod", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.GlAccount", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.GlAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ParentAccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.JournalEntry", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.FinancialPeriod", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "PeriodId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "PeriodId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.JournalEntry", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ReversalOfJournalId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "JournalId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.JournalLine", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Catalog.Item", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "ItemId")
+                        .HasPrincipalKey("TenantId", "ItemId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Orphac.Athera.Modules.Partners.Partner", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "PartnerId")
+                        .HasPrincipalKey("TenantId", "PartnerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.GlAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "AccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.JournalEntry", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "JournalId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "JournalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Tax.TaxCode", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "TaxCodeId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "TaxCodeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.JournalSequence", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.FinancialPeriod", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "PeriodId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "PeriodId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Identity.EntityAccessGrant", b =>
                 {
                     b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
@@ -1845,6 +2557,22 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .HasForeignKey("TenantId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Tax.TaxCode", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.GlAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "TaxAccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

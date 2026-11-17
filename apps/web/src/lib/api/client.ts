@@ -53,6 +53,30 @@ export type UpsertItemEntityPolicyRequest = components["schemas"]["UpsertItemEnt
 export type ConvertQuantityPreviewRequest = components["schemas"]["ConvertQuantityPreviewRequest"];
 export type ConvertQuantityPreviewResponse = components["schemas"]["ConvertQuantityPreviewResponse"];
 
+export type GlAccountDto = components["schemas"]["GlAccountDto"];
+export type GlAccountListResponse = components["schemas"]["GlAccountListResponse"];
+export type CreateGlAccountRequest = components["schemas"]["CreateGlAccountRequest"];
+export type UpdateGlAccountRequest = components["schemas"]["UpdateGlAccountRequest"];
+export type FinancialPeriodDto = components["schemas"]["FinancialPeriodDto"];
+export type FinancialPeriodListResponse = components["schemas"]["FinancialPeriodListResponse"];
+export type CreateFinancialPeriodRequest = components["schemas"]["CreateFinancialPeriodRequest"];
+export type CloseFinancialPeriodRequest = components["schemas"]["CloseFinancialPeriodRequest"];
+export type AccountMappingDto = components["schemas"]["AccountMappingDto"];
+export type AccountMappingListResponse = components["schemas"]["AccountMappingListResponse"];
+export type UpsertAccountMappingRequest = components["schemas"]["UpsertAccountMappingRequest"];
+export type TaxCodeDto = components["schemas"]["TaxCodeDto"];
+export type TaxCodeListResponse = components["schemas"]["TaxCodeListResponse"];
+export type CreateTaxCodeRequest = components["schemas"]["CreateTaxCodeRequest"];
+export type EvaluateTaxPreviewRequest = components["schemas"]["EvaluateTaxPreviewRequest"];
+export type EvaluateTaxPreviewResponse = components["schemas"]["EvaluateTaxPreviewResponse"];
+export type JournalLineInputDto = components["schemas"]["JournalLineInputDto"];
+export type PostJournalRequest = components["schemas"]["PostJournalRequest"];
+export type ReverseJournalRequest = components["schemas"]["ReverseJournalRequest"];
+export type JournalListItemDto = components["schemas"]["JournalListItemDto"];
+export type PagedJournalsResponse = components["schemas"]["PagedJournalsResponse"];
+export type JournalLineDto = components["schemas"]["JournalLineDto"];
+export type JournalDetailDto = components["schemas"]["JournalDetailDto"];
+
 export interface ApiProblemError {
   status: number;
   errorCode: string;
@@ -773,6 +797,323 @@ export async function previewItemUomConversion(
     "/api/workspaces/{tenantId}/entities/{entityId}/catalog/items/{itemId}/convert-preview",
     {
       params: { path: { tenantId, entityId, itemId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchGlAccounts(
+  tenantId: string,
+  entityId: string,
+): Promise<GlAccountListResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/accounts",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function createGlAccount(
+  tenantId: string,
+  entityId: string,
+  payload: CreateGlAccountRequest,
+): Promise<GlAccountDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/accounts",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function updateGlAccount(
+  tenantId: string,
+  entityId: string,
+  accountId: string,
+  payload: UpdateGlAccountRequest,
+): Promise<GlAccountDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/accounts/{accountId}",
+    {
+      params: { path: { tenantId, entityId, accountId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchFinancialPeriods(
+  tenantId: string,
+  entityId: string,
+): Promise<FinancialPeriodListResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/periods",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function createFinancialPeriod(
+  tenantId: string,
+  entityId: string,
+  payload: CreateFinancialPeriodRequest,
+): Promise<FinancialPeriodDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/periods",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function closeFinancialPeriod(
+  tenantId: string,
+  entityId: string,
+  periodId: string,
+  payload: CloseFinancialPeriodRequest,
+): Promise<FinancialPeriodDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/periods/{periodId}/close",
+    {
+      params: { path: { tenantId, entityId, periodId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchAccountMappings(
+  tenantId: string,
+  entityId: string,
+): Promise<AccountMappingListResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/account-mappings",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function upsertAccountMapping(
+  tenantId: string,
+  entityId: string,
+  payload: UpsertAccountMappingRequest,
+): Promise<AccountMappingDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/account-mappings",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchTaxCodes(
+  tenantId: string,
+  entityId: string,
+): Promise<TaxCodeListResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/tax-codes",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function createTaxCode(
+  tenantId: string,
+  entityId: string,
+  payload: CreateTaxCodeRequest,
+): Promise<TaxCodeDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/tax-codes",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function evaluateTaxPreview(
+  tenantId: string,
+  entityId: string,
+  payload: EvaluateTaxPreviewRequest,
+): Promise<EvaluateTaxPreviewResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/tax-codes/evaluate-preview",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchJournals(
+  tenantId: string,
+  entityId: string,
+  filters?: {
+    periodId?: string;
+    entryKind?: string;
+    q?: string;
+    page?: number;
+    pageSize?: number;
+  },
+): Promise<PagedJournalsResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/journals",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query: {
+          periodId: filters?.periodId || undefined,
+          entryKind: filters?.entryKind || undefined,
+          q: filters?.q || undefined,
+          page: filters?.page ?? 1,
+          pageSize: filters?.pageSize ?? 25,
+        },
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function fetchJournalDetail(
+  tenantId: string,
+  entityId: string,
+  journalId: string,
+): Promise<JournalDetailDto> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/journals/{journalId}",
+    {
+      params: { path: { tenantId, entityId, journalId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function postJournal(
+  tenantId: string,
+  entityId: string,
+  payload: PostJournalRequest,
+): Promise<JournalDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/journals",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function reverseJournal(
+  tenantId: string,
+  entityId: string,
+  journalId: string,
+  payload: ReverseJournalRequest,
+): Promise<JournalDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/finance/journals/{journalId}/reverse",
+    {
+      params: { path: { tenantId, entityId, journalId } },
       headers: { "X-CSRF-Token": csrf },
       body: payload,
       cache: "no-store",

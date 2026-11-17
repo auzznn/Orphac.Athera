@@ -235,7 +235,7 @@ public static class WorkspaceEndpoints
             new("procurement", "PLANNED_S05_S08", set.Contains(PermissionCodes.ProcurementRead), PermissionCodes.ProcurementRead),
             new("inventory", "PLANNED_S06_S08", set.Contains(PermissionCodes.InventoryRead), PermissionCodes.InventoryRead),
             new("sales", "PLANNED_S12_S14", set.Contains(PermissionCodes.SalesRead), PermissionCodes.SalesRead),
-            new("finance", "PLANNED_S04_S11", set.Contains(PermissionCodes.FinanceRead) || set.Contains(PermissionCodes.FinanceJournalPost), PermissionCodes.FinanceRead),
+            new("finance", "AVAILABLE", set.Contains(PermissionCodes.FinanceRead) || set.Contains(PermissionCodes.FinanceConfigManage) || set.Contains(PermissionCodes.FinanceJournalPost), PermissionCodes.FinanceRead),
             new("admin", "AVAILABLE", set.Contains(PermissionCodes.AdminRead) || set.Contains(PermissionCodes.AdminManage), PermissionCodes.AdminRead)
         ];
     }

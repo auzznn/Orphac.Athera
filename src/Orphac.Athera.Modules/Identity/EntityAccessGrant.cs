@@ -19,6 +19,7 @@ public static class PermissionCodes
     public const string InventoryRead = "inventory.read";
     public const string SalesRead = "sales.read";
     public const string FinanceRead = "finance.read";
+    public const string FinanceConfigManage = "finance.config.manage";
     public const string FinanceJournalPost = "finance.journal.post";
     public const string AdminRead = "admin.read";
     public const string AdminManage = "admin.manage";
@@ -36,6 +37,7 @@ public static class PermissionCodes
         InventoryRead,
         SalesRead,
         FinanceRead,
+        FinanceConfigManage,
         FinanceJournalPost,
         AdminRead,
         AdminManage,

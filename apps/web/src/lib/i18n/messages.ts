@@ -410,6 +410,165 @@ export interface Dictionary {
     };
     errors: Record<string, string>;
   };
+  finance: {
+    heading: string;
+    lead: string;
+    backToEntity: string;
+    readOnlyNotice: string;
+    governanceNotice: string;
+    tabJournals: string;
+    tabCoaMappings: string;
+    tabPeriodsTax: string;
+    composerTitle: string;
+    draftBadge: string;
+    postingDateLabel: string;
+    sourceKeyLabel: string;
+    sourceKeyPlaceholder: string;
+    memoLabel: string;
+    memoPlaceholder: string;
+    lineAccountLabel: string;
+    lineDescLabel: string;
+    lineDescPlaceholder: string;
+    lineDebitLabel: string;
+    lineCreditLabel: string;
+    addLineButton: string;
+    removeLineLabel: string;
+    totalDebitLabel: string;
+    totalCreditLabel: string;
+    deltaLabel: string;
+    balancedTag: string;
+    unbalancedTag: string;
+    postJournalButton: string;
+    postJournalBusy: string;
+    ledgerTitle: string;
+    searchPlaceholder: string;
+    periodFilterAll: string;
+    kindFilterAll: string;
+    emptyJournals: string;
+    colJournalNumber: string;
+    colDatePeriod: string;
+    colDescriptionSource: string;
+    colDebitCredit: string;
+    colStateAction: string;
+    linesUnitLabel: string;
+    postedBadge: string;
+    reversedBadge: string;
+    reversalEntryBadge: string;
+    manageButton: string;
+    viewOnlyButton: string;
+    detailTitle: string;
+    sourceTraceLabel: string;
+    payloadHashLabel: string;
+    viewOriginalJournalButton: string;
+    viewReversalJournalButton: string;
+    colLineAccount: string;
+    colLineMemo: string;
+    colLineDebit: string;
+    colLineCredit: string;
+    reverseSectionTitle: string;
+    reverseDateLabel: string;
+    reverseReasonLabel: string;
+    reverseReasonPlaceholder: string;
+    reverseButton: string;
+    reverseBusy: string;
+    coaTitle: string;
+    addAccountTitle: string;
+    accountCodeLabel: string;
+    accountNameLabel: string;
+    accountTypeLabel: string;
+    accountCategoryLabel: string;
+    parentAccountLabel: string;
+    noParentOption: string;
+    allowPostingCheck: string;
+    controlAccountCheck: string;
+    createAccountButton: string;
+    createAccountBusy: string;
+    headerGroupTag: string;
+    postableTag: string;
+    controlTag: string;
+    deactivateAccountButton: string;
+    activateAccountButton: string;
+    mappingsTitle: string;
+    colPurpose: string;
+    colMappedAccount: string;
+    colMappingAction: string;
+    saveMappingButton: string;
+    periodsTitle: string;
+    addPeriodTitle: string;
+    periodCodeLabel: string;
+    fiscalYearLabel: string;
+    periodNumberLabel: string;
+    startDateLabel: string;
+    endDateLabel: string;
+    createPeriodButton: string;
+    createPeriodBusy: string;
+    periodCloseStripTitle: string;
+    dateRangeMobileLabel: string;
+    closePeriodNoteLabel: string;
+    closePeriodNotePlaceholder: string;
+    closePeriodButton: string;
+    lockPeriodButton: string;
+    taxCodesTitle: string;
+    addTaxCodeTitle: string;
+    taxCodeLabel: string;
+    taxNameLabel: string;
+    taxFamilyLabel: string;
+    taxDirectionLabel: string;
+    taxTreatmentLabel: string;
+    nominalRateLabel: string;
+    dppNumeratorLabel: string;
+    dppDenominatorLabel: string;
+    effectiveFromLabel: string;
+    taxAccountLabel: string;
+    noAccountOption: string;
+    requiresEvidenceCheck: string;
+    requiresNpwpCheck: string;
+    taxNoteLabel: string;
+    createTaxButton: string;
+    createTaxBusy: string;
+    taxPreviewTitle: string;
+    selectTaxCodeOption: string;
+    taxPreviewCodeLabel: string;
+    taxPreviewAmountLabel: string;
+    taxPreviewDateLabel: string;
+    taxPreviewNpwpCheck: string;
+    taxPreviewEvidenceCheck: string;
+    taxPreviewButton: string;
+    taxPreviewBusy: string;
+    taxPreviewBaseLabel: string;
+    taxPreviewTaxLabel: string;
+    taxPreviewRateLabel: string;
+    taxPreviewBlockedLabel: string;
+    periodStatusLabels: Record<string, string>;
+    accountTypeLabels: Record<string, string>;
+    accountCategoryLabels: Record<string, string>;
+    normalBalanceLabels: Record<string, string>;
+    mappingPurposeLabels: Record<string, string>;
+    taxFamilyLabels: Record<string, string>;
+    taxDirectionLabels: Record<string, string>;
+    taxTreatmentLabels: Record<string, string>;
+    taxReviewLabels: Record<string, string>;
+    validation: {
+      memoRequired: string;
+      sourceKeyRequired: string;
+      postingDateRequired: string;
+      accountCodeRequired: string;
+      accountNameRequired: string;
+      periodCodeRequired: string;
+      periodYearInvalid: string;
+      periodNumberInvalid: string;
+      periodDatesInvalid: string;
+      taxCodeRequired: string;
+      taxNameRequired: string;
+      taxRateInvalid: string;
+      taxDppInvalid: string;
+      taxEffDateRequired: string;
+      taxPreviewAmountInvalid: string;
+      reversalDateRequired: string;
+      reversalReasonRequired: string;
+    };
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -579,7 +738,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Modul Operasional",
       colPermission: "Kode Izin",
       colReadiness: "Status Kesiapan",
-      availableState: "Tersedia (S01–S03)",
+      availableState: "Tersedia (S01–S04)",
       permittedPlannedPrefix: "Diizinkan · Tahap",
       notGrantedState: "Tidak Diizinkan",
       loadingEntity: "Memuat ruang kerja entitas terisolasi...",
@@ -907,6 +1066,246 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         insufficient_entity_permission: "Anda tidak memiliki izin catalog.manage pada entitas ini.",
       },
     },
+    finance: {
+      heading: "Konfigurasi Keuangan & Jurnal Buku Besar",
+      lead: "Bagan akun per entitas, periode fiskal, pemetaan subledger, kode pajak terkonfigurasi (OD-07), dan posting jurnal seimbang yang tidak dapat diubah.",
+      backToEntity: "Ringkasan Entitas",
+      readOnlyNotice: "Mode baca saja: Anda memiliki izin lihat (finance.read) tanpa hak ubah konfigurasi atau posting jurnal.",
+      governanceNotice: "Pemberitahuan Kebijakan OD-07 & OD-13: Tarif pajak berstatus UNREVIEWED_CONFIGURABLE dan penomoran periode menunggu persetujuan Product Owner & Konsultan Pajak (ATH-CR-002).",
+      tabJournals: "Jurnal & Buku Besar",
+      tabCoaMappings: "Bagan Akun & Pemetaan",
+      tabPeriodsTax: "Periode Fiskal & Pajak (OD-07)",
+      composerTitle: "Buat & Posting Jurnal Seimbang",
+      draftBadge: "Draf — Belum Diposting",
+      postingDateLabel: "Tanggal Posting",
+      sourceKeyLabel: "Kunci Sumber Idempoten",
+      sourceKeyPlaceholder: "manual:jrn-2026-11-01",
+      memoLabel: "Uraian Jurnal",
+      memoPlaceholder: "Biaya operasional kantor Jakarta",
+      lineAccountLabel: "Akun Posting",
+      lineDescLabel: "Keterangan Baris",
+      lineDescPlaceholder: "Detail pos",
+      lineDebitLabel: "Debit (IDR)",
+      lineCreditLabel: "Kredit (IDR)",
+      addLineButton: "Tambah Baris",
+      removeLineLabel: "Hapus Baris",
+      totalDebitLabel: "Total Debit",
+      totalCreditLabel: "Total Kredit",
+      deltaLabel: "Selisih",
+      balancedTag: "Seimbang (Siap Posting)",
+      unbalancedTag: "Tidak Seimbang",
+      postJournalButton: "Posting Jurnal Permanen",
+      postJournalBusy: "Memposting jurnal...",
+      ledgerTitle: "Daftar Jurnal Tercatat (Append-Only)",
+      searchPlaceholder: "Cari nomor jurnal, uraian, atau kunci sumber",
+      periodFilterAll: "Semua Periode",
+      kindFilterAll: "Semua Jenis",
+      emptyJournals: "Belum ada jurnal yang cocok dengan saringan.",
+      colJournalNumber: "Nomor & Jenis",
+      colDatePeriod: "Tanggal & Periode",
+      colDescriptionSource: "Uraian & Sumber",
+      colDebitCredit: "Debit / Kredit (IDR)",
+      colStateAction: "Status & Rincian",
+      linesUnitLabel: "baris",
+      postedBadge: "Diposting",
+      reversedBadge: "Telah Dibalik",
+      reversalEntryBadge: "Jurnal Pembalik",
+      manageButton: "Rincian & Pembalik",
+      viewOnlyButton: "Lihat Baris & Sumber",
+      detailTitle: "Rincian Baris & Sumber Jurnal",
+      sourceTraceLabel: "Jejak Sumber",
+      payloadHashLabel: "Hash Payload",
+      viewOriginalJournalButton: "Lihat Jurnal Asal",
+      viewReversalJournalButton: "Lihat Jurnal Pembalik",
+      colLineAccount: "Akun",
+      colLineMemo: "Keterangan",
+      colLineDebit: "Debit (IDR)",
+      colLineCredit: "Kredit (IDR)",
+      reverseSectionTitle: "Pembalik Kompensasi (Append-Only Reversal)",
+      reverseDateLabel: "Tanggal Jurnal Pembalik",
+      reverseReasonLabel: "Alasan Pembalikan Tertulis",
+      reverseReasonPlaceholder: "Koreksi salah akun beban operasional",
+      reverseButton: "Posting Jurnal Pembalik",
+      reverseBusy: "Memproses pembalikan...",
+      coaTitle: "Bagan Akun Entitas (Chart of Accounts)",
+      addAccountTitle: "Tambah Akun GL Baru",
+      accountCodeLabel: "Kode Akun",
+      accountNameLabel: "Nama Akun",
+      accountTypeLabel: "Tipe Akun",
+      accountCategoryLabel: "Kategori",
+      parentAccountLabel: "Akun Induk",
+      noParentOption: "Tanpa Induk (Top Level)",
+      allowPostingCheck: "Izinkan posting langsung (non-header)",
+      controlAccountCheck: "Akun kontrol subledger",
+      createAccountButton: "Simpan Akun GL",
+      createAccountBusy: "Menyimpan akun...",
+      headerGroupTag: "Grup Header",
+      postableTag: "Bisa Posting",
+      controlTag: "Kontrol",
+      deactivateAccountButton: "Nonaktifkan",
+      activateAccountButton: "Aktifkan",
+      mappingsTitle: "Pemetaan Akun Subledger Wajib (12 Tujuan)",
+      colPurpose: "Tujuan Posting",
+      colMappedAccount: "Akun Terpetakan",
+      colMappingAction: "Aksi",
+      saveMappingButton: "Simpan",
+      periodsTitle: "Periode Fiskal Entitas",
+      addPeriodTitle: "Buka Periode Fiskal Baru",
+      periodCodeLabel: "Kode Periode",
+      fiscalYearLabel: "Tahun Fiskal",
+      periodNumberLabel: "Periode Ke-",
+      startDateLabel: "Tanggal Mulai",
+      endDateLabel: "Tanggal Selesai",
+      createPeriodButton: "Buka Periode Baru",
+      createPeriodBusy: "Membuka periode...",
+      periodCloseStripTitle: "Kontrol Penutupan Periode",
+      dateRangeMobileLabel: "Rentang Tanggal",
+      closePeriodNoteLabel: "Catatan Penutupan",
+      closePeriodNotePlaceholder: "Tutup buku bulanan",
+      closePeriodButton: "Tutup Periode",
+      lockPeriodButton: "Kunci Keras",
+      taxCodesTitle: "Matriks Kode Pajak Efektif-Tanggal (OD-07)",
+      addTaxCodeTitle: "Tambah Kode Pajak Konfigurabel",
+      taxCodeLabel: "Kode Pajak",
+      taxNameLabel: "Nama Aturan Pajak",
+      taxFamilyLabel: "Jenis Pajak",
+      taxDirectionLabel: "Arah",
+      taxTreatmentLabel: "Perlakuan",
+      nominalRateLabel: "Tarif Nominal (%)",
+      dppNumeratorLabel: "Pembilang DPP",
+      dppDenominatorLabel: "Penyebut DPP",
+      effectiveFromLabel: "Berlaku Sejak",
+      taxAccountLabel: "Akun GL Pajak",
+      noAccountOption: "Tidak tertaut langsung",
+      requiresEvidenceCheck: "Wajib bukti dokumen pajak",
+      requiresNpwpCheck: "Wajib NPWP lawan transaksi",
+      taxNoteLabel: "Catatan Referensi Aturan",
+      createTaxButton: "Simpan Kode Pajak",
+      createTaxBusy: "Menyimpan pajak...",
+      taxPreviewTitle: "Uji Evaluasi Pajak Eksplisit (Server Verified)",
+      selectTaxCodeOption: "— Pilih kode pajak secara eksplisit —",
+      taxPreviewCodeLabel: "Pilih Kode Pajak (Wajib Eksplisit)",
+      taxPreviewAmountLabel: "Nilai Bruto Transaksi (IDR)",
+      taxPreviewDateLabel: "Tanggal Transaksi",
+      taxPreviewNpwpCheck: "Lawan transaksi memiliki NPWP valid",
+      taxPreviewEvidenceCheck: "Bukti dokumen (Faktur / Fasilitas) tersedia",
+      taxPreviewButton: "Hitung Dasar & Pajak",
+      taxPreviewBusy: "Menghitung...",
+      taxPreviewBaseLabel: "Dasar Pengenaan Pajak (DPP)",
+      taxPreviewTaxLabel: "Nominal Pajak",
+      taxPreviewRateLabel: "Tarif Efektif",
+      taxPreviewBlockedLabel: "Pemblokiran Kepatuhan",
+      periodStatusLabels: {
+        OPEN: "Terbuka",
+        CLOSED: "Ditutup",
+        LOCKED: "Terkunci",
+      },
+      accountTypeLabels: {
+        ASSET: "Aset",
+        LIABILITY: "Liabilitas",
+        EQUITY: "Ekuitas",
+        REVENUE: "Pendapatan",
+        EXPENSE: "Beban",
+      },
+      normalBalanceLabels: {
+        DEBIT: "Debit",
+        CREDIT: "Kredit",
+      },
+      mappingPurposeLabels: {
+        INVENTORY_ASSET: "Persediaan (Inventory Asset)",
+        GRNI_CLEARING: "Akrual Penerimaan (GRNI)",
+        AP_TRADE_CONTROL: "Utang Usaha (AP Control)",
+        AR_TRADE_CONTROL: "Piutang Usaha (AR Control)",
+        PURCHASE_PRICE_VARIANCE: "Selisih Harga Beli (PPV)",
+        PPN_INPUT_TAX: "PPN Masukan",
+        PPN_OUTPUT_TAX: "PPN Keluaran",
+        PPH_WITHHOLDING_PAYABLE: "Utang Pemotongan PPh",
+        BANK_OUTBOUND_CLEARING: "Kliring Bank Keluar",
+        BANK_MAIN_OPERATING: "Kas / Bank Utama",
+        SALES_REVENUE_DEFAULT: "Pendapatan Penjualan Default",
+        COGS_DEFAULT: "HPP / Beban Pokok Default",
+      },
+      accountCategoryLabels: {
+        HEADER_GROUP: "Grup Header (Non-Posting)",
+        CASH_BANK: "Kas & Bank",
+        BANK_OUTBOUND_CLEARING: "Kliring Bank Keluar",
+        ACCOUNTS_RECEIVABLE: "Piutang Usaha",
+        INVENTORY_ASSET: "Persediaan",
+        TAX_RECEIVABLE: "Pajak Masukan",
+        GRNI_ACCRUAL: "Akrual GRNI",
+        ACCOUNTS_PAYABLE: "Utang Usaha",
+        TAX_PAYABLE: "Utang Pajak Keluaran",
+        WITHHOLDING_TAX_PAYABLE: "Utang Pemotongan PPh",
+        EQUITY_CAPITAL: "Modal / Ekuitas",
+        SALES_REVENUE: "Pendapatan Penjualan",
+        COGS_EXPENSE: "Beban Pokok Penjualan (HPP)",
+        PURCHASE_PRICE_VARIANCE: "Selisih Harga Beli",
+        OPERATING_EXPENSE: "Beban Operasional",
+        GENERAL: "Umum",
+      },
+      taxFamilyLabels: {
+        PPN: "PPN (Pajak Pertambahan Nilai)",
+        PPH: "PPh (Pajak Penghasilan)",
+      },
+      taxDirectionLabels: {
+        INPUT: "Masukan (Input)",
+        OUTPUT: "Keluaran (Output)",
+        WITHHOLDING: "Pemotongan (Withholding)",
+      },
+      taxTreatmentLabels: {
+        STANDARD_TAXABLE: "Tarif Standar Kena Pajak",
+        SPECIAL_DPP_11_12: "DPP Nilai Lain (11/12)",
+        ZERO_RATED: "Tarif 0% / Ekspor",
+        EXEMPT: "Dibebaskan PPN",
+        NOT_COLLECTED_FACILITY: "Tidak Dipungut (Fasilitas Khusus)",
+        WITHHOLDING_DEDUCTION: "Pemotongan PPh",
+      },
+      taxReviewLabels: {
+        UNREVIEWED_CONFIGURABLE: "Template Konfigurabel (Menunggu Review OD-07)",
+        REVIEWED_INTERNAL: "Ditinjau Internal",
+      },
+      validation: {
+        memoRequired: "Masukkan uraian jurnal.",
+        sourceKeyRequired: "Masukkan kunci sumber idempoten.",
+        postingDateRequired: "Pilih tanggal posting.",
+        accountCodeRequired: "Masukkan kode akun (2–32 karakter).",
+        accountNameRequired: "Masukkan nama akun GL.",
+        periodCodeRequired: "Masukkan kode periode (contoh 2026-12).",
+        periodYearInvalid: "Tahun fiskal harus antara 2000 dan 2100.",
+        periodNumberInvalid: "Nomor periode harus antara 1 dan 13.",
+        periodDatesInvalid: "Tanggal selesai harus sama atau setelah tanggal mulai.",
+        taxCodeRequired: "Masukkan kode pajak (2–32 karakter).",
+        taxNameRequired: "Masukkan nama aturan pajak.",
+        taxRateInvalid: "Tarif pajak nominal harus antara 0% dan 100%.",
+        taxDppInvalid: "Pembilang DPP harus >= 1 dan <= penyebut DPP.",
+        taxEffDateRequired: "Pilih tanggal mulai berlaku kode pajak.",
+        taxPreviewAmountInvalid: "Nilai bruto transaksi harus lebih besar dari 0.",
+        reversalDateRequired: "Pilih tanggal posting pembalikan.",
+        reversalReasonRequired: "Tuliskan alasan pembalikan jurnal.",
+      },
+      errors: {
+        unbalanced_journal: "Jurnal tidak seimbang: Total Debit harus persis sama dengan Total Kredit.",
+        invalid_journal_lines: "Minimal 2 baris valid dengan Debit atau Kredit positif satu sisi.",
+        unsupported_currency_mvp: "Saat ini posting GL MVP hanya mendukung mata uang fungsional entitas.",
+        period_not_found_for_date: "Tidak ada periode fiskal yang mencakup tanggal posting tersebut.",
+        period_closed: "Periode fiskal sudah ditutup atau dikunci dan menolak posting baru.",
+        duplicate_posting_source_conflict: "Kunci sumber ini sudah digunakan pada jurnal dengan muatan berbeda.",
+        account_not_postable: "Akun grup header atau non-posting tidak dapat menerima baris jurnal atau pemetaan.",
+        account_inactive: "Akun GL berstatus nonaktif dan tidak boleh digunakan.",
+        foreign_or_missing_account: "Akun GL tidak ditemukan dalam entitas hukum ini.",
+        mapping_account_type_mismatch: "Tipe akun GL tidak sesuai dengan aturan tujuan pemetaan.",
+        gl_account_code_conflict: "Kode akun GL sudah digunakan dalam entitas hukum ini.",
+        overlapping_period_dates: "Rentang tanggal periode bertumpuk dengan periode lain.",
+        financial_period_conflict: "Kode atau nomor periode fiskal sudah terdaftar.",
+        period_not_open: "Periode ini sudah ditutup.",
+        journal_already_reversed: "Jurnal ini sudah memiliki jurnal pembalik kompensasi.",
+        cannot_reverse_reversal_journal: "Jurnal pembalik tidak dapat dibalik ulang.",
+        explicit_tax_code_required: "Kode pajak harus dipilih secara eksplisit.",
+        tax_code_not_effective_on_date: "Kode pajak tidak aktif atau di luar tanggal efektif.",
+        tax_code_conflict: "Kode pajak dengan tanggal efektif tersebut sudah ada.",
+        insufficient_entity_permission: "Anda tidak memiliki izin keuangan yang diperlukan pada entitas ini.",
+      },
+    },
   },
   "en-US": {
     appName: "Orphac Athera",
@@ -1074,7 +1473,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Operational Module",
       colPermission: "Permission Code",
       colReadiness: "Readiness State",
-      availableState: "Available (S01–S03)",
+      availableState: "Available (S01–S04)",
       permittedPlannedPrefix: "Permitted · Stage",
       notGrantedState: "Not Granted",
       loadingEntity: "Loading isolated entity workspace...",
@@ -1400,6 +1799,246 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         unsupported_uom_conversion: "No active conversion is registered between this item and unit.",
         concurrency_conflict: "Item was modified by another session. Reload before saving.",
         insufficient_entity_permission: "You do not hold catalog.manage permission on this entity.",
+      },
+    },
+    finance: {
+      heading: "Financial Configuration & General Ledger",
+      lead: "Entity chart of accounts, fiscal periods, subledger account mappings, effective-dated tax codes (OD-07), and immutable balanced journal postings.",
+      backToEntity: "Entity Overview",
+      readOnlyNotice: "Read-only mode: you hold finance.read without configuration or posting rights.",
+      governanceNotice: "OD-07 & OD-13 Policy Notice: Tax rules carry UNREVIEWED_CONFIGURABLE status and statutory numbering/calendar policies await Product Owner & Tax Advisor sign-off (ATH-CR-002).",
+      tabJournals: "Journals & Ledger",
+      tabCoaMappings: "Chart of Accounts & Mappings",
+      tabPeriodsTax: "Periods & Tax Rules (OD-07)",
+      composerTitle: "Compose & Post Balanced Journal",
+      draftBadge: "Draft — Unposted",
+      postingDateLabel: "Posting Date",
+      sourceKeyLabel: "Idempotent Source Key",
+      sourceKeyPlaceholder: "manual:jrn-2026-11-01",
+      memoLabel: "Journal Description",
+      memoPlaceholder: "Jakarta office operating expense",
+      lineAccountLabel: "Posting Account",
+      lineDescLabel: "Line Memo",
+      lineDescPlaceholder: "Line detail",
+      lineDebitLabel: "Debit (IDR)",
+      lineCreditLabel: "Credit (IDR)",
+      addLineButton: "Add Line",
+      removeLineLabel: "Remove Line",
+      totalDebitLabel: "Total Debit",
+      totalCreditLabel: "Total Credit",
+      deltaLabel: "Variance",
+      balancedTag: "Balanced (Ready)",
+      unbalancedTag: "Unbalanced",
+      postJournalButton: "Commit Balanced Journal",
+      postJournalBusy: "Posting journal...",
+      ledgerTitle: "Posted Ledger Entries (Append-Only)",
+      searchPlaceholder: "Search journal number, description, or source key",
+      periodFilterAll: "All Periods",
+      kindFilterAll: "All Entry Kinds",
+      emptyJournals: "No journal entries match the active filters.",
+      colJournalNumber: "Number & Kind",
+      colDatePeriod: "Date & Period",
+      colDescriptionSource: "Description & Source",
+      colDebitCredit: "Debit / Credit (IDR)",
+      colStateAction: "Status & Inspect",
+      linesUnitLabel: "lines",
+      postedBadge: "Posted",
+      reversedBadge: "Reversed",
+      reversalEntryBadge: "Reversal",
+      manageButton: "Inspect & Reverse",
+      viewOnlyButton: "View Lines & Source",
+      detailTitle: "Journal Lines & Source Traceability",
+      sourceTraceLabel: "Posting Source",
+      payloadHashLabel: "Payload Hash",
+      viewOriginalJournalButton: "View Original Journal",
+      viewReversalJournalButton: "View Reversal Journal",
+      colLineAccount: "Account",
+      colLineMemo: "Line Memo",
+      colLineDebit: "Debit (IDR)",
+      colLineCredit: "Credit (IDR)",
+      reverseSectionTitle: "Compensating Reversal (Append-Only)",
+      reverseDateLabel: "Reversal Posting Date",
+      reverseReasonLabel: "Written Reversal Reason",
+      reverseReasonPlaceholder: "Correction for misclassified expense",
+      reverseButton: "Post Reversal Journal",
+      reverseBusy: "Posting reversal...",
+      coaTitle: "Entity Chart of Accounts",
+      addAccountTitle: "Create New GL Account",
+      accountCodeLabel: "Account Code",
+      accountNameLabel: "Account Name",
+      accountTypeLabel: "Account Type",
+      accountCategoryLabel: "Category",
+      parentAccountLabel: "Parent Account",
+      noParentOption: "No Parent (Top Level)",
+      allowPostingCheck: "Allow direct ledger postings (non-header)",
+      controlAccountCheck: "Subledger control account",
+      createAccountButton: "Save GL Account",
+      createAccountBusy: "Saving account...",
+      headerGroupTag: "Header Group",
+      postableTag: "Postable",
+      controlTag: "Control",
+      deactivateAccountButton: "Deactivate",
+      activateAccountButton: "Activate",
+      mappingsTitle: "Mandatory Subledger Account Mappings (12 Purposes)",
+      colPurpose: "Posting Purpose",
+      colMappedAccount: "Mapped Account",
+      colMappingAction: "Action",
+      saveMappingButton: "Save",
+      periodsTitle: "Entity Fiscal Periods",
+      addPeriodTitle: "Open New Fiscal Period",
+      periodCodeLabel: "Period Code",
+      fiscalYearLabel: "Fiscal Year",
+      periodNumberLabel: "Period #",
+      startDateLabel: "Start Date",
+      endDateLabel: "End Date",
+      createPeriodButton: "Open Period",
+      createPeriodBusy: "Opening period...",
+      periodCloseStripTitle: "Period Closing Controls",
+      dateRangeMobileLabel: "Date Window",
+      closePeriodNoteLabel: "Close Note",
+      closePeriodNotePlaceholder: "Monthly close",
+      closePeriodButton: "Close Period",
+      lockPeriodButton: "Hard Lock",
+      taxCodesTitle: "Effective-Dated Tax Code Matrix (OD-07)",
+      addTaxCodeTitle: "Create Configurable Tax Code",
+      taxCodeLabel: "Tax Code",
+      taxNameLabel: "Tax Rule Name",
+      taxFamilyLabel: "Tax Family",
+      taxDirectionLabel: "Direction",
+      taxTreatmentLabel: "Treatment",
+      nominalRateLabel: "Nominal Rate (%)",
+      dppNumeratorLabel: "DPP Numerator",
+      dppDenominatorLabel: "DPP Denominator",
+      effectiveFromLabel: "Effective From",
+      taxAccountLabel: "GL Tax Account",
+      noAccountOption: "Not directly linked",
+      requiresEvidenceCheck: "Requires documentary evidence",
+      requiresNpwpCheck: "Requires counterparty NPWP",
+      taxNoteLabel: "Reference Note",
+      createTaxButton: "Save Tax Code",
+      createTaxBusy: "Saving tax code...",
+      taxPreviewTitle: "Explicit Tax Determination Preview (Server Verified)",
+      selectTaxCodeOption: "— Select explicitly —",
+      taxPreviewCodeLabel: "Select Explicit Tax Code",
+      taxPreviewAmountLabel: "Gross Transaction Amount (IDR)",
+      taxPreviewDateLabel: "Transaction Date",
+      taxPreviewNpwpCheck: "Counterparty has valid NPWP",
+      taxPreviewEvidenceCheck: "Documentary evidence (Faktur / FTZ) provided",
+      taxPreviewButton: "Evaluate Tax & Base",
+      taxPreviewBusy: "Evaluating...",
+      taxPreviewBaseLabel: "Taxable Base (DPP)",
+      taxPreviewTaxLabel: "Computed Tax Amount",
+      taxPreviewRateLabel: "Effective Rate",
+      taxPreviewBlockedLabel: "Compliance Gate",
+      periodStatusLabels: {
+        OPEN: "Open",
+        CLOSED: "Closed",
+        LOCKED: "Locked",
+      },
+      accountTypeLabels: {
+        ASSET: "Asset",
+        LIABILITY: "Liability",
+        EQUITY: "Equity",
+        REVENUE: "Revenue",
+        EXPENSE: "Expense",
+      },
+      normalBalanceLabels: {
+        DEBIT: "Debit",
+        CREDIT: "Credit",
+      },
+      mappingPurposeLabels: {
+        INVENTORY_ASSET: "Inventory Asset",
+        GRNI_CLEARING: "GRNI Accrual Clearing",
+        AP_TRADE_CONTROL: "Accounts Payable Control",
+        AR_TRADE_CONTROL: "Accounts Receivable Control",
+        PURCHASE_PRICE_VARIANCE: "Purchase Price Variance",
+        PPN_INPUT_TAX: "PPN Input Tax Receivable",
+        PPN_OUTPUT_TAX: "PPN Output Tax Payable",
+        PPH_WITHHOLDING_PAYABLE: "PPh Withholding Payable",
+        BANK_OUTBOUND_CLEARING: "Bank Outbound Clearing",
+        BANK_MAIN_OPERATING: "Main Operating Cash / Bank",
+        SALES_REVENUE_DEFAULT: "Default Sales Revenue",
+        COGS_DEFAULT: "Default Cost of Goods Sold",
+      },
+      accountCategoryLabels: {
+        HEADER_GROUP: "Header Group (Non-Posting)",
+        CASH_BANK: "Cash & Bank",
+        BANK_OUTBOUND_CLEARING: "Bank Outbound Clearing",
+        ACCOUNTS_RECEIVABLE: "Accounts Receivable",
+        INVENTORY_ASSET: "Inventory Asset",
+        TAX_RECEIVABLE: "Input Tax Receivable",
+        GRNI_ACCRUAL: "GRNI Accrual",
+        ACCOUNTS_PAYABLE: "Accounts Payable",
+        TAX_PAYABLE: "Output Tax Payable",
+        WITHHOLDING_TAX_PAYABLE: "Withholding Tax Payable",
+        EQUITY_CAPITAL: "Equity Capital",
+        SALES_REVENUE: "Sales Revenue",
+        COGS_EXPENSE: "Cost of Goods Sold",
+        PURCHASE_PRICE_VARIANCE: "Purchase Price Variance",
+        OPERATING_EXPENSE: "Operating Expense",
+        GENERAL: "General",
+      },
+      taxFamilyLabels: {
+        PPN: "PPN (Value-Added Tax)",
+        PPH: "PPh (Withholding Income Tax)",
+      },
+      taxDirectionLabels: {
+        INPUT: "Input Tax",
+        OUTPUT: "Output Tax",
+        WITHHOLDING: "Withholding",
+      },
+      taxTreatmentLabels: {
+        STANDARD_TAXABLE: "Standard Taxable Rate",
+        SPECIAL_DPP_11_12: "Special Taxable Base (11/12 DPP)",
+        ZERO_RATED: "Zero-Rated / Export",
+        EXEMPT: "Exempt",
+        NOT_COLLECTED_FACILITY: "Not Collected (Special Facility)",
+        WITHHOLDING_DEDUCTION: "Withholding Deduction",
+      },
+      taxReviewLabels: {
+        UNREVIEWED_CONFIGURABLE: "Configurable Template (Awaiting OD-07 Sign-Off)",
+        REVIEWED_INTERNAL: "Internally Reviewed",
+      },
+      validation: {
+        memoRequired: "Enter a journal description.",
+        sourceKeyRequired: "Enter an idempotent source key.",
+        postingDateRequired: "Choose a posting date.",
+        accountCodeRequired: "Enter a GL account code (2–32 characters).",
+        accountNameRequired: "Enter a GL account name.",
+        periodCodeRequired: "Enter a period code (e.g., 2026-12).",
+        periodYearInvalid: "Fiscal year must be between 2000 and 2100.",
+        periodNumberInvalid: "Period number must be between 1 and 13.",
+        periodDatesInvalid: "End date must be on or after start date.",
+        taxCodeRequired: "Enter a tax code (2–32 characters).",
+        taxNameRequired: "Enter a tax rule name.",
+        taxRateInvalid: "Nominal tax rate must be between 0% and 100%.",
+        taxDppInvalid: "DPP numerator must be >= 1 and <= DPP denominator.",
+        taxEffDateRequired: "Choose the effective start date.",
+        taxPreviewAmountInvalid: "Gross transaction amount must exceed zero.",
+        reversalDateRequired: "Choose a reversal posting date.",
+        reversalReasonRequired: "Enter a written reversal reason.",
+      },
+      errors: {
+        unbalanced_journal: "Journal is unbalanced: Total Debit must equal Total Credit.",
+        invalid_journal_lines: "At least 2 valid single-sided lines with positive amounts are required.",
+        unsupported_currency_mvp: "Ledger postings currently require the entity's functional currency.",
+        period_not_found_for_date: "No fiscal period is configured covering this posting date.",
+        period_closed: "This fiscal period is closed or locked and rejects new postings.",
+        duplicate_posting_source_conflict: "This idempotent source key already exists with a different payload.",
+        account_not_postable: "Header or non-postable accounts cannot receive journal lines or mappings.",
+        account_inactive: "Inactive GL accounts cannot be used for posting.",
+        foreign_or_missing_account: "GL account was not found in this legal entity.",
+        mapping_account_type_mismatch: "Account type does not satisfy the selected mapping purpose.",
+        gl_account_code_conflict: "GL account code already exists in this legal entity.",
+        overlapping_period_dates: "Date range overlaps with an existing fiscal period.",
+        financial_period_conflict: "Fiscal period code or year/number already exists.",
+        period_not_open: "This fiscal period is already closed.",
+        journal_already_reversed: "This journal entry has already been reversed.",
+        cannot_reverse_reversal_journal: "A reversal journal cannot itself be reversed.",
+        explicit_tax_code_required: "An explicit effective-dated tax code must be selected.",
+        tax_code_not_effective_on_date: "Selected tax code is inactive or outside its effective window.",
+        tax_code_conflict: "A tax code with the same code and effective date already exists.",
+        insufficient_entity_permission: "You do not hold required finance permissions on this entity.",
       },
     },
   },
