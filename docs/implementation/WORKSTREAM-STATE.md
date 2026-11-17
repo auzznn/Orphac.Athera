@@ -3,18 +3,18 @@
 **Initial state:** 2026-11-17 | New repository / planning documents only | No code, tests, migrations or PO acceptance exist yet.
 
 - Stack: Next.js 16.4.6 + ASP.NET Core 10 + PostgreSQL 18.
-- Current target: **S02 — User Provisioning, RBAC & Organization Administration** (Wave 1 complete: S00 `920bc78` & S01 `737971a` implemented/verified, PO acceptance pending).
-- Current Git commit SHA: `737971a` (`greenfield/mvp`; baseline `e25008f`).
+- Current target: **S03 — Partners, Catalogue and Unit of Measure** (S00 `920bc78`, S01 `737971a`, S02 `57618ad` implemented/verified, PO acceptance pending).
+- Current Git commit SHA: `57618ad` (`greenfield/mvp`; baseline `e25008f`).
 - PostgreSQL test instance: VERIFIED (`athera-greenfield-pg` healthy on `127.0.0.1:55433/athera_dev`; low-privilege `athera_app` + `athera_migrator` verified).
 - Ponytail skill availability: AVAILABLE (`v5.3.3` `full`).
 - Impeccable skill availability: AVAILABLE (`v4.9.1`).
-- First Owner acceptance document: NOT SIGNED (S00 & S01 PO acceptance packets staged under `docs/evidence/S00/README.md` and `docs/evidence/S01/README.md`).
+- First Owner acceptance document: NOT SIGNED (S00–S02 PO acceptance packets staged under `docs/evidence/S00/README.md`, `docs/evidence/S01/README.md`, and `docs/evidence/S02/README.md`).
 
 | Slice | Implementation | Engineering verification | PO acceptance | SHA | Blocker / evidence |
 |---|---|---|---|---|---|
 | S00 | CODE_COMPLETE | PASS | PENDING | 920bc78 | [S00 Evidence Packet](../evidence/S00/README.md) |
 | S01 | CODE_COMPLETE | PASS | PENDING | 737971a | [S01 Evidence Packet](../evidence/S01/README.md) |
-| S02 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
+| S02 | CODE_COMPLETE | PASS | PENDING | 57618ad | [S02 Evidence Packet](../evidence/S02/README.md); [ATH-CR-001 (OD-02)](../decisions/ATH-CR-001-OD02-four-eyes-and-role-matrix.md) |
 | S03 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
 | S04 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
 | S05 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
