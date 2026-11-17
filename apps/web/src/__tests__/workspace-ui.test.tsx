@@ -19,6 +19,7 @@ const mockUser: CurrentUserResponse = {
   lastSignedInAtUtc: "2026-11-18T00:00:00Z",
   workspaceAccessStatus: "ACTIVE_WORKSPACES",
   authorizedWorkspaceCount: 1,
+  mfaEnabled: false,
 };
 
 let mockWorkspaces: WorkspacesResponse = {

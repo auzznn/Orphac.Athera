@@ -1,14 +1,16 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import {
   AlertCircle,
   Building2,
   Check,
+  CheckCircle2,
   ChevronDown,
   FolderKanban,
+  KeyRound,
   Landmark,
   LayoutGrid,
   Lock,
@@ -37,6 +39,7 @@ import { LocaleToggle } from "@/components/LocaleToggle";
 
 const SessionContext = createContext<CurrentUserResponse | null>(null);
 const WorkspacesContext = createContext<WorkspacesResponse | null>(null);
+const RefreshShellContext = createContext<() => Promise<void>>(async () => {});
 
 export function useSessionUser(): CurrentUserResponse {
   const user = useContext(SessionContext);
@@ -48,6 +51,10 @@ export function useSessionUser(): CurrentUserResponse {
 
 export function useWorkspaces(): WorkspacesResponse | null {
   return useContext(WorkspacesContext);
+}
+
+export function useRefreshShell(): () => Promise<void> {
+  return useContext(RefreshShellContext);
 }
 
 interface ActiveScopeMatch {
@@ -102,6 +109,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     routerRef.current = router;
   }, [router]);
+
+  const refreshShell = useCallback(async () => {
+    const current = await fetchCurrentUser();
+    if (!current) {
+      routerRef.current.replace("/login");
+      return;
+    }
+
+    const ws = await fetchWorkspaces();
+    setUser(current);
+    setWorkspaces(ws);
+    setLoadError(null);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -238,7 +258,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (loading || !user) {
+  if (loading && !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--bg-canvas)] px-4">
         <div className="w-full max-w-md rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-6">
@@ -247,6 +267,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </div>
     );
+  }
+
+  if (!user) {
+    return null;
   }
 
   const activeScope = resolveActiveScope(
@@ -270,11 +294,41 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       href: "/workspaces",
       label: t.shell.navItems.workspaces,
       icon: FolderKanban,
-      active: pathname.startsWith("/workspaces") || pathname.startsWith("/w/"),
+      active: pathname === "/workspaces" || (pathname.startsWith("/w/") && !pathname.endsWith("/approvals") && !pathname.endsWith("/admin")),
+    },
+    {
+      key: "invitations",
+      href: "/invitations",
+      label: t.shell.navItems.invitations,
+      icon: KeyRound,
+      active: pathname.startsWith("/invitations"),
     },
   ];
 
-  const moduleItems = [
+  const baseEntityPath = activeScope
+    ? `/w/${activeScope.tenant.tenantId}/${activeScope.entity.legalEntityId}`
+    : null;
+
+  const liveEntityModules = [
+    {
+      key: "approvals",
+      label: t.shell.navItems.approvals,
+      icon: CheckCircle2,
+      href: baseEntityPath ? `${baseEntityPath}/approvals` : null,
+      permitted: Boolean(activeScope),
+      active: pathname.endsWith("/approvals"),
+    },
+    {
+      key: "admin",
+      label: t.shell.navItems.admin,
+      icon: Users,
+      href: baseEntityPath && (permissionSet.has("admin.read") || permissionSet.has("admin.manage")) ? `${baseEntityPath}/admin` : null,
+      permitted: permissionSet.has("admin.read") || permissionSet.has("admin.manage"),
+      active: pathname.endsWith("/admin"),
+    },
+  ];
+
+  const plannedModuleItems = [
     {
       key: "procurement",
       label: t.shell.navItems.procurement,
@@ -298,12 +352,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       label: t.shell.navItems.finance,
       icon: Landmark,
       permitted: permissionSet.has("finance.read") || permissionSet.has("finance.journal.post"),
-    },
-    {
-      key: "admin",
-      label: t.shell.navItems.admin,
-      icon: Users,
-      permitted: permissionSet.has("admin.read"),
     },
   ];
 
@@ -383,237 +431,278 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SessionContext.Provider value={user}>
-      <WorkspacesContext.Provider value={workspaces}>
-        <div className="flex min-h-screen flex-col bg-[var(--bg-canvas)] text-[var(--text-primary)]">
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-[var(--radius-sm)] focus:bg-[var(--accent-primary)] focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
-          >
-            {t.shell.skipToMain}
-          </a>
+    <RefreshShellContext.Provider value={refreshShell}>
+      <SessionContext.Provider value={user}>
+        <WorkspacesContext.Provider value={workspaces}>
+          <div className="flex min-h-screen flex-col bg-[var(--bg-canvas)] text-[var(--text-primary)]">
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-50 focus:rounded-[var(--radius-sm)] focus:bg-[var(--accent-primary)] focus:px-3 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+            >
+              {t.shell.skipToMain}
+            </a>
 
-          <header
-            ref={scopeContainerRef}
-            className="sticky top-0 z-20 border-b border-[var(--border-hairline)] bg-[var(--bg-surface)]"
-          >
-            <div className="flex h-12 items-center justify-between gap-3 px-4 sm:px-6">
-              <div className="flex min-w-0 items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => setMobileNavOpen((prev) => !prev)}
-                  aria-label={mobileNavOpen ? t.shell.closeMenu : t.shell.openMenu}
-                  aria-expanded={mobileNavOpen}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-hairline)] text-[var(--text-primary)] hover:bg-[var(--bg-chrome)] lg:hidden"
-                >
-                  {mobileNavOpen ? (
-                    <X className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+            <header
+              ref={scopeContainerRef}
+              className="sticky top-0 z-20 border-b border-[var(--border-hairline)] bg-[var(--bg-surface)]"
+            >
+              <div className="flex h-12 items-center justify-between gap-3 px-4 sm:px-6">
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => setMobileNavOpen((prev) => !prev)}
+                    aria-label={mobileNavOpen ? t.shell.closeMenu : t.shell.openMenu}
+                    aria-expanded={mobileNavOpen}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-hairline)] text-[var(--text-primary)] hover:bg-[var(--bg-chrome)] lg:hidden"
+                  >
+                    {mobileNavOpen ? (
+                      <X className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+                    ) : (
+                      <Menu className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+                    )}
+                  </button>
+
+                  <Link href="/" className="flex shrink-0 items-center gap-2">
+                    <span className="inline-flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--accent-primary)] text-[var(--accent-primary-ink)]">
+                      <ShieldCheck className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+                    </span>
+                    <span className="text-sm font-semibold tracking-tight sm:text-base">{t.appName}</span>
+                  </Link>
+
+                  {authorizedCount > 0 ? (
+                    <div className="relative hidden md:block">
+                      <button
+                        ref={desktopTriggerRef}
+                        type="button"
+                        onClick={() => setScopeMenuOpen((prev) => !prev)}
+                        aria-expanded={scopeMenuOpen}
+                        aria-controls="scope-switcher-panel-desktop"
+                        aria-label={t.shell.switchScopeLabel}
+                        className="inline-flex min-h-9 max-w-[360px] items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-chrome)]"
+                      >
+                        <Building2
+                          className="h-3.5 w-3.5 shrink-0 text-[var(--accent-primary)]"
+                          strokeWidth={1.75}
+                          aria-hidden="true"
+                        />
+                        <span className="font-code truncate tabular-nums">{switcherSummary}</span>
+                        <ChevronDown
+                          className="h-3.5 w-3.5 shrink-0 text-[var(--text-secondary)]"
+                          strokeWidth={1.75}
+                          aria-hidden="true"
+                        />
+                      </button>
+                      {renderScopePanel("scope-switcher-panel-desktop", "left-0 top-full mt-1.5 w-[380px]")}
+                    </div>
                   ) : (
-                    <Menu className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+                    <div className="hidden items-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-2.5 py-1 text-xs font-medium text-[var(--status-warn-text)] md:inline-flex">
+                      <Building2 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                      <span className="truncate">{t.shell.scopeUnboundBadge}</span>
+                    </div>
                   )}
-                </button>
+                </div>
 
-                <Link href="/" className="flex shrink-0 items-center gap-2">
-                  <span className="inline-flex h-7 w-7 items-center justify-center rounded-[var(--radius-sm)] bg-[var(--accent-primary)] text-[var(--accent-primary-ink)]">
-                    <ShieldCheck className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-                  </span>
-                  <span className="text-sm font-semibold tracking-tight sm:text-base">{t.appName}</span>
-                </Link>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <LocaleToggle />
+                  <div className="hidden text-right sm:block">
+                    <p className="text-xs font-semibold leading-tight text-[var(--text-primary)]">
+                      {user.displayName}
+                    </p>
+                    <p className="font-code text-[11px] leading-tight text-[var(--text-secondary)]">
+                      {user.email}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSignOut}
+                    disabled={signingOut}
+                    className="inline-flex min-h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-chrome)] disabled:opacity-60"
+                  >
+                    <LogOut className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                    <span>{signingOut ? t.shell.signingOut : t.shell.signOut}</span>
+                  </button>
+                </div>
+              </div>
 
-                {authorizedCount > 0 ? (
-                  <div className="relative hidden md:block">
-                    <button
-                      ref={desktopTriggerRef}
-                      type="button"
-                      onClick={() => setScopeMenuOpen((prev) => !prev)}
-                      aria-expanded={scopeMenuOpen}
-                      aria-controls="scope-switcher-panel-desktop"
-                      aria-label={t.shell.switchScopeLabel}
-                      className="inline-flex min-h-9 max-w-[360px] items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-chrome)]"
-                    >
+              {authorizedCount > 0 ? (
+                <div className="relative border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-1.5 md:hidden">
+                  <button
+                    ref={mobileTriggerRef}
+                    type="button"
+                    onClick={() => setScopeMenuOpen((prev) => !prev)}
+                    aria-expanded={scopeMenuOpen}
+                    aria-controls="scope-switcher-panel-mobile"
+                    aria-label={t.shell.switchScopeLabel}
+                    className="flex min-h-9 w-full items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs font-semibold text-[var(--text-primary)]"
+                  >
+                    <span className="flex min-w-0 items-center gap-1.5">
                       <Building2
                         className="h-3.5 w-3.5 shrink-0 text-[var(--accent-primary)]"
                         strokeWidth={1.75}
                         aria-hidden="true"
                       />
                       <span className="font-code truncate tabular-nums">{switcherSummary}</span>
-                      <ChevronDown
-                        className="h-3.5 w-3.5 shrink-0 text-[var(--text-secondary)]"
-                        strokeWidth={1.75}
-                        aria-hidden="true"
-                      />
-                    </button>
-                    {renderScopePanel("scope-switcher-panel-desktop", "left-0 top-full mt-1.5 w-[380px]")}
-                  </div>
-                ) : (
-                  <div className="hidden items-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-2.5 py-1 text-xs font-medium text-[var(--status-warn-text)] md:inline-flex">
-                    <Building2 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-                    <span className="truncate">{t.shell.scopeUnboundBadge}</span>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex items-center gap-2 sm:gap-3">
-                <LocaleToggle />
-                <div className="hidden text-right sm:block">
-                  <p className="text-xs font-semibold leading-tight text-[var(--text-primary)]">
-                    {user.displayName}
-                  </p>
-                  <p className="font-code text-[11px] leading-tight text-[var(--text-secondary)]">
-                    {user.email}
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleSignOut}
-                  disabled={signingOut}
-                  className="inline-flex min-h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-chrome)] disabled:opacity-60"
-                >
-                  <LogOut className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-                  <span>{signingOut ? t.shell.signingOut : t.shell.signOut}</span>
-                </button>
-              </div>
-            </div>
-
-            {authorizedCount > 0 ? (
-              <div className="relative border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-1.5 md:hidden">
-                <button
-                  ref={mobileTriggerRef}
-                  type="button"
-                  onClick={() => setScopeMenuOpen((prev) => !prev)}
-                  aria-expanded={scopeMenuOpen}
-                  aria-controls="scope-switcher-panel-mobile"
-                  aria-label={t.shell.switchScopeLabel}
-                  className="flex min-h-9 w-full items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs font-semibold text-[var(--text-primary)]"
-                >
-                  <span className="flex min-w-0 items-center gap-1.5">
-                    <Building2
-                      className="h-3.5 w-3.5 shrink-0 text-[var(--accent-primary)]"
+                    </span>
+                    <ChevronDown
+                      className="h-3.5 w-3.5 shrink-0 text-[var(--text-secondary)]"
                       strokeWidth={1.75}
                       aria-hidden="true"
                     />
-                    <span className="font-code truncate tabular-nums">{switcherSummary}</span>
-                  </span>
-                  <ChevronDown
-                    className="h-3.5 w-3.5 shrink-0 text-[var(--text-secondary)]"
-                    strokeWidth={1.75}
-                    aria-hidden="true"
-                  />
-                </button>
-                {renderScopePanel("scope-switcher-panel-mobile", "left-4 right-4 top-full mt-1")}
-              </div>
-            ) : (
-              <div className="flex items-center gap-2 border-t border-[var(--border-hairline)] bg-[var(--status-warn-bg)] px-4 py-1.5 text-xs font-medium text-[var(--status-warn-text)] md:hidden">
-                <Building2 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-                <span className="truncate">{t.shell.scopeCompactBadge}</span>
-              </div>
-            )}
-          </header>
-
-          <div className="relative flex flex-1">
-            {mobileNavOpen ? (
-              <div
-                aria-hidden="true"
-                onClick={() => setMobileNavOpen(false)}
-                className="fixed inset-0 z-30 bg-black/35 lg:hidden"
-              />
-            ) : null}
-
-            <aside
-              aria-label={t.shell.navTitle}
-              className={`${
-                mobileNavOpen ? "fixed inset-y-0 left-0 z-40 block overflow-y-auto shadow-lg" : "hidden"
-              } w-[232px] shrink-0 border-r border-[var(--border-hairline)] bg-[var(--bg-chrome)] p-3.5 lg:static lg:z-auto lg:block lg:shadow-none`}
-            >
-              <div className="mb-3 flex items-center justify-between border-b border-[var(--border-hairline)] pb-2.5 lg:hidden">
-                <span className="text-sm font-semibold text-[var(--text-primary)]">{t.appName}</span>
-                <button
-                  type="button"
-                  onClick={() => setMobileNavOpen(false)}
-                  aria-label={t.shell.closeMenu}
-                  className="inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-primary)]"
-                >
-                  <X className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-                </button>
-              </div>
-              <nav className="space-y-1">
-                {topNavItems.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.key}
-                      href={item.href}
-                      aria-current={item.active ? "page" : undefined}
-                      onClick={() => setMobileNavOpen(false)}
-                      className={`flex min-h-10 items-center justify-between rounded-[var(--radius-sm)] px-2.5 py-2 text-sm font-semibold ${
-                        item.active
-                          ? "bg-[var(--accent-primary)] text-[var(--accent-primary-ink)]"
-                          : "text-[var(--text-primary)] hover:bg-[var(--bg-surface)]"
-                      }`}
-                    >
-                      <span className="flex items-center gap-2.5">
-                        <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-                        <span>{item.label}</span>
-                      </span>
-                    </Link>
-                  );
-                })}
-              </nav>
-
-              <p className="mt-5 border-t border-[var(--border-hairline)] px-2 pt-3 text-xs font-semibold text-[var(--text-secondary)]">
-                {t.shell.navTitle}
-              </p>
-              <nav className="mt-2 space-y-1">
-                {moduleItems.map((item) => {
-                  const Icon = item.icon;
-                  const showPermitted = Boolean(activeScope && item.permitted);
-                  return (
-                    <button
-                      key={item.key}
-                      type="button"
-                      disabled
-                      className="flex min-h-10 w-full cursor-not-allowed items-center justify-between rounded-[var(--radius-sm)] px-2.5 py-2 text-left text-sm text-[var(--text-muted)]"
-                    >
-                      <span className="flex items-center gap-2.5">
-                        <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-                        <span>{item.label}</span>
-                      </span>
-                      {showPermitted ? (
-                        <span className="rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--text-secondary)]">
-                          {t.shell.modulePlannedHint}
-                        </span>
-                      ) : (
-                        <Lock className="h-3.5 w-3.5 shrink-0 opacity-75" strokeWidth={1.75} aria-hidden="true" />
-                      )}
-                      <span className="sr-only">
-                        {" "}
-                        — {showPermitted ? t.shell.permittedSuffix : t.shell.lockedSuffix}
-                      </span>
-                    </button>
-                  );
-                })}
-              </nav>
-
-              <p className="mt-6 border-t border-[var(--border-hairline)] px-2 pt-3 text-xs leading-relaxed text-[var(--text-secondary)]">
-                {authorizedCount > 0 ? t.shell.scopeBoundHint : t.shell.scopeUnboundHint}
-              </p>
-            </aside>
-
-            <main id="main-content" className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
-              {signOutError ? (
-                <div
-                  role="alert"
-                  className="mx-auto mb-4 flex max-w-4xl items-start gap-2.5 rounded-[var(--radius-sm)] border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3.5 py-2.5 text-sm text-[var(--status-danger-text)]"
-                >
-                  <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-                  <span>{signOutError}</span>
+                  </button>
+                  {renderScopePanel("scope-switcher-panel-mobile", "left-4 right-4 top-full mt-1")}
                 </div>
+              ) : (
+                <div className="flex items-center gap-2 border-t border-[var(--border-hairline)] bg-[var(--status-warn-bg)] px-4 py-1.5 text-xs font-medium text-[var(--status-warn-text)] md:hidden">
+                  <Building2 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                  <span className="truncate">{t.shell.scopeCompactBadge}</span>
+                </div>
+              )}
+            </header>
+
+            <div className="relative flex flex-1">
+              {mobileNavOpen ? (
+                <div
+                  aria-hidden="true"
+                  onClick={() => setMobileNavOpen(false)}
+                  className="fixed inset-0 z-30 bg-black/35 lg:hidden"
+                />
               ) : null}
-              {children}
-            </main>
+
+              <aside
+                aria-label={t.shell.navTitle}
+                className={`${
+                  mobileNavOpen ? "fixed inset-y-0 left-0 z-40 block overflow-y-auto shadow-lg" : "hidden"
+                } w-[232px] shrink-0 border-r border-[var(--border-hairline)] bg-[var(--bg-chrome)] p-3.5 lg:static lg:z-auto lg:block lg:shadow-none`}
+              >
+                <div className="mb-3 flex items-center justify-between border-b border-[var(--border-hairline)] pb-2.5 lg:hidden">
+                  <span className="text-sm font-semibold text-[var(--text-primary)]">{t.appName}</span>
+                  <button
+                    type="button"
+                    onClick={() => setMobileNavOpen(false)}
+                    aria-label={t.shell.closeMenu}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-primary)]"
+                  >
+                    <X className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+                  </button>
+                </div>
+                <nav className="space-y-1">
+                  {topNavItems.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.key}
+                        href={item.href}
+                        aria-current={item.active ? "page" : undefined}
+                        onClick={() => setMobileNavOpen(false)}
+                        className={`flex min-h-10 items-center justify-between rounded-[var(--radius-sm)] px-2.5 py-2 text-sm font-semibold ${
+                          item.active
+                            ? "bg-[var(--accent-primary)] text-[var(--accent-primary-ink)]"
+                            : "text-[var(--text-primary)] hover:bg-[var(--bg-surface)]"
+                        }`}
+                      >
+                        <span className="flex items-center gap-2.5">
+                          <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                          <span>{item.label}</span>
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </nav>
+
+                <p className="mt-5 border-t border-[var(--border-hairline)] px-2 pt-3 text-xs font-semibold text-[var(--text-secondary)]">
+                  {t.shell.navTitle}
+                </p>
+                <nav className="mt-2 space-y-1">
+                  {liveEntityModules.map((item) => {
+                    const Icon = item.icon;
+                    if (item.href && item.permitted) {
+                      return (
+                        <Link
+                          key={item.key}
+                          href={item.href}
+                          aria-current={item.active ? "page" : undefined}
+                          onClick={() => setMobileNavOpen(false)}
+                          className={`flex min-h-10 items-center justify-between rounded-[var(--radius-sm)] px-2.5 py-2 text-sm font-semibold ${
+                            item.active
+                              ? "bg-[var(--accent-primary)] text-[var(--accent-primary-ink)]"
+                              : "text-[var(--text-primary)] hover:bg-[var(--bg-surface)]"
+                          }`}
+                        >
+                          <span className="flex items-center gap-2.5">
+                            <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                            <span>{item.label}</span>
+                          </span>
+                        </Link>
+                      );
+                    }
+                    return (
+                      <button
+                        key={item.key}
+                        type="button"
+                        disabled
+                        className="flex min-h-10 w-full cursor-not-allowed items-center justify-between rounded-[var(--radius-sm)] px-2.5 py-2 text-left text-sm text-[var(--text-muted)]"
+                      >
+                        <span className="flex items-center gap-2.5">
+                          <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                          <span>{item.label}</span>
+                        </span>
+                        <Lock className="h-3.5 w-3.5 shrink-0 opacity-75" strokeWidth={1.75} aria-hidden="true" />
+                        <span className="sr-only"> — {t.shell.lockedSuffix}</span>
+                      </button>
+                    );
+                  })}
+
+                  {plannedModuleItems.map((item) => {
+                    const Icon = item.icon;
+                    const showPermitted = Boolean(activeScope && item.permitted);
+                    return (
+                      <button
+                        key={item.key}
+                        type="button"
+                        disabled
+                        className="flex min-h-10 w-full cursor-not-allowed items-center justify-between rounded-[var(--radius-sm)] px-2.5 py-2 text-left text-sm text-[var(--text-muted)]"
+                      >
+                        <span className="flex items-center gap-2.5">
+                          <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                          <span>{item.label}</span>
+                        </span>
+                        {showPermitted ? (
+                          <span className="rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--text-secondary)]">
+                            {t.shell.modulePlannedHint}
+                          </span>
+                        ) : (
+                          <Lock className="h-3.5 w-3.5 shrink-0 opacity-75" strokeWidth={1.75} aria-hidden="true" />
+                        )}
+                        <span className="sr-only">
+                          {" "}
+                          — {showPermitted ? t.shell.permittedSuffix : t.shell.lockedSuffix}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </nav>
+
+                <p className="mt-6 border-t border-[var(--border-hairline)] px-2 pt-3 text-xs leading-relaxed text-[var(--text-secondary)]">
+                  {authorizedCount > 0 ? t.shell.scopeBoundHint : t.shell.scopeUnboundHint}
+                </p>
+              </aside>
+
+              <main id="main-content" className="min-w-0 flex-1 p-4 sm:p-6 lg:p-8">
+                {signOutError ? (
+                  <div
+                    role="alert"
+                    className="mx-auto mb-4 flex max-w-4xl items-start gap-2.5 rounded-[var(--radius-sm)] border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3.5 py-2.5 text-sm text-[var(--status-danger-text)]"
+                  >
+                    <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                    <span>{signOutError}</span>
+                  </div>
+                ) : null}
+                {children}
+              </main>
+            </div>
           </div>
-        </div>
-      </WorkspacesContext.Provider>
-    </SessionContext.Provider>
+        </WorkspacesContext.Provider>
+      </SessionContext.Provider>
+    </RefreshShellContext.Provider>
   );
 }

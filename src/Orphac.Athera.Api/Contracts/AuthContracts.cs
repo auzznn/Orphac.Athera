@@ -21,7 +21,8 @@ public sealed record CurrentUserResponse(
     string PreferredLocale,
     DateTimeOffset? LastSignedInAtUtc,
     string WorkspaceAccessStatus,
-    int AuthorizedWorkspaceCount);
+    int AuthorizedWorkspaceCount,
+    bool MfaEnabled);
 
 public sealed record AuthSessionResponse(
     CurrentUserResponse User,
@@ -30,3 +31,13 @@ public sealed record AuthSessionResponse(
 public sealed record LogoutResponse(
     bool SignedOut,
     string CsrfToken);
+
+public sealed record MfaSetupResponse(
+    string SharedKey,
+    string OtpauthUri);
+
+public sealed record MfaVerifyRequest(
+    string Code);
+
+public sealed record MfaVerifyResponse(
+    bool MfaEnabled);

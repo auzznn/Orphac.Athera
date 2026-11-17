@@ -72,6 +72,15 @@ export default function WorkspacesDirectoryPage() {
               {t.workspaces.emptyIdentityRef}:{" "}
               <span className="font-code text-[var(--text-primary)]">{user.email}</span>
             </p>
+            <div className="mt-4">
+              <Link
+                href="/invitations"
+                className="inline-flex min-h-10 items-center gap-2 rounded-[var(--radius-sm)] bg-[var(--accent-primary)] px-3.5 text-sm font-semibold text-[var(--accent-primary-ink)] hover:bg-[var(--accent-primary-hover)]"
+              >
+                <span>{t.workspaces.openInvitationCta}</span>
+                <ArrowRight className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
+              </Link>
+            </div>
           </div>
         </section>
       ) : (

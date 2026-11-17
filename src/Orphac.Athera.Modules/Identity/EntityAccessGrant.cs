@@ -21,6 +21,25 @@ public static class PermissionCodes
     public const string FinanceRead = "finance.read";
     public const string FinanceJournalPost = "finance.journal.post";
     public const string AdminRead = "admin.read";
+    public const string AdminManage = "admin.manage";
+    public const string ApprovalRequest = "approval.request";
+    public const string ApprovalDecide = "approval.decide";
+
+    public static readonly IReadOnlyList<string> KnownAll =
+    [
+        WorkspaceView,
+        ProcurementRead,
+        InventoryRead,
+        SalesRead,
+        FinanceRead,
+        FinanceJournalPost,
+        AdminRead,
+        AdminManage,
+        ApprovalRequest,
+        ApprovalDecide
+    ];
+
+    private static readonly HashSet<string> KnownSet = new(KnownAll, StringComparer.Ordinal);
 
     public static string Normalize(string? permissionCode)
     {
@@ -28,6 +47,27 @@ public static class PermissionCodes
         if (string.IsNullOrEmpty(normalized) || normalized.Length > 100)
         {
             throw new ArgumentException("PermissionCode must be between 1 and 100 characters.", nameof(permissionCode));
+        }
+
+        return normalized;
+    }
+
+    public static bool IsKnown(string? permissionCode)
+    {
+        if (string.IsNullOrWhiteSpace(permissionCode))
+        {
+            return false;
+        }
+
+        return KnownSet.Contains(permissionCode.Trim().ToLowerInvariant());
+    }
+
+    public static string NormalizeKnown(string? permissionCode)
+    {
+        var normalized = Normalize(permissionCode);
+        if (!KnownSet.Contains(normalized))
+        {
+            throw new ArgumentException($"Unknown or unapproved permission code '{normalized}'.", nameof(permissionCode));
         }
 
         return normalized;

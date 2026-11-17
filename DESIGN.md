@@ -255,8 +255,9 @@ Confidence through crisp flat contrast and generous hit targets rather than elev
 - **Secondary (`button-secondary`) & Icon (`button-icon`):** White sheet (`#ffffff`) fill with `1px solid #b2b8ae` stroke and `#171c1e` `12px`/`14px` text (`36px`–`40px` height), shifting to `#eef0eb` on hover; icon buttons (password eye reveal, mobile drawer toggle) use `36px x 36px` square footprint with `#495256` or `#171c1e` `16px` `lucide-react` icons (`1.75px` stroke).
 
 ### Chips / Badges & Alerts
-Explicit state framing using semantic washes, matching `1px` borders, and mandatory icons.
-- **Scope Status Badge (`badge-warn`):** Amber parchment wash (`#fbf2df`), `1px solid #e5cb94` border, `#7b4900` `12px` medium text (`4px` radius, `2px 10px` padding) paired with `14px` `Building2` SVG icon. Collapses to a full-width top sub-strip below `768px`.
+Explicit state framing using semantic washes, matching `1px` borders, and mandatory `1.75px`-stroke icons.
+- **Scope Status Badge (`badge-warn`) & Disclosure Switcher:** When zero workspaces are active, renders amber parchment wash (`#fbf2df`), `1px solid #e5cb94` border, `#7b4900` `12px` medium text paired with `14px` `Building2` SVG icon. When authorized entities exist, the header displays a bordered Scope Switcher disclosure (`aria-expanded`, `aria-controls`, `Escape` focus return) showing `{tenant.code} · {entity.code} · {currency}` in `.font-code tabular-nums`. Collapses cleanly into a full-width top sub-strip below `768px`.
+- **Three-State Module Readiness & Governance Badges:** Shipped/live states (`Tersedia (S01–S02)`, `Aktif`, `APPROVED`, `ACCEPTED`, `PROCESSED`) use emerald `status-ok` (`#e7f3ec`/`#115c38`/`#b6dbc5`) paired with `CheckCircle2`; permitted-future slices (`PLANNED_S03+`), pending approvals, and pending invitations use amber `status-warn` paired with `Clock`; ungranted/locked capabilities use `--bg-subtle`/`--border-hairline` paired with `Lock`; rejected/revoked/failed states use `status-danger` paired with `AlertCircle`.
 - **Environment Pill:** Cool slate fill (`#eef0eb`), `1px solid #d5d9d2` border, `#495256` `12px` medium text (`4px` radius, `2px 8px` padding).
 - **Inline Danger Alert (`alert-danger`):** Crimson wash (`#fbeaea`), `1px solid #e5b7b9` border, `#941b20` `14px` text (`4px` radius, `12px 14px` padding) with `role="alert"` and `16px` `AlertCircle` icon.
 
@@ -275,9 +276,9 @@ High-legibility operational fields designed for error association and keyboard f
 
 ### Navigation
 Single-rail navigation anchored by a `48px` sticky scope bar.
-- **Top Bar & Rail:** `48px` sticky `#ffffff` header (`border-b #d5d9d2`) above a `232px` `#eef0eb` sidebar (`border-r #d5d9d2`, `14px` padding) labeled by a `12px` semibold group title (`#495256`).
-- **Active / Locked States:** Active route renders as a `40px` min-height `#0e5a53` pill (`4px` radius, `#ffffff` semibold `14px` text, `8px 10px` padding, `aria-current="page"`). Unopened S01+ modules render as `disabled` buttons (`#5d676b` ink, `cursor-not-allowed`, trailing `14px` `Lock` icon at `0.75` opacity, plus `sr-only` unlock requirement).
-- **Mobile Treatment:** Below `1024px`, the sidebar hides behind a `36px x 36px` header menu toggle and slides out from `left: 0; top: 48px` with `--shadow-lg` and a `rgba(0,0,0,0.35)` click/Escape backdrop.
+- **Top Bar & Rail:** `48px` sticky `#ffffff` header (`border-b #d5d9d2`) above a `232px` `#eef0eb` sidebar (`border-r #d5d9d2`, `14px` padding) hosting global links (`/`, `/workspaces`, `/invitations`) above a `12px` semibold module group title (`#495256`).
+- **Active / Shipped / Planned Entity Modules:** When inside an authorized `/w/[tenantId]/[entityId]` workspace, permitted live S02 modules (`approvals`, `admin`) become clickable `<Link>` items highlighting the active route with a `40px` min-height `#0e5a53` pill (`4px` radius, `#ffffff` semibold `14px` text, `aria-current="page"`). Unopened S03+ modules remain `disabled` buttons in muted `#5d676b` ink paired with `Segera`/`Planned` or trailing `14px` `Lock` icon.
+- **Mobile Treatment:** Below `1024px`, the sidebar hides behind a `36px x 36px` header menu toggle and slides out as a full-height drawer (`z-40`) with a `36px x 36px` close button (`--shadow-lg` + `rgba(0,0,0,0.35)` click/Escape backdrop). Across `/workspaces`, `/w/[tenantId]/[entityId]/approvals`, and `/w/[tenantId]/[entityId]/admin`, desktop tables reflow cleanly below `768px` (`md:table-row`) with inline field labels and zero horizontal scroll.
 
 ### Bilingual Locale Segmented Control (LocaleToggle)
 A compact, signature switch keeping `ID` (`id-ID`) and `EN` (`en-US`) language state instantly accessible in every top bar.

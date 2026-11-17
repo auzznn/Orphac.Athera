@@ -229,11 +229,12 @@ public static class WorkspaceEndpoints
         return
         [
             new("overview", "AVAILABLE", true, PermissionCodes.WorkspaceView),
+            new("approvals", "AVAILABLE", set.Contains(PermissionCodes.WorkspaceView) || set.Contains(PermissionCodes.ApprovalRequest) || set.Contains(PermissionCodes.ApprovalDecide), PermissionCodes.ApprovalRequest),
             new("procurement", "PLANNED_S03_S08", set.Contains(PermissionCodes.ProcurementRead), PermissionCodes.ProcurementRead),
             new("inventory", "PLANNED_S06", set.Contains(PermissionCodes.InventoryRead), PermissionCodes.InventoryRead),
             new("sales", "PLANNED_S14", set.Contains(PermissionCodes.SalesRead), PermissionCodes.SalesRead),
             new("finance", "PLANNED_S10_S13", set.Contains(PermissionCodes.FinanceRead) || set.Contains(PermissionCodes.FinanceJournalPost), PermissionCodes.FinanceRead),
-            new("admin", "PLANNED_S02", set.Contains(PermissionCodes.AdminRead), PermissionCodes.AdminRead)
+            new("admin", "AVAILABLE", set.Contains(PermissionCodes.AdminRead) || set.Contains(PermissionCodes.AdminManage), PermissionCodes.AdminRead)
         ];
     }
 }

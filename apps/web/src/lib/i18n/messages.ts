@@ -41,6 +41,8 @@ export interface Dictionary {
     navItems: {
       overview: string;
       workspaces: string;
+      invitations: string;
+      approvals: string;
       procurement: string;
       inventory: string;
       sales: string;
@@ -59,6 +61,7 @@ export interface Dictionary {
     fieldLastLogin: string;
     fieldWorkspaceStatus: string;
     fieldAuthorizedCount: string;
+    fieldMfaStatus: string;
     fieldDbVerification: string;
     dbVerifiedValue: string;
     boundaryTitle: string;
@@ -71,6 +74,35 @@ export interface Dictionary {
     errorHeading: string;
     errorRetry: string;
     errorBackToLogin: string;
+  };
+  mfa: {
+    cardTitle: string;
+    enabledBadge: string;
+    disabledBadge: string;
+    description: string;
+    setupButton: string;
+    setupBusy: string;
+    sharedKeyLabel: string;
+    codeLabel: string;
+    codePlaceholder: string;
+    verifyButton: string;
+    verifyBusy: string;
+    verifiedNotice: string;
+    codeRequiredError: string;
+  };
+  invitations: {
+    heading: string;
+    lead: string;
+    cardTitle: string;
+    tokenLabel: string;
+    tokenPlaceholder: string;
+    submitButton: string;
+    submitBusy: string;
+    successTitle: string;
+    successBody: string;
+    enterGrantedEntity: string;
+    tokenRequiredError: string;
+    errors: Record<string, string>;
   };
   workspaces: {
     heading: string;
@@ -94,6 +126,7 @@ export interface Dictionary {
     emptyGuidanceTitle: string;
     emptyGuidanceStep1: string;
     emptyGuidanceStep2: string;
+    openInvitationCta: string;
   };
   entitySheet: {
     backToDirectory: string;
@@ -119,6 +152,88 @@ export interface Dictionary {
     forbiddenBody: string;
     returnWorkspaces: string;
     moduleNames: Record<string, string>;
+  };
+  approvals: {
+    heading: string;
+    lead: string;
+    requestCardTitle: string;
+    policyLabel: string;
+    permissionLabel: string;
+    reasonLabel: string;
+    reasonPlaceholder: string;
+    submitButton: string;
+    submitBusy: string;
+    casesCardTitle: string;
+    emptyCases: string;
+    colCase: string;
+    colRequester: string;
+    colPolicy: string;
+    colStatus: string;
+    colDecisionAction: string;
+    statusPending: string;
+    statusApproved: string;
+    statusRejected: string;
+    selfApprovalNotice: string;
+    mfaRequiredTag: string;
+    reasonRequiredError: string;
+    decisionReasonPlaceholder: string;
+    decisionReasonRequired: string;
+    mfaEnrollPrompt: string;
+    mfaEnrollLink: string;
+    decidedPrefix: string;
+    approveButton: string;
+    rejectButton: string;
+    decidingBusy: string;
+    errors: Record<string, string>;
+  };
+  admin: {
+    heading: string;
+    lead: string;
+    outboxCardTitle: string;
+    outboxPending: string;
+    outboxProcessed: string;
+    outboxFailed: string;
+    dispatchOutboxButton: string;
+    dispatchBusy: string;
+    membersCardTitle: string;
+    colMember: string;
+    colMembershipState: string;
+    colGrants: string;
+    colMemberActions: string;
+    addPermissionLabel: string;
+    grantButton: string;
+    suspendButton: string;
+    revokeButton: string;
+    mfaActiveTag: string;
+    mfaOffTag: string;
+    selfLockedHint: string;
+    statusLabels: Record<string, string>;
+    inviteCardTitle: string;
+    inviteEmailLabel: string;
+    inviteEmailPlaceholder: string;
+    inviteEmailRequiredError: string;
+    inviteRoleLabel: string;
+    inviteExpiryLabel: string;
+    createInviteButton: string;
+    createInviteBusy: string;
+    tokenCreatedTitle: string;
+    tokenCreatedNote: string;
+    copyTokenButton: string;
+    copiedTokenLabel: string;
+    openRedeemLink: string;
+    revokeInviteButton: string;
+    colInviteEmail: string;
+    colInviteRole: string;
+    colInviteStatus: string;
+    colInviteExpiry: string;
+    colInviteAction: string;
+    auditCardTitle: string;
+    colAuditTime: string;
+    colAuditEvent: string;
+    colAuditActor: string;
+    colAuditSummary: string;
+    emptyAudit: string;
+    errors: Record<string, string>;
   };
 }
 
@@ -176,6 +291,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       navItems: {
         overview: "Ringkasan Sesi",
         workspaces: "Ruang Kerja Entitas",
+        invitations: "Terima Undangan",
+        approvals: "Persetujuan",
         procurement: "Pengadaan",
         inventory: "Persediaan",
         sales: "Penjualan",
@@ -194,6 +311,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       fieldLastLogin: "Masuk Terakhir (WIB)",
       fieldWorkspaceStatus: "Status Ruang Kerja",
       fieldAuthorizedCount: "Entitas Diotorisasi",
+      fieldMfaStatus: "Autentikator MFA (TOTP)",
       fieldDbVerification: "Koneksi & Peran Basis Data",
       dbVerifiedValue: "Terhubung ke PostgreSQL (peran runtime non-superuser + RLS aktif)",
       boundaryTitle: "Batas Keamanan Multi-Tenant Aktif",
@@ -203,12 +321,47 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       nextStepBodyActive:
         "Buka direktori ruang kerja untuk masuk ke entitas hukum yang Anda miliki atau berpindah konteks secara aman.",
       nextStepBodyEmpty:
-        "Akun ini belum memiliki keanggotaan tenant atau izin entitas aktif. Buka direktori ruang kerja untuk panduan aktivasi akses.",
+        "Akun ini belum memiliki keanggotaan tenant atau izin entitas aktif. Gunakan token undangan atau hubungi admin organisasi.",
       openDirectoryCta: "Buka Direktori Ruang Kerja",
       loadingSession: "Memeriksa sesi aktif...",
       errorHeading: "Gagal Memverifikasi Sesi",
       errorRetry: "Coba Lagi",
       errorBackToLogin: "Kembali ke Masuk",
+    },
+    mfa: {
+      cardTitle: "Keamanan MFA TOTP (Persetujuan Berisiko Tinggi)",
+      enabledBadge: "MFA Aktif",
+      disabledBadge: "MFA Belum Aktif",
+      description: "Diwajibkan untuk menyetujui kebijakan persetujuan berisiko tinggi pada entitas.",
+      setupButton: "Siapkan Kunci TOTP",
+      setupBusy: "Membuat kunci...",
+      sharedKeyLabel: "Kunci Rahasia Authenticator (Base32)",
+      codeLabel: "Kode 6 Digit Authenticator",
+      codePlaceholder: "123456",
+      verifyButton: "Verifikasi & Aktifkan MFA",
+      verifyBusy: "Memverifikasi...",
+      verifiedNotice: "MFA TOTP aktif untuk akun ini.",
+      codeRequiredError: "Masukkan kode 6 digit dari aplikasi Authenticator.",
+    },
+    invitations: {
+      heading: "Terima Undangan Organisasi",
+      lead: "Masukkan token undangan sekali pakai dari Administrator Organisasi menggunakan akun email yang cocok.",
+      cardTitle: "Aktivasi Undangan Entitas Hukum",
+      tokenLabel: "Token Undangan",
+      tokenPlaceholder: "Tempel token undangan di sini",
+      submitButton: "Terima Undangan & Aktifkan Akses",
+      submitBusy: "Memvalidasi undangan...",
+      successTitle: "Undangan Diterima",
+      successBody: "Keanggotaan dan izin entitas baru telah diaktifkan tanpa mengaktifkan ulang izin lama yang pernah dicabut.",
+      enterGrantedEntity: "Masuk ke Entitas Sekarang",
+      tokenRequiredError: "Masukkan token undangan sekali pakai dari administrator.",
+      errors: {
+        invitation_not_found: "Token undangan tidak dikenali.",
+        invitation_expired: "Undangan telah kedaluwarsa. Minta administrator membuat undangan baru.",
+        invitation_revoked: "Undangan telah dicabut oleh administrator.",
+        invitation_already_accepted: "Undangan ini sudah digunakan sebelumnya.",
+        invitation_email_mismatch: "Email akun yang sedang masuk tidak cocok dengan penerima undangan.",
+      },
     },
     workspaces: {
       heading: "Direktori Ruang Kerja",
@@ -231,8 +384,9 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         "Identitas ASP.NET Core Identity Anda terverifikasi, namun belum memiliki keanggotaan tenant maupun izin entitas hukum yang aktif. Akses bersifat ditolak secara default.",
       emptyIdentityRef: "Referensi Akun Terautentikasi",
       emptyGuidanceTitle: "Cara Memperoleh Akses Ruang Kerja",
-      emptyGuidanceStep1: "Minta Administrator Organisasi menambahkan keanggotaan tenant dan izin entitas untuk email akun Anda.",
-      emptyGuidanceStep2: "Alur undangan mandiri & persetujuan empat mata tersedia pada tahap berikutnya (S02).",
+      emptyGuidanceStep1: "Minta Administrator Organisasi membuat undangan pada menu Administrasi entitas untuk email akun Anda.",
+      emptyGuidanceStep2: "Setelah menerima token undangan, buka halaman Terima Undangan untuk mengaktifkan akses entitas.",
+      openInvitationCta: "Masukkan Token Undangan",
     },
     entitySheet: {
       backToDirectory: "Direktori Ruang Kerja",
@@ -248,7 +402,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Modul Operasional",
       colPermission: "Kode Izin",
       colReadiness: "Status Kesiapan",
-      availableState: "Tersedia (S01)",
+      availableState: "Tersedia (S01–S02)",
       permittedPlannedPrefix: "Diizinkan · Tahap",
       notGrantedState: "Tidak Diizinkan",
       loadingEntity: "Memuat ruang kerja entitas terisolasi...",
@@ -261,11 +415,108 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       returnWorkspaces: "Kembali ke Direktori Ruang Kerja",
       moduleNames: {
         overview: "Ringkasan Entitas & Tata Kelola",
+        approvals: "Kotak Masuk & Persetujuan Empat Mata",
         procurement: "Pengadaan (PO, GRN, Pemasok)",
         inventory: "Persediaan & Buku Besar Stok",
         sales: "Penjualan & Penagihan",
         finance: "Keuangan, Pajak PPN/PPh & GL",
-        admin: "Administrasi Organisasi & Izin",
+        admin: "Administrasi Organisasi, Undangan & Audit",
+      },
+    },
+    approvals: {
+      heading: "Kotak Masuk Persetujuan Empat Mata",
+      lead: "Ajukan permintaan izin entitas atau putuskan permintaan tertunda secara independen (OD-02: pengaju tidak boleh menyetujui permintaannya sendiri).",
+      requestCardTitle: "Ajukan Permintaan Izin Entitas",
+      policyLabel: "Kebijakan Persetujuan",
+      permissionLabel: "Izin yang Diminta",
+      reasonLabel: "Justifikasi Operasional",
+      reasonPlaceholder: "Contoh: Perlu akses stok Q4",
+      submitButton: "Kirim Permintaan Persetujuan",
+      submitBusy: "Mengirim permintaan...",
+      casesCardTitle: "Daftar Kasus Persetujuan Entitas",
+      emptyCases: "Belum ada kasus persetujuan pada entitas ini.",
+      colCase: "Permintaan & Kebijakan",
+      colRequester: "Pengaju & Pemutus",
+      colPolicy: "Aturan Kebijakan",
+      colStatus: "Status Keputusan",
+      colDecisionAction: "Keputusan Independen",
+      statusPending: "Menunggu Keputusan",
+      statusApproved: "Disetujui",
+      statusRejected: "Ditolak",
+      selfApprovalNotice: "Aturan Empat Mata (OD-02): Anda adalah pengaju kasus ini; persetujuan hanya dapat dilakukan oleh pemutus lain.",
+      mfaRequiredTag: "Wajib MFA",
+      reasonRequiredError: "Tuliskan justifikasi operasional sebelum mengirim permintaan.",
+      decisionReasonPlaceholder: "Alasan persetujuan / penolakan...",
+      decisionReasonRequired: "Tuliskan alasan keputusan sebelum menyetujui atau menolak.",
+      mfaEnrollPrompt: "Kebijakan ini mewajibkan MFA TOTP aktif sebelum Anda dapat memutuskan permintaan.",
+      mfaEnrollLink: "Aktifkan MFA di halaman Akun",
+      decidedPrefix: "Diputuskan",
+      approveButton: "Setujui",
+      rejectButton: "Tolak",
+      decidingBusy: "Memproses...",
+      errors: {
+        four_eyes_self_approval_forbidden: "Aturan Empat Mata melarang menyetujui permintaan Anda sendiri.",
+        mfa_required: "Kebijakan ini mewajibkan akun pemutus mengaktifkan MFA TOTP terlebih dahulu.",
+        case_already_decided: "Kasus persetujuan ini sudah diputuskan sebelumnya.",
+      },
+    },
+    admin: {
+      heading: "Administrasi Entitas, Undangan & Audit",
+      lead: "Kelola anggota tenant, undangan sekali pakai, izin per entitas, log audit append-only, dan pengiriman outbox.",
+      outboxCardTitle: "Status Outbox Transaksional Tenant",
+      outboxPending: "Tertunda",
+      outboxProcessed: "Diproses",
+      outboxFailed: "Gagal",
+      dispatchOutboxButton: "Proses Antrean Outbox",
+      dispatchBusy: "Memproses outbox...",
+      membersCardTitle: "Anggota Tenant & Izin Entitas",
+      colMember: "Pengguna & MFA",
+      colMembershipState: "Status Keanggotaan",
+      colGrants: "Izin Entitas Ini",
+      colMemberActions: "Tindakan Administrasi",
+      addPermissionLabel: "Tambah izin",
+      grantButton: "Berikan",
+      suspendButton: "Tangguhkan",
+      revokeButton: "Cabut Akses",
+      mfaActiveTag: "MFA Aktif",
+      mfaOffTag: "Tanpa MFA",
+      selfLockedHint: "Akun sendiri",
+      statusLabels: {
+        ACTIVE: "Aktif",
+        SUSPENDED: "Ditangguhkan",
+        REVOKED: "Dicabut",
+        PENDING: "Menunggu",
+        ACCEPTED: "Diterima",
+        EXPIRED: "Kedaluwarsa",
+      },
+      inviteCardTitle: "Undang Pengguna ke Entitas Ini",
+      inviteEmailLabel: "Email Penerima",
+      inviteEmailPlaceholder: "staf@demo.athera.local",
+      inviteEmailRequiredError: "Masukkan alamat email penerima yang valid.",
+      inviteRoleLabel: "Templat Peran",
+      inviteExpiryLabel: "Masa Berlaku (Jam)",
+      createInviteButton: "Buat Undangan",
+      createInviteBusy: "Membuat undangan...",
+      tokenCreatedTitle: "Token Undangan Sekali Pakai Dibuat",
+      tokenCreatedNote: "Salin token atau tautan ini sekarang (server hanya menyimpan hash SHA-256):",
+      copyTokenButton: "Salin Token",
+      copiedTokenLabel: "Tersalin",
+      openRedeemLink: "Buka halaman penukaran token",
+      revokeInviteButton: "Cabut Undangan",
+      colInviteEmail: "Email Undangan",
+      colInviteRole: "Peran",
+      colInviteStatus: "Status",
+      colInviteExpiry: "Kedaluwarsa (WIB)",
+      colInviteAction: "Tindakan",
+      auditCardTitle: "Jejak Audit Append-Only Entitas",
+      colAuditTime: "Waktu (WIB)",
+      colAuditEvent: "Peristiwa",
+      colAuditActor: "Aktor",
+      colAuditSummary: "Ringkasan",
+      emptyAudit: "Belum ada catatan audit tercatat.",
+      errors: {
+        invalid_permission_code: "Kode izin tidak terdaftar dalam katalog resmi.",
+        grant_already_exists: "Izin tersebut sudah aktif dimiliki pengguna.",
       },
     },
   },
@@ -322,6 +573,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       navItems: {
         overview: "Session Overview",
         workspaces: "Entity Workspaces",
+        invitations: "Accept Invitation",
+        approvals: "Approvals",
         procurement: "Procurement",
         inventory: "Inventory",
         sales: "Sales",
@@ -340,6 +593,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       fieldLastLogin: "Last Signed In (WIB)",
       fieldWorkspaceStatus: "Workspace Status",
       fieldAuthorizedCount: "Authorized Entities",
+      fieldMfaStatus: "TOTP MFA Protection",
       fieldDbVerification: "Database Principal & Connection",
       dbVerifiedValue: "Live PostgreSQL verified (non-superuser runtime role + forced RLS)",
       boundaryTitle: "Multi-Tenant Isolation Boundary",
@@ -349,12 +603,47 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       nextStepBodyActive:
         "Open the workspace directory to enter an authorized legal entity or switch entities cleanly without stale cache.",
       nextStepBodyEmpty:
-        "No active tenant membership or entity grants are currently assigned to this account. Open the directory for provisioning details.",
+        "No active tenant membership or entity grants are assigned. Accept an invitation token or contact an admin.",
       openDirectoryCta: "Open Workspace Directory",
       loadingSession: "Checking active session...",
       errorHeading: "Unable to Verify Session",
       errorRetry: "Retry",
       errorBackToLogin: "Back to Sign In",
+    },
+    mfa: {
+      cardTitle: "TOTP MFA Security (Elevated Approvals)",
+      enabledBadge: "MFA Active",
+      disabledBadge: "MFA Not Enabled",
+      description: "Required before deciding approval cases under high-risk privilege escalation policy.",
+      setupButton: "Generate TOTP Secret",
+      setupBusy: "Generating secret...",
+      sharedKeyLabel: "Authenticator Shared Secret (Base32)",
+      codeLabel: "6-Digit Authenticator Code",
+      codePlaceholder: "123456",
+      verifyButton: "Verify & Enable MFA",
+      verifyBusy: "Verifying...",
+      verifiedNotice: "TOTP MFA is enabled on your account.",
+      codeRequiredError: "Enter the 6-digit code from your authenticator app.",
+    },
+    invitations: {
+      heading: "Accept Organization Invitation",
+      lead: "Redeem a single-use invitation token issued by your Organization Administrator for this email.",
+      cardTitle: "Legal-Entity Access Activation",
+      tokenLabel: "Invitation Token",
+      tokenPlaceholder: "Paste invitation token here",
+      submitButton: "Accept Invitation & Activate Scope",
+      submitBusy: "Validating token...",
+      successTitle: "Invitation Accepted",
+      successBody: "Your tenant membership and invited entity role grants are active without restoring any prior revoked grants.",
+      enterGrantedEntity: "Open Granted Entity",
+      tokenRequiredError: "Enter the single-use invitation token provided by your administrator.",
+      errors: {
+        invitation_not_found: "Invitation token was not found.",
+        invitation_expired: "This invitation has expired. Ask an administrator for a new token.",
+        invitation_revoked: "This invitation was revoked by an administrator.",
+        invitation_already_accepted: "This invitation token has already been redeemed.",
+        invitation_email_mismatch: "Your signed-in email does not match the invited recipient.",
+      },
     },
     workspaces: {
       heading: "Workspace Directory",
@@ -377,8 +666,9 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         "Your ASP.NET Core Identity account is verified, but you hold zero active tenant memberships or legal-entity access grants. Access remains denied by default.",
       emptyIdentityRef: "Authenticated Identity Reference",
       emptyGuidanceTitle: "Provisioning Workspace Access",
-      emptyGuidanceStep1: "Ask an Organization Administrator to add your account email as a tenant member and grant legal-entity permissions.",
-      emptyGuidanceStep2: "Invitation and four-eyes administration flows arrive in S02.",
+      emptyGuidanceStep1: "Ask an Organization Administrator to issue an entity invitation token for your account email.",
+      emptyGuidanceStep2: "Once received, open Accept Invitation to activate scoped entity access.",
+      openInvitationCta: "Redeem Invitation Token",
     },
     entitySheet: {
       backToDirectory: "Workspace Directory",
@@ -394,7 +684,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Operational Module",
       colPermission: "Permission Code",
       colReadiness: "Readiness State",
-      availableState: "Available (S01)",
+      availableState: "Available (S01–S02)",
       permittedPlannedPrefix: "Permitted · Stage",
       notGrantedState: "Not Granted",
       loadingEntity: "Loading isolated entity workspace...",
@@ -407,11 +697,108 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       returnWorkspaces: "Return to Workspace Directory",
       moduleNames: {
         overview: "Entity Overview & Governance",
+        approvals: "Four-Eyes Approval Inbox",
         procurement: "Procurement (PO, GRN, Vendors)",
         inventory: "Inventory & Stock Ledger",
         sales: "Sales & Invoicing",
         finance: "Finance, Indonesian Tax & GL",
-        admin: "Organization & Access Administration",
+        admin: "Organization Administration & Audit",
+      },
+    },
+    approvals: {
+      heading: "Four-Eyes Approval Inbox",
+      lead: "Submit scoped entity grant requests or review pending cases independently (OD-02: requester cannot approve own submission).",
+      requestCardTitle: "Submit Entity Permission Request",
+      policyLabel: "Approval Policy",
+      permissionLabel: "Requested Permission",
+      reasonLabel: "Business Justification",
+      reasonPlaceholder: "e.g., Needed for Q4 stock audit",
+      submitButton: "Submit Approval Request",
+      submitBusy: "Submitting request...",
+      casesCardTitle: "Entity Approval Cases",
+      emptyCases: "No approval cases recorded for this legal entity yet.",
+      colCase: "Request & Policy",
+      colRequester: "Requester & Decider",
+      colPolicy: "Policy",
+      colStatus: "Status",
+      colDecisionAction: "Independent Decision",
+      statusPending: "Pending Decision",
+      statusApproved: "Approved",
+      statusRejected: "Rejected",
+      selfApprovalNotice: "Four-Eyes Rule (OD-02): You submitted this request; only another authorized approver can decide it.",
+      mfaRequiredTag: "MFA Required",
+      reasonRequiredError: "Enter a business justification before submitting this request.",
+      decisionReasonPlaceholder: "Written approval or rejection reason...",
+      decisionReasonRequired: "Enter a written reason before approving or rejecting.",
+      mfaEnrollPrompt: "This policy requires TOTP MFA enrollment before you can decide requests.",
+      mfaEnrollLink: "Enable MFA on Account home",
+      decidedPrefix: "Decided",
+      approveButton: "Approve",
+      rejectButton: "Reject",
+      decidingBusy: "Deciding...",
+      errors: {
+        four_eyes_self_approval_forbidden: "Four-eyes rule prohibits deciding your own request.",
+        mfa_required: "This policy requires TOTP MFA enrollment before deciding.",
+        case_already_decided: "This approval case has already been decided.",
+      },
+    },
+    admin: {
+      heading: "Entity Administration, Invitations & Audit",
+      lead: "Manage tenant memberships, single-use entity invitations, grants, append-only audit trail, and outbox processing.",
+      outboxCardTitle: "Tenant Transactional Outbox Status",
+      outboxPending: "Pending",
+      outboxProcessed: "Processed",
+      outboxFailed: "Failed",
+      dispatchOutboxButton: "Process Outbox Queue",
+      dispatchBusy: "Dispatching...",
+      membersCardTitle: "Tenant Members & Entity Grants",
+      colMember: "Member & MFA",
+      colMembershipState: "Membership Status",
+      colGrants: "Active Entity Grants",
+      colMemberActions: "Administration Actions",
+      addPermissionLabel: "Add grant",
+      grantButton: "Grant",
+      suspendButton: "Suspend",
+      revokeButton: "Revoke Access",
+      mfaActiveTag: "MFA Active",
+      mfaOffTag: "No MFA",
+      selfLockedHint: "Current actor",
+      statusLabels: {
+        ACTIVE: "Active",
+        SUSPENDED: "Suspended",
+        REVOKED: "Revoked",
+        PENDING: "Pending",
+        ACCEPTED: "Accepted",
+        EXPIRED: "Expired",
+      },
+      inviteCardTitle: "Invite User to This Entity",
+      inviteEmailLabel: "Recipient Email",
+      inviteEmailPlaceholder: "staff@demo.athera.local",
+      inviteEmailRequiredError: "Enter a valid recipient email address.",
+      inviteRoleLabel: "Role Template",
+      inviteExpiryLabel: "Expiry (Hours)",
+      createInviteButton: "Create Invitation",
+      createInviteBusy: "Issuing invitation...",
+      tokenCreatedTitle: "One-Time Invitation Token Issued",
+      tokenCreatedNote: "Copy this token or link now (server persists SHA-256 hash only):",
+      copyTokenButton: "Copy Token",
+      copiedTokenLabel: "Copied",
+      openRedeemLink: "Open invitation redemption page",
+      revokeInviteButton: "Revoke Invitation",
+      colInviteEmail: "Invited Email",
+      colInviteRole: "Role Template",
+      colInviteStatus: "Status",
+      colInviteExpiry: "Expires (WIB)",
+      colInviteAction: "Action",
+      auditCardTitle: "Append-Only Entity Audit Trail",
+      colAuditTime: "Time (WIB)",
+      colAuditEvent: "Event",
+      colAuditActor: "Actor",
+      colAuditSummary: "Summary",
+      emptyAudit: "No audit events recorded yet.",
+      errors: {
+        invalid_permission_code: "Permission code is not in the approved catalog.",
+        grant_already_exists: "Member already holds this active permission.",
       },
     },
   },

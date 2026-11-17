@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Orphac.Athera.Modules.Approval;
 using Orphac.Athera.Modules.Identity;
 using Orphac.Athera.Modules.Persistence;
 using Orphac.Athera.Modules.Platform;
@@ -112,19 +113,23 @@ public static class DemoDataSeeder
         // U1: NUSA-JKT only (NUSA-SBY and SMDR-BDG remain inaccessible)
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.WorkspaceView, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ProcurementRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ApprovalRequest, nowUtc, ct);
 
-        // U2: Multi-entity across NUSA and SMDR
-        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.WorkspaceView, nowUtc, ct);
+        // U2: Multi-entity controller & org admin across NUSA and SMDR
+        foreach (var scopePair in new[] { (nusaId, nusaJktId), (nusaId, nusaSbyId), (smdrId, smdrBdgId) })
+        {
+            await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.WorkspaceView, nowUtc, ct);
+            await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.FinanceRead, nowUtc, ct);
+            await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.AdminRead, nowUtc, ct);
+            await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.AdminManage, nowUtc, ct);
+            await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.ApprovalRequest, nowUtc, ct);
+            await EnsureGrantAsync(db, scopePair.Item1, scopePair.Item2, u2Id, PermissionCodes.ApprovalDecide, nowUtc, ct);
+            await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, "SENSITIVE_ACCESS_CHANGE", "Sensitive Entity Access Change", requiresFourEyes: true, requiresApproverMfa: false, nowUtc, ct);
+            await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, "HIGH_RISK_PRIVILEGE_ESCALATION", "High-Risk Privilege Escalation (MFA)", requiresFourEyes: true, requiresApproverMfa: true, nowUtc, ct);
+        }
+
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ProcurementRead, nowUtc, ct);
-        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.FinanceRead, nowUtc, ct);
-
-        await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.WorkspaceView, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.InventoryRead, nowUtc, ct);
-        await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.FinanceRead, nowUtc, ct);
-
-        await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.WorkspaceView, nowUtc, ct);
-        await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.FinanceRead, nowUtc, ct);
-        await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.AdminRead, nowUtc, ct);
 
         await db.SaveChangesAsync(ct);
     }
@@ -252,7 +257,8 @@ public static class DemoDataSeeder
             g => g.TenantId == tenantId
                 && g.LegalEntityId == entityId
                 && g.UserId == userId
-                && g.PermissionCode == normalized,
+                && g.PermissionCode == normalized
+                && g.Status != GrantStatuses.Revoked,
             ct);
         if (!exists)
         {
@@ -264,6 +270,35 @@ public static class DemoDataSeeder
                 normalized,
                 nowUtc.AddMinutes(-1),
                 null,
+                nowUtc));
+            await db.SaveChangesAsync(ct);
+        }
+    }
+
+    private static async Task EnsureApprovalPolicyAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        Guid entityId,
+        string policyCode,
+        string name,
+        bool requiresFourEyes,
+        bool requiresApproverMfa,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
+        var exists = await db.ApprovalPolicies.AnyAsync(
+            p => p.TenantId == tenantId && p.LegalEntityId == entityId && p.PolicyCode == policyCode,
+            ct);
+        if (!exists)
+        {
+            db.ApprovalPolicies.Add(ApprovalPolicy.Create(
+                Guid.NewGuid(),
+                tenantId,
+                entityId,
+                policyCode,
+                name,
+                requiresFourEyes,
+                requiresApproverMfa,
                 nowUtc));
             await db.SaveChangesAsync(ct);
         }

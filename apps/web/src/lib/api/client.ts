@@ -11,6 +11,23 @@ export type TenantEntitiesResponse = components["schemas"]["TenantEntitiesRespon
 export type EntityWorkspaceDetailResponse = components["schemas"]["EntityWorkspaceDetailResponse"];
 export type ModuleNavigationItemDto = components["schemas"]["ModuleNavigationItemDto"];
 
+export type MfaSetupResponse = components["schemas"]["MfaSetupResponse"];
+export type MfaVerifyResponse = components["schemas"]["MfaVerifyResponse"];
+export type AdminOverviewResponse = components["schemas"]["AdminOverviewResponse"];
+export type EntityMemberDto = components["schemas"]["EntityMemberDto"];
+export type InvitationDto = components["schemas"]["InvitationDto"];
+export type ApprovalPolicyDto = components["schemas"]["ApprovalPolicyDto"];
+export type AuditEventDto = components["schemas"]["AuditEventDto"];
+export type OutboxSummaryDto = components["schemas"]["OutboxSummaryDto"];
+export type CreateInvitationRequest = components["schemas"]["CreateInvitationRequest"];
+export type CreateInvitationResponse = components["schemas"]["CreateInvitationResponse"];
+export type AcceptInvitationResponse = components["schemas"]["AcceptInvitationResponse"];
+export type ApprovalCaseDto = components["schemas"]["ApprovalCaseDto"];
+export type ApprovalCasesResponse = components["schemas"]["ApprovalCasesResponse"];
+export type CreateApprovalCaseRequest = components["schemas"]["CreateApprovalCaseRequest"];
+export type DecideApprovalCaseRequest = components["schemas"]["DecideApprovalCaseRequest"];
+export type OutboxDispatchResponse = components["schemas"]["OutboxDispatchResponse"];
+
 export interface ApiProblemError {
   status: number;
   errorCode: string;
@@ -67,36 +84,28 @@ export async function ensureCsrfToken(): Promise<string> {
   return data.requestToken;
 }
 
-export async function fetchHealth(): Promise<HealthResponse> {
-  const { data, error, response } = await rawClient.GET("/api/health", {
-    cache: "no-store",
-  });
-  if (error || !data) {
-    throw extractProblemError(error, (response as Response).status);
+function handleCsrfFailure(status: number): void {
+  if (status === 403) {
+    cachedCsrfToken = null;
   }
+}
+
+export async function fetchHealth(): Promise<HealthResponse> {
+  const { data, error, response } = await rawClient.GET("/api/health", { cache: "no-store" });
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
   return data;
 }
 
 export async function fetchCurrentUser(): Promise<CurrentUserResponse | null> {
-  const { data, error, response } = await rawClient.GET("/api/auth/me", {
-    cache: "no-store",
-  });
-  if (response.status === 401) {
-    return null;
-  }
-  if (error || !data) {
-    throw extractProblemError(error, (response as Response).status);
-  }
+  const { data, error, response } = await rawClient.GET("/api/auth/me", { cache: "no-store" });
+  if (response.status === 401) return null;
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
   return data;
 }
 
 export async function fetchWorkspaces(): Promise<WorkspacesResponse> {
-  const { data, error, response } = await rawClient.GET("/api/workspaces", {
-    cache: "no-store",
-  });
-  if (error || !data) {
-    throw extractProblemError(error, (response as Response).status);
-  }
+  const { data, error, response } = await rawClient.GET("/api/workspaces", { cache: "no-store" });
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
   return data;
 }
 
@@ -105,9 +114,7 @@ export async function fetchTenantEntities(tenantId: string): Promise<TenantEntit
     params: { path: { tenantId } },
     cache: "no-store",
   });
-  if (error || !data) {
-    throw extractProblemError(error, (response as Response).status);
-  }
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
   return data;
 }
 
@@ -126,9 +133,7 @@ export async function fetchEntityWorkspaceDetail(
       cache: "no-store",
     },
   );
-  if (error || !data) {
-    throw extractProblemError(error, (response as Response).status);
-  }
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
   return data;
 }
 
@@ -139,22 +144,14 @@ export async function loginWithPassword(
 ): Promise<AuthSessionResponse> {
   const csrf = await ensureCsrfToken();
   const { data, error, response } = await rawClient.POST("/api/auth/login", {
-    headers: {
-      "X-CSRF-Token": csrf,
-    },
-    body: {
-      email,
-      password,
-      rememberMe,
-    },
+    headers: { "X-CSRF-Token": csrf },
+    body: { email, password, rememberMe },
     cache: "no-store",
   });
 
   if (error || !data) {
     const status = (response as Response).status;
-    if (status === 403) {
-      cachedCsrfToken = null;
-    }
+    handleCsrfFailure(status);
     throw extractProblemError(error, status);
   }
 
@@ -165,19 +162,251 @@ export async function loginWithPassword(
 export async function logoutSession(): Promise<void> {
   const csrf = await ensureCsrfToken();
   const { data, error, response } = await rawClient.POST("/api/auth/logout", {
-    headers: {
-      "X-CSRF-Token": csrf,
-    },
+    headers: { "X-CSRF-Token": csrf },
     cache: "no-store",
   });
 
   if (error || !data) {
     const status = (response as Response).status;
-    if (status === 403) {
-      cachedCsrfToken = null;
-    }
+    handleCsrfFailure(status);
     throw extractProblemError(error, status);
   }
 
   cachedCsrfToken = data.csrfToken;
+}
+
+export async function setupMfa(): Promise<MfaSetupResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST("/api/auth/mfa/setup", {
+    headers: { "X-CSRF-Token": csrf },
+    cache: "no-store",
+  });
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function verifyMfa(code: string): Promise<MfaVerifyResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST("/api/auth/mfa/verify", {
+    headers: { "X-CSRF-Token": csrf },
+    body: { code },
+    cache: "no-store",
+  });
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchEntityAdminOverview(
+  tenantId: string,
+  entityId: string,
+): Promise<AdminOverviewResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/overview",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function createEntityInvitation(
+  tenantId: string,
+  entityId: string,
+  payload: CreateInvitationRequest,
+): Promise<CreateInvitationResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/invitations",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function revokeEntityInvitation(
+  tenantId: string,
+  entityId: string,
+  invitationId: string,
+): Promise<void> {
+  const csrf = await ensureCsrfToken();
+  const { error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/invitations/{invitationId}/revoke",
+    {
+      params: { path: { tenantId, entityId, invitationId } },
+      headers: { "X-CSRF-Token": csrf },
+      cache: "no-store",
+    },
+  );
+  if (error) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+}
+
+export async function acceptInvitation(token: string): Promise<AcceptInvitationResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST("/api/invitations/accept", {
+    headers: { "X-CSRF-Token": csrf },
+    body: { token },
+    cache: "no-store",
+  });
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function grantEntityPermission(
+  tenantId: string,
+  entityId: string,
+  targetUserId: string,
+  permissionCode: string,
+): Promise<void> {
+  const csrf = await ensureCsrfToken();
+  const { error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/grants",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: { targetUserId, permissionCode },
+      cache: "no-store",
+    },
+  );
+  if (error) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+}
+
+export async function updateMemberStatus(
+  tenantId: string,
+  entityId: string,
+  targetUserId: string,
+  action: "suspend" | "revoke",
+): Promise<void> {
+  const csrf = await ensureCsrfToken();
+  const path =
+    action === "revoke"
+      ? "/api/workspaces/{tenantId}/entities/{entityId}/admin/members/{targetUserId}/revoke"
+      : "/api/workspaces/{tenantId}/entities/{entityId}/admin/members/{targetUserId}/suspend";
+  const { error, response } = await rawClient.POST(path, {
+    params: { path: { tenantId, entityId, targetUserId } },
+    headers: { "X-CSRF-Token": csrf },
+    cache: "no-store",
+  });
+  if (error) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+}
+
+export async function fetchApprovalCases(
+  tenantId: string,
+  entityId: string,
+): Promise<ApprovalCasesResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/approvals/cases",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function createApprovalCase(
+  tenantId: string,
+  entityId: string,
+  payload: CreateApprovalCaseRequest,
+  idempotencyKey: string,
+): Promise<ApprovalCaseDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/approvals/cases",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: {
+        "X-CSRF-Token": csrf,
+        "Idempotency-Key": idempotencyKey,
+      },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function decideApprovalCase(
+  tenantId: string,
+  entityId: string,
+  caseId: string,
+  payload: DecideApprovalCaseRequest,
+): Promise<ApprovalCaseDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/approvals/cases/{caseId}/decide",
+    {
+      params: { path: { tenantId, entityId, caseId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function dispatchEntityOutbox(
+  tenantId: string,
+  entityId: string,
+): Promise<OutboxDispatchResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/outbox/dispatch",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
 }

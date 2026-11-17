@@ -129,7 +129,8 @@ public static class HealthAndAuthEndpoints
                 account.PreferredLocale,
                 account.LastSignedInAtUtc,
                 workspaceStatus,
-                workspaceCount);
+                workspaceCount,
+                user.TwoFactorEnabled);
 
             return Results.Ok(new AuthSessionResponse(
                 currentUser,
@@ -215,12 +216,78 @@ public static class HealthAndAuthEndpoints
                 account.PreferredLocale,
                 account.LastSignedInAtUtc,
                 workspaceStatus,
-                workspaceCount));
+                workspaceCount,
+                user.TwoFactorEnabled));
         })
         .RequireAuthorization()
         .WithName("GetCurrentUser")
         .Produces<CurrentUserResponse>(StatusCodes.Status200OK)
         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized);
+
+        app.MapPost("/api/auth/mfa/setup", async (
+            UserManager<ApplicationUser> userManager,
+            HttpContext httpContext) =>
+        {
+            SetNoStoreHeaders(httpContext);
+            var user = await userManager.GetUserAsync(httpContext.User);
+            if (user is null)
+            {
+                return ProblemResults.Create(httpContext, StatusCodes.Status401Unauthorized, "unauthenticated", "Authentication required", "Sign in to manage MFA.");
+            }
+
+            var key = await userManager.GetAuthenticatorKeyAsync(user);
+            if (string.IsNullOrWhiteSpace(key))
+            {
+                await userManager.ResetAuthenticatorKeyAsync(user);
+                key = await userManager.GetAuthenticatorKeyAsync(user);
+            }
+
+            var email = Uri.EscapeDataString(user.Email ?? user.UserName ?? user.Id.ToString("D"));
+            var uri = $"otpauth://totp/Orphac%20Athera:{email}?secret={key}&issuer=Orphac%20Athera&digits=6";
+            return Results.Ok(new MfaSetupResponse(key ?? string.Empty, uri));
+        })
+        .RequireAuthorization()
+        .WithName("SetupMfa")
+        .Produces<MfaSetupResponse>(StatusCodes.Status200OK)
+        .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+        .Produces<ProblemDetails>(StatusCodes.Status403Forbidden);
+
+        app.MapPost("/api/auth/mfa/verify", async (
+            MfaVerifyRequest request,
+            UserManager<ApplicationUser> userManager,
+            HttpContext httpContext) =>
+        {
+            SetNoStoreHeaders(httpContext);
+            var user = await userManager.GetUserAsync(httpContext.User);
+            if (user is null)
+            {
+                return ProblemResults.Create(httpContext, StatusCodes.Status401Unauthorized, "unauthenticated", "Authentication required", "Sign in to verify MFA.");
+            }
+
+            var cleanCode = (request.Code ?? string.Empty).Replace(" ", string.Empty).Replace("-", string.Empty);
+            if (string.IsNullOrWhiteSpace(cleanCode))
+            {
+                return ProblemResults.Create(httpContext, StatusCodes.Status400BadRequest, "mfa_code_required", "Verification code required", "Enter the 6-digit authenticator code.");
+            }
+
+            var isValid = await userManager.VerifyTwoFactorTokenAsync(
+                user,
+                userManager.Options.Tokens.AuthenticatorTokenProvider,
+                cleanCode);
+            if (!isValid)
+            {
+                return ProblemResults.Create(httpContext, StatusCodes.Status400BadRequest, "mfa_code_invalid", "Invalid verification code", "The 6-digit authenticator code could not be verified.");
+            }
+
+            await userManager.SetTwoFactorEnabledAsync(user, true);
+            return Results.Ok(new MfaVerifyResponse(true));
+        })
+        .RequireAuthorization()
+        .WithName("VerifyMfa")
+        .Produces<MfaVerifyResponse>(StatusCodes.Status200OK)
+        .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+        .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+        .Produces<ProblemDetails>(StatusCodes.Status403Forbidden);
 
         return app;
     }

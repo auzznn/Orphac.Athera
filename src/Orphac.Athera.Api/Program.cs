@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Orphac.Athera.Api.Cli;
 using Orphac.Athera.Api.Endpoints;
 using Orphac.Athera.Api.Security;
+using Orphac.Athera.Api.Workers;
 using Orphac.Athera.Modules.Identity;
+using Orphac.Athera.Modules.Integration;
 using Orphac.Athera.Modules.Persistence;
 using Orphac.Athera.Modules.Platform;
 
@@ -131,6 +133,9 @@ builder.Services.AddAntiforgery(options =>
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<TenantScopeExecutor>();
+builder.Services.AddScoped<TenantOutboxProcessor>();
+builder.Services.AddSingleton<ITenantOutboxSignal, TenantOutboxSignal>();
+builder.Services.AddHostedService<OutboxBackgroundWorker>();
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi("v1");
 
@@ -144,6 +149,7 @@ app.UseAuthorization();
 app.MapOpenApi("/openapi/{documentName}.json");
 app.MapHealthAndAuthEndpoints();
 app.MapWorkspaceEndpoints();
+app.MapAdminAndApprovalEndpoints();
 
 if (isMigrateMode)
 {

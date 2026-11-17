@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Orphac.Athera.Modules.Approval;
+using Orphac.Athera.Modules.Audit;
 using Orphac.Athera.Modules.Identity;
+using Orphac.Athera.Modules.Integration;
 using Orphac.Athera.Modules.Platform;
 
 namespace Orphac.Athera.Modules.Persistence;
@@ -17,6 +20,14 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
     public DbSet<LegalEntity> LegalEntities => Set<LegalEntity>();
     public DbSet<TenantMembership> TenantMemberships => Set<TenantMembership>();
     public DbSet<EntityAccessGrant> EntityAccessGrants => Set<EntityAccessGrant>();
+    public DbSet<UserInvitation> UserInvitations => Set<UserInvitation>();
+    public DbSet<ApprovalPolicy> ApprovalPolicies => Set<ApprovalPolicy>();
+    public DbSet<ApprovalCase> ApprovalCases => Set<ApprovalCase>();
+    public DbSet<ApprovalDecision> ApprovalDecisions => Set<ApprovalDecision>();
+    public DbSet<AuditEvent> AuditEvents => Set<AuditEvent>();
+    public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
+    public DbSet<InboxReceipt> InboxReceipts => Set<InboxReceipt>();
+    public DbSet<CommandIdempotency> CommandIdempotencies => Set<CommandIdempotency>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -160,7 +171,9 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
             entity.Property(x => x.RevokedAtUtc).HasColumnName("revoked_at_utc");
             entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
 
-            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.UserId, x.PermissionCode }).IsUnique();
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.UserId, x.PermissionCode })
+                .IsUnique()
+                .HasFilter("status <> 'REVOKED'");
             entity.HasIndex(x => new { x.TenantId, x.UserId, x.LegalEntityId, x.Status });
 
             entity.HasOne<LegalEntity>()
@@ -173,6 +186,256 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
                 .WithMany()
                 .HasForeignKey(x => new { x.TenantId, x.UserId })
                 .HasPrincipalKey(m => new { m.TenantId, m.UserId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<UserInvitation>(entity =>
+        {
+            entity.ToTable("user_invitations", "identity", t =>
+            {
+                t.HasCheckConstraint("ck_user_invitations_status", "status IN ('PENDING', 'ACCEPTED', 'REVOKED', 'EXPIRED')");
+                t.HasCheckConstraint("ck_user_invitations_expiry", "expires_at_utc > created_at_utc");
+            });
+
+            entity.HasKey(x => x.InvitationId);
+            entity.Property(x => x.InvitationId).HasColumnName("invitation_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.InvitedEmail).HasColumnName("invited_email").HasMaxLength(256).IsRequired();
+            entity.Property(x => x.RoleTemplateCode).HasColumnName("role_template_code").HasMaxLength(64).IsRequired();
+            entity.Property(x => x.TokenHash).HasColumnName("token_hash").HasMaxLength(64).IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.InvitedByUserId).HasColumnName("invited_by_user_id").IsRequired();
+            entity.Property(x => x.AcceptedByUserId).HasColumnName("accepted_by_user_id");
+            entity.Property(x => x.ExpiresAtUtc).HasColumnName("expires_at_utc").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+            entity.Property(x => x.AcceptedAtUtc).HasColumnName("accepted_at_utc");
+            entity.Property(x => x.RevokedAtUtc).HasColumnName("revoked_at_utc");
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => x.TokenHash).IsUnique();
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.InvitedEmail, x.Status });
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<TenantMembership>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.InvitedByUserId })
+                .HasPrincipalKey(m => new { m.TenantId, m.UserId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<ApprovalPolicy>(entity =>
+        {
+            entity.ToTable("approval_policies", "approval");
+            entity.HasKey(x => x.PolicyId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.PolicyId });
+
+            entity.Property(x => x.PolicyId).HasColumnName("policy_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.PolicyCode).HasColumnName("policy_code").HasMaxLength(64).IsRequired();
+            entity.Property(x => x.Name).HasColumnName("name").HasMaxLength(160).IsRequired();
+            entity.Property(x => x.RequiresFourEyes).HasColumnName("requires_four_eyes").IsRequired();
+            entity.Property(x => x.RequiresApproverMfa).HasColumnName("requires_approver_mfa").IsRequired();
+            entity.Property(x => x.IsActive).HasColumnName("is_active").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.PolicyCode }).IsUnique();
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<ApprovalCase>(entity =>
+        {
+            entity.ToTable("approval_cases", "approval", t =>
+            {
+                t.HasCheckConstraint("ck_approval_cases_status", "status IN ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED')");
+                t.HasCheckConstraint("ck_approval_cases_no_self_decision", "decided_by_user_id IS NULL OR decided_by_user_id <> requested_by_user_id");
+            });
+
+            entity.HasKey(x => x.CaseId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.CaseId });
+
+            entity.Property(x => x.CaseId).HasColumnName("case_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.PolicyId).HasColumnName("policy_id").IsRequired();
+            entity.Property(x => x.ActionType).HasColumnName("action_type").HasMaxLength(64).IsRequired();
+            entity.Property(x => x.TargetUserId).HasColumnName("target_user_id").IsRequired();
+            entity.Property(x => x.TargetPermissionCode).HasColumnName("target_permission_code").HasMaxLength(100).IsRequired();
+            entity.Property(x => x.RequestReason).HasColumnName("request_reason").HasMaxLength(500).IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.RequestedByUserId).HasColumnName("requested_by_user_id").IsRequired();
+            entity.Property(x => x.RequestedAtUtc).HasColumnName("requested_at_utc").IsRequired();
+            entity.Property(x => x.DecidedByUserId).HasColumnName("decided_by_user_id");
+            entity.Property(x => x.DecidedAtUtc).HasColumnName("decided_at_utc");
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.Status, x.RequestedAtUtc });
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<ApprovalPolicy>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PolicyId })
+                .HasPrincipalKey(p => new { p.TenantId, p.LegalEntityId, p.PolicyId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<TenantMembership>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.RequestedByUserId })
+                .HasPrincipalKey(m => new { m.TenantId, m.UserId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<ApprovalDecision>(entity =>
+        {
+            entity.ToTable("approval_decisions", "approval", t =>
+            {
+                t.HasCheckConstraint("ck_approval_decisions_decision", "decision IN ('APPROVED', 'REJECTED')");
+                t.HasCheckConstraint("ck_approval_decisions_four_eyes", "decided_by_user_id <> requested_by_user_id");
+            });
+
+            entity.HasKey(x => x.DecisionId);
+            entity.Property(x => x.DecisionId).HasColumnName("decision_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.CaseId).HasColumnName("case_id").IsRequired();
+            entity.Property(x => x.RequestedByUserId).HasColumnName("requested_by_user_id").IsRequired();
+            entity.Property(x => x.DecidedByUserId).HasColumnName("decided_by_user_id").IsRequired();
+            entity.Property(x => x.Decision).HasColumnName("decision").HasMaxLength(16).IsRequired();
+            entity.Property(x => x.Reason).HasColumnName("reason").HasMaxLength(500).IsRequired();
+            entity.Property(x => x.ApproverMfaVerified).HasColumnName("approver_mfa_verified").IsRequired();
+            entity.Property(x => x.DecidedAtUtc).HasColumnName("decided_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.CaseId }).IsUnique();
+
+            entity.HasOne<ApprovalCase>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.CaseId })
+                .HasPrincipalKey(c => new { c.TenantId, c.LegalEntityId, c.CaseId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<TenantMembership>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.DecidedByUserId })
+                .HasPrincipalKey(m => new { m.TenantId, m.UserId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<AuditEvent>(entity =>
+        {
+            entity.ToTable("audit_events", "audit");
+            entity.HasKey(x => x.EventId);
+            entity.Property(x => x.EventId).HasColumnName("event_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.ActorUserId).HasColumnName("actor_user_id").IsRequired();
+            entity.Property(x => x.EventType).HasColumnName("event_type").HasMaxLength(80).IsRequired();
+            entity.Property(x => x.SubjectType).HasColumnName("subject_type").HasMaxLength(64).IsRequired();
+            entity.Property(x => x.SubjectId).HasColumnName("subject_id").HasMaxLength(128).IsRequired();
+            entity.Property(x => x.Summary).HasColumnName("summary").HasMaxLength(300).IsRequired();
+            entity.Property(x => x.PayloadJson).HasColumnName("payload_json").HasColumnType("jsonb").IsRequired();
+            entity.Property(x => x.OccurredAtUtc).HasColumnName("occurred_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.OccurredAtUtc });
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<OutboxMessage>(entity =>
+        {
+            entity.ToTable("outbox_messages", "integration", t =>
+            {
+                t.HasCheckConstraint("ck_outbox_messages_status", "status IN ('PENDING', 'PROCESSED', 'FAILED')");
+            });
+
+            entity.HasKey(x => x.MessageId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.MessageId });
+
+            entity.Property(x => x.MessageId).HasColumnName("message_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.Topic).HasColumnName("topic").HasMaxLength(120).IsRequired();
+            entity.Property(x => x.SourceKey).HasColumnName("source_key").HasMaxLength(160).IsRequired();
+            entity.Property(x => x.PayloadJson).HasColumnName("payload_json").HasColumnType("jsonb").IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.AttemptCount).HasColumnName("attempt_count").HasDefaultValue(0).IsRequired();
+            entity.Property(x => x.LastError).HasColumnName("last_error").HasMaxLength(500);
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.NextAttemptAtUtc).HasColumnName("next_attempt_at_utc").IsRequired();
+            entity.Property(x => x.ProcessedAtUtc).HasColumnName("processed_at_utc");
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.Topic, x.SourceKey }).IsUnique();
+            entity.HasIndex(x => new { x.TenantId, x.Status, x.NextAttemptAtUtc });
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<InboxReceipt>(entity =>
+        {
+            entity.ToTable("inbox_receipts", "integration");
+            entity.HasKey(x => x.ReceiptId);
+            entity.Property(x => x.ReceiptId).HasColumnName("receipt_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.ConsumerName).HasColumnName("consumer_name").HasMaxLength(100).IsRequired();
+            entity.Property(x => x.MessageId).HasColumnName("message_id").IsRequired();
+            entity.Property(x => x.ProcessedAtUtc).HasColumnName("processed_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.ConsumerName, x.MessageId }).IsUnique();
+
+            entity.HasOne<OutboxMessage>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.MessageId })
+                .HasPrincipalKey(m => new { m.TenantId, m.MessageId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<CommandIdempotency>(entity =>
+        {
+            entity.ToTable("command_idempotency", "integration");
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Id).HasColumnName("id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.OperationCode).HasColumnName("operation_code").HasMaxLength(80).IsRequired();
+            entity.Property(x => x.IdempotencyKey).HasColumnName("idempotency_key").HasMaxLength(128).IsRequired();
+            entity.Property(x => x.ActorUserId).HasColumnName("actor_user_id").IsRequired();
+            entity.Property(x => x.ResourceId).HasColumnName("resource_id").HasMaxLength(128).IsRequired();
+            entity.Property(x => x.StatusCode).HasColumnName("status_code").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.OperationCode, x.IdempotencyKey }).IsUnique();
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

@@ -125,6 +125,271 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                     b.ToTable("asp_net_user_tokens", "identity");
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Approval.ApprovalCase", b =>
+                {
+                    b.Property<Guid>("CaseId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("case_id");
+
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("action_type");
+
+                    b.Property<DateTimeOffset?>("DecidedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("decided_at_utc");
+
+                    b.Property<Guid?>("DecidedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("decided_by_user_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<Guid>("PolicyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("policy_id");
+
+                    b.Property<string>("RequestReason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("request_reason");
+
+                    b.Property<DateTimeOffset>("RequestedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("requested_at_utc");
+
+                    b.Property<Guid>("RequestedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("requested_by_user_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<string>("TargetPermissionCode")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("target_permission_code");
+
+                    b.Property<Guid>("TargetUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("target_user_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("CaseId");
+
+                    b.HasIndex("TenantId", "RequestedByUserId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PolicyId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "Status", "RequestedAtUtc");
+
+                    b.ToTable("approval_cases", "approval", t =>
+                        {
+                            t.HasCheckConstraint("ck_approval_cases_no_self_decision", "decided_by_user_id IS NULL OR decided_by_user_id <> requested_by_user_id");
+
+                            t.HasCheckConstraint("ck_approval_cases_status", "status IN ('PENDING', 'APPROVED', 'REJECTED', 'CANCELLED')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Approval.ApprovalDecision", b =>
+                {
+                    b.Property<Guid>("DecisionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("decision_id");
+
+                    b.Property<bool>("ApproverMfaVerified")
+                        .HasColumnType("boolean")
+                        .HasColumnName("approver_mfa_verified");
+
+                    b.Property<Guid>("CaseId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("case_id");
+
+                    b.Property<DateTimeOffset>("DecidedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("decided_at_utc");
+
+                    b.Property<Guid>("DecidedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("decided_by_user_id");
+
+                    b.Property<string>("Decision")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("decision");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("reason");
+
+                    b.Property<Guid>("RequestedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("requested_by_user_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("DecisionId");
+
+                    b.HasIndex("TenantId", "DecidedByUserId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "CaseId")
+                        .IsUnique();
+
+                    b.ToTable("approval_decisions", "approval", t =>
+                        {
+                            t.HasCheckConstraint("ck_approval_decisions_decision", "decision IN ('APPROVED', 'REJECTED')");
+
+                            t.HasCheckConstraint("ck_approval_decisions_four_eyes", "decided_by_user_id <> requested_by_user_id");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Approval.ApprovalPolicy", b =>
+                {
+                    b.Property<Guid>("PolicyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("policy_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("PolicyCode")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("policy_code");
+
+                    b.Property<bool>("RequiresApproverMfa")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_approver_mfa");
+
+                    b.Property<bool>("RequiresFourEyes")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_four_eyes");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("PolicyId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PolicyCode")
+                        .IsUnique();
+
+                    b.ToTable("approval_policies", "approval");
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Audit.AuditEvent", b =>
+                {
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("event_id");
+
+                    b.Property<Guid>("ActorUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("actor_user_id");
+
+                    b.Property<string>("EventType")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("event_type");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<DateTimeOffset>("OccurredAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("occurred_at_utc");
+
+                    b.Property<string>("PayloadJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("payload_json");
+
+                    b.Property<string>("SubjectId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("subject_id");
+
+                    b.Property<string>("SubjectType")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("subject_type");
+
+                    b.Property<string>("Summary")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("summary");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("EventId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "OccurredAtUtc");
+
+                    b.ToTable("audit_events", "audit");
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Identity.ApplicationRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -277,7 +542,8 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                     b.HasKey("GrantId");
 
                     b.HasIndex("TenantId", "LegalEntityId", "UserId", "PermissionCode")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("status <> 'REVOKED'");
 
                     b.HasIndex("TenantId", "UserId", "LegalEntityId", "Status");
 
@@ -385,6 +651,264 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                     b.ToTable("user_accounts", "identity", t =>
                         {
                             t.HasCheckConstraint("ck_user_accounts_locale", "preferred_locale IN ('id-ID', 'en-US')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Identity.UserInvitation", b =>
+                {
+                    b.Property<Guid>("InvitationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("invitation_id");
+
+                    b.Property<DateTimeOffset?>("AcceptedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("accepted_at_utc");
+
+                    b.Property<Guid?>("AcceptedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("accepted_by_user_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<DateTimeOffset>("ExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("expires_at_utc");
+
+                    b.Property<Guid>("InvitedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("invited_by_user_id");
+
+                    b.Property<string>("InvitedEmail")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("invited_email");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<DateTimeOffset?>("RevokedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("revoked_at_utc");
+
+                    b.Property<string>("RoleTemplateCode")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("role_template_code");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("token_hash");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("InvitationId");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "InvitedByUserId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "InvitedEmail", "Status");
+
+                    b.ToTable("user_invitations", "identity", t =>
+                        {
+                            t.HasCheckConstraint("ck_user_invitations_expiry", "expires_at_utc > created_at_utc");
+
+                            t.HasCheckConstraint("ck_user_invitations_status", "status IN ('PENDING', 'ACCEPTED', 'REVOKED', 'EXPIRED')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Integration.CommandIdempotency", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<Guid>("ActorUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("actor_user_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("IdempotencyKey")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("idempotency_key");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("OperationCode")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("operation_code");
+
+                    b.Property<string>("ResourceId")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)")
+                        .HasColumnName("resource_id");
+
+                    b.Property<int>("StatusCode")
+                        .HasColumnType("integer")
+                        .HasColumnName("status_code");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "OperationCode", "IdempotencyKey")
+                        .IsUnique();
+
+                    b.ToTable("command_idempotency", "integration");
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Integration.InboxReceipt", b =>
+                {
+                    b.Property<Guid>("ReceiptId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("receipt_id");
+
+                    b.Property<string>("ConsumerName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("consumer_name");
+
+                    b.Property<Guid>("MessageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("message_id");
+
+                    b.Property<DateTimeOffset>("ProcessedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at_utc");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("ReceiptId");
+
+                    b.HasIndex("TenantId", "MessageId");
+
+                    b.HasIndex("TenantId", "ConsumerName", "MessageId")
+                        .IsUnique();
+
+                    b.ToTable("inbox_receipts", "integration");
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Integration.OutboxMessage", b =>
+                {
+                    b.Property<Guid>("MessageId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("message_id");
+
+                    b.Property<int>("AttemptCount")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("attempt_count");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("LastError")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("last_error");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<DateTimeOffset>("NextAttemptAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("next_attempt_at_utc");
+
+                    b.Property<string>("PayloadJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("payload_json");
+
+                    b.Property<DateTimeOffset?>("ProcessedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("processed_at_utc");
+
+                    b.Property<string>("SourceKey")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("source_key");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<string>("Topic")
+                        .IsRequired()
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("topic");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("MessageId");
+
+                    b.HasIndex("TenantId", "LegalEntityId");
+
+                    b.HasIndex("TenantId", "Status", "NextAttemptAtUtc");
+
+                    b.HasIndex("TenantId", "Topic", "SourceKey")
+                        .IsUnique();
+
+                    b.ToTable("outbox_messages", "integration", t =>
+                        {
+                            t.HasCheckConstraint("ck_outbox_messages_status", "status IN ('PENDING', 'PROCESSED', 'FAILED')");
                         });
                 });
 
@@ -572,6 +1096,67 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Approval.ApprovalCase", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "RequestedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Approval.ApprovalPolicy", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "PolicyId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "PolicyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Approval.ApprovalDecision", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "DecidedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Approval.ApprovalCase", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "CaseId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "CaseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Approval.ApprovalPolicy", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Audit.AuditEvent", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Identity.EntityAccessGrant", b =>
                 {
                     b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
@@ -609,6 +1194,53 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                     b.HasOne("Orphac.Athera.Modules.Identity.ApplicationUser", null)
                         .WithOne()
                         .HasForeignKey("Orphac.Athera.Modules.Identity.UserAccount", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Identity.UserInvitation", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "InvitedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Integration.CommandIdempotency", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Integration.InboxReceipt", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Integration.OutboxMessage", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "MessageId")
+                        .HasPrincipalKey("TenantId", "MessageId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Integration.OutboxMessage", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

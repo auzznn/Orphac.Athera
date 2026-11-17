@@ -84,6 +84,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/mfa/setup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SetupMfa"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/mfa/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["VerifyMfa"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/workspaces": {
         parameters: {
             query?: never;
@@ -132,10 +164,247 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetEntityAdminOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/invitations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/invitations/{invitationId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RevokeInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/invitations/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AcceptInvitation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/grants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GrantEntityPermission"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/members/{targetUserId}/suspend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SuspendTenantMember"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/members/{targetUserId}/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RevokeTenantMember"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/approvals/cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListApprovalCases"];
+        put?: never;
+        post: operations["CreateApprovalCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/approvals/cases/{caseId}/decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DecideApprovalCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/outbox/dispatch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DispatchEntityOutbox"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AcceptInvitationRequest: {
+            token: string;
+        };
+        AcceptInvitationResponse: {
+            /** Format: uuid */
+            tenantId: string;
+            /** Format: uuid */
+            legalEntityId: string;
+            tenantCode: string;
+            entityCode: string;
+            grantedPermissions: string[];
+        };
+        AdminOverviewResponse: {
+            members: components["schemas"]["EntityMemberDto"][];
+            invitations: components["schemas"]["InvitationDto"][];
+            policies: components["schemas"]["ApprovalPolicyDto"][];
+            auditEvents: components["schemas"]["AuditEventDto"][];
+            outboxSummary: components["schemas"]["OutboxSummaryDto"];
+            availablePermissions: string[];
+            availableRoleTemplates: string[];
+        };
+        ApprovalCaseDto: {
+            /** Format: uuid */
+            caseId: string;
+            /** Format: uuid */
+            tenantId: string;
+            /** Format: uuid */
+            legalEntityId: string;
+            /** Format: uuid */
+            policyId: string;
+            policyCode: string;
+            requiresApproverMfa: boolean;
+            actionType: string;
+            /** Format: uuid */
+            targetUserId: string;
+            targetPermissionCode: string;
+            requestReason: string;
+            status: string;
+            /** Format: uuid */
+            requestedByUserId: string;
+            requestedByName: string;
+            /** Format: date-time */
+            requestedAtUtc: string;
+            /** Format: uuid */
+            decidedByUserId: null | string;
+            decidedByName: null | string;
+            /** Format: date-time */
+            decidedAtUtc: null | string;
+            decisionReason: null | string;
+            approverMfaVerified: null | boolean;
+        };
+        ApprovalCasesResponse: {
+            cases: components["schemas"]["ApprovalCaseDto"][];
+            policies: components["schemas"]["ApprovalPolicyDto"][];
+        };
+        ApprovalPolicyDto: {
+            /** Format: uuid */
+            policyId: string;
+            policyCode: string;
+            name: string;
+            requiresFourEyes: boolean;
+            requiresApproverMfa: boolean;
+            isActive: boolean;
+        };
+        AuditEventDto: {
+            /** Format: uuid */
+            eventId: string;
+            /** Format: uuid */
+            actorUserId: string;
+            actorEmail: string;
+            eventType: string;
+            subjectType: string;
+            subjectId: string;
+            summary: string;
+            /** Format: date-time */
+            occurredAtUtc: string;
+        };
         AuthorizedTenantDto: {
             /** Format: uuid */
             tenantId: string;
@@ -147,6 +416,32 @@ export interface components {
         AuthSessionResponse: {
             user: components["schemas"]["CurrentUserResponse"];
             csrfToken: string;
+        };
+        CreateApprovalCaseRequest: {
+            policyCode: string;
+            targetPermissionCode: string;
+            reason: string;
+            /** Format: uuid */
+            targetUserId?: null | string;
+        };
+        CreateInvitationRequest: {
+            email: string;
+            roleTemplateCode: string;
+            /**
+             * Format: int32
+             * @default 48
+             */
+            expiresInHours: number | string;
+        };
+        CreateInvitationResponse: {
+            /** Format: uuid */
+            invitationId: string;
+            invitedEmail: string;
+            roleTemplateCode: string;
+            status: string;
+            /** Format: date-time */
+            expiresAtUtc: string;
+            inviteToken: string;
         };
         CsrfTokenResponse: {
             headerName: string;
@@ -163,6 +458,20 @@ export interface components {
             workspaceAccessStatus: string;
             /** Format: int32 */
             authorizedWorkspaceCount: number | string;
+            mfaEnabled: boolean;
+        };
+        DecideApprovalCaseRequest: {
+            decision: string;
+            reason: string;
+        };
+        EntityMemberDto: {
+            /** Format: uuid */
+            userId: string;
+            email: string;
+            displayName: string;
+            membershipStatus: string;
+            mfaEnabled: boolean;
+            permissions: string[];
         };
         EntityWorkspaceDetailResponse: {
             tenant: components["schemas"]["TenantSummaryDto"];
@@ -172,11 +481,31 @@ export interface components {
             /** Format: date-time */
             serverTimestampUtc: string;
         };
+        GrantPermissionRequest: {
+            /** Format: uuid */
+            targetUserId: string;
+            permissionCode: string;
+        };
         HealthResponse: {
             status: string;
             service: string;
             /** Format: date-time */
             timestampUtc: string;
+        };
+        InvitationDto: {
+            /** Format: uuid */
+            invitationId: string;
+            invitedEmail: string;
+            roleTemplateCode: string;
+            status: string;
+            /** Format: date-time */
+            expiresAtUtc: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            acceptedAtUtc: null | string;
+            /** Format: date-time */
+            revokedAtUtc: null | string;
         };
         LegalEntityDto: {
             /** Format: uuid */
@@ -201,11 +530,36 @@ export interface components {
             signedOut: boolean;
             csrfToken: string;
         };
+        MfaSetupResponse: {
+            sharedKey: string;
+            otpauthUri: string;
+        };
+        MfaVerifyRequest: {
+            code: string;
+        };
+        MfaVerifyResponse: {
+            mfaEnabled: boolean;
+        };
         ModuleNavigationItemDto: {
             key: string;
             status: string;
             permitted: boolean;
             requiredPermission: null | string;
+        };
+        OutboxDispatchResponse: {
+            /** Format: int32 */
+            processedCount: number | string;
+            /** Format: int32 */
+            failedCount: number | string;
+            outboxSummary: components["schemas"]["OutboxSummaryDto"];
+        };
+        OutboxSummaryDto: {
+            /** Format: int32 */
+            pendingCount: number | string;
+            /** Format: int32 */
+            processedCount: number | string;
+            /** Format: int32 */
+            failedCount: number | string;
         };
         ProblemDetails: {
             type?: null | string;
@@ -411,6 +765,95 @@ export interface operations {
             };
         };
     };
+    SetupMfa: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MfaSetupResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    VerifyMfa: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MfaVerifyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MfaVerifyResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
     ListWorkspaces: {
         parameters: {
             query?: never;
@@ -537,6 +980,272 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetEntityAdminOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminOverviewResponse"];
+                };
+            };
+        };
+    };
+    CreateInvitation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateInvitationRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateInvitationResponse"];
+                };
+            };
+        };
+    };
+    RevokeInvitation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                invitationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AcceptInvitation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AcceptInvitationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AcceptInvitationResponse"];
+                };
+            };
+        };
+    };
+    GrantEntityPermission: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrantPermissionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SuspendTenantMember: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                targetUserId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RevokeTenantMember: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                targetUserId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ListApprovalCases: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalCasesResponse"];
+                };
+            };
+        };
+    };
+    CreateApprovalCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateApprovalCaseRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalCaseDto"];
+                };
+            };
+        };
+    };
+    DecideApprovalCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideApprovalCaseRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalCaseDto"];
+                };
+            };
+        };
+    };
+    DispatchEntityOutbox: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OutboxDispatchResponse"];
                 };
             };
         };

@@ -190,6 +190,106 @@
         }
       }
     },
+    "/api/auth/mfa/setup": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "SetupMfa",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MfaSetupResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/mfa/verify": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "VerifyMfa",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MfaVerifyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MfaVerifyResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/workspaces": {
       "get": {
         "tags": [
@@ -357,10 +457,784 @@
           }
         }
       }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/overview": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetEntityAdminOverview",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminOverviewResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/invitations": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CreateInvitation",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInvitationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateInvitationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/invitations/{invitationId}/revoke": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "RevokeInvitation",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "invitationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/invitations/accept": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "AcceptInvitation",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptInvitationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptInvitationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/grants": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GrantEntityPermission",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrantPermissionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/members/{targetUserId}/suspend": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "SuspendTenantMember",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "targetUserId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/members/{targetUserId}/revoke": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "RevokeTenantMember",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "targetUserId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/approvals/cases": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ListApprovalCases",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalCasesResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CreateApprovalCase",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApprovalCaseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalCaseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/approvals/cases/{caseId}/decide": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "DecideApprovalCase",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "caseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecideApprovalCaseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApprovalCaseDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/admin/outbox/dispatch": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "DispatchEntityOutbox",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OutboxDispatchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AcceptInvitationRequest": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "AcceptInvitationResponse": {
+        "required": [
+          "tenantId",
+          "legalEntityId",
+          "tenantCode",
+          "entityCode",
+          "grantedPermissions"
+        ],
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "legalEntityId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tenantCode": {
+            "type": "string"
+          },
+          "entityCode": {
+            "type": "string"
+          },
+          "grantedPermissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AdminOverviewResponse": {
+        "required": [
+          "members",
+          "invitations",
+          "policies",
+          "auditEvents",
+          "outboxSummary",
+          "availablePermissions",
+          "availableRoleTemplates"
+        ],
+        "type": "object",
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EntityMemberDto"
+            }
+          },
+          "invitations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvitationDto"
+            }
+          },
+          "policies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApprovalPolicyDto"
+            }
+          },
+          "auditEvents": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuditEventDto"
+            }
+          },
+          "outboxSummary": {
+            "$ref": "#/components/schemas/OutboxSummaryDto"
+          },
+          "availablePermissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "availableRoleTemplates": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ApprovalCaseDto": {
+        "required": [
+          "caseId",
+          "tenantId",
+          "legalEntityId",
+          "policyId",
+          "policyCode",
+          "requiresApproverMfa",
+          "actionType",
+          "targetUserId",
+          "targetPermissionCode",
+          "requestReason",
+          "status",
+          "requestedByUserId",
+          "requestedByName",
+          "requestedAtUtc",
+          "decidedByUserId",
+          "decidedByName",
+          "decidedAtUtc",
+          "decisionReason",
+          "approverMfaVerified"
+        ],
+        "type": "object",
+        "properties": {
+          "caseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "legalEntityId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "policyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "policyCode": {
+            "type": "string"
+          },
+          "requiresApproverMfa": {
+            "type": "boolean"
+          },
+          "actionType": {
+            "type": "string"
+          },
+          "targetUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "targetPermissionCode": {
+            "type": "string"
+          },
+          "requestReason": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "requestedByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestedByName": {
+            "type": "string"
+          },
+          "requestedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decidedByUserId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "decidedByName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "decidedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "decisionReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "approverMfaVerified": {
+            "type": [
+              "null",
+              "boolean"
+            ]
+          }
+        }
+      },
+      "ApprovalCasesResponse": {
+        "required": [
+          "cases",
+          "policies"
+        ],
+        "type": "object",
+        "properties": {
+          "cases": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApprovalCaseDto"
+            }
+          },
+          "policies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ApprovalPolicyDto"
+            }
+          }
+        }
+      },
+      "ApprovalPolicyDto": {
+        "required": [
+          "policyId",
+          "policyCode",
+          "name",
+          "requiresFourEyes",
+          "requiresApproverMfa",
+          "isActive"
+        ],
+        "type": "object",
+        "properties": {
+          "policyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "policyCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "requiresFourEyes": {
+            "type": "boolean"
+          },
+          "requiresApproverMfa": {
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AuditEventDto": {
+        "required": [
+          "eventId",
+          "actorUserId",
+          "actorEmail",
+          "eventType",
+          "subjectType",
+          "subjectId",
+          "summary",
+          "occurredAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "eventId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "actorUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "actorEmail": {
+            "type": "string"
+          },
+          "eventType": {
+            "type": "string"
+          },
+          "subjectType": {
+            "type": "string"
+          },
+          "subjectId": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "occurredAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "AuthorizedTenantDto": {
         "required": [
           "tenantId",
@@ -407,6 +1281,89 @@
           }
         }
       },
+      "CreateApprovalCaseRequest": {
+        "required": [
+          "policyCode",
+          "targetPermissionCode",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "policyCode": {
+            "type": "string"
+          },
+          "targetPermissionCode": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "targetUserId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          }
+        }
+      },
+      "CreateInvitationRequest": {
+        "required": [
+          "email",
+          "roleTemplateCode"
+        ],
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "roleTemplateCode": {
+            "type": "string"
+          },
+          "expiresInHours": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32",
+            "default": 48
+          }
+        }
+      },
+      "CreateInvitationResponse": {
+        "required": [
+          "invitationId",
+          "invitedEmail",
+          "roleTemplateCode",
+          "status",
+          "expiresAtUtc",
+          "inviteToken"
+        ],
+        "type": "object",
+        "properties": {
+          "invitationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "invitedEmail": {
+            "type": "string"
+          },
+          "roleTemplateCode": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "expiresAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "inviteToken": {
+            "type": "string"
+          }
+        }
+      },
       "CsrfTokenResponse": {
         "required": [
           "headerName",
@@ -430,7 +1387,8 @@
           "preferredLocale",
           "lastSignedInAtUtc",
           "workspaceAccessStatus",
-          "authorizedWorkspaceCount"
+          "authorizedWorkspaceCount",
+          "mfaEnabled"
         ],
         "type": "object",
         "properties": {
@@ -464,6 +1422,59 @@
               "string"
             ],
             "format": "int32"
+          },
+          "mfaEnabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "DecideApprovalCaseRequest": {
+        "required": [
+          "decision",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
+      "EntityMemberDto": {
+        "required": [
+          "userId",
+          "email",
+          "displayName",
+          "membershipStatus",
+          "mfaEnabled",
+          "permissions"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "membershipStatus": {
+            "type": "string"
+          },
+          "mfaEnabled": {
+            "type": "boolean"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -501,6 +1512,22 @@
           }
         }
       },
+      "GrantPermissionRequest": {
+        "required": [
+          "targetUserId",
+          "permissionCode"
+        ],
+        "type": "object",
+        "properties": {
+          "targetUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "permissionCode": {
+            "type": "string"
+          }
+        }
+      },
       "HealthResponse": {
         "required": [
           "status",
@@ -517,6 +1544,56 @@
           },
           "timestampUtc": {
             "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "InvitationDto": {
+        "required": [
+          "invitationId",
+          "invitedEmail",
+          "roleTemplateCode",
+          "status",
+          "expiresAtUtc",
+          "createdAtUtc",
+          "acceptedAtUtc",
+          "revokedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "invitationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "invitedEmail": {
+            "type": "string"
+          },
+          "roleTemplateCode": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "expiresAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "acceptedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "revokedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           }
         }
@@ -610,6 +1687,43 @@
           }
         }
       },
+      "MfaSetupResponse": {
+        "required": [
+          "sharedKey",
+          "otpauthUri"
+        ],
+        "type": "object",
+        "properties": {
+          "sharedKey": {
+            "type": "string"
+          },
+          "otpauthUri": {
+            "type": "string"
+          }
+        }
+      },
+      "MfaVerifyRequest": {
+        "required": [
+          "code"
+        ],
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "MfaVerifyResponse": {
+        "required": [
+          "mfaEnabled"
+        ],
+        "type": "object",
+        "properties": {
+          "mfaEnabled": {
+            "type": "boolean"
+          }
+        }
+      },
       "ModuleNavigationItemDto": {
         "required": [
           "key",
@@ -633,6 +1747,69 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "OutboxDispatchResponse": {
+        "required": [
+          "processedCount",
+          "failedCount",
+          "outboxSummary"
+        ],
+        "type": "object",
+        "properties": {
+          "processedCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "failedCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "outboxSummary": {
+            "$ref": "#/components/schemas/OutboxSummaryDto"
+          }
+        }
+      },
+      "OutboxSummaryDto": {
+        "required": [
+          "pendingCount",
+          "processedCount",
+          "failedCount"
+        ],
+        "type": "object",
+        "properties": {
+          "pendingCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "processedCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "failedCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
