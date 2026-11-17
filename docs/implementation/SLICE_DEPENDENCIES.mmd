@@ -1,0 +1,21 @@
+flowchart LR
+    S00["S00 Stack"] --> S01["S01 Tenant security"]
+    S01 --> S02["S02 Access & approvals"]
+    S02 --> S03["S03 Masters"]
+    S03 --> S04["S04 GL configuration"]
+    S04 --> S05["S05 Purchase orders"]
+    S05 --> S06["S06 Dock custody"]
+    S06 --> S07["S07 Valued stock + GRNI"]
+    S07 --> S08["S08 Availability/QC"]
+    S08 --> S09["S09 Bill + AP"]
+    S09 --> S10["S10 Returns"]
+    S10 --> S11["S11 Supplier payments"]
+    S03 --> S12["S12 Sales orders"]
+    S08 --> S13["S13 Fulfillment"]
+    S12 --> S13
+    S13 --> S14["S14 Customer billing + AR"]
+    S14 --> S15["S15 Receipts & credits"]
+    S11 --> S15
+    S15 --> S16["S16 Reporting + close"]
+    S16 --> S17["S17 Documents + operational UX"]
+    S17 --> S18["S18 Release verification"]

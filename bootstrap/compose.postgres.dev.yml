@@ -1,0 +1,23 @@
+# Disposable local-only PostgreSQL 18 container for Orphac Athera greenfield development.
+# NOT for production. Binds exclusively to loopback 127.0.0.1:55433 by default.
+services:
+  postgres:
+    image: postgres:18
+    container_name: athera-greenfield-pg
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${ATHERA_PG_PORT:-55433}:5432"
+    environment:
+      POSTGRES_USER: ${ATHERA_PG_ADMIN_USER:-athera_dev_admin}
+      POSTGRES_PASSWORD: ${ATHERA_PG_ADMIN_PASSWORD:-athera_dev_local_admin_pw}
+      POSTGRES_DB: ${ATHERA_PG_DB:-athera_dev}
+    volumes:
+      - athera_greenfield_pg_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-athera_dev_admin} -d $${POSTGRES_DB:-athera_dev}"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+volumes:
+  athera_greenfield_pg_dev: {}

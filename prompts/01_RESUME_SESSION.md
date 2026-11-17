@@ -1,0 +1,3 @@
+# /goal — Resume the Orphac Athera greenfield S00–S18 workstream
+
+Read `AGENTS.md`, `prompts/00_MASTER_GOAL.md`, `docs/implementation/WORKSTREAM-STATE.md`, and the contract of the current Sxx slice. Inspect the **new repository's actual** Git history, files, migrations, environments and test logs. Do not presume the former Blazor/SQL Server project exists here. Identify the last fully verified checkpoint, pending blockers, Owner-only decisions and next safe action. Reproduce key validation commands, then continue from the first unverified step: design -> implement -> verify -> evidence -> local commit. Do not redo complete work or invent acceptance. Continue independent authorized development only where prerequisites are met.

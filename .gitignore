@@ -1,0 +1,49 @@
+# Build outputs
+**/[Bb]in/
+**/[Oo]bj/
+**/out/
+**/publish/
+**/node_modules/
+**/.next/
+**/.turbo/
+**/coverage/
+
+# IDE & OS files
+.vs/
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.user
+*.suo
+*.userosscache
+*.DS_Store
+
+# Secrets & local environment configuration (NEVER commit credentials)
+appsettings.Development.json
+appsettings.Local.json
+appsettings.*.local.json
+secrets.json
+.env
+.env.*
+*.env
+!.env.example
+!.env.*.example
+
+# Test results & coverage
+**/[Tt]est[Rr]esults/
+**/playwright-report/
+**/test-results/
+*.trx
+*.coverage
+
+# Local NuGet / dotnet CLI state
+.dotnet/
+.nuget/
+
+# Impeccable runtime & local-only cache/artifacts
+.impeccable/config.local.json
+.impeccable/hook.cache.json
+.impeccable/questions/
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/live/runtime/

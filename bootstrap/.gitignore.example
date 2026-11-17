@@ -1,0 +1,16 @@
+# Merge into repository root .gitignore after S00 bootstrap.
+**/bin/
+**/obj/
+**/node_modules/
+**/.next/
+**/.turbo/
+**/coverage/
+**/TestResults/
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.user
+*.suo
+.vscode/*.local.json
+.DS_Store
