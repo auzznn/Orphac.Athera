@@ -10,6 +10,7 @@ using Orphac.Athera.Api.Endpoints;
 using Orphac.Athera.Api.Security;
 using Orphac.Athera.Modules.Identity;
 using Orphac.Athera.Modules.Persistence;
+using Orphac.Athera.Modules.Platform;
 
 var isMigrateMode = args.Contains("--migrate", StringComparer.OrdinalIgnoreCase);
 var isSeedDemoMode = args.Contains("--seed-demo", StringComparer.OrdinalIgnoreCase);
@@ -129,6 +130,7 @@ builder.Services.AddAntiforgery(options =>
 });
 
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<TenantScopeExecutor>();
 builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi("v1");
 
@@ -141,6 +143,7 @@ app.UseAuthorization();
 
 app.MapOpenApi("/openapi/{documentName}.json");
 app.MapHealthAndAuthEndpoints();
+app.MapWorkspaceEndpoints();
 
 if (isMigrateMode)
 {

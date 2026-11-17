@@ -1,0 +1,73 @@
+
+> @orphac-athera/web@0.1.0 api:check
+> openapi-typescript ../../docs/contracts/openapi.v1.json -o .openapi.check.d.ts && diff -u src/lib/api/schema.d.ts .openapi.check.d.ts && rm -f .openapi.check.d.ts
+
+✨ openapi-typescript 7.13.0
+🚀 ../../docs/contracts/openapi.v1.json → .openapi.check.d.ts [31.5ms]
+
+> @orphac-athera/web@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @orphac-athera/web@0.1.0 lint
+> eslint .
+
+
+> @orphac-athera/web@0.1.0 test
+> vitest run
+
+
+ RUN  v5.1.0 /Users/macbook/Documents/orphac/Orphac.Athera/apps/web
+
+ ✓ src/__tests__/auth-ui.test.tsx (2 tests) 93ms
+ ✓ src/__tests__/workspace-ui.test.tsx (3 tests) 94ms
+
+ Test Files  2 passed (2)
+      Tests  5 passed (5)
+   Start at  01:26:27
+   Duration  766ms (environment 50%, import 18%, tests 14%, setup 10%, transform 7%, worker 1%)
+
+
+> @orphac-athera/web@0.1.0 build
+> next build
+
+▲ Next.js 16.4.6 (Turbopack)
+✓ Running next.config.ts took 69ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 464ms
+  Running TypeScript ...
+  Finished TypeScript in 1483ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/3) ...
+✓ Generating static pages using 7 workers (3/3) in 71ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/[...path]
+├ ○ /login
+├ ƒ /w/[tenantId]/[entityId]
+└ ƒ /workspaces
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> @orphac-athera/web@0.1.0 e2e
+> playwright test
+
+
+Running 4 tests using 1 worker
+
+  ✓  1 [chromium] › e2e/s00-auth.spec.ts:10:3 › S00 Authenticated Vertical Path › unauthenticated redirect, CSRF check, login failure/success, screenshots and sign out (1.9s)
+  ✓  2 [chromium] › e2e/s01-workspace.spec.ts:32:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-01 U1 sees only NUSA-JKT and hostile tenant/entity URLs fail safely with zero leak (793ms)
+  ✓  3 [chromium] › e2e/s01-workspace.spec.ts:68:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-02 U2 navigates multi-tenant directory, switches entities and tenants cleanly, and fits mobile (935ms)
+  ✓  4 [chromium] › e2e/s01-workspace.spec.ts:126:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-03 U3 authenticated without workspaces sees accessible default-deny guidance (437ms)
+
+  4 passed (7.4s)
+found 0 vulnerabilities
+=== impeccable detect --json apps/web/src ===
+[]

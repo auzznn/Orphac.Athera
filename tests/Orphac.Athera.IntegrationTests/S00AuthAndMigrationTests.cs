@@ -31,7 +31,7 @@ public sealed class S00AuthAndMigrationTests
             Assert.Equal(0L, remaining);
         }
 
-        await db.Database.MigrateAsync();
+        await db.Database.MigrateAsync("20261117173251_M00_InitialIdentityFoundation");
 
         await using (var conn = new NpgsqlConnection(fx.MigratorConnectionString))
         {

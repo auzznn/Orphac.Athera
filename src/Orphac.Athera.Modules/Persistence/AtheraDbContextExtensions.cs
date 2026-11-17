@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace Orphac.Athera.Modules.Persistence;
@@ -18,6 +19,16 @@ public static class AtheraDbContextExtensions
     {
         return builder.UseNpgsql(
             connectionString,
+            npgsql => npgsql.MigrationsHistoryTable("__ef_migrations_history", "identity"));
+    }
+
+    public static DbContextOptionsBuilder<TContext> UseAtheraNpgsql<TContext>(
+        this DbContextOptionsBuilder<TContext> builder,
+        DbDataSource dataSource)
+        where TContext : DbContext
+    {
+        return builder.UseNpgsql(
+            dataSource,
             npgsql => npgsql.MigrationsHistoryTable("__ef_migrations_history", "identity"));
     }
 }

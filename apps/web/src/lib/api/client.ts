@@ -4,6 +4,12 @@ import type { components, paths } from "./schema";
 export type CurrentUserResponse = components["schemas"]["CurrentUserResponse"];
 export type AuthSessionResponse = components["schemas"]["AuthSessionResponse"];
 export type HealthResponse = components["schemas"]["HealthResponse"];
+export type WorkspacesResponse = components["schemas"]["WorkspacesResponse"];
+export type AuthorizedTenantDto = components["schemas"]["AuthorizedTenantDto"];
+export type LegalEntityDto = components["schemas"]["LegalEntityDto"];
+export type TenantEntitiesResponse = components["schemas"]["TenantEntitiesResponse"];
+export type EntityWorkspaceDetailResponse = components["schemas"]["EntityWorkspaceDetailResponse"];
+export type ModuleNavigationItemDto = components["schemas"]["ModuleNavigationItemDto"];
 
 export interface ApiProblemError {
   status: number;
@@ -78,6 +84,48 @@ export async function fetchCurrentUser(): Promise<CurrentUserResponse | null> {
   if (response.status === 401) {
     return null;
   }
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function fetchWorkspaces(): Promise<WorkspacesResponse> {
+  const { data, error, response } = await rawClient.GET("/api/workspaces", {
+    cache: "no-store",
+  });
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function fetchTenantEntities(tenantId: string): Promise<TenantEntitiesResponse> {
+  const { data, error, response } = await rawClient.GET("/api/workspaces/{tenantId}/entities", {
+    params: { path: { tenantId } },
+    cache: "no-store",
+  });
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function fetchEntityWorkspaceDetail(
+  tenantId: string,
+  entityId: string,
+  requirePermission?: string,
+): Promise<EntityWorkspaceDetailResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query: requirePermission ? { requirePermission } : undefined,
+      },
+      cache: "no-store",
+    },
+  );
   if (error || !data) {
     throw extractProblemError(error, (response as Response).status);
   }

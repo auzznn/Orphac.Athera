@@ -3,8 +3,8 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 
 const repoRoot = path.resolve(__dirname, "../../..");
-const evidenceDir = path.join(repoRoot, "docs/evidence/S00/screenshots");
-const reviewDir = path.join(repoRoot, ".impeccable/review");
+const evidenceDir = path.join(repoRoot, "apps/web/test-results/s00");
+const reviewDir = path.join(repoRoot, "apps/web/test-results/s00-review");
 
 test.describe("S00 Authenticated Vertical Path", () => {
   test("unauthenticated redirect, CSRF check, login failure/success, screenshots and sign out", async ({
@@ -48,7 +48,7 @@ test.describe("S00 Authenticated Vertical Path", () => {
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByRole("banner").getByText("Rina Utami (Demo Procurement)")).toBeVisible();
     await expect(page.getByRole("cell", { name: "Rina Utami (Demo Procurement)" })).toBeVisible();
-    await expect(page.getByRole("cell", { name: "S00_DEFAULT_DENY" })).toBeVisible();
+    await expect(page.getByRole("cell", { name: "ACTIVE_WORKSPACES" })).toBeVisible();
 
     await page.screenshot({ path: path.join(evidenceDir, "s00-shell-desktop.png"), fullPage: true });
     fs.copyFileSync(

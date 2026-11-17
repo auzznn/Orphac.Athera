@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Orphac.Athera.Api.Contracts;
 using Orphac.Athera.Modules.Identity;
 using Orphac.Athera.Modules.Persistence;
+using Orphac.Athera.Modules.Platform;
 
 namespace Orphac.Athera.Api.Endpoints;
 
@@ -51,6 +52,7 @@ public static class HealthAndAuthEndpoints
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             AtheraDbContext db,
+            TenantScopeExecutor scopeExecutor,
             IAntiforgery antiforgery,
             HttpContext httpContext,
             CancellationToken ct) =>
@@ -119,14 +121,15 @@ public static class HealthAndAuthEndpoints
             httpContext.User = await signInManager.CreateUserPrincipalAsync(user);
 
             var rotatedTokens = antiforgery.GetAndStoreTokens(httpContext);
+            var (workspaceStatus, workspaceCount) = await ResolveWorkspaceAccessSummaryAsync(scopeExecutor, user.Id, ct);
             var currentUser = new CurrentUserResponse(
                 user.Id,
                 user.Email ?? normalizedEmail,
                 account.DisplayName,
                 account.PreferredLocale,
                 account.LastSignedInAtUtc,
-                "S00_DEFAULT_DENY",
-                0);
+                workspaceStatus,
+                workspaceCount);
 
             return Results.Ok(new AuthSessionResponse(
                 currentUser,
@@ -152,12 +155,14 @@ public static class HealthAndAuthEndpoints
             return Results.Ok(new LogoutResponse(true, tokens.RequestToken ?? string.Empty));
         })
         .WithName("Logout")
-        .Produces<LogoutResponse>(StatusCodes.Status200OK);
+        .Produces<LogoutResponse>(StatusCodes.Status200OK)
+        .Produces<ProblemDetails>(StatusCodes.Status403Forbidden);
 
         app.MapGet("/api/auth/me", async (
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             AtheraDbContext db,
+            TenantScopeExecutor scopeExecutor,
             HttpContext httpContext,
             CancellationToken ct) =>
         {
@@ -202,14 +207,15 @@ public static class HealthAndAuthEndpoints
                     "Your account is inactive or missing.");
             }
 
+            var (workspaceStatus, workspaceCount) = await ResolveWorkspaceAccessSummaryAsync(scopeExecutor, user.Id, ct);
             return Results.Ok(new CurrentUserResponse(
                 user.Id,
                 user.Email ?? user.UserName ?? string.Empty,
                 account.DisplayName,
                 account.PreferredLocale,
                 account.LastSignedInAtUtc,
-                "S00_DEFAULT_DENY",
-                0));
+                workspaceStatus,
+                workspaceCount));
         })
         .RequireAuthorization()
         .WithName("GetCurrentUser")
@@ -217,6 +223,16 @@ public static class HealthAndAuthEndpoints
         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized);
 
         return app;
+    }
+
+    private static async Task<(string Status, int Count)> ResolveWorkspaceAccessSummaryAsync(
+        TenantScopeExecutor scopeExecutor,
+        Guid userId,
+        CancellationToken ct)
+    {
+        var workspaces = await scopeExecutor.DiscoverWorkspacesForUserAsync(userId, ct);
+        var count = workspaces.Sum(t => t.Entities.Count);
+        return (count > 0 ? "ACTIVE_WORKSPACES" : "NO_ACTIVE_WORKSPACE", count);
     }
 
     internal static void SetNoStoreHeaders(HttpContext context)

@@ -146,6 +146,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
           }
         }
       }
@@ -179,10 +189,209 @@
           }
         }
       }
+    },
+    "/api/workspaces": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ListWorkspaces",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspacesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ListTenantEntities",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TenantEntitiesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetEntityWorkspaceDetail",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "requirePermission",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EntityWorkspaceDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AuthorizedTenantDto": {
+        "required": [
+          "tenantId",
+          "code",
+          "name",
+          "status",
+          "entities"
+        ],
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LegalEntityDto"
+            }
+          }
+        }
+      },
       "AuthSessionResponse": {
         "required": [
           "user",
@@ -258,6 +467,40 @@
           }
         }
       },
+      "EntityWorkspaceDetailResponse": {
+        "required": [
+          "tenant",
+          "entity",
+          "effectivePermissions",
+          "navigationCapabilities",
+          "serverTimestampUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "$ref": "#/components/schemas/TenantSummaryDto"
+          },
+          "entity": {
+            "$ref": "#/components/schemas/LegalEntityDto"
+          },
+          "effectivePermissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "navigationCapabilities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ModuleNavigationItemDto"
+            }
+          },
+          "serverTimestampUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "HealthResponse": {
         "required": [
           "status",
@@ -275,6 +518,61 @@
           "timestampUtc": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "LegalEntityDto": {
+        "required": [
+          "legalEntityId",
+          "tenantId",
+          "code",
+          "name",
+          "functionalCurrencyCode",
+          "countryCode",
+          "timeZoneId",
+          "taxRegistrationNpwp",
+          "status",
+          "permissions"
+        ],
+        "type": "object",
+        "properties": {
+          "legalEntityId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "tenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "functionalCurrencyCode": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string"
+          },
+          "timeZoneId": {
+            "type": "string"
+          },
+          "taxRegistrationNpwp": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -309,6 +607,32 @@
           },
           "csrfToken": {
             "type": "string"
+          }
+        }
+      },
+      "ModuleNavigationItemDto": {
+        "required": [
+          "key",
+          "status",
+          "permitted",
+          "requiredPermission"
+        ],
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "permitted": {
+            "type": "boolean"
+          },
+          "requiredPermission": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -347,6 +671,81 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "TenantEntitiesResponse": {
+        "required": [
+          "tenant",
+          "entities",
+          "evaluatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "tenant": {
+            "$ref": "#/components/schemas/TenantSummaryDto"
+          },
+          "entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LegalEntityDto"
+            }
+          },
+          "evaluatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "TenantSummaryDto": {
+        "required": [
+          "tenantId",
+          "code",
+          "name",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "tenantId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "WorkspacesResponse": {
+        "required": [
+          "tenants",
+          "totalAuthorizedEntities",
+          "evaluatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "tenants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthorizedTenantDto"
+            }
+          },
+          "totalAuthorizedEntities": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "evaluatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       }

@@ -84,10 +84,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListWorkspaces"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListTenantEntities"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetEntityWorkspaceDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AuthorizedTenantDto: {
+            /** Format: uuid */
+            tenantId: string;
+            code: string;
+            name: string;
+            status: string;
+            entities: components["schemas"]["LegalEntityDto"][];
+        };
         AuthSessionResponse: {
             user: components["schemas"]["CurrentUserResponse"];
             csrfToken: string;
@@ -108,11 +164,33 @@ export interface components {
             /** Format: int32 */
             authorizedWorkspaceCount: number | string;
         };
+        EntityWorkspaceDetailResponse: {
+            tenant: components["schemas"]["TenantSummaryDto"];
+            entity: components["schemas"]["LegalEntityDto"];
+            effectivePermissions: string[];
+            navigationCapabilities: components["schemas"]["ModuleNavigationItemDto"][];
+            /** Format: date-time */
+            serverTimestampUtc: string;
+        };
         HealthResponse: {
             status: string;
             service: string;
             /** Format: date-time */
             timestampUtc: string;
+        };
+        LegalEntityDto: {
+            /** Format: uuid */
+            legalEntityId: string;
+            /** Format: uuid */
+            tenantId: string;
+            code: string;
+            name: string;
+            functionalCurrencyCode: string;
+            countryCode: string;
+            timeZoneId: string;
+            taxRegistrationNpwp: null | string;
+            status: string;
+            permissions: string[];
         };
         LoginRequest: {
             email: string;
@@ -123,6 +201,12 @@ export interface components {
             signedOut: boolean;
             csrfToken: string;
         };
+        ModuleNavigationItemDto: {
+            key: string;
+            status: string;
+            permitted: boolean;
+            requiredPermission: null | string;
+        };
         ProblemDetails: {
             type?: null | string;
             title?: null | string;
@@ -130,6 +214,26 @@ export interface components {
             status?: null | number | string;
             detail?: null | string;
             instance?: null | string;
+        };
+        TenantEntitiesResponse: {
+            tenant: components["schemas"]["TenantSummaryDto"];
+            entities: components["schemas"]["LegalEntityDto"][];
+            /** Format: date-time */
+            evaluatedAtUtc: string;
+        };
+        TenantSummaryDto: {
+            /** Format: uuid */
+            tenantId: string;
+            code: string;
+            name: string;
+            status: string;
+        };
+        WorkspacesResponse: {
+            tenants: components["schemas"]["AuthorizedTenantDto"][];
+            /** Format: int32 */
+            totalAuthorizedEntities: number | string;
+            /** Format: date-time */
+            evaluatedAtUtc: string;
         };
     };
     responses: never;
@@ -267,6 +371,15 @@ export interface operations {
                     "application/json": components["schemas"]["LogoutResponse"];
                 };
             };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
         };
     };
     GetCurrentUser: {
@@ -289,6 +402,136 @@ export interface operations {
             };
             /** @description Unauthorized */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListWorkspaces: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkspacesResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListTenantEntities: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TenantEntitiesResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetEntityWorkspaceDetail: {
+        parameters: {
+            query?: {
+                requirePermission?: string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EntityWorkspaceDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
