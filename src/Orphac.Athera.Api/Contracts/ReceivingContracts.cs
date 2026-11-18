@@ -65,7 +65,8 @@ public sealed record RecordGoodsReceiptRequest(
     string? VehicleOrSealRef,
     string? DocumentEvidenceRef,
     string? Notes,
-    IReadOnlyList<ArrivalLineRequest> Lines);
+    IReadOnlyList<ArrivalLineRequest> Lines,
+    Guid? ReplacementAuthorizationId = null);
 
 public sealed record RecordDockCheckRequest(
     string IdempotencyKey,
@@ -96,7 +97,9 @@ public sealed record GoodsReceiptSummaryDto(
     decimal TotalReleasedBaseQuantity,
     decimal TotalHeldBaseQuantity,
     bool HasFinancialPosting,
-    DateTimeOffset UpdatedAtUtc);
+    DateTimeOffset UpdatedAtUtc,
+    Guid? ReplacementAuthorizationId = null,
+    string? ReplacementAuthorizationNumber = null);
 
 public sealed record GoodsReceiptListResponse(
     IReadOnlyList<GoodsReceiptSummaryDto> Items,
@@ -210,4 +213,6 @@ public sealed record GoodsReceiptDetailDto(
     int ValuedAcceptanceJournalCount,
     IReadOnlyList<GoodsReceiptLinkedAcceptanceDto> ValuedAcceptances,
     IReadOnlyList<GoodsReceiptLineDto> Lines,
-    IReadOnlyList<DockCheckHistoryDto> DockChecks);
+    IReadOnlyList<DockCheckHistoryDto> DockChecks,
+    Guid? ReplacementAuthorizationId = null,
+    string? ReplacementAuthorizationNumber = null);

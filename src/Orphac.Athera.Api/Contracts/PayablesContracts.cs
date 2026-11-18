@@ -350,6 +350,7 @@ public sealed record PayableItemDto(
     decimal WithholdingTaxAmount,
     decimal NetPayableAmount,
     decimal PaidAmount,
+    decimal CreditedAmount,
     decimal RemainingOpenAmount,
     string Status,
     string PaymentBlockStatus,

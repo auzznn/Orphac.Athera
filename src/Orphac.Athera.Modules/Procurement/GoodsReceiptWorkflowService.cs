@@ -33,7 +33,8 @@ public sealed record RecordGoodsReceiptCommand(
     string? Notes,
     IReadOnlyList<ArrivalLineInput> Lines,
     Guid ActorUserId,
-    DateTimeOffset NowUtc);
+    DateTimeOffset NowUtc,
+    Guid? ReplacementAuthorizationId = null);
 
 public sealed record RecordDockCheckCommand(
     Guid TenantId,
@@ -244,6 +245,40 @@ public static class GoodsReceiptWorkflowService
             .Where(c => c.TenantId == cmd.TenantId && c.Status == CatalogStatuses.Active && itemIds.Contains(c.ItemId))
             .ToListAsync(ct);
 
+        ReplacementAuthorization? lockedReplacement = null;
+        if (cmd.ReplacementAuthorizationId is { } rpaId)
+        {
+            lockedReplacement = (await db.ReplacementAuthorizations
+                .FromSqlInterpolated(
+                    $"SELECT * FROM procurement.replacement_authorizations WHERE tenant_id = {cmd.TenantId} AND legal_entity_id = {cmd.LegalEntityId} AND replacement_authorization_id = {rpaId} FOR UPDATE")
+                .ToListAsync(ct))
+                .FirstOrDefault();
+
+            if (lockedReplacement is null)
+            {
+                return ReceivingWorkflowOutcome.Fail(404, "replacement_authorization_not_found", "Linked replacement authorization was not found in this legal entity.");
+            }
+
+            if (lockedReplacement.PurchaseOrderId != po.PurchaseOrderId)
+            {
+                return ReceivingWorkflowOutcome.Fail(409, "replacement_po_mismatch", "Replacement authorization belongs to a different purchase order.");
+            }
+
+            if (lockedReplacement.Status is not (ReplacementAuthorizationStatuses.Active or ReplacementAuthorizationStatuses.PartiallyReceived) ||
+                lockedReplacement.RemainingBaseQuantity <= 0m)
+            {
+                return ReceivingWorkflowOutcome.Fail(
+                    409,
+                    "replacement_entitlement_exceeded",
+                    $"Replacement authorization '{lockedReplacement.AuthorizationNumber}' has no remaining open entitlement.");
+            }
+
+            if (cmd.Lines.Count != 1)
+            {
+                return ReceivingWorkflowOutcome.Fail(400, "replacement_single_line_required", "Replacement receipt must deliver exactly one line matching the authorized replacement entitlement.");
+            }
+        }
+
         var priorClaimedByKey = await db.GoodsReceiptLines
             .AsNoTracking()
             .Where(gl => gl.TenantId == cmd.TenantId && gl.LegalEntityId == cmd.LegalEntityId && gl.PurchaseOrderId == po.PurchaseOrderId)
@@ -254,6 +289,31 @@ public static class GoodsReceiptWorkflowService
                 ClaimedBase = g.Sum(x => x.PendingCheckBaseQuantity + x.DockReleasedBaseQuantity)
             })
             .ToDictionaryAsync(x => x.LineageLineKey, x => x.ClaimedBase, ct);
+
+        var returnedValuedUnbilledByKey = await (
+            from rl in db.SupplierReturnLines.AsNoTracking()
+            join sr in db.SupplierReturns.AsNoTracking()
+                on new { rl.TenantId, rl.LegalEntityId, rl.SupplierReturnId } equals new { sr.TenantId, sr.LegalEntityId, sr.SupplierReturnId }
+            where sr.TenantId == cmd.TenantId
+                && sr.LegalEntityId == cmd.LegalEntityId
+                && sr.PurchaseOrderId == po.PurchaseOrderId
+                && sr.Status == SupplierReturnStatuses.Executed
+                && sr.ReturnCaseType == SupplierReturnCaseTypes.ValuedUnbilledReturn
+            group rl by rl.LineageLineKey into g
+            select new { LineageLineKey = g.Key, ReturnedQty = g.Sum(x => x.ReturnedBaseQuantity) })
+            .ToDictionaryAsync(x => x.LineageLineKey, x => x.ReturnedQty, ct);
+
+        var openReplacementByKey = await db.ReplacementAuthorizations
+            .AsNoTracking()
+            .Where(r =>
+                r.TenantId == cmd.TenantId &&
+                r.LegalEntityId == cmd.LegalEntityId &&
+                r.PurchaseOrderId == po.PurchaseOrderId &&
+                (r.Status == ReplacementAuthorizationStatuses.Active || r.Status == ReplacementAuthorizationStatuses.PartiallyReceived) &&
+                r.RemainingBaseQuantity > 0m)
+            .GroupBy(r => r.LineageLineKey)
+            .Select(g => new { LineageLineKey = g.Key, ReservedQty = g.Sum(x => x.RemainingBaseQuantity) })
+            .ToDictionaryAsync(x => x.LineageLineKey, x => x.ReservedQty, ct);
 
         var receiptId = Guid.NewGuid();
         var builtLines = new List<GoodsReceiptLine>(cmd.Lines.Count);
@@ -284,8 +344,35 @@ public static class GoodsReceiptWorkflowService
                 return MapDomainFailure(ex);
             }
 
-            var alreadyClaimed = priorClaimedByKey.GetValueOrDefault(poLine.LineageLineKey, 0m);
-            var remainingEligible = Math.Max(0m, poLine.OrderedBaseQuantity - alreadyClaimed);
+            decimal remainingEligible;
+            if (lockedReplacement is not null)
+            {
+                if (poLine.LineageLineKey != lockedReplacement.LineageLineKey || poLine.ItemId != lockedReplacement.ItemId)
+                {
+                    return ReceivingWorkflowOutcome.Fail(
+                        409,
+                        "replacement_line_mismatch",
+                        $"Replacement authorization '{lockedReplacement.AuthorizationNumber}' only permits item matching its originating PO line.");
+                }
+
+                if (uomSnap.ConvertedBaseQuantity > lockedReplacement.RemainingBaseQuantity)
+                {
+                    return ReceivingWorkflowOutcome.Fail(
+                        409,
+                        "replacement_entitlement_exceeded",
+                        $"Replacement receipt quantity ({uomSnap.ConvertedBaseQuantity:0.######} {baseUom.UomCode}) exceeds remaining entitlement ({lockedReplacement.RemainingBaseQuantity:0.######} {baseUom.UomCode}) on '{lockedReplacement.AuthorizationNumber}'.");
+                }
+
+                lockedReplacement.RecordDelivered(uomSnap.ConvertedBaseQuantity, cmd.NowUtc);
+                remainingEligible = uomSnap.ConvertedBaseQuantity;
+            }
+            else
+            {
+                var returnedUnbilled = returnedValuedUnbilledByKey.GetValueOrDefault(poLine.LineageLineKey, 0m);
+                var reservedRpa = openReplacementByKey.GetValueOrDefault(poLine.LineageLineKey, 0m);
+                var alreadyClaimed = priorClaimedByKey.GetValueOrDefault(poLine.LineageLineKey, 0m) - returnedUnbilled + reservedRpa;
+                remainingEligible = Math.Max(0m, poLine.OrderedBaseQuantity - alreadyClaimed);
+            }
 
             try
             {
@@ -338,7 +425,8 @@ public static class GoodsReceiptWorkflowService
                 cmd.Notes,
                 builtLines,
                 cmd.ActorUserId,
-                cmd.NowUtc);
+                cmd.NowUtc,
+                lockedReplacement?.ReplacementAuthorizationId);
 
             // Lock PO from cancellation while explicitly keeping AcceptedBaseQuantityTotal = 0m in Gate 1.
             po.RegisterDownstreamReference(0m, cmd.NowUtc);
@@ -518,9 +606,34 @@ public static class GoodsReceiptWorkflowService
                 l.GoodsReceiptLineId != targetLine.GoodsReceiptLineId)
             .SumAsync(l => (decimal?)l.DockReleasedBaseQuantity, ct) ?? 0m;
 
+        var returnedValuedUnbilled = await (
+            from rl in db.SupplierReturnLines.AsNoTracking()
+            join sr in db.SupplierReturns.AsNoTracking()
+                on new { rl.TenantId, rl.LegalEntityId, rl.SupplierReturnId } equals new { sr.TenantId, sr.LegalEntityId, sr.SupplierReturnId }
+            where sr.TenantId == cmd.TenantId
+                && sr.LegalEntityId == cmd.LegalEntityId
+                && sr.PurchaseOrderId == po.PurchaseOrderId
+                && sr.Status == SupplierReturnStatuses.Executed
+                && sr.ReturnCaseType == SupplierReturnCaseTypes.ValuedUnbilledReturn
+                && rl.LineageLineKey == targetLine.LineageLineKey
+            select (decimal?)rl.ReturnedBaseQuantity)
+            .SumAsync(ct) ?? 0m;
+
+        var openReplacementReserved = receipt.ReplacementAuthorizationId.HasValue
+            ? 0m
+            : await db.ReplacementAuthorizations.AsNoTracking()
+                .Where(r =>
+                    r.TenantId == cmd.TenantId &&
+                    r.LegalEntityId == cmd.LegalEntityId &&
+                    r.PurchaseOrderId == po.PurchaseOrderId &&
+                    r.LineageLineKey == targetLine.LineageLineKey &&
+                    (r.Status == ReplacementAuthorizationStatuses.Active || r.Status == ReplacementAuthorizationStatuses.PartiallyReceived) &&
+                    r.RemainingBaseQuantity > 0m)
+                .SumAsync(r => (decimal?)r.RemainingBaseQuantity, ct) ?? 0m;
+
         var maxApprovedAllowedForLine = po.Status == PurchaseOrderStatuses.Cancelled
             ? 0m
-            : Math.Max(0m, approvedLineQty - otherReleasedBase);
+            : Math.Max(0m, approvedLineQty - (otherReleasedBase - returnedValuedUnbilled + openReplacementReserved));
 
         var baseUomScale = await db.UnitsOfMeasure
             .AsNoTracking()
@@ -687,7 +800,11 @@ public static class GoodsReceiptWorkflowService
                     "unsupported_uom_conversion" or
                     "fractional_discrete_base_quantity" or
                     "dock_quantity_conservation_mismatch" or
-                    "dock_release_below_valued_accepted" => 409,
+                    "dock_release_below_valued_accepted" or
+                    "replacement_entitlement_exceeded" or
+                    "replacement_line_mismatch" or
+                    "replacement_po_mismatch" or
+                    "replacement_not_receivable_in_status" => 409,
                     _ => 400
                 };
                 return ReceivingWorkflowOutcome.Fail(status, code, detail);

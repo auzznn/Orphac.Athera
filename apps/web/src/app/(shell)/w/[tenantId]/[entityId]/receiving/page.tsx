@@ -14,6 +14,7 @@ import {
   PackageCheck,
   PlusCircle,
   RefreshCw,
+  RotateCcw,
   ShieldCheck,
 } from "lucide-react";
 import {
@@ -1592,6 +1593,12 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                               <div className="font-code text-xs tabular-nums text-[var(--text-secondary)]">
                                 {item.supplierDeliveryNoteNumber}
                               </div>
+                              {item.replacementAuthorizationNumber ? (
+                                <div className="mt-1 inline-flex items-center gap-1 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-1.5 py-0.5 font-code text-[11px] font-medium tabular-nums text-[var(--status-warn-text)]">
+                                  <RotateCcw className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                                  <span>{t.returns.replacementBadgeShort} · {item.replacementAuthorizationNumber}</span>
+                                </div>
+                              ) : null}
                             </div>
                           </td>
 
@@ -1744,6 +1751,12 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                     <div className="font-code mt-0.5 text-sm font-bold tabular-nums text-[var(--text-primary)]">
                       {selectedDetail.receiptNumber}
                     </div>
+                    {selectedDetail.replacementAuthorizationNumber ? (
+                      <div className="mt-1 inline-flex items-center gap-1 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-2 py-0.5 font-code text-[11px] font-medium tabular-nums text-[var(--status-warn-text)]">
+                        <RotateCcw className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                        <span>{t.returns.replacementBadgeShort} · {selectedDetail.replacementAuthorizationNumber}</span>
+                      </div>
+                    ) : null}
                     <div className="mt-1">
                       <ReceivingStatusBadge
                         status={selectedDetail.status}

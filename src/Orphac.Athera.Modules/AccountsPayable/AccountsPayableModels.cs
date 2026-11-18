@@ -74,9 +74,10 @@ public static class PayableStatuses
     public const string Open = "OPEN";
     public const string PartiallyPaid = "PARTIALLY_PAID";
     public const string Paid = "PAID";
+    public const string Credited = "CREDITED";
     public const string Reversed = "REVERSED";
 
-    public static readonly IReadOnlyList<string> All = [Open, PartiallyPaid, Paid, Reversed];
+    public static readonly IReadOnlyList<string> All = [Open, PartiallyPaid, Paid, Credited, Reversed];
 }
 
 public static class MatchEvaluationStages
@@ -888,6 +889,7 @@ public sealed class PayableItem
     public decimal WithholdingTaxAmount { get; private set; }
     public decimal NetPayableAmount { get; private set; }
     public decimal PaidAmount { get; private set; }
+    public decimal CreditedAmount { get; private set; }
     public decimal RemainingOpenAmount { get; private set; }
     public string Status { get; private set; } = PayableStatuses.Open;
     public string PaymentBlockStatus { get; private set; } = PaymentBlockStatuses.None;
@@ -944,6 +946,7 @@ public sealed class PayableItem
             WithholdingTaxAmount = bill.WithholdingTaxTotal,
             NetPayableAmount = net,
             PaidAmount = 0m,
+            CreditedAmount = 0m,
             RemainingOpenAmount = net,
             Status = PayableStatuses.Open,
             PaymentBlockStatus = bill.PaymentBlockStatus,
@@ -967,6 +970,248 @@ public sealed class PayableItem
         PaymentBlockReason = GuardValidation.RequireName(reason, nameof(reason), 300);
         UpdatedAtUtc = nowUtc;
         Version++;
+    }
+
+    public void ApplySupplierCredit(decimal creditAmount, DateTimeOffset nowUtc)
+    {
+        if (PaidAmount > 0m)
+        {
+            throw new InvalidOperationException(
+                "od05_paid_bill_return_policy_blocked: Paid or partially settled payables cannot be credited automatically until OD-05 refund policy is approved (ATH-CR-007).");
+        }
+
+        var amt = decimal.Round(creditAmount, 4, MidpointRounding.AwayFromZero);
+        if (amt <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(creditAmount), "Credit amount must be strictly positive.");
+        }
+
+        if (amt > RemainingOpenAmount)
+        {
+            throw new InvalidOperationException(
+                $"credit_exceeds_open_payable: Credit amount ({amt:F4}) exceeds open payable balance ({RemainingOpenAmount:F4}).");
+        }
+
+        CreditedAmount = decimal.Round(CreditedAmount + amt, 4, MidpointRounding.AwayFromZero);
+        RemainingOpenAmount = decimal.Round(NetPayableAmount - PaidAmount - CreditedAmount, 4, MidpointRounding.AwayFromZero);
+        if (RemainingOpenAmount < 0m || NetPayableAmount != PaidAmount + CreditedAmount + RemainingOpenAmount)
+        {
+            throw new InvalidOperationException("payable_credit_conservation_failed: Payable amounts failed conservation.");
+        }
+
+        Status = RemainingOpenAmount == 0m ? PayableStatuses.Credited : PayableStatuses.Open;
+        UpdatedAtUtc = nowUtc;
+        Version++;
+    }
+}
+
+public sealed class CreditSequence
+{
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public int FiscalYear { get; private set; }
+    public long LastNumber { get; private set; }
+
+    private CreditSequence()
+    {
+    }
+}
+
+/// <summary>
+/// Strictly append-only Supplier Credit Note created atomically when M3 valued billed returns execute.
+/// </summary>
+public sealed class SupplierCredit
+{
+    public Guid SupplierCreditId { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public string CreditNumber { get; private set; } = string.Empty;
+    public Guid SupplierReturnId { get; private set; }
+    public string ReturnNumberSnapshot { get; private set; } = string.Empty;
+    public Guid SupplierBillId { get; private set; }
+    public string BillNumberSnapshot { get; private set; } = string.Empty;
+    public Guid PayableItemId { get; private set; }
+    public Guid SupplierPartnerId { get; private set; }
+    public string SupplierCodeSnapshot { get; private set; } = string.Empty;
+    public string SupplierLegalNameSnapshot { get; private set; } = string.Empty;
+    public string? SupplierNpwpSnapshot { get; private set; }
+    public string? TaxReturnNoteNumber { get; private set; }
+    public DateOnly PostingDate { get; private set; }
+    public string CurrencyCode { get; private set; } = "IDR";
+    public decimal SubtotalCreditAmount { get; private set; }
+    public decimal PpnReversalAmount { get; private set; }
+    public decimal TotalCreditAmount { get; private set; }
+    public decimal InventoryCreditAmount { get; private set; }
+    public decimal PpvDifferenceAmount { get; private set; }
+    public Guid GlJournalId { get; private set; }
+    public Guid StockMovementId { get; private set; }
+    public Guid CreatedByUserId { get; private set; }
+    public DateTimeOffset CreatedAtUtc { get; private set; }
+
+    private SupplierCredit()
+    {
+    }
+
+    public static SupplierCredit Record(
+        Guid supplierCreditId,
+        Guid tenantId,
+        Guid legalEntityId,
+        string creditNumber,
+        Guid supplierReturnId,
+        string returnNumberSnapshot,
+        SupplierBill bill,
+        Guid payableItemId,
+        string? taxReturnNoteNumber,
+        DateOnly postingDate,
+        decimal subtotalCreditAmount,
+        decimal ppnReversalAmount,
+        decimal totalCreditAmount,
+        decimal inventoryCreditAmount,
+        decimal ppvDifferenceAmount,
+        Guid glJournalId,
+        Guid stockMovementId,
+        Guid createdByUserId,
+        DateTimeOffset nowUtc)
+    {
+        GuardValidation.RequireNonEmptyGuid(supplierCreditId, nameof(supplierCreditId));
+        GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
+        GuardValidation.RequireNonEmptyGuid(legalEntityId, nameof(legalEntityId));
+        GuardValidation.RequireNonEmptyGuid(supplierReturnId, nameof(supplierReturnId));
+        GuardValidation.RequireNonEmptyGuid(payableItemId, nameof(payableItemId));
+        GuardValidation.RequireNonEmptyGuid(glJournalId, nameof(glJournalId));
+        GuardValidation.RequireNonEmptyGuid(stockMovementId, nameof(stockMovementId));
+        GuardValidation.RequireNonEmptyGuid(createdByUserId, nameof(createdByUserId));
+        ArgumentNullException.ThrowIfNull(bill);
+
+        var sub = decimal.Round(subtotalCreditAmount, 4, MidpointRounding.AwayFromZero);
+        var ppn = decimal.Round(ppnReversalAmount, 4, MidpointRounding.AwayFromZero);
+        var total = decimal.Round(totalCreditAmount, 4, MidpointRounding.AwayFromZero);
+        var inv = decimal.Round(inventoryCreditAmount, 4, MidpointRounding.AwayFromZero);
+        var ppv = decimal.Round(ppvDifferenceAmount, 4, MidpointRounding.AwayFromZero);
+
+        if (sub <= 0m || ppn < 0m || total != sub + ppn || inv <= 0m || sub - inv != ppv)
+        {
+            throw new InvalidOperationException(
+                $"supplier_credit_balance_invalid: Credit amounts failed invariant (Sub={sub:F4}, PPN={ppn:F4}, Total={total:F4}, Inv={inv:F4}, PPV={ppv:F4}).");
+        }
+
+        return new SupplierCredit
+        {
+            SupplierCreditId = supplierCreditId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            CreditNumber = GuardValidation.RequireCode(creditNumber, nameof(creditNumber), 40),
+            SupplierReturnId = supplierReturnId,
+            ReturnNumberSnapshot = GuardValidation.RequireCode(returnNumberSnapshot, nameof(returnNumberSnapshot), 40),
+            SupplierBillId = bill.SupplierBillId,
+            BillNumberSnapshot = GuardValidation.RequireCode(bill.BillNumber ?? bill.DraftCode, nameof(bill.BillNumber), 40),
+            PayableItemId = payableItemId,
+            SupplierPartnerId = bill.SupplierPartnerId,
+            SupplierCodeSnapshot = bill.SupplierCodeSnapshot,
+            SupplierLegalNameSnapshot = bill.SupplierLegalNameSnapshot,
+            SupplierNpwpSnapshot = bill.SupplierNpwpSnapshot,
+            TaxReturnNoteNumber = GuardValidation.NormalizeOptional(taxReturnNoteNumber, 64, nameof(taxReturnNoteNumber)),
+            PostingDate = postingDate,
+            CurrencyCode = bill.CurrencyCode,
+            SubtotalCreditAmount = sub,
+            PpnReversalAmount = ppn,
+            TotalCreditAmount = total,
+            InventoryCreditAmount = inv,
+            PpvDifferenceAmount = ppv,
+            GlJournalId = glJournalId,
+            StockMovementId = stockMovementId,
+            CreatedByUserId = createdByUserId,
+            CreatedAtUtc = nowUtc
+        };
+    }
+}
+
+/// <summary>
+/// Strictly append-only Supplier Credit line linking AP credit allocation back to SupplierReturnLine & SupplierBillLine.
+/// </summary>
+public sealed class SupplierCreditLine
+{
+    public Guid SupplierCreditLineId { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public Guid SupplierCreditId { get; private set; }
+    public int LineNumber { get; private set; }
+    public Guid SupplierReturnLineId { get; private set; }
+    public Guid SupplierBillLineId { get; private set; }
+    public Guid ItemId { get; private set; }
+    public decimal CreditedBaseQuantity { get; private set; }
+    public decimal UnitPriceBase { get; private set; }
+    public decimal SubtotalCreditAmount { get; private set; }
+    public decimal PpnReversalAmount { get; private set; }
+    public decimal TotalCreditAmount { get; private set; }
+    public decimal InventoryCreditAmount { get; private set; }
+    public decimal PpvDifferenceAmount { get; private set; }
+
+    private SupplierCreditLine()
+    {
+    }
+
+    public static SupplierCreditLine Record(
+        Guid supplierCreditLineId,
+        Guid tenantId,
+        Guid legalEntityId,
+        Guid supplierCreditId,
+        int lineNumber,
+        Guid supplierReturnLineId,
+        Guid supplierBillLineId,
+        Guid itemId,
+        decimal creditedBaseQuantity,
+        decimal unitPriceBase,
+        decimal subtotalCreditAmount,
+        decimal ppnReversalAmount,
+        decimal totalCreditAmount,
+        decimal inventoryCreditAmount,
+        decimal ppvDifferenceAmount)
+    {
+        GuardValidation.RequireNonEmptyGuid(supplierCreditLineId, nameof(supplierCreditLineId));
+        GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
+        GuardValidation.RequireNonEmptyGuid(legalEntityId, nameof(legalEntityId));
+        GuardValidation.RequireNonEmptyGuid(supplierCreditId, nameof(supplierCreditId));
+        GuardValidation.RequireNonEmptyGuid(supplierReturnLineId, nameof(supplierReturnLineId));
+        GuardValidation.RequireNonEmptyGuid(supplierBillLineId, nameof(supplierBillLineId));
+        GuardValidation.RequireNonEmptyGuid(itemId, nameof(itemId));
+
+        if (lineNumber < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(lineNumber), "LineNumber must be >= 1.");
+        }
+
+        var qty = decimal.Round(creditedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        var price = decimal.Round(unitPriceBase, 6, MidpointRounding.AwayFromZero);
+        var sub = decimal.Round(subtotalCreditAmount, 4, MidpointRounding.AwayFromZero);
+        var ppn = decimal.Round(ppnReversalAmount, 4, MidpointRounding.AwayFromZero);
+        var total = decimal.Round(totalCreditAmount, 4, MidpointRounding.AwayFromZero);
+        var inv = decimal.Round(inventoryCreditAmount, 4, MidpointRounding.AwayFromZero);
+        var ppv = decimal.Round(ppvDifferenceAmount, 4, MidpointRounding.AwayFromZero);
+
+        if (qty <= 0m || price <= 0m || sub <= 0m || ppn < 0m || total != sub + ppn || inv <= 0m || sub - inv != ppv)
+        {
+            throw new InvalidOperationException("supplier_credit_line_invalid: Credit line amounts or quantities failed conservation.");
+        }
+
+        return new SupplierCreditLine
+        {
+            SupplierCreditLineId = supplierCreditLineId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            SupplierCreditId = supplierCreditId,
+            LineNumber = lineNumber,
+            SupplierReturnLineId = supplierReturnLineId,
+            SupplierBillLineId = supplierBillLineId,
+            ItemId = itemId,
+            CreditedBaseQuantity = qty,
+            UnitPriceBase = price,
+            SubtotalCreditAmount = sub,
+            PpnReversalAmount = ppn,
+            TotalCreditAmount = total,
+            InventoryCreditAmount = inv,
+            PpvDifferenceAmount = ppv
+        };
     }
 }
 

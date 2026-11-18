@@ -814,6 +814,7 @@ public sealed class ReceiptAccrual
     public string CurrencyCode { get; private set; } = "IDR";
     public decimal AccruedAmount { get; private set; }
     public decimal ClearedAmount { get; private set; }
+    public decimal ReturnedAmount { get; private set; }
     public decimal RemainingOpenAmount { get; private set; }
     public string Status { get; private set; } = ReceiptAccrualStatuses.Open;
     public Guid CreatedByUserId { get; private set; }
@@ -878,6 +879,7 @@ public sealed class ReceiptAccrual
             CurrencyCode = GuardValidation.RequireExactIsoCode(currencyCode, "IDR", 3, nameof(currencyCode)),
             AccruedAmount = amount,
             ClearedAmount = 0m,
+            ReturnedAmount = 0m,
             RemainingOpenAmount = amount,
             Status = ReceiptAccrualStatuses.Open,
             CreatedByUserId = createdByUserId,
@@ -891,19 +893,21 @@ public sealed class ReceiptAccrual
     {
         ArgumentNullException.ThrowIfNull(lines);
         var sumCleared = decimal.Round(lines.Sum(l => l.ClearedLineAmount), 4, MidpointRounding.AwayFromZero);
+        var sumReturned = decimal.Round(lines.Sum(l => l.ReturnedLineAmount), 4, MidpointRounding.AwayFromZero);
         var sumRemaining = decimal.Round(lines.Sum(l => l.RemainingOpenLineAmount), 4, MidpointRounding.AwayFromZero);
 
-        if (sumCleared < 0m || sumRemaining < 0m || sumCleared + sumRemaining != AccruedAmount)
+        if (sumCleared < 0m || sumReturned < 0m || sumRemaining < 0m || sumCleared + sumReturned + sumRemaining != AccruedAmount)
         {
             throw new InvalidOperationException(
-                $"grni_accrual_clearing_conservation_failed: Accrual '{AccrualNumber}' cleared ({sumCleared:F4}) + open ({sumRemaining:F4}) does not equal accrued ({AccruedAmount:F4}).");
+                $"grni_accrual_clearing_conservation_failed: Accrual '{AccrualNumber}' cleared ({sumCleared:F4}) + returned ({sumReturned:F4}) + open ({sumRemaining:F4}) does not equal accrued ({AccruedAmount:F4}).");
         }
 
         ClearedAmount = sumCleared;
+        ReturnedAmount = sumReturned;
         RemainingOpenAmount = sumRemaining;
         Status = RemainingOpenAmount == 0m
             ? ReceiptAccrualStatuses.Cleared
-            : ClearedAmount > 0m
+            : ClearedAmount > 0m || ReturnedAmount > 0m
                 ? ReceiptAccrualStatuses.PartiallyCleared
                 : ReceiptAccrualStatuses.Open;
         UpdatedAtUtc = nowUtc;
@@ -927,10 +931,12 @@ public sealed class ReceiptAccrualLine
     public Guid ItemId { get; private set; }
     public decimal AcceptedBaseQuantity { get; private set; }
     public decimal BilledBaseQuantity { get; private set; }
+    public decimal ReturnedBaseQuantity { get; private set; }
     public decimal RemainingUnbilledBaseQuantity { get; private set; }
     public decimal UnitCostBase { get; private set; }
     public decimal AccruedLineAmount { get; private set; }
     public decimal ClearedLineAmount { get; private set; }
+    public decimal ReturnedLineAmount { get; private set; }
     public decimal RemainingOpenLineAmount { get; private set; }
 
     private ReceiptAccrualLine()
@@ -986,10 +992,12 @@ public sealed class ReceiptAccrualLine
             ItemId = itemId,
             AcceptedBaseQuantity = qty,
             BilledBaseQuantity = 0m,
+            ReturnedBaseQuantity = 0m,
             RemainingUnbilledBaseQuantity = qty,
             UnitCostBase = unitCost,
             AccruedLineAmount = amount,
             ClearedLineAmount = 0m,
+            ReturnedLineAmount = 0m,
             RemainingOpenLineAmount = amount
         };
     }
@@ -1047,9 +1055,9 @@ public sealed class ReceiptAccrualLine
         }
 
         BilledBaseQuantity = decimal.Round(BilledBaseQuantity + qty, 6, MidpointRounding.AwayFromZero);
-        RemainingUnbilledBaseQuantity = decimal.Round(AcceptedBaseQuantity - BilledBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        RemainingUnbilledBaseQuantity = decimal.Round(AcceptedBaseQuantity - BilledBaseQuantity - ReturnedBaseQuantity, 6, MidpointRounding.AwayFromZero);
         ClearedLineAmount = decimal.Round(ClearedLineAmount + clearAmt, 4, MidpointRounding.AwayFromZero);
-        RemainingOpenLineAmount = decimal.Round(AccruedLineAmount - ClearedLineAmount, 4, MidpointRounding.AwayFromZero);
+        RemainingOpenLineAmount = decimal.Round(AccruedLineAmount - ClearedLineAmount - ReturnedLineAmount, 4, MidpointRounding.AwayFromZero);
 
         if ((RemainingUnbilledBaseQuantity == 0m && RemainingOpenLineAmount != 0m) ||
             (RemainingUnbilledBaseQuantity > 0m && RemainingOpenLineAmount <= 0m))
@@ -1059,6 +1067,71 @@ public sealed class ReceiptAccrualLine
         }
 
         return clearAmt;
+    }
+
+    public decimal CalculateUnbilledReturnAmount(decimal returnBaseQuantity)
+    {
+        var qty = decimal.Round(returnBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        if (qty <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(returnBaseQuantity), "Return quantity must be positive.");
+        }
+
+        if (qty > RemainingUnbilledBaseQuantity)
+        {
+            throw new InvalidOperationException(
+                $"return_exceeds_unbilled_grni_capacity: Return quantity {qty:0.######} exceeds remaining unbilled receipt capacity {RemainingUnbilledBaseQuantity:0.######}.");
+        }
+
+        if (qty == RemainingUnbilledBaseQuantity)
+        {
+            return RemainingOpenLineAmount;
+        }
+
+        var proportional = decimal.Round(qty * UnitCostBase, 4, MidpointRounding.AwayFromZero);
+        if (proportional <= 0m)
+        {
+            proportional = 0.0001m;
+        }
+
+        if (proportional >= RemainingOpenLineAmount)
+        {
+            proportional = decimal.Round(RemainingOpenLineAmount - 0.0001m, 4, MidpointRounding.AwayFromZero);
+        }
+
+        return proportional;
+    }
+
+    public decimal ApplyUnbilledReturn(decimal returnBaseQuantity)
+    {
+        var qty = decimal.Round(returnBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        var returnAmt = CalculateUnbilledReturnAmount(qty);
+
+        if (qty <= 0m || qty > RemainingUnbilledBaseQuantity)
+        {
+            throw new InvalidOperationException(
+                $"return_exceeds_unbilled_grni_capacity: Return quantity {qty:0.######} exceeds remaining unbilled receipt capacity {RemainingUnbilledBaseQuantity:0.######}.");
+        }
+
+        if (returnAmt <= 0m || returnAmt > RemainingOpenLineAmount)
+        {
+            throw new InvalidOperationException(
+                $"grni_return_amount_invalid: Return amount {returnAmt:F4} is invalid for open GRNI line amount {RemainingOpenLineAmount:F4}.");
+        }
+
+        ReturnedBaseQuantity = decimal.Round(ReturnedBaseQuantity + qty, 6, MidpointRounding.AwayFromZero);
+        RemainingUnbilledBaseQuantity = decimal.Round(AcceptedBaseQuantity - BilledBaseQuantity - ReturnedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        ReturnedLineAmount = decimal.Round(ReturnedLineAmount + returnAmt, 4, MidpointRounding.AwayFromZero);
+        RemainingOpenLineAmount = decimal.Round(AccruedLineAmount - ClearedLineAmount - ReturnedLineAmount, 4, MidpointRounding.AwayFromZero);
+
+        if ((RemainingUnbilledBaseQuantity == 0m && RemainingOpenLineAmount != 0m) ||
+            (RemainingUnbilledBaseQuantity > 0m && RemainingOpenLineAmount <= 0m))
+        {
+            throw new InvalidOperationException(
+                $"grni_line_conservation_failed: Partial GRNI return left mismatched qty={RemainingUnbilledBaseQuantity:0.######} vs open={RemainingOpenLineAmount:F4}.");
+        }
+
+        return returnAmt;
     }
 }
 

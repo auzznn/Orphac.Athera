@@ -1450,7 +1450,10 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
                         </span>
                         <div className="font-code tabular-nums">
                           <div className="font-semibold whitespace-nowrap text-[var(--text-primary)]">
-                            {mov.movementType === "OPERATIONAL_ISSUE" ? "-" : "+"}
+                            {mov.movementType === "OPERATIONAL_ISSUE" ||
+                            mov.movementType === "PURCHASE_RETURN_OUTBOUND"
+                              ? "-"
+                              : "+"}
                             {formatQuantityValue(mov.totalBaseQuantity, locale)}
                           </div>
                           <div className="text-[11px] text-[var(--text-secondary)]">

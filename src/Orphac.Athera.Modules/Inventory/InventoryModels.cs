@@ -32,8 +32,9 @@ public static class StockMovementTypes
     public const string LocationTransfer = "LOCATION_TRANSFER";
     public const string QualityStatusChange = "QUALITY_STATUS_CHANGE";
     public const string OperationalIssue = "OPERATIONAL_ISSUE";
+    public const string PurchaseReturnOutbound = "PURCHASE_RETURN_OUTBOUND";
 
-    public static readonly IReadOnlyList<string> All = [PurchaseReceiptAcceptance, LocationTransfer, QualityStatusChange, OperationalIssue];
+    public static readonly IReadOnlyList<string> All = [PurchaseReceiptAcceptance, LocationTransfer, QualityStatusChange, OperationalIssue, PurchaseReturnOutbound];
 }
 
 public static class LocationZoneTypes
@@ -110,8 +111,9 @@ public static class ValuationEntryTypes
     public const string ReceiptAcceptance = "RECEIPT_ACCEPTANCE";
     public const string OperationalIssue = "OPERATIONAL_ISSUE";
     public const string InvoicePriceAdjustment = "INVOICE_PRICE_ADJUSTMENT";
+    public const string PurchaseReturnOutbound = "PURCHASE_RETURN_OUTBOUND";
 
-    public static readonly IReadOnlyList<string> All = [ReceiptAcceptance, OperationalIssue, InvoicePriceAdjustment];
+    public static readonly IReadOnlyList<string> All = [ReceiptAcceptance, OperationalIssue, InvoicePriceAdjustment, PurchaseReturnOutbound];
 }
 
 public static class InventoryValuationDefaults
@@ -220,6 +222,44 @@ public sealed class StockPosition
         }
 
         UnrestrictedBaseQuantity = decimal.Round(UnrestrictedBaseQuantity - qty, 6, MidpointRounding.AwayFromZero);
+        RecalculateTotalsAndValidate(nowUtc);
+    }
+
+    public void ApplyPurchaseReturnOutbound(string sourceStockStatus, decimal returnBaseQuantity, DateTimeOffset nowUtc)
+    {
+        var qty = decimal.Round(returnBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        if (qty <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(returnBaseQuantity), "return_qty_must_be_positive: Supplier return base quantity must be strictly positive.");
+        }
+
+        var normalizedStatus = StockStatuses.Normalize(sourceStockStatus);
+        if (normalizedStatus == StockStatuses.Unrestricted)
+        {
+            if (qty > AvailableBaseQuantity)
+            {
+                throw new InvalidOperationException(
+                    $"od10_insufficient_available_stock: Return quantity {qty:0.######} exceeds unreserved available stock ({AvailableBaseQuantity:0.######}).");
+            }
+
+            UnrestrictedBaseQuantity = decimal.Round(UnrestrictedBaseQuantity - qty, 6, MidpointRounding.AwayFromZero);
+        }
+        else if (normalizedStatus == StockStatuses.Blocked)
+        {
+            if (qty > BlockedBaseQuantity)
+            {
+                throw new InvalidOperationException(
+                    $"od10_insufficient_blocked_stock: Return quantity {qty:0.######} exceeds blocked stock ({BlockedBaseQuantity:0.######}).");
+            }
+
+            BlockedBaseQuantity = decimal.Round(BlockedBaseQuantity - qty, 6, MidpointRounding.AwayFromZero);
+        }
+        else
+        {
+            throw new InvalidOperationException(
+                "return_stock_status_invalid: Dispose QUALITY_INSPECTION stock to UNRESTRICTED or BLOCKED before returning to supplier.");
+        }
+
         RecalculateTotalsAndValidate(nowUtc);
     }
 
@@ -499,7 +539,26 @@ public sealed class ValuationPool
         decimal previousCarryingValue,
         decimal previousUnitCost,
         long currentSequence,
-        decimal issueBaseQuantity)
+        decimal issueBaseQuantity) =>
+        SimulateOutboundRemoval(poolStatus, previousQty, previousCarryingValue, previousUnitCost, currentSequence, issueBaseQuantity, enforceOd04PartialFloor: false);
+
+    public static OperationalIssueStepResult SimulatePurchaseReturn(
+        string poolStatus,
+        decimal previousQty,
+        decimal previousCarryingValue,
+        decimal previousUnitCost,
+        long currentSequence,
+        decimal returnBaseQuantity) =>
+        SimulateOutboundRemoval(poolStatus, previousQty, previousCarryingValue, previousUnitCost, currentSequence, returnBaseQuantity, enforceOd04PartialFloor: true);
+
+    private static OperationalIssueStepResult SimulateOutboundRemoval(
+        string poolStatus,
+        decimal previousQty,
+        decimal previousCarryingValue,
+        decimal previousUnitCost,
+        long currentSequence,
+        decimal outboundBaseQuantity,
+        bool enforceOd04PartialFloor)
     {
         if (poolStatus != ValuationPoolStatuses.Active)
         {
@@ -509,7 +568,7 @@ public sealed class ValuationPool
         var prevQty = decimal.Round(previousQty, 6, MidpointRounding.AwayFromZero);
         var prevCarrying = decimal.Round(previousCarryingValue, 4, MidpointRounding.AwayFromZero);
         var prevCost = decimal.Round(previousUnitCost, 6, MidpointRounding.AwayFromZero);
-        var qty = decimal.Round(issueBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        var qty = decimal.Round(outboundBaseQuantity, 6, MidpointRounding.AwayFromZero);
 
         if (prevQty < 0m || prevCarrying < 0m || (prevQty == 0m && prevCarrying != 0m))
         {
@@ -519,13 +578,13 @@ public sealed class ValuationPool
 
         if (qty <= 0m)
         {
-            throw new InvalidOperationException("issue_qty_must_be_positive: Issue base quantity must be positive.");
+            throw new InvalidOperationException("issue_qty_must_be_positive: Outbound base quantity must be positive.");
         }
 
         if (qty > prevQty)
         {
             throw new InvalidOperationException(
-                $"od10_negative_stock_forbidden: Issue quantity {qty:0.######} exceeds valued pool quantity {prevQty:0.######}.");
+                $"od10_negative_stock_forbidden: Outbound quantity {qty:0.######} exceeds valued pool quantity {prevQty:0.######}.");
         }
 
         decimal issueAmount;
@@ -542,10 +601,21 @@ public sealed class ValuationPool
         else
         {
             issueAmount = decimal.Round(qty * prevCost, 4, MidpointRounding.AwayFromZero);
+            if (enforceOd04PartialFloor && prevCarrying - issueAmount <= 0m)
+            {
+                throw new InvalidOperationException(
+                    $"od04_valuation_floor_breached: Partial return carrying deduction ({issueAmount:F4}) would exhaust remaining carrying value ({prevCarrying:F4}) while leaving {prevQty - qty:0.######} units on hand.");
+            }
+
             if (issueAmount <= 0m) issueAmount = 0.0001m;
             if (issueAmount >= prevCarrying) issueAmount = decimal.Round(prevCarrying - 0.0001m, 4, MidpointRounding.AwayFromZero);
             newQty = decimal.Round(prevQty - qty, 6, MidpointRounding.AwayFromZero);
             newCarrying = decimal.Round(prevCarrying - issueAmount, 4, MidpointRounding.AwayFromZero);
+            if (enforceOd04PartialFloor && newQty > 0m && newCarrying <= 0m)
+            {
+                throw new InvalidOperationException("od04_valuation_floor_breached: Partial return left zero/negative carrying value.");
+            }
+
             newCost = decimal.Round(newCarrying / newQty, 6, MidpointRounding.AwayFromZero);
         }
 
@@ -577,14 +647,32 @@ public sealed class ValuationPool
             LastEntrySequence,
             issueBaseQuantity);
 
-        ValuedBaseQuantity = result.ValuationStep.NewBaseQuantity;
-        CarryingValueAmount = result.ValuationStep.NewCarryingValue;
-        MovingAverageUnitCost = result.ValuationStep.NewMovingAverageCost;
-        LastEntrySequence = result.ValuationStep.EntrySequence;
+        ApplyRemovalStep(result.ValuationStep, nowUtc);
+        return result;
+    }
+
+    public OperationalIssueStepResult ApplyPurchaseReturn(decimal returnBaseQuantity, DateTimeOffset nowUtc)
+    {
+        var result = SimulatePurchaseReturn(
+            Status,
+            ValuedBaseQuantity,
+            CarryingValueAmount,
+            MovingAverageUnitCost,
+            LastEntrySequence,
+            returnBaseQuantity);
+
+        ApplyRemovalStep(result.ValuationStep, nowUtc);
+        return result;
+    }
+
+    private void ApplyRemovalStep(ValuationStepResult step, DateTimeOffset nowUtc)
+    {
+        ValuedBaseQuantity = step.NewBaseQuantity;
+        CarryingValueAmount = step.NewCarryingValue;
+        MovingAverageUnitCost = step.NewMovingAverageCost;
+        LastEntrySequence = step.EntrySequence;
         UpdatedAtUtc = nowUtc;
         Version++;
-
-        return result;
     }
 
     public static InvoicePriceAdjustmentStepResult SimulateInvoicePriceAdjustment(
@@ -898,18 +986,70 @@ public sealed class MovementLine
         decimal issuedPositiveAmount,
         Guid warehouseId,
         Guid locationId,
+        Guid? stockLotId) =>
+        CreateOutboundMovementLine(
+            movementLineId, tenantId, legalEntityId, stockMovementId, lineNumber, stockPositionId, itemId, baseUomId,
+            sourceLineId, StockStatuses.Unrestricted, issuedPositiveBaseQty, unitValuationCost, issuedPositiveAmount,
+            warehouseId, locationId, stockLotId);
+
+    public static MovementLine CreatePurchaseReturnOutbound(
+        Guid movementLineId,
+        Guid tenantId,
+        Guid legalEntityId,
+        Guid stockMovementId,
+        int lineNumber,
+        Guid stockPositionId,
+        Guid itemId,
+        Guid baseUomId,
+        Guid sourceLineId,
+        string sourceStockStatus,
+        decimal returnedPositiveBaseQty,
+        decimal unitValuationCost,
+        decimal returnedPositiveAmount,
+        Guid warehouseId,
+        Guid locationId,
+        Guid? stockLotId)
+    {
+        var normalized = StockStatuses.Normalize(sourceStockStatus);
+        if (normalized is not (StockStatuses.Unrestricted or StockStatuses.Blocked))
+        {
+            throw new InvalidOperationException("return_stock_status_invalid: Purchase return outbound requires UNRESTRICTED or BLOCKED status.");
+        }
+
+        return CreateOutboundMovementLine(
+            movementLineId, tenantId, legalEntityId, stockMovementId, lineNumber, stockPositionId, itemId, baseUomId,
+            sourceLineId, normalized, returnedPositiveBaseQty, unitValuationCost, returnedPositiveAmount,
+            warehouseId, locationId, stockLotId);
+    }
+
+    private static MovementLine CreateOutboundMovementLine(
+        Guid movementLineId,
+        Guid tenantId,
+        Guid legalEntityId,
+        Guid stockMovementId,
+        int lineNumber,
+        Guid stockPositionId,
+        Guid itemId,
+        Guid baseUomId,
+        Guid sourceLineId,
+        string resultingStockStatus,
+        decimal positiveBaseQty,
+        decimal unitValuationCost,
+        decimal positiveAmount,
+        Guid warehouseId,
+        Guid locationId,
         Guid? stockLotId)
     {
         ValidateCoreIds(movementLineId, tenantId, legalEntityId, stockMovementId, lineNumber, stockPositionId, itemId, baseUomId, sourceLineId);
         GuardValidation.RequireNonEmptyGuid(warehouseId, nameof(warehouseId));
         GuardValidation.RequireNonEmptyGuid(locationId, nameof(locationId));
 
-        var qty = decimal.Round(issuedPositiveBaseQty, 6, MidpointRounding.AwayFromZero);
+        var qty = decimal.Round(positiveBaseQty, 6, MidpointRounding.AwayFromZero);
         var cost = decimal.Round(unitValuationCost, 6, MidpointRounding.AwayFromZero);
-        var amount = decimal.Round(issuedPositiveAmount, 4, MidpointRounding.AwayFromZero);
+        var amount = decimal.Round(positiveAmount, 4, MidpointRounding.AwayFromZero);
         if (qty <= 0m || cost <= 0m || amount <= 0m)
         {
-            throw new ArgumentOutOfRangeException(nameof(issuedPositiveBaseQty), "Outbound issue movement line requires positive quantity, unit cost and amount.");
+            throw new ArgumentOutOfRangeException(nameof(positiveBaseQty), "Outbound movement line requires positive quantity, unit cost and amount.");
         }
 
         return new MovementLine
@@ -926,7 +1066,7 @@ public sealed class MovementLine
             WarehouseId = warehouseId,
             LocationId = locationId,
             StockLotId = stockLotId,
-            ResultingStockStatus = StockStatuses.Unrestricted,
+            ResultingStockStatus = resultingStockStatus,
             BaseQuantityDelta = -qty,
             UnitValuationCost = cost,
             LineValuationAmount = -amount

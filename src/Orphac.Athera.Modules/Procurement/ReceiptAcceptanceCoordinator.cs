@@ -287,6 +287,16 @@ public static class ReceiptAcceptanceCoordinator
                 $"SELECT * FROM procurement.goods_receipt_lines WHERE tenant_id = {cmd.TenantId} AND legal_entity_id = {cmd.LegalEntityId} AND goods_receipt_id = {receipt.GoodsReceiptId} ORDER BY line_number FOR UPDATE")
             .ToListAsync(ct);
 
+        ReplacementAuthorization? lockedReplacement = null;
+        if (receipt.ReplacementAuthorizationId is { } rpaId)
+        {
+            lockedReplacement = (await db.ReplacementAuthorizations
+                .FromSqlInterpolated(
+                    $"SELECT * FROM procurement.replacement_authorizations WHERE tenant_id = {cmd.TenantId} AND legal_entity_id = {cmd.LegalEntityId} AND replacement_authorization_id = {rpaId} FOR UPDATE")
+                .ToListAsync(ct))
+                .SingleOrDefault();
+        }
+
         var validation = await BuildValidatedLinePlanAsync(db, cmd.TenantId, cmd.LegalEntityId, receipt, po, receiptLines, cmd.Lines, ct);
         if (!validation.ValidHeader)
         {
@@ -476,6 +486,7 @@ public static class ReceiptAcceptanceCoordinator
 
             receipt.RecalculateHeaderFromLines(receiptLines, cmd.NowUtc);
             po.RecordAcceptedQuantity(totalAcceptedQty, cmd.NowUtc);
+            lockedReplacement?.RecordAccepted(totalAcceptedQty, cmd.NowUtc);
         }
         catch (ArgumentException ex)
         {
@@ -614,6 +625,13 @@ public static class ReceiptAcceptanceCoordinator
             .Where(u => u.TenantId == tenantId && baseUomIds.Contains(u.UomId))
             .ToDictionaryAsync(u => u.UomId, u => u.QuantityPrecisionScale, ct);
 
+        ReplacementAuthorization? linkedReplacement = null;
+        if (receipt.ReplacementAuthorizationId is { } rpaId)
+        {
+            linkedReplacement = await db.ReplacementAuthorizations.AsNoTracking()
+                .SingleOrDefaultAsync(r => r.TenantId == tenantId && r.LegalEntityId == entityId && r.ReplacementAuthorizationId == rpaId, ct);
+        }
+
         var plans = new List<ResolvedLinePlan>(inputs.Count);
         var blocks = new List<string>();
         var firstStatus = 200;
@@ -676,8 +694,19 @@ public static class ReceiptAcceptanceCoordinator
                 return new PlanValidationResult(false, 409, "po_line_not_found", $"Source PO line snapshot missing for receipt line {grLine.LineNumber}.", new(), new(), 409, null, null);
             }
 
-            var unitPriceBase = decimal.Round(poLine.UnitPrice / poLine.UomFactorToBaseSnapshot, 6, MidpointRounding.AwayFromZero);
-            var lineAmount = decimal.Round((qty * poLine.UnitPrice) / poLine.UomFactorToBaseSnapshot, 4, MidpointRounding.AwayFromZero);
+            var unitPriceBase = linkedReplacement is not null
+                ? linkedReplacement.AuthorizedInventoryUnitCostBase
+                : decimal.Round(poLine.UnitPrice / poLine.UomFactorToBaseSnapshot, 6, MidpointRounding.AwayFromZero);
+            var lineAmount = linkedReplacement is not null
+                ? decimal.Round(qty * unitPriceBase, 4, MidpointRounding.AwayFromZero)
+                : decimal.Round((qty * poLine.UnitPrice) / poLine.UomFactorToBaseSnapshot, 4, MidpointRounding.AwayFromZero);
+            if (linkedReplacement is not null && linkedReplacement.AcceptedBaseQuantity + qty > linkedReplacement.DeliveredBaseQuantity)
+            {
+                CaptureBlock(
+                    409,
+                    "replacement_acceptance_exceeds_delivered",
+                    $"Accepted quantity ({qty:0.######}) exceeds remaining unaccepted replacement delivery ({linkedReplacement.DeliveredBaseQuantity - linkedReplacement.AcceptedBaseQuantity:0.######}).");
+            }
             if (unitPriceBase <= 0m || lineAmount <= 0m)
             {
                 CaptureBlock(409, "od04_zero_or_negative_acceptance_value_blocked", $"Line {grLine.LineNumber}: Valuation amount ({lineAmount:F4}) must be positive under OD-04.");

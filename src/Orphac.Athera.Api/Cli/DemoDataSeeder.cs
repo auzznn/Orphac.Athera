@@ -17,7 +17,7 @@ namespace Orphac.Athera.Api.Cli;
 /// <summary>
 /// Idempotent development/staging seed data for S00/S01 verification. Never auto-runs in production.
 /// </summary>
-public static class DemoDataSeeder
+public static partial class DemoDataSeeder
 {
     public static readonly Guid TenantNusaId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaa01");
     public static readonly Guid EntityNusaJakartaId = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaa101");
@@ -159,6 +159,7 @@ public static class DemoDataSeeder
             await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, "HIGH_RISK_PRIVILEGE_ESCALATION", "High-Risk Privilege Escalation (MFA)", requiresFourEyes: true, requiresApproverMfa: true, nowUtc, ct);
             await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, PurchaseOrderWorkflowService.PoApprovalPolicyCode, "Purchase Order Commitment Four-Eyes Approval", requiresFourEyes: true, requiresApproverMfa: false, nowUtc, ct);
             await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, ApPolicyDefaults.SupplierBillApprovalPolicyCode, "Supplier Bill Variance & Posting Four-Eyes Approval", requiresFourEyes: true, requiresApproverMfa: false, nowUtc, ct);
+            await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, ReturnPolicyDefaults.SupplierReturnApprovalPolicyCode, "Supplier Return & Financial Correction Four-Eyes Authorization", requiresFourEyes: true, requiresApproverMfa: false, nowUtc, ct);
             await EnsureTolerancePolicyAsync(db, scopePair.Item1, scopePair.Item2, "EXACT_QTY_OD01_SAFE", "Exact Approved Quantity Only (OD-01 Safe Default)", nowUtc, ct);
             await SupplierBillCoordinator.EnsureDefaultMatchPolicyAsync(db, scopePair.Item1, scopePair.Item2, nowUtc, ct);
         }
@@ -371,6 +372,19 @@ public static class DemoDataSeeder
             nusaPcs.UomId,
             u1Id,
             u2Id,
+            nowUtc,
+            ct);
+
+        // S10 seal (6 dock-rejected for M1 + 14 billed unpaid for M3) & gasket (30 unbilled accepted for M2) on NUSA-JKT only
+        await EnsureS10ReturnsDemoDataAsync(
+            db,
+            nusaId,
+            nusaJktId,
+            supNusa.PartnerId,
+            nusaPcs.UomId,
+            u1Id,
+            u2Id,
+            u4Id,
             nowUtc,
             ct);
     }

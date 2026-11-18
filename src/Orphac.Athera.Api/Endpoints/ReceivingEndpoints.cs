@@ -88,6 +88,35 @@ public static class ReceivingEndpoints
                         .GroupBy(gl => (gl.PurchaseOrderId, gl.LineageLineKey))
                         .ToDictionary(g => g.Key, g => g.ToList());
 
+                    var returnedValuedUnbilledByKey = poIds.Count == 0
+                        ? new Dictionary<(Guid PurchaseOrderId, string LineageLineKey), decimal>()
+                        : await (
+                            from rl in db.SupplierReturnLines.AsNoTracking()
+                            join sr in db.SupplierReturns.AsNoTracking()
+                                on new { rl.TenantId, rl.LegalEntityId, rl.SupplierReturnId }
+                                equals new { sr.TenantId, sr.LegalEntityId, sr.SupplierReturnId }
+                            where sr.TenantId == tenantId
+                                && sr.LegalEntityId == entityId
+                                && poIds.Contains(sr.PurchaseOrderId)
+                                && sr.Status == SupplierReturnStatuses.Executed
+                                && sr.ReturnCaseType == SupplierReturnCaseTypes.ValuedUnbilledReturn
+                            group rl by new { sr.PurchaseOrderId, rl.LineageLineKey } into g
+                            select new { g.Key.PurchaseOrderId, g.Key.LineageLineKey, Qty = g.Sum(x => x.ReturnedBaseQuantity) })
+                            .ToDictionaryAsync(x => (x.PurchaseOrderId, x.LineageLineKey), x => x.Qty, innerCt);
+
+                    var openReplacementByKey = poIds.Count == 0
+                        ? new Dictionary<(Guid PurchaseOrderId, string LineageLineKey), decimal>()
+                        : await db.ReplacementAuthorizations.AsNoTracking()
+                            .Where(r =>
+                                r.TenantId == tenantId &&
+                                r.LegalEntityId == entityId &&
+                                poIds.Contains(r.PurchaseOrderId) &&
+                                (r.Status == ReplacementAuthorizationStatuses.Active || r.Status == ReplacementAuthorizationStatuses.PartiallyReceived) &&
+                                r.RemainingBaseQuantity > 0m)
+                            .GroupBy(r => new { r.PurchaseOrderId, r.LineageLineKey })
+                            .Select(g => new { g.Key.PurchaseOrderId, g.Key.LineageLineKey, Qty = g.Sum(x => x.RemainingBaseQuantity) })
+                            .ToDictionaryAsync(x => (x.PurchaseOrderId, x.LineageLineKey), x => x.Qty, innerCt);
+
                     var resultItems = new List<EligiblePurchaseOrderForReceivingDto>(pos.Count);
                     foreach (var po in pos)
                     {
@@ -108,7 +137,9 @@ public static class ReceivingEndpoints
                             var releasedBase = history.Sum(x => x.DockReleasedBaseQuantity);
                             var rejectedBase = history.Sum(x => x.DockRejectedBaseQuantity);
                             var valuedBase = history.Sum(x => x.ValuedAcceptedBaseQuantity);
-                            var remainingEligible = Math.Max(0m, l.OrderedBaseQuantity - (pendingBase + releasedBase));
+                            var returnedUnbilled = returnedValuedUnbilledByKey.GetValueOrDefault((po.PurchaseOrderId, l.LineageLineKey), 0m);
+                            var openRepl = openReplacementByKey.GetValueOrDefault((po.PurchaseOrderId, l.LineageLineKey), 0m);
+                            var remainingEligible = Math.Max(0m, l.OrderedBaseQuantity - ((pendingBase + releasedBase) - returnedUnbilled + openRepl));
 
                             var allowedUoms = new List<EligiblePoReceivingUomDto>();
                             if (uoms.TryGetValue(l.BaseUomId, out var baseUom))
@@ -260,6 +291,13 @@ public static class ReceivingEndpoints
                                 receiptIdStrings.Contains(j.SourceDocumentId),
                                 innerCt);
 
+                    var rpaIds = receipts.Where(r => r.ReplacementAuthorizationId.HasValue).Select(r => r.ReplacementAuthorizationId!.Value).Distinct().ToList();
+                    var rpaNumbers = rpaIds.Count == 0
+                        ? new Dictionary<Guid, string>()
+                        : await db.ReplacementAuthorizations.AsNoTracking()
+                            .Where(a => a.TenantId == tenantId && a.LegalEntityId == entityId && rpaIds.Contains(a.ReplacementAuthorizationId))
+                            .ToDictionaryAsync(a => a.ReplacementAuthorizationId, a => a.AuthorizationNumber, innerCt);
+
                     var dtos = receipts.Select(r => new GoodsReceiptSummaryDto(
                         r.GoodsReceiptId,
                         r.ReceiptNumber,
@@ -279,7 +317,9 @@ public static class ReceivingEndpoints
                         r.TotalReleasedBaseQuantity,
                         r.TotalHeldBaseQuantity,
                         r.HasFinancialPosting,
-                        r.UpdatedAtUtc)).ToList();
+                        r.UpdatedAtUtc,
+                        r.ReplacementAuthorizationId,
+                        r.ReplacementAuthorizationId is { } rid ? rpaNumbers.GetValueOrDefault(rid) : null)).ToList();
 
                     return Results.Ok(new GoodsReceiptListResponse(
                         dtos,
@@ -378,7 +418,8 @@ public static class ReceivingEndpoints
                                 l.ConditionEvidenceRef))
                             .ToList(),
                         actorUserId,
-                        DateTimeOffset.UtcNow),
+                        DateTimeOffset.UtcNow,
+                        request.ReplacementAuthorizationId),
                     innerCt),
                 ct))
         .RequireAuthorization()
@@ -619,7 +660,7 @@ public static class ReceivingEndpoints
         };
     }
 
-    private static async Task<GoodsReceiptDetailDto?> LoadGoodsReceiptDetailDtoAsync(
+    internal static async Task<GoodsReceiptDetailDto?> LoadGoodsReceiptDetailDtoAsync(
         AtheraDbContext db,
         Guid tenantId,
         Guid entityId,
@@ -633,6 +674,19 @@ public static class ReceivingEndpoints
         if (receipt is null)
         {
             return null;
+        }
+
+        string? replacementAuthNumber = null;
+        decimal? replacementAuthQty = null;
+        if (receipt.ReplacementAuthorizationId is { } rpaId)
+        {
+            var rpa = await db.ReplacementAuthorizations.AsNoTracking()
+                .SingleOrDefaultAsync(a => a.TenantId == tenantId && a.LegalEntityId == entityId && a.ReplacementAuthorizationId == rpaId, ct);
+            if (rpa is not null)
+            {
+                replacementAuthNumber = rpa.AuthorizationNumber;
+                replacementAuthQty = rpa.AuthorizedBaseQuantity;
+            }
         }
 
         var lines = await db.GoodsReceiptLines.AsNoTracking()
@@ -726,13 +780,45 @@ public static class ReceivingEndpoints
                 .Where(i => i.TenantId == tenantId && lineItemIds.Contains(i.ItemId))
                 .ToDictionaryAsync(i => i.ItemId, i => i.LotTrackingPolicy, ct);
 
+        var returnedUnbilledByLineKey = receipt.ReplacementAuthorizationId.HasValue
+            ? new Dictionary<string, decimal>(StringComparer.Ordinal)
+            : await (
+                from rl in db.SupplierReturnLines.AsNoTracking()
+                join sr in db.SupplierReturns.AsNoTracking()
+                    on new { rl.TenantId, rl.LegalEntityId, rl.SupplierReturnId }
+                    equals new { sr.TenantId, sr.LegalEntityId, sr.SupplierReturnId }
+                where sr.TenantId == tenantId
+                    && sr.LegalEntityId == entityId
+                    && sr.PurchaseOrderId == receipt.PurchaseOrderId
+                    && sr.Status == SupplierReturnStatuses.Executed
+                    && sr.ReturnCaseType == SupplierReturnCaseTypes.ValuedUnbilledReturn
+                group rl by rl.LineageLineKey into g
+                select new { LineageLineKey = g.Key, Qty = g.Sum(x => x.ReturnedBaseQuantity) })
+                .ToDictionaryAsync(x => x.LineageLineKey, x => x.Qty, ct);
+
+        var openReplacementByLineKey = receipt.ReplacementAuthorizationId.HasValue
+            ? new Dictionary<string, decimal>(StringComparer.Ordinal)
+            : await db.ReplacementAuthorizations.AsNoTracking()
+                .Where(r =>
+                    r.TenantId == tenantId &&
+                    r.LegalEntityId == entityId &&
+                    r.PurchaseOrderId == receipt.PurchaseOrderId &&
+                    (r.Status == ReplacementAuthorizationStatuses.Active || r.Status == ReplacementAuthorizationStatuses.PartiallyReceived) &&
+                    r.RemainingBaseQuantity > 0m)
+                .GroupBy(r => r.LineageLineKey)
+                .Select(g => new { LineageLineKey = g.Key, Qty = g.Sum(x => x.RemainingBaseQuantity) })
+                .ToDictionaryAsync(x => x.LineageLineKey, x => x.Qty, ct);
+
         var lineDtos = lines.Select(l =>
         {
-            var approvedCap = approvedLineQtyByKey.GetValueOrDefault(l.LineageLineKey, 0m);
-            var otherReleased = allPoReceiptLines
-                .Where(gl => gl.LineageLineKey == l.LineageLineKey && gl.GoodsReceiptLineId != l.GoodsReceiptLineId)
-                .Sum(gl => gl.DockReleasedBaseQuantity);
-            var maxCapForLine = Math.Max(0m, approvedCap - otherReleased);
+            var maxCapForLine = receipt.ReplacementAuthorizationId.HasValue
+                ? Math.Min(l.PhysicallyDeliveredBaseQuantity, replacementAuthQty ?? l.PhysicallyDeliveredBaseQuantity)
+                : Math.Max(0m, approvedLineQtyByKey.GetValueOrDefault(l.LineageLineKey, 0m) - (
+                    allPoReceiptLines
+                        .Where(gl => gl.LineageLineKey == l.LineageLineKey && gl.GoodsReceiptLineId != l.GoodsReceiptLineId)
+                        .Sum(gl => gl.DockReleasedBaseQuantity)
+                    - returnedUnbilledByLineKey.GetValueOrDefault(l.LineageLineKey, 0m)
+                    + openReplacementByLineKey.GetValueOrDefault(l.LineageLineKey, 0m)));
 
             return new GoodsReceiptLineDto(
                 l.GoodsReceiptLineId,
@@ -823,6 +909,8 @@ public static class ReceivingEndpoints
             valuedAcceptanceDtos.Count(a => a.GlJournalId.HasValue),
             valuedAcceptanceDtos,
             lineDtos,
-            dockCheckDtos);
+            dockCheckDtos,
+            receipt.ReplacementAuthorizationId,
+            replacementAuthNumber);
     }
 }

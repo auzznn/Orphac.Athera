@@ -22,6 +22,7 @@ import {
   PackageCheck,
   Receipt,
   RefreshCw,
+  RotateCcw,
   ShieldCheck,
   ShoppingCart,
   Tags,
@@ -372,6 +373,30 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         permissionSet.has("receiving.accept"),
       active: pathname.endsWith("/receiving"),
     },
+    (() => {
+      const returnsPermitted =
+        permissionSet.has("procurement.read") ||
+        permissionSet.has("procurement.manage") ||
+        permissionSet.has("procurement.approve") ||
+        permissionSet.has("receiving.read") ||
+        permissionSet.has("receiving.manage") ||
+        permissionSet.has("receiving.accept") ||
+        permissionSet.has("inventory.read") ||
+        permissionSet.has("inventory.manage") ||
+        permissionSet.has("quality.inspect") ||
+        permissionSet.has("ap.read") ||
+        permissionSet.has("ap.manage") ||
+        permissionSet.has("ap.approve") ||
+        permissionSet.has("ap.post");
+      return {
+        key: "returns",
+        label: t.shell.navItems.returns,
+        icon: RotateCcw,
+        href: baseEntityPath && returnsPermitted ? `${baseEntityPath}/returns` : null,
+        permitted: returnsPermitted,
+        active: pathname.endsWith("/returns"),
+      };
+    })(),
     {
       key: "inventory",
       label: t.shell.navItems.inventory,

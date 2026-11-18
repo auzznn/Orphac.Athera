@@ -47,6 +47,7 @@ export interface Dictionary {
       approvals: string;
       procurement: string;
       receiving: string;
+      returns: string;
       inventory: string;
       payables: string;
       sales: string;
@@ -1296,6 +1297,211 @@ export interface Dictionary {
     taxFamilyLabels: Record<string, string>;
     errors: Record<string, string>;
   };
+  returns: {
+    pageTitle: string;
+    lead: string;
+    backToOverview: string;
+    loadErrorTitle: string;
+    retryButton: string;
+    refreshButton: string;
+    readOnlyBanner: string;
+    od05PolicyBanner: string;
+    od07PolicyBanner: string;
+    matrixToggleShow: string;
+    matrixToggleHide: string;
+    matrixTitle: string;
+    colMatrixCode: string;
+    colMatrixCase: string;
+    colMatrixResolution: string;
+    colMatrixPrecondition: string;
+    colMatrixEffect: string;
+    colMatrixDisposition: string;
+    stats: {
+      pendingApprovalCount: string;
+      openReplacementCount: string;
+      unbilledGrniReversedTotal: string;
+      supplierCreditNotesTotal: string;
+    };
+    tabListLabel: string;
+    tabs: {
+      queued: string;
+      returns: string;
+      replacements: string;
+      credits: string;
+    };
+    subQueues: {
+      m1Unvalued: string;
+      m2Unbilled: string;
+      m3Billed: string;
+    };
+    prepareReturnButton: string;
+    receiveReplacementButton: string;
+    openDetailButton: string;
+    activeDetailButton: string;
+    creditedShort: string;
+    replacementBadgeShort: string;
+    kpiUnits: {
+      rpaShort: string;
+      unitShort: string;
+    };
+    micro: {
+      qtyShort: string;
+      invShort: string;
+      creditShort: string;
+      delivShort: string;
+      accShort: string;
+      apDeltaShort: string;
+      billShort: string;
+      payableShort: string;
+      baseShort: string;
+      grniShort: string;
+      poolShort: string;
+      grniOpenShort: string;
+      dockCustodyLabel: string;
+    };
+    matrixRulesByCode: Record<
+      string,
+      {
+        resolution: string;
+        precondition: string;
+        effect: string;
+      }
+    >;
+    emptyUnvaluedTitle: string;
+    emptyUnvaluedBody: string;
+    emptyUnbilledTitle: string;
+    emptyUnbilledBody: string;
+    emptyBilledTitle: string;
+    emptyBilledBody: string;
+    emptyReturnsTitle: string;
+    emptyReturnsBody: string;
+    emptyReplacementsTitle: string;
+    emptyReplacementsBody: string;
+    emptyCreditsTitle: string;
+    emptyCreditsBody: string;
+    colSourceDoc: string;
+    colItemAndPo: string;
+    colQtyEligible: string;
+    colUnitCostPrice: string;
+    colMatrixState: string;
+    colAction: string;
+    colReturnNumber: string;
+    colCaseAndMode: string;
+    colAmounts: string;
+    colStatus: string;
+    colRpaNumber: string;
+    colRpaEntitlement: string;
+    colRpaCost: string;
+    colCreditNumber: string;
+    colNotaRetur: string;
+    colCreditBreakdown: string;
+    colPostedRefs: string;
+    composer: {
+      title: string;
+      closeButton: string;
+      sourceSummaryLabel: string;
+      caseTypeLabel: string;
+      resolutionModeLabel: string;
+      returnDateLabel: string;
+      reasonCodeLabel: string;
+      carrierRefLabel: string;
+      carrierRefPlaceholder: string;
+      taxReturnNoteLabel: string;
+      taxReturnNotePlaceholder: string;
+      taxReturnNoteHint: string;
+      notesLabel: string;
+      notesPlaceholder: string;
+      lineQtyLabel: string;
+      stockLocationLabel: string;
+      noLocationNeeded: string;
+      lineNotesLabel: string;
+      previewButton: string;
+      previewBusy: string;
+      saveDraftButton: string;
+      saveDraftBusy: string;
+      updateDraftButton: string;
+      previewTitle: string;
+      previewBlockedLabel: string;
+      previewSupportedLabel: string;
+      previewBlockedGlNotice: string;
+      previewPeriodOpen: string;
+      previewPeriodClosed: string;
+      previewInventoryCredit: string;
+      previewGrniReversal: string;
+      previewCreditSubtotal: string;
+      previewPpnReversal: string;
+      previewCreditTotal: string;
+      previewPpvDifference: string;
+      journalPreviewTitle: string;
+      colDebit: string;
+      colCredit: string;
+    };
+    replacementModal: {
+      title: string;
+      subtitle: string;
+      remainingEntitlementLabel: string;
+      commercialPriceNote: string;
+      authorizedCostLabel: string;
+      receivedQtyLabel: string;
+      receivedDateLabel: string;
+      deliveryNoteLabel: string;
+      deliveryNotePlaceholder: string;
+      stationLabel: string;
+      stationPlaceholder: string;
+      vehicleRefLabel: string;
+      notesLabel: string;
+      flagInspectionLabel: string;
+      submitButton: string;
+      submitBusy: string;
+      cancelButton: string;
+    };
+    detail: {
+      selectPromptTitle: string;
+      selectPromptBody: string;
+      closeSheet: string;
+      headerReturnNumber: string;
+      headerSourceChain: string;
+      headerSupplier: string;
+      headerCaseResolution: string;
+      lineageTitle: string;
+      linesTitle: string;
+      colItem: string;
+      colQty: string;
+      colInvGrni: string;
+      colCreditPpnPpv: string;
+      colSourceBucket: string;
+      taxDeterminationsTitle: string;
+      taxBaseLabel: string;
+      taxAmountLabel: string;
+      creditNoteSummaryTitle: string;
+      replacementLinksTitle: string;
+      livePreviewTitle: string;
+      submitButton: string;
+      submitBusy: string;
+      decisionTitle: string;
+      decisionReasonLabel: string;
+      approveButton: string;
+      rejectButton: string;
+      decisionBusy: string;
+      sodHint: string;
+      executeTitle: string;
+      postingDateLabel: string;
+      executeButton: string;
+      executeBusy: string;
+      noPermManageHint: string;
+      noPermApproveHint: string;
+      noPermExecuteHint: string;
+      defaultApproveReason: string;
+      defaultRejectReason: string;
+    };
+    caseTypeLabels: Record<string, string>;
+    resolutionModeLabels: Record<string, string>;
+    statusLabels: Record<string, string>;
+    dispositionLabels: Record<string, string>;
+    rpaStatusLabels: Record<string, string>;
+    reasonCodeLabels: Record<string, string>;
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -1358,6 +1564,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         approvals: "Persetujuan",
         procurement: "Pengadaan",
         receiving: "Penerimaan Gudang",
+        returns: "Retur & Kredit Pemasok",
         inventory: "Persediaan",
         payables: "Hutang Usaha (AP)",
         sales: "Penjualan",
@@ -2609,6 +2816,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         LOCATION_TRANSFER: "Pemindahan Lokasi Gudang",
         QUALITY_STATUS_CHANGE: "Perubahan Status Mutu / Pembatasan",
         OPERATIONAL_ISSUE: "Pemakaian / Pengeluaran Stok Operasional",
+        PURCHASE_RETURN_OUTBOUND: "Pengeluaran Retur ke Pemasok (S10)",
       },
       entryTypeLabels: {
         RECEIPT_ACCEPTANCE: "Penerimaan Bernilai",
@@ -3067,6 +3275,300 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Izin entitas aktif Anda tidak mencukupi untuk menjalankan tindakan AP ini.",
       },
     },
+    returns: {
+      pageTitle: "Retur Pemasok, Penggantian & Kredit",
+      lead: "Penanganan penolakan fisik dermaga (M1), retur bernilai sebelum tagihan (M2), dan retur setelah faktur AP diposting (M3) dengan kontrol empat mata OD-02 serta kebijakan OD-05/OD-07.",
+      backToOverview: "Kembali ke Ringkasan",
+      loadErrorTitle: "Gagal Memuat Modul Retur Pemasok",
+      retryButton: "Coba Lagi",
+      refreshButton: "Segarkan",
+      readOnlyBanner:
+        "Mode Baca-Saja: Peran entitas Anda hanya memiliki izin baca (procurement.read, receiving.read, inventory.read, atau ap.read); penyusunan draf, persetujuan, eksekusi retur, dan penerimaan pengganti dinonaktifkan.",
+      od05PolicyBanner:
+        "OD-05 (ATH-CR-007): Penolakan dermaga M1 & penerimaan belum ditagih M2 mendukung penggantian RPA tanpa faktur tambahan; faktur AP diposting (M3) wajib menggunakan Nota Kredit Pemasok & diblokir untuk penggantian langsung (M4) atau faktur sudah dibayar (M5).",
+      od07PolicyBanner:
+        "OD-07 (ATH-CR-007): Retur faktur Kena PPN (M3) wajib mencantumkan Nomor Nota Retur sebelum pengiriman/eksekusi. Pembalikan PPN mengkredit 1410 PPN Masukan; faktur dengan PPh (M6) diblokir sementara.",
+      matrixToggleShow: "Lihat Matriks Kebijakan OD-05/OD-07 (M1–M7)",
+      matrixToggleHide: "Sembunyikan Matriks Kebijakan",
+      matrixTitle: "Matriks Kebijakan Retur Pemasok & Koreksi Keuangan (OD-05 / OD-07)",
+      colMatrixCode: "Kode",
+      colMatrixCase: "Kasus Retur",
+      colMatrixResolution: "Resolusi",
+      colMatrixPrecondition: "Prasyarat",
+      colMatrixEffect: "Dampak Stok, GRNI & GL",
+      colMatrixDisposition: "Keputusan",
+      stats: {
+        pendingApprovalCount: "Menunggu Persetujuan",
+        openReplacementCount: "Otorisasi Pengganti Terbuka (RPA)",
+        unbilledGrniReversedTotal: "Akumulasi Balik GRNI (M2)",
+        supplierCreditNotesTotal: "Akumulasi Nota Kredit AP (M3)",
+      },
+      tabListLabel: "Tampilan buku besar retur pemasok",
+      tabs: {
+        queued: "Antrean Sumber Retur",
+        returns: "Otorisasi Retur (SRN)",
+        replacements: "Penggantian Barang (RPA)",
+        credits: "Nota Kredit Pemasok (SCN)",
+      },
+      subQueues: {
+        m1Unvalued: "M1 · Penolakan Dermaga Tanpa Nilai",
+        m2Unbilled: "M2 · Penerimaan Bernilai Belum Ditagih",
+        m3Billed: "M3 · Faktur AP Terposting",
+      },
+      prepareReturnButton: "Buat Retur",
+      receiveReplacementButton: "Terima Pengganti",
+      openDetailButton: "Buka Detail",
+      activeDetailButton: "Sedang Dibuka",
+      creditedShort: "Dikreditkan",
+      replacementBadgeShort: "Pengganti",
+      kpiUnits: {
+        rpaShort: "RPA",
+        unitShort: "unit",
+      },
+      micro: {
+        qtyShort: "kuant",
+        invShort: "Persediaan",
+        creditShort: "Kredit",
+        delivShort: "Tiba",
+        accShort: "Terima",
+        apDeltaShort: "Selisih AP",
+        billShort: "Faktur",
+        payableShort: "Hutang",
+        baseShort: "DPP",
+        grniShort: "GRNI",
+        poolShort: "Saldo",
+        grniOpenShort: "Sisa GRNI",
+        dockCustodyLabel: "Kustodi Dermaga (M1)",
+      },
+      matrixRulesByCode: {
+        M1: {
+          resolution: "Penggantian Barang (RPA) / Tutup Tanpa Pengganti",
+          precondition: "Kuantitas ditolak pada Gerbang 1 (belum diterima bernilai)",
+          effect: "Nol jurnal GL/Persediaan/GRNI; opsional otorisasi pengganti RPA (tagihan tambahan Rp 0)",
+        },
+        M2: {
+          resolution: "Tutup Tanpa Pengganti / Penggantian Barang (RPA)",
+          precondition: "GRNI belum ditagih, stok bebas/diblokir tersedia, periode terbuka, disetujui empat mata",
+          effect: "Pengeluaran stok (MAC) Kredit 1300, Debit 2110 GRNI +/- 5200 PPV, dan opsional RPA",
+        },
+        M3: {
+          resolution: "Nota Kredit Pemasok (SCN)",
+          precondition: "Faktur terposting belum dibayar, PPh nol, wajib Nota Retur jika kena PPN, disetujui empat mata AP",
+          effect: "Kredit 1300 Persediaan + Nota Kredit SCN + Debit 2100 AP + Kredit 1410 PPN +/- 5200 PPV",
+        },
+        M4: {
+          resolution: "Penggantian Barang (RPA)",
+          precondition: "Barang berasal dari faktur AP yang sudah diposting",
+          effect: "Diblokir otomatis oleh kebijakan OD-05; wajib menggunakan Nota Kredit Pemasok",
+        },
+        M5: {
+          resolution: "Nota Kredit Pemasok (SCN)",
+          precondition: "Faktur AP terkait sudah dibayar sebagian atau penuh",
+          effect: "Diblokir otomatis oleh kebijakan OD-05 (M5); memerlukan mekanisme pengembalian kas terpisah",
+        },
+        M6: {
+          resolution: "Nota Kredit Pemasok (SCN)",
+          precondition: "Baris faktur AP mengandung pemotongan pajak PPh",
+          effect: "Diblokir otomatis oleh kebijakan OD-07 (M6) hingga prosedur penyesuaian pajak ditetapkan",
+        },
+        M7: {
+          resolution: "Semua Mode (Retur Bernilai)",
+          precondition: "Periode akuntansi pada tanggal posting berstatus Ditutup atau Terkunci",
+          effect: "Diblokir otomatis saat eksekusi hingga periode dibuka atau tanggal posting diganti",
+        },
+      },
+      emptyUnvaluedTitle: "Tidak Ada Penolakan Dermaga Terbuka",
+      emptyUnvaluedBody: "Unit yang ditolak di Gerbang 1 (belum diklaim retur) akan muncul di sini untuk M1.",
+      emptyUnbilledTitle: "Tidak Ada Baris GRNI Belum Ditagih",
+      emptyUnbilledBody: "Penerimaan bernilai Gerbang 2 dengan saldo belum ditagih dan stok tersedia muncul di sini.",
+      emptyBilledTitle: "Tidak Ada Baris Faktur Terposting",
+      emptyBilledBody: "Baris faktur AP berstatus POSTED yang memenuhi syarat Nota Kredit M3 akan muncul di sini.",
+      emptyReturnsTitle: "Belum Ada Dokumen Retur Pemasok",
+      emptyReturnsBody: "Pilih sumber dari Antrean Sumber Retur untuk menyusun retur M1, M2, atau M3.",
+      emptyReplacementsTitle: "Belum Ada Otorisasi Penggantian (RPA)",
+      emptyReplacementsBody: "RPA diterbitkan otomatis saat retur M1 atau M2 dengan mode REPLACEMENT_ONLY dieksekusi.",
+      emptyCreditsTitle: "Belum Ada Nota Kredit Pemasok (SCN)",
+      emptyCreditsBody: "Nota Kredit SCN-YYYY-NNNNN tercatat otomatis secara append-only saat retur M3 dieksekusi.",
+      colSourceDoc: "Dokumen Sumber",
+      colItemAndPo: "Barang & PO",
+      colQtyEligible: "Kuantitas & Sisa Layak",
+      colUnitCostPrice: "Biaya / Harga Satuan",
+      colMatrixState: "Aturan Matriks",
+      colAction: "Tindakan",
+      colReturnNumber: "Nomor Retur & Tanggal",
+      colCaseAndMode: "Kasus & Mode Resolusi",
+      colAmounts: "Dampak Nilai (Inv / GRNI / Kredit)",
+      colStatus: "Status & Pelaku",
+      colRpaNumber: "Nomor RPA & Retur",
+      colRpaEntitlement: "Jatah Kuantitas Pengganti",
+      colRpaCost: "Biaya Unit Otorisasi Gerbang 2",
+      colCreditNumber: "Nomor SCN & Faktur",
+      colNotaRetur: "Nota Retur Pajak",
+      colCreditBreakdown: "Rincian Kredit (DPP / PPN / Total / PPV)",
+      colPostedRefs: "Jurnal & Mutasi Stok",
+      composer: {
+        title: "Penyusun Retur Pemasok & Pratinjau Dampak Langsung",
+        closeButton: "Tutup Penyusun",
+        sourceSummaryLabel: "Sumber Terpilih",
+        caseTypeLabel: "Jenis Kasus Retur",
+        resolutionModeLabel: "Mode Resolusi (OD-05)",
+        returnDateLabel: "Tanggal Retur",
+        reasonCodeLabel: "Alasan Retur",
+        carrierRefLabel: "Referensi Ekspedisi / Resi",
+        carrierRefPlaceholder: "Mis. TRK-JKT-001",
+        taxReturnNoteLabel: "Nomor Nota Retur Pajak (OD-07)",
+        taxReturnNotePlaceholder: "Mis. NR-2026-0001",
+        taxReturnNoteHint: "Wajib diisi untuk retur M3 bernilai PPN > 0.",
+        notesLabel: "Catatan Retur",
+        notesPlaceholder: "Catatan inspeksi atau instruksi pengiriman",
+        lineQtyLabel: "Kuantitas Retur (Satuan Dasar)",
+        stockLocationLabel: "Lokasi & Status Stok Sumber",
+        noLocationNeeded: "Penolakan fisik dermaga — tidak mengurangi saldo stok buku.",
+        lineNotesLabel: "Catatan Baris",
+        previewButton: "Pratinjau Dampak GL & Kebijakan",
+        previewBusy: "Menghitung Pratinjau...",
+        saveDraftButton: "Simpan Draf Retur",
+        saveDraftBusy: "Menyimpan Draf...",
+        updateDraftButton: "Perbarui Draf",
+        previewTitle: "Hasil Evaluasi Matriks & Pratinjau Jurnal",
+        previewBlockedLabel: "Diblokir Kebijakan",
+        previewSupportedLabel: "Memenuhi Syarat",
+        previewBlockedGlNotice:
+          "Pratinjau entri jurnal ditekan karena skenario ini diblokir oleh kebijakan OD-05 / OD-07.",
+        previewPeriodOpen: "Periode Akuntansi Terbuka",
+        previewPeriodClosed: "Periode Akuntansi Ditutup (M7)",
+        previewInventoryCredit: "Kredit Persediaan (1300)",
+        previewGrniReversal: "Pembalikan GRNI (2110)",
+        previewCreditSubtotal: "Subtotal Kredit (DPP)",
+        previewPpnReversal: "Balik PPN Masukan (1410)",
+        previewCreditTotal: "Total Nota Kredit (Dr 2100)",
+        previewPpvDifference: "Selisih Biaya MAC / PPV (5200)",
+        journalPreviewTitle: "Pratinjau Entri Jurnal Seimbang",
+        colDebit: "Debit",
+        colCredit: "Kredit",
+      },
+      replacementModal: {
+        title: "Terima Pengiriman Pengganti Terkait RPA",
+        subtitle: "Mencatat kedatangan fisik di Gerbang 1 yang terikat pada kuota RPA dan mewarisi otorisasi biaya unit saat Gerbang 2.",
+        remainingEntitlementLabel: "Sisa Hak Pengganti Terbuka",
+        commercialPriceNote: "Harga Komersial Tambahan: Rp 0 (Pengganti tanpa tagihan baru)",
+        authorizedCostLabel: "Biaya Unit Otorisasi Gerbang 2",
+        receivedQtyLabel: "Kuantitas Diterima (Satuan Dasar)",
+        receivedDateLabel: "Tanggal Kedatangan",
+        deliveryNoteLabel: "Nomor Surat Jalan Pengganti",
+        deliveryNotePlaceholder: "Mis. SJ-RPA-2026-01",
+        stationLabel: "Stasiun Penerimaan Dermaga",
+        stationPlaceholder: "Dermaga A — Pengganti",
+        vehicleRefLabel: "Kendaraan / Segel (Opsional)",
+        notesLabel: "Catatan Kedatangan (Opsional)",
+        flagInspectionLabel: "Tandai untuk pemeriksaan mutu tambahan di dermaga",
+        submitButton: "Catat Kedatangan Pengganti ke GRN",
+        submitBusy: "Mencatat Kedatangan...",
+        cancelButton: "Batal",
+      },
+      detail: {
+        selectPromptTitle: "Pilih Otorisasi Retur Pemasok",
+        selectPromptBody:
+          "Pilih baris SRN pada tab Otorisasi Retur atau simpan draf baru untuk melihat rantai asal, persetujuan empat mata OD-02, dan eksekusi buku besar.",
+        closeSheet: "Tutup Panel",
+        headerReturnNumber: "Nomor Retur & Draf",
+        headerSourceChain: "Rantai Dokumen Asal",
+        headerSupplier: "Pemasok & Nota Retur",
+        headerCaseResolution: "Kasus & Mode Resolusi",
+        lineageTitle: "Jejak Referensi Terkait",
+        linesTitle: "Rincian Baris Retur & Alokasi Sumber Stok",
+        colItem: "Barang",
+        colQty: "Kuantitas Retur",
+        colInvGrni: "Kredit Persediaan / GRNI",
+        colCreditPpnPpv: "Kredit AP / PPN / PPV",
+        colSourceBucket: "Lokasi & Status Sumber",
+        taxDeterminationsTitle: "Penentuan Pembalikan Pajak Indonesia (OD-07)",
+        taxBaseLabel: "Dasar Pembalikan",
+        taxAmountLabel: "Pembalikan PPN (1410)",
+        creditNoteSummaryTitle: "Nota Kredit Pemasok Tercatat (Append-Only)",
+        replacementLinksTitle: "Otorisasi Penggantian Barang Terbit (RPA)",
+        livePreviewTitle: "Pratinjau Dampak Saat Eksekusi",
+        submitButton: "Ajukan Persetujuan",
+        submitBusy: "Mengajukan...",
+        decisionTitle: "Persetujuan Empat Mata (OD-02)",
+        decisionReasonLabel: "Catatan / Alasan Keputusan",
+        approveButton: "Setujui Retur",
+        rejectButton: "Tolak / Kembalikan ke Draf",
+        decisionBusy: "Memproses Keputusan...",
+        sodHint: "Segregasi Empat Mata (OD-02): Pengaju retur tidak dapat menyetujui pengajuannya sendiri.",
+        executeTitle: "Eksekusi Retur ke Stok, GRNI, Nota Kredit & GL",
+        postingDateLabel: "Tanggal Eksekusi / Posting GL",
+        executeButton: "Eksekusi Retur Sekarang",
+        executeBusy: "Mengeksekusi...",
+        noPermManageHint:
+          "Memerlukan izin receiving.manage, inventory.manage, atau ap.manage pada entitas ini untuk mengajukan draf.",
+        noPermApproveHint:
+          "Memerlukan otorisasi independen empat mata (approval.decide dan procurement.approve / ap.approve) untuk memutuskan.",
+        noPermExecuteHint:
+          "Memerlukan izin eksekusi entitas (receiving.manage, inventory.manage / receiving.accept, atau ap.post).",
+        defaultApproveReason: "Retur terverifikasi dan disetujui sesuai bukti",
+        defaultRejectReason: "Dikembalikan ke draf untuk koreksi kuantitas atau dokumen",
+      },
+      caseTypeLabels: {
+        UNVALUED_DOCK_REJECTION: "M1 · Penolakan Dermaga Tanpa Nilai",
+        VALUED_UNBILLED_RETURN: "M2 · Retur Bernilai Belum Ditagih (GRNI)",
+        VALUED_BILLED_RETURN: "M3 · Retur Bernilai Setelah Faktur (AP)",
+        "VALUED_*": "M2 / M3 · Retur Bernilai",
+      },
+      resolutionModeLabels: {
+        CLOSE_WITHOUT_REPLACEMENT: "Tutup Tanpa Pengganti",
+        REPLACEMENT_ONLY: "Penggantian Barang (RPA)",
+        AP_CREDIT_NOTE: "Nota Kredit Pemasok (SCN)",
+      },
+      statusLabels: {
+        DRAFT: "Draf",
+        PENDING_APPROVAL: "Menunggu Persetujuan",
+        APPROVED: "Disetujui (Siap Eksekusi)",
+        EXECUTED: "Dieksekusi",
+        CANCELLED: "Dibatalkan",
+      },
+      dispositionLabels: {
+        SUPPORTED: "Didukung",
+        BLOCKED_POLICY_OD05: "Diblokir OD-05",
+        BLOCKED_POLICY_OD07: "Diblokir OD-07",
+        BLOCKED_CLOSED_PERIOD: "Periode Ditutup (M7)",
+      },
+      rpaStatusLabels: {
+        ACTIVE: "Terbuka (Menunggu Pengganti)",
+        PARTIALLY_RECEIVED: "Sebagian Diterima",
+        FULFILLED: "Terpenuhi Penuh",
+        CANCELLED: "Dibatalkan",
+      },
+      reasonCodeLabels: {
+        DAMAGED_OR_DEFECTIVE: "Barang Rusak atau Cacat Mutu",
+        WRONG_ITEM_OR_SPEC: "Salah Barang / Tidak Sesuai Spesifikasi",
+        OVERDELIVERY_RETURN: "Pengembalian Kelebihan Pengiriman",
+        EXPIRED_OR_SHORT_SHELF_LIFE: "Kedaluwarsa atau Umur Simpan Pendek",
+        COMMERCIAL_AGREEMENT_RETURN: "Retur Sesuai Kesepakatan Komersial",
+      },
+      errors: {
+        od05_billed_replacement_policy_blocked:
+          "Kebijakan OD-05 (M4) menolak mode Penggantian Barang (RPA) untuk barang yang sudah memiliki faktur terposting. Gunakan Nota Kredit Pemasok (SCN).",
+        od05_paid_bill_return_policy_blocked:
+          "Kebijakan OD-05 (M5) memblokir retur otomatis pada faktur yang sudah memiliki pembayaran/pelunasan parsial atau penuh.",
+        od07_withholding_return_reversal_blocked:
+          "Kebijakan OD-07 (M6) memblokir pembuatan Nota Kredit otomatis pada baris faktur yang memiliki pemotongan PPh.",
+        od07_nota_retur_required:
+          "Kebijakan OD-07 mensyaratkan Nomor Nota Retur pajak untuk membalik PPN Masukan pada retur faktur bernilai.",
+        self_approval_forbidden:
+          "Segregasi Empat Mata (OD-02) melarang pengaju menyetujui pengajuan returnya sendiri.",
+        period_closed:
+          "Periode akuntansi pada tanggal posting/eksekusi berstatus DITUTUP (M7).",
+        replacement_entitlement_exceeded:
+          "Kuantitas penerimaan pengganti melebihi sisa hak terbuka pada otorisasi RPA.",
+        return_quantity_exceeds_eligible:
+          "Kuantitas retur melebihi sisa kuantitas sumber yang memenuhi syarat atau stok tersedia.",
+        od04_valuation_floor_breached:
+          "Kebijakan OD-04 menolak retur yang akan membuat nilai buku persediaan tersisa menjadi negatif saat masih ada saldo.",
+        insufficient_entity_permission:
+          "Izin entitas aktif Anda tidak mencukupi untuk menjalankan tindakan retur ini.",
+      },
+    },
   },
   "en-US": {
     appName: "Orphac Athera",
@@ -3127,6 +3629,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         approvals: "Approvals",
         procurement: "Procurement",
         receiving: "Dock Receiving",
+        returns: "Returns & Credits",
         inventory: "Inventory",
         payables: "Accounts Payable",
         sales: "Sales",
@@ -4378,6 +4881,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         LOCATION_TRANSFER: "Warehouse Location Transfer",
         QUALITY_STATUS_CHANGE: "Quality Status / Hold Transition",
         OPERATIONAL_ISSUE: "Operational Stock Issue",
+        PURCHASE_RETURN_OUTBOUND: "Purchase Return Outbound (S10)",
       },
       entryTypeLabels: {
         RECEIPT_ACCEPTANCE: "Valued Acceptance",
@@ -4834,6 +5338,300 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "The fiscal period on the selected posting date is CLOSED.",
         insufficient_entity_permission:
           "Your active role grants do not permit performing this AP action in this legal entity.",
+      },
+    },
+    returns: {
+      pageTitle: "Supplier Returns, Replacements & Credits",
+      lead: "Handle unvalued dock rejections (M1), valued unbilled returns (M2), and post-bill supplier returns (M3) under OD-02 four-eyes control and OD-05/OD-07 rules.",
+      backToOverview: "Back to Overview",
+      loadErrorTitle: "Failed to Load Supplier Returns Module",
+      retryButton: "Retry",
+      refreshButton: "Refresh",
+      readOnlyBanner:
+        "Read-Only Mode: Your active entity grant carries read permissions only (procurement.read, receiving.read, inventory.read, or ap.read); draft creation, approvals, execution, and replacement receiving are disabled.",
+      od05PolicyBanner:
+        "OD-05 (ATH-CR-007): Dock rejections M1 & unbilled acceptances M2 support RPA replacement without a second invoice; posted AP bills (M3) require an AP Supplier Credit Note & block replacement (M4) or paid bills (M5).",
+      od07PolicyBanner:
+        "OD-07 (ATH-CR-007): Vatable billed returns (M3) require a Tax Return Note Number (Nota Retur) before submission or execution. VAT reversal credits 1410 PPN Input; lines with PPh withholding (M6) are blocked pending manual adjustment.",
+      matrixToggleShow: "View OD-05/OD-07 Policy Matrix (M1–M7)",
+      matrixToggleHide: "Hide Policy Matrix",
+      matrixTitle: "Supplier Returns & Financial Correction Matrix (OD-05 / OD-07)",
+      colMatrixCode: "Code",
+      colMatrixCase: "Return Case",
+      colMatrixResolution: "Resolution",
+      colMatrixPrecondition: "Precondition",
+      colMatrixEffect: "Stock, GRNI & GL Effect",
+      colMatrixDisposition: "Disposition",
+      stats: {
+        pendingApprovalCount: "Pending Approval",
+        openReplacementCount: "Open Replacements (RPA)",
+        unbilledGrniReversedTotal: "Unbilled GRNI Reversed (M2)",
+        supplierCreditNotesTotal: "AP Supplier Credits (M3)",
+      },
+      tabListLabel: "Supplier returns ledger views",
+      tabs: {
+        queued: "Queued Return Sources",
+        returns: "Return Authorizations (SRN)",
+        replacements: "Replacements (RPA)",
+        credits: "Supplier Credit Notes (SCN)",
+      },
+      subQueues: {
+        m1Unvalued: "M1 · Unvalued Dock Rejections",
+        m2Unbilled: "M2 · Valued Unbilled Receipts (GRNI)",
+        m3Billed: "M3 · Posted AP Invoices",
+      },
+      prepareReturnButton: "Prepare Return",
+      receiveReplacementButton: "Receive Replacement",
+      openDetailButton: "Open Detail",
+      activeDetailButton: "Viewing",
+      creditedShort: "Credited",
+      replacementBadgeShort: "Replacement",
+      kpiUnits: {
+        rpaShort: "RPA",
+        unitShort: "units",
+      },
+      micro: {
+        qtyShort: "qty",
+        invShort: "Inventory",
+        creditShort: "Credit",
+        delivShort: "Deliv",
+        accShort: "Accepted",
+        apDeltaShort: "AP Delta",
+        billShort: "Bill",
+        payableShort: "Payable",
+        baseShort: "Base",
+        grniShort: "GRNI",
+        poolShort: "Pool",
+        grniOpenShort: "GRNI Open",
+        dockCustodyLabel: "Dock Custody (M1)",
+      },
+      matrixRulesByCode: {
+        M1: {
+          resolution: "Replacement Only (RPA) / Close Without Replacement",
+          precondition: "Rejected at Gate 1 dock check (unvalued custody)",
+          effect: "Zero GL, Inventory, or GRNI entries; optional RPA replacement (commercial bill delta Rp 0)",
+        },
+        M2: {
+          resolution: "Close Without Replacement / Replacement Only (RPA)",
+          precondition: "Open unbilled GRNI, unreserved unrestricted/blocked stock, open period, four-eyes approved",
+          effect: "Stock outbound Credit 1300 (MAC), Debit 2110 GRNI +/- 5200 PPV, plus optional RPA",
+        },
+        M3: {
+          resolution: "AP Supplier Credit Note (SCN)",
+          precondition: "Unpaid POSTED bill, zero WHT, Nota Retur if vatable, four-eyes AP approval verified",
+          effect: "Credit 1300 Inventory + append-only SCN Credit + Debit 2100 AP + Credit 1410 VAT +/- 5200 PPV",
+        },
+        M4: {
+          resolution: "Replacement Only (RPA)",
+          precondition: "Return references an already POSTED supplier bill",
+          effect: "Fail-closed block under OD-05; AP Supplier Credit Note (SCN) is required instead",
+        },
+        M5: {
+          resolution: "AP Supplier Credit Note (SCN)",
+          precondition: "Referenced supplier bill already has partial or full settlement",
+          effect: "Fail-closed block under OD-05 (M5); separate cash-refund settlement is required",
+        },
+        M6: {
+          resolution: "AP Supplier Credit Note (SCN)",
+          precondition: "Referenced supplier bill line carries PPh withholding tax",
+          effect: "Fail-closed block under OD-07 (M6) pending withholding reversal policy approval",
+        },
+        M7: {
+          resolution: "Any Mode (Valued Return)",
+          precondition: "Target posting fiscal period is CLOSED or LOCKED",
+          effect: "Fail-closed block upon execution until the period opens or another open date is chosen",
+        },
+      },
+      emptyUnvaluedTitle: "No Open Unvalued Dock Rejections",
+      emptyUnvaluedBody: "Gate 1 rejected dock units with remaining unreturned capacity appear here for M1 processing.",
+      emptyUnbilledTitle: "No Open Valued Unbilled GRNI Lines",
+      emptyUnbilledBody: "Gate 2 valued acceptances with remaining unbilled balance and returnable stock appear here.",
+      emptyBilledTitle: "No Posted Billed Invoice Lines",
+      emptyBilledBody: "Posted AP supplier invoice lines eligible for M3 credit notes or blocked under M5/M6 appear here.",
+      emptyReturnsTitle: "No Supplier Return Authorizations Yet",
+      emptyReturnsBody: "Select a queued source line above to compose an M1, M2, or M3 supplier return.",
+      emptyReplacementsTitle: "No Replacement Authorizations (RPA) Issued",
+      emptyReplacementsBody: "RPAs issue automatically when M1 or M2 returns execute with REPLACEMENT_ONLY resolution.",
+      emptyCreditsTitle: "No Supplier Credit Notes (SCN) Posted",
+      emptyCreditsBody: "Append-only SCN-YYYY-NNNNN records post atomically when M3 AP_CREDIT_NOTE returns execute.",
+      colSourceDoc: "Source Document",
+      colItemAndPo: "Item & PO",
+      colQtyEligible: "Qty & Eligible Remaining",
+      colUnitCostPrice: "Unit Cost / Price",
+      colMatrixState: "Matrix Rule",
+      colAction: "Action",
+      colReturnNumber: "Return Ref & Date",
+      colCaseAndMode: "Case & Resolution Mode",
+      colAmounts: "Valuation Impact (Inv / GRNI / Credit)",
+      colStatus: "Status & Actors",
+      colRpaNumber: "RPA Number & Return",
+      colRpaEntitlement: "Replacement Entitlement",
+      colRpaCost: "Gate 2 Authorized Unit Cost",
+      colCreditNumber: "Credit Note & Bill",
+      colNotaRetur: "Tax Nota Retur",
+      colCreditBreakdown: "Credit Breakdown (Base / PPN / Total / PPV)",
+      colPostedRefs: "GL Journal & Stock Movement",
+      composer: {
+        title: "Supplier Return Composer & Live Impact Preview",
+        closeButton: "Close Composer",
+        sourceSummaryLabel: "Selected Source",
+        caseTypeLabel: "Return Case Type",
+        resolutionModeLabel: "Resolution Mode (OD-05)",
+        returnDateLabel: "Return Date",
+        reasonCodeLabel: "Return Reason",
+        carrierRefLabel: "Carrier / Dispatch Tracking Ref",
+        carrierRefPlaceholder: "e.g. TRK-JKT-001",
+        taxReturnNoteLabel: "Tax Return Note Number / Nota Retur (OD-07)",
+        taxReturnNotePlaceholder: "e.g. NR-2026-0001",
+        taxReturnNoteHint: "Mandatory for vatable M3 billed returns (PPN > 0).",
+        notesLabel: "Return Notes",
+        notesPlaceholder: "Inspection remarks or dispatch instructions",
+        lineQtyLabel: "Return Quantity (Base UoM)",
+        stockLocationLabel: "Source Stock Location & Status",
+        noLocationNeeded: "Physical dock custody rejection — does not deduct valued book inventory.",
+        lineNotesLabel: "Line Notes",
+        previewButton: "Preview GL & Policy Impact",
+        previewBusy: "Evaluating Preview...",
+        saveDraftButton: "Save Return Draft",
+        saveDraftBusy: "Saving Draft...",
+        updateDraftButton: "Update Draft",
+        previewTitle: "Matrix Evaluation & Live GL Journal Preview",
+        previewBlockedLabel: "Policy Blocked",
+        previewSupportedLabel: "Eligible / Supported",
+        previewBlockedGlNotice:
+          "Journal entry preview is suppressed while OD-05 / OD-07 policy rules block this scenario.",
+        previewPeriodOpen: "Fiscal Period Open",
+        previewPeriodClosed: "Fiscal Period Closed (M7)",
+        previewInventoryCredit: "Inventory Credit (1300)",
+        previewGrniReversal: "GRNI Reversal (2110)",
+        previewCreditSubtotal: "Credit Subtotal (Base)",
+        previewPpnReversal: "PPN Input Reversal (1410)",
+        previewCreditTotal: "Total Credit Note (Dr 2100)",
+        previewPpvDifference: "MAC Variance / PPV (5200)",
+        journalPreviewTitle: "Balanced GL Entry Preview",
+        colDebit: "Debit",
+        colCredit: "Credit",
+      },
+      replacementModal: {
+        title: "Receive Replacement Against RPA Entitlement",
+        subtitle: "Records a Gate 1 dock receipt bound to the RPA quota and carries the authorized unit cost into Gate 2 valuation.",
+        remainingEntitlementLabel: "Remaining Open Replacement Entitlement",
+        commercialPriceNote: "Commercial Incremental Unit Price: Rp 0 (Replacement — no second supplier invoice)",
+        authorizedCostLabel: "Gate 2 Authorized Inventory Unit Cost",
+        receivedQtyLabel: "Delivered Quantity (Base UoM)",
+        receivedDateLabel: "Arrival Date",
+        deliveryNoteLabel: "Replacement Delivery Note Number",
+        deliveryNotePlaceholder: "e.g. SJ-RPA-2026-01",
+        stationLabel: "Receiving Station",
+        stationPlaceholder: "Dock A — Replacement",
+        vehicleRefLabel: "Vehicle / Seal Ref (Optional)",
+        notesLabel: "Arrival Notes (Optional)",
+        flagInspectionLabel: "Flag replacement arrival for dock quality inspection",
+        submitButton: "Record Replacement Arrival (GRN)",
+        submitBusy: "Recording Replacement...",
+        cancelButton: "Cancel",
+      },
+      detail: {
+        selectPromptTitle: "Select a Supplier Return Authorization",
+        selectPromptBody:
+          "Click any SRN row under Return Authorizations or save a new draft to inspect lineage, four-eyes OD-02 approval, and execution.",
+        closeSheet: "Close Sheet",
+        headerReturnNumber: "Return Ref & Draft",
+        headerSourceChain: "Originating Document Chain",
+        headerSupplier: "Supplier & Nota Retur",
+        headerCaseResolution: "Case & Resolution Mode",
+        lineageTitle: "Linked Downstream & Upstream References",
+        linesTitle: "Return Lines & Source Stock Allocation",
+        colItem: "Item",
+        colQty: "Return Qty",
+        colInvGrni: "Inventory / GRNI Effect",
+        colCreditPpnPpv: "AP Credit / PPN / PPV",
+        colSourceBucket: "Source Location & Status",
+        taxDeterminationsTitle: "Indonesian Tax Reversal Determinations (OD-07)",
+        taxBaseLabel: "Reversal Taxable Base",
+        taxAmountLabel: "PPN Input Reversal (1410)",
+        creditNoteSummaryTitle: "Recorded AP Supplier Credit Note (Append-Only)",
+        replacementLinksTitle: "Issued Replacement Authorizations (RPA)",
+        livePreviewTitle: "Execution Impact Preview",
+        submitButton: "Submit for Approval",
+        submitBusy: "Submitting...",
+        decisionTitle: "Four-Eyes Approval Decision (OD-02)",
+        decisionReasonLabel: "Approval / Rejection Reason",
+        approveButton: "Approve Return",
+        rejectButton: "Reject / Return to Draft",
+        decisionBusy: "Recording Decision...",
+        sodHint: "Four-Eyes Segregation (OD-02): The submitter cannot approve or reject their own return submission.",
+        executeTitle: "Execute Return Across Stock, GRNI, Credit Note & GL",
+        postingDateLabel: "Execution / GL Posting Date",
+        executeButton: "Execute Supplier Return",
+        executeBusy: "Executing...",
+        noPermManageHint:
+          "Requires receiving.manage, inventory.manage, or ap.manage in this legal entity to submit.",
+        noPermApproveHint:
+          "Requires independent four-eyes approval authority (approval.decide with procurement.approve / ap.approve).",
+        noPermExecuteHint:
+          "Requires execution authority (receiving.manage, inventory.manage / receiving.accept, or ap.post).",
+        defaultApproveReason: "Return verified and approved against supporting documents",
+        defaultRejectReason: "Returned to draft for quantity or Nota Retur correction",
+      },
+      caseTypeLabels: {
+        UNVALUED_DOCK_REJECTION: "M1 · Unvalued Dock Rejection",
+        VALUED_UNBILLED_RETURN: "M2 · Valued Unbilled Return (GRNI)",
+        VALUED_BILLED_RETURN: "M3 · Valued Billed Return (AP)",
+        "VALUED_*": "M2 / M3 · Valued Returns",
+      },
+      resolutionModeLabels: {
+        CLOSE_WITHOUT_REPLACEMENT: "Close Without Replacement",
+        REPLACEMENT_ONLY: "Replacement Only (RPA)",
+        AP_CREDIT_NOTE: "AP Supplier Credit Note (SCN)",
+      },
+      statusLabels: {
+        DRAFT: "Draft",
+        PENDING_APPROVAL: "Pending Approval",
+        APPROVED: "Approved (Ready to Execute)",
+        EXECUTED: "Executed",
+        CANCELLED: "Cancelled",
+      },
+      dispositionLabels: {
+        SUPPORTED: "Supported",
+        BLOCKED_POLICY_OD05: "Blocked (OD-05)",
+        BLOCKED_POLICY_OD07: "Blocked (OD-07)",
+        BLOCKED_CLOSED_PERIOD: "Period Closed (M7)",
+      },
+      rpaStatusLabels: {
+        ACTIVE: "Open (Awaiting Replacement)",
+        PARTIALLY_RECEIVED: "Partially Received",
+        FULFILLED: "Fulfilled",
+        CANCELLED: "Cancelled",
+      },
+      reasonCodeLabels: {
+        DAMAGED_OR_DEFECTIVE: "Damaged or Defective",
+        WRONG_ITEM_OR_SPEC: "Wrong Item or Specification",
+        OVERDELIVERY_RETURN: "Overdelivery Return",
+        EXPIRED_OR_SHORT_SHELF_LIFE: "Expired or Short Shelf Life",
+        COMMERCIAL_AGREEMENT_RETURN: "Commercial Agreement Return",
+      },
+      errors: {
+        od05_billed_replacement_policy_blocked:
+          "OD-05 (M4) blocks Replacement Only (RPA) after a supplier bill is posted. Use AP Supplier Credit Note (SCN).",
+        od05_paid_bill_return_policy_blocked:
+          "OD-05 (M5) blocks automated supplier returns on partially or fully paid invoices.",
+        od07_withholding_return_reversal_blocked:
+          "OD-07 (M6) blocks automated supplier credit note reversal where PPh withholding tax was posted.",
+        od07_nota_retur_required:
+          "OD-07 requires a Tax Return Note Number (Nota Retur) before submitting or executing a vatable billed return.",
+        self_approval_forbidden:
+          "Four-Eyes Segregation of Duties (OD-02) forbids approving your own submission.",
+        period_closed:
+          "The accounting period for the selected posting/execution date is CLOSED (M7).",
+        replacement_entitlement_exceeded:
+          "Replacement delivery quantity exceeds the remaining open entitlement on this RPA authorization.",
+        return_quantity_exceeds_eligible:
+          "Requested return quantity exceeds remaining eligible source or available unreserved stock.",
+        od04_valuation_floor_breached:
+          "OD-04 blocks returning inventory at a cost that would leave remaining stock at zero or negative carrying value.",
+        insufficient_entity_permission:
+          "Your active role grants do not permit performing this supplier return action in this legal entity.",
       },
     },
   },

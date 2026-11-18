@@ -180,6 +180,27 @@ export type TaxDeterminationDto = components["schemas"]["TaxDeterminationDto"];
 export type PayableItemDto = components["schemas"]["PayableItemDto"];
 export type SupplierBillDetailResponse = components["schemas"]["SupplierBillDetailResponse"];
 export type PayablesOverviewResponse = components["schemas"]["PayablesOverviewResponse"];
+export type ReturnMatrixRuleDto = components["schemas"]["ReturnMatrixRuleDto"];
+export type ReturnStockBalanceOptionDto = components["schemas"]["ReturnStockBalanceOptionDto"];
+export type QueuedUnvaluedRejectionDto = components["schemas"]["QueuedUnvaluedRejectionDto"];
+export type QueuedValuedUnbilledLineDto = components["schemas"]["QueuedValuedUnbilledLineDto"];
+export type QueuedValuedBilledLineDto = components["schemas"]["QueuedValuedBilledLineDto"];
+export type SupplierReturnSummaryDto = components["schemas"]["SupplierReturnSummaryDto"];
+export type SupplierReturnLineDto = components["schemas"]["SupplierReturnLineDto"];
+export type SupplierReturnEvaluatedLineDto = components["schemas"]["SupplierReturnEvaluatedLineDto"];
+export type SupplierReturnJournalSuggestionDto = components["schemas"]["SupplierReturnJournalSuggestionDto"];
+export type SupplierReturnPreviewResponse = components["schemas"]["SupplierReturnPreviewResponse"];
+export type ReplacementAuthorizationDto = components["schemas"]["ReplacementAuthorizationDto"];
+export type SupplierCreditDto = components["schemas"]["SupplierCreditDto"];
+export type SupplierReturnDetailResponse = components["schemas"]["SupplierReturnDetailResponse"];
+export type ReturnsOverviewResponse = components["schemas"]["ReturnsOverviewResponse"];
+export type ReturnLineInputRequest = components["schemas"]["ReturnLineInputRequest"];
+export type PreviewSupplierReturnRequest = components["schemas"]["PreviewSupplierReturnRequest"];
+export type CreateSupplierReturnRequest = components["schemas"]["CreateSupplierReturnRequest"];
+export type UpdateSupplierReturnRequest = components["schemas"]["UpdateSupplierReturnRequest"];
+export type DecideSupplierReturnRequest = components["schemas"]["DecideSupplierReturnRequest"];
+export type ExecuteSupplierReturnRequest = components["schemas"]["ExecuteSupplierReturnRequest"];
+export type ReceiveReplacementRequest = components["schemas"]["ReceiveReplacementRequest"];
 
 export interface ApiProblemError {
   status: number;
@@ -2090,6 +2111,201 @@ export async function updateInvoiceMatchPolicy(
     "/api/workspaces/{tenantId}/entities/{entityId}/payables/match-policy",
     {
       params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchReturnsOverview(
+  tenantId: string,
+  entityId: string,
+): Promise<ReturnsOverviewResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/overview",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function fetchSupplierReturnDetail(
+  tenantId: string,
+  entityId: string,
+  returnId: string,
+): Promise<SupplierReturnDetailResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/{returnId}",
+    {
+      params: { path: { tenantId, entityId, returnId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function previewSupplierReturn(
+  tenantId: string,
+  entityId: string,
+  payload: PreviewSupplierReturnRequest,
+): Promise<SupplierReturnPreviewResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/preview",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function createSupplierReturnDraft(
+  tenantId: string,
+  entityId: string,
+  payload: CreateSupplierReturnRequest,
+): Promise<SupplierReturnDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function updateSupplierReturnDraft(
+  tenantId: string,
+  entityId: string,
+  returnId: string,
+  payload: UpdateSupplierReturnRequest,
+): Promise<SupplierReturnDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/{returnId}",
+    {
+      params: { path: { tenantId, entityId, returnId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function submitSupplierReturn(
+  tenantId: string,
+  entityId: string,
+  returnId: string,
+): Promise<SupplierReturnDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/{returnId}/submit",
+    {
+      params: { path: { tenantId, entityId, returnId } },
+      headers: { "X-CSRF-Token": csrf },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function decideSupplierReturn(
+  tenantId: string,
+  entityId: string,
+  returnId: string,
+  payload: DecideSupplierReturnRequest,
+): Promise<SupplierReturnDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/{returnId}/decision",
+    {
+      params: { path: { tenantId, entityId, returnId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function executeSupplierReturn(
+  tenantId: string,
+  entityId: string,
+  returnId: string,
+  payload: ExecuteSupplierReturnRequest,
+): Promise<SupplierReturnDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/{returnId}/execute",
+    {
+      params: { path: { tenantId, entityId, returnId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function receiveLinkedReplacement(
+  tenantId: string,
+  entityId: string,
+  authorizationId: string,
+  payload: ReceiveReplacementRequest,
+): Promise<GoodsReceiptDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/replacements/{authorizationId}/receive",
+    {
+      params: { path: { tenantId, entityId, authorizationId } },
       headers: { "X-CSRF-Token": csrf },
       body: payload,
       cache: "no-store",

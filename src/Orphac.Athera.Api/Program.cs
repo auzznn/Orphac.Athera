@@ -154,6 +154,7 @@ app.MapMasterDataEndpoints();
 app.MapFinanceEndpoints();
 app.MapProcurementEndpoints();
 app.MapReceivingEndpoints();
+app.MapReturnsEndpoints();
 app.MapInventoryEndpoints();
 app.MapPayablesEndpoints();
 

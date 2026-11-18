@@ -1429,6 +1429,11 @@ export default function PayablesPage() {
                           <div className="font-code font-bold tabular-nums text-[var(--text-primary)]">
                             {pt.micro.openShort}: {formatIdr(p.remainingOpenAmount)}
                           </div>
+                          {Number(p.creditedAmount ?? 0) > 0 ? (
+                            <div className="font-code text-[11px] font-medium tabular-nums text-[var(--status-ok-text)]">
+                              {t.returns.creditedShort}: -{formatIdr(p.creditedAmount ?? 0)}
+                            </div>
+                          ) : null}
                           <div className="font-code text-[11px] tabular-nums text-[var(--text-secondary)]">
                             {pt.micro.netShort} {formatIdr(p.netPayableAmount)} ({pt.micro.whtShort}{" "}
                             <span className="whitespace-nowrap">-{formatIdr(p.withholdingTaxAmount)}</span>)

@@ -303,9 +303,10 @@ public static class TaxDeterminationEvaluator
 public static class TaxDeterminationRoles
 {
     public const string PpnInput = "PPN_INPUT";
+    public const string PpnInputReversal = "PPN_INPUT_REVERSAL";
     public const string PphWithholding = "PPH_WITHHOLDING";
 
-    public static readonly IReadOnlyList<string> All = [PpnInput, PphWithholding];
+    public static readonly IReadOnlyList<string> All = [PpnInput, PpnInputReversal, PphWithholding];
 }
 
 /// <summary>

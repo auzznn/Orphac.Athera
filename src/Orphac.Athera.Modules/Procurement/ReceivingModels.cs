@@ -109,6 +109,7 @@ public sealed class GoodsReceipt
     public string PoNumberSnapshot { get; private set; } = string.Empty;
     public int PoRevisionNumberSnapshot { get; private set; }
     public string PoSnapshotHash { get; private set; } = string.Empty;
+    public Guid? ReplacementAuthorizationId { get; private set; }
 
     public Guid SupplierPartnerId { get; private set; }
     public string SupplierCodeSnapshot { get; private set; } = string.Empty;
@@ -159,7 +160,8 @@ public sealed class GoodsReceipt
         string? notes,
         IReadOnlyCollection<GoodsReceiptLine> lines,
         Guid receivedByUserId,
-        DateTimeOffset nowUtc)
+        DateTimeOffset nowUtc,
+        Guid? replacementAuthorizationId = null)
     {
         GuardValidation.RequireNonEmptyGuid(goodsReceiptId, nameof(goodsReceiptId));
         GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
@@ -184,6 +186,7 @@ public sealed class GoodsReceipt
             PoNumberSnapshot = GuardValidation.RequireCode(po.PoNumber ?? po.DraftCode, nameof(po.PoNumber), 40),
             PoRevisionNumberSnapshot = approvedRevision.RevisionNumber,
             PoSnapshotHash = GuardValidation.RequireName(approvedRevision.SnapshotHash, nameof(approvedRevision.SnapshotHash), 64),
+            ReplacementAuthorizationId = replacementAuthorizationId,
             SupplierPartnerId = approvedRevision.SupplierPartnerId,
             SupplierCodeSnapshot = GuardValidation.RequireName(approvedRevision.SupplierCodeSnapshot, nameof(approvedRevision.SupplierCodeSnapshot), 32),
             SupplierLegalNameSnapshot = GuardValidation.RequireName(approvedRevision.SupplierLegalNameSnapshot, nameof(approvedRevision.SupplierLegalNameSnapshot), 200),

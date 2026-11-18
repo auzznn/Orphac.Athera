@@ -467,6 +467,30 @@ public sealed class PurchaseOrder
         UpdatedAtUtc = nowUtc;
         Version++;
     }
+
+    public void ReverseAcceptedQuantityForReturn(decimal returnedBaseQty, DateTimeOffset nowUtc)
+    {
+        if (Status is not (PurchaseOrderStatuses.Approved or PurchaseOrderStatuses.Closed))
+        {
+            throw new InvalidOperationException($"po_invalid_status_for_return: PO '{PoNumber ?? DraftCode}' is in status '{Status}'.");
+        }
+
+        var delta = decimal.Round(returnedBaseQty, 6, MidpointRounding.AwayFromZero);
+        if (delta <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(returnedBaseQty), "Returned base quantity must be positive.");
+        }
+
+        if (delta > AcceptedBaseQuantityTotal)
+        {
+            throw new InvalidOperationException(
+                $"po_return_exceeds_accepted_total: Return delta {delta:0.######} exceeds accepted PO total {AcceptedBaseQuantityTotal:0.######}.");
+        }
+
+        AcceptedBaseQuantityTotal = decimal.Round(AcceptedBaseQuantityTotal - delta, 6, MidpointRounding.AwayFromZero);
+        UpdatedAtUtc = nowUtc;
+        Version++;
+    }
 }
 
 public sealed class PurchaseOrderRevision

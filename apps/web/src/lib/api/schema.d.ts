@@ -852,6 +852,134 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetReturnsOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/{returnId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSupplierReturnDetail"];
+        put: operations["UpdateSupplierReturnDraft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PreviewSupplierReturn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateSupplierReturnDraft"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/{returnId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SubmitSupplierReturn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/{returnId}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DecideSupplierReturn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/{returnId}/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ExecuteSupplierReturn"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/returns/replacements/{authorizationId}/receive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReceiveLinkedReplacement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts/{receiptId}/accept-preview": {
         parameters: {
             query?: never;
@@ -1638,6 +1766,25 @@ export interface components {
             notes: null | string;
             lines: components["schemas"]["BillLineInputRequest"][];
         };
+        CreateSupplierReturnRequest: {
+            returnCaseType: string;
+            resolutionMode: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            /** Format: uuid */
+            goodsReceiptId: null | string;
+            /** Format: uuid */
+            receiptAccrualId: null | string;
+            /** Format: uuid */
+            supplierBillId: null | string;
+            /** Format: date */
+            returnDate: string;
+            reasonCode: string;
+            carrierOrDispatchRef: null | string;
+            taxReturnNoteNumber: null | string;
+            notes: null | string;
+            lines: components["schemas"]["ReturnLineInputRequest"][];
+        };
         CreateTaxCodeRequest: {
             code: string;
             name: string;
@@ -1707,6 +1854,10 @@ export interface components {
             approvePriceVariance: boolean;
             applyPaymentBlock: boolean;
             paymentBlockReason: null | string;
+        };
+        DecideSupplierReturnRequest: {
+            decision: string;
+            reason: string;
         };
         DeliveryTolerancePolicyDto: {
             /** Format: uuid */
@@ -1948,6 +2099,11 @@ export interface components {
             blockedReason: null | string;
             governanceDisclaimer: string;
         };
+        ExecuteSupplierReturnRequest: {
+            /** Format: date */
+            postingDate: string;
+            idempotencyKey: string;
+        };
         FinancialPeriodDto: {
             /** Format: uuid */
             periodId: string;
@@ -2053,6 +2209,9 @@ export interface components {
             valuedAcceptances: components["schemas"]["GoodsReceiptLinkedAcceptanceDto"][];
             lines: components["schemas"]["GoodsReceiptLineDto"][];
             dockChecks: components["schemas"]["DockCheckHistoryDto"][];
+            /** Format: uuid */
+            replacementAuthorizationId?: null | string;
+            replacementAuthorizationNumber?: null | string;
         };
         GoodsReceiptLineDto: {
             /** Format: uuid */
@@ -2178,6 +2337,9 @@ export interface components {
             hasFinancialPosting: boolean;
             /** Format: date-time */
             updatedAtUtc: string;
+            /** Format: uuid */
+            replacementAuthorizationId?: null | string;
+            replacementAuthorizationNumber?: null | string;
         };
         GrantPermissionRequest: {
             /** Format: uuid */
@@ -2890,6 +3052,8 @@ export interface components {
             /** Format: double */
             paidAmount: number | string;
             /** Format: double */
+            creditedAmount: number | string;
+            /** Format: double */
             remainingOpenAmount: number | string;
             status: string;
             paymentBlockStatus: string;
@@ -3047,6 +3211,24 @@ export interface components {
             /** Format: double */
             declaredGrossAmount: number | string;
             lines: components["schemas"]["BillLineInputRequest"][];
+        };
+        PreviewSupplierReturnRequest: {
+            returnCaseType: string;
+            resolutionMode: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            /** Format: uuid */
+            goodsReceiptId: null | string;
+            /** Format: uuid */
+            receiptAccrualId: null | string;
+            /** Format: uuid */
+            supplierBillId: null | string;
+            /** Format: date */
+            returnDate: string;
+            taxReturnNoteNumber: null | string;
+            lines: components["schemas"]["ReturnLineInputRequest"][];
+            /** Format: uuid */
+            excludeSupplierReturnId?: null | string;
         };
         ProblemDetails: {
             type?: null | string;
@@ -3318,6 +3500,131 @@ export interface components {
             /** Format: date-time */
             updatedAtUtc: string;
         };
+        QueuedUnvaluedRejectionDto: {
+            /** Format: uuid */
+            goodsReceiptLineId: string;
+            /** Format: uuid */
+            goodsReceiptId: string;
+            receiptNumber: string;
+            /** Format: date */
+            receivedDate: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            poNumber: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCode: string;
+            supplierLegalName: string;
+            /** Format: uuid */
+            poLineId: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: double */
+            dockRejectedBaseQuantity: number | string;
+            /** Format: double */
+            alreadyReturnedQuantity: number | string;
+            /** Format: double */
+            eligibleQuantity: number | string;
+            /** Format: double */
+            authorizedUnitCostBase: number | string;
+            discrepancyReasonCode: null | string;
+        };
+        QueuedValuedBilledLineDto: {
+            /** Format: uuid */
+            supplierBillLineId: string;
+            /** Format: uuid */
+            supplierBillId: string;
+            billNumber: string;
+            supplierInvoiceNumber: string;
+            /** Format: uuid */
+            payableItemId: string;
+            payableNumber: string;
+            /** Format: double */
+            payablePaidAmount: number | string;
+            /** Format: double */
+            payableRemainingOpenAmount: number | string;
+            /** Format: uuid */
+            goodsReceiptLineId: string;
+            /** Format: uuid */
+            goodsReceiptId: null | string;
+            receiptNumber: null | string;
+            /** Format: date */
+            billPostingDate: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            poNumber: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCode: string;
+            supplierLegalName: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: double */
+            billedBaseQuantity: number | string;
+            /** Format: double */
+            priorCreditedQuantity: number | string;
+            /** Format: double */
+            remainingCreditableQuantity: number | string;
+            /** Format: double */
+            invoiceUnitPriceBase: number | string;
+            /** Format: double */
+            ppnTaxAmount: number | string;
+            /** Format: double */
+            withholdingTaxAmount: number | string;
+            ppnTaxCodeSnapshot: string;
+            /** Format: double */
+            poolMovingAverageCost: number | string;
+            /** Format: double */
+            poolValuedBaseQuantity: number | string;
+            matrixStatusCode: string;
+            matrixBlockReason: null | string;
+            stockLocations: components["schemas"]["ReturnStockBalanceOptionDto"][];
+        };
+        QueuedValuedUnbilledLineDto: {
+            /** Format: uuid */
+            receiptAccrualLineId: string;
+            /** Format: uuid */
+            receiptAccrualId: string;
+            accrualNumber: string;
+            /** Format: uuid */
+            valuedAcceptanceLineId: string;
+            /** Format: uuid */
+            goodsReceiptLineId: string;
+            /** Format: uuid */
+            goodsReceiptId: string;
+            receiptNumber: string;
+            /** Format: date */
+            accrualPostingDate: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            poNumber: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCode: string;
+            supplierLegalName: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: double */
+            remainingUnbilledBaseQuantity: number | string;
+            /** Format: double */
+            eligibleQuantity: number | string;
+            /** Format: double */
+            receiptUnitCostBase: number | string;
+            /** Format: double */
+            poolMovingAverageCost: number | string;
+            /** Format: double */
+            poolValuedBaseQuantity: number | string;
+            stockLocations: components["schemas"]["ReturnStockBalanceOptionDto"][];
+        };
         ReceiptAccrualOverviewDto: {
             /** Format: uuid */
             receiptAccrualId: string;
@@ -3389,6 +3696,22 @@ export interface components {
             updatedAtUtc: string;
             dispositions: components["schemas"]["InspectionDispositionDto"][];
         };
+        ReceiveReplacementRequest: {
+            /** Format: uuid */
+            receivedUomId: string;
+            /** Format: double */
+            physicallyDeliveredQuantity: number | string;
+            /** Format: date */
+            receivedDate: string;
+            supplierDeliveryNoteNumber: string;
+            idempotencyKey: string;
+            receivingStation: string;
+            vehicleOrSealRef: null | string;
+            documentEvidenceRef: null | string;
+            notes: null | string;
+            /** @default false */
+            flagForInspection: boolean;
+        };
         RecordDockCheckRequest: {
             idempotencyKey: string;
             /** Format: double */
@@ -3415,6 +3738,8 @@ export interface components {
             documentEvidenceRef: null | string;
             notes: null | string;
             lines: components["schemas"]["ArrivalLineRequest"][];
+            /** Format: uuid */
+            replacementAuthorizationId?: null | string;
         };
         RecordInspectionDispositionRequest: {
             /** Format: date */
@@ -3435,6 +3760,102 @@ export interface components {
         ReleaseStockReservationRequest: {
             /** Format: double */
             releaseBaseQuantity: null | number | string;
+        };
+        ReplacementAuthorizationDto: {
+            /** Format: uuid */
+            replacementAuthorizationId: string;
+            authorizationNumber: string;
+            /** Format: uuid */
+            supplierReturnId: string;
+            returnNumber: string;
+            sourceCaseType: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            poNumber: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            /** Format: uuid */
+            baseUomId: string;
+            baseUomCode: string;
+            /** Format: double */
+            authorizedBaseQuantity: number | string;
+            /** Format: double */
+            deliveredBaseQuantity: number | string;
+            /** Format: double */
+            acceptedBaseQuantity: number | string;
+            /** Format: double */
+            remainingBaseQuantity: number | string;
+            /** Format: double */
+            commercialIncrementalUnitPrice: number | string;
+            /** Format: double */
+            authorizedInventoryUnitCostBase: number | string;
+            status: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+        };
+        ReturnLineInputRequest: {
+            /** Format: uuid */
+            goodsReceiptLineId: string;
+            /** Format: uuid */
+            valuedAcceptanceLineId: null | string;
+            /** Format: uuid */
+            receiptAccrualLineId: null | string;
+            /** Format: uuid */
+            supplierBillLineId: null | string;
+            /** Format: double */
+            returnedBaseQuantity: number | string;
+            /** Format: uuid */
+            sourceLocationId?: null | string;
+            /** Format: uuid */
+            sourceStockLotId?: null | string;
+            sourceStockStatus?: null | string;
+            lineNotes?: null | string;
+        };
+        ReturnMatrixRuleDto: {
+            matrixCode: string;
+            returnCaseType: string;
+            resolutionMode: string;
+            precondition: string;
+            accountingAndStockEffect: string;
+            disposition: string;
+        };
+        ReturnsOverviewResponse: {
+            /** Format: int32 */
+            pendingApprovalCount: number | string;
+            /** Format: int32 */
+            openReplacementCount: number | string;
+            /** Format: double */
+            openReplacementUnitsTotal: number | string;
+            /** Format: double */
+            unbilledGrniReversedTotalIdr: number | string;
+            /** Format: double */
+            supplierCreditNotesTotalIdr: number | string;
+            od05Notice: string;
+            od07Notice: string;
+            matrixRules: components["schemas"]["ReturnMatrixRuleDto"][];
+            queuedUnvaluedRejections: components["schemas"]["QueuedUnvaluedRejectionDto"][];
+            queuedValuedUnbilledLines: components["schemas"]["QueuedValuedUnbilledLineDto"][];
+            queuedValuedBilledLines: components["schemas"]["QueuedValuedBilledLineDto"][];
+            returns: components["schemas"]["SupplierReturnSummaryDto"][];
+            replacementAuthorizations: components["schemas"]["ReplacementAuthorizationDto"][];
+            supplierCredits: components["schemas"]["SupplierCreditDto"][];
+        };
+        ReturnStockBalanceOptionDto: {
+            /** Format: uuid */
+            locationId: string;
+            locationCode: string;
+            locationName: string;
+            zoneType: string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            lotNumber: null | string;
+            stockStatus: string;
+            /** Format: double */
+            eligibleQuantity: number | string;
         };
         ReverseJournalRequest: {
             /** Format: date */
@@ -3790,6 +4211,235 @@ export interface components {
             /** Format: date-time */
             updatedAtUtc: string;
         };
+        SupplierCreditDto: {
+            /** Format: uuid */
+            supplierCreditId: string;
+            creditNumber: string;
+            /** Format: uuid */
+            supplierReturnId: string;
+            returnNumber: string;
+            /** Format: uuid */
+            supplierBillId: string;
+            billNumber: string;
+            /** Format: uuid */
+            payableItemId: string;
+            payableNumber: string;
+            supplierCode: string;
+            supplierLegalName: string;
+            supplierNpwpSnapshot: null | string;
+            taxReturnNoteNumber: null | string;
+            /** Format: date */
+            postingDate: string;
+            currencyCode: string;
+            /** Format: double */
+            subtotalCreditAmount: number | string;
+            /** Format: double */
+            ppnReversalAmount: number | string;
+            /** Format: double */
+            totalCreditAmount: number | string;
+            /** Format: double */
+            inventoryCreditAmount: number | string;
+            /** Format: double */
+            ppvDifferenceAmount: number | string;
+            /** Format: uuid */
+            glJournalId: string;
+            journalNumber: string;
+            /** Format: uuid */
+            stockMovementId: string;
+            movementNumber: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+        };
+        SupplierReturnDetailResponse: {
+            returnHeader: components["schemas"]["SupplierReturnSummaryDto"];
+            lines: components["schemas"]["SupplierReturnLineDto"][];
+            replacementAuthorizations: components["schemas"]["ReplacementAuthorizationDto"][];
+            supplierCredit: null | components["schemas"]["SupplierCreditDto"];
+            taxDeterminations: components["schemas"]["TaxDeterminationDto"][];
+            liveEvaluation: null | components["schemas"]["SupplierReturnPreviewResponse"];
+            wasIdempotentReplay: boolean;
+        };
+        SupplierReturnEvaluatedLineDto: {
+            /** Format: uuid */
+            goodsReceiptLineId: string;
+            /** Format: uuid */
+            valuedAcceptanceLineId: null | string;
+            /** Format: uuid */
+            receiptAccrualLineId: null | string;
+            /** Format: uuid */
+            supplierBillLineId: null | string;
+            /** Format: uuid */
+            poLineId: string;
+            lineageLineKey: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            /** Format: uuid */
+            baseUomId: string;
+            baseUomCode: string;
+            /** Format: uuid */
+            sourceLocationId: null | string;
+            /** Format: uuid */
+            sourceStockLotId: null | string;
+            sourceStockStatus: null | string;
+            /** Format: double */
+            returnedBaseQuantity: number | string;
+            /** Format: double */
+            authorizedUnitCostBase: number | string;
+            /** Format: double */
+            inventoryCreditAmount: number | string;
+            /** Format: double */
+            grniReversalAmount: number | string;
+            /** Format: double */
+            creditSubtotalAmount: number | string;
+            /** Format: double */
+            ppnReversalAmount: number | string;
+            /** Format: double */
+            totalCreditAmount: number | string;
+            /** Format: double */
+            ppvDifferenceAmount: number | string;
+            createsReplacement: boolean;
+            blockingReason: null | string;
+        };
+        SupplierReturnJournalSuggestionDto: {
+            side: string;
+            accountCode: string;
+            accountName: string;
+            /** Format: double */
+            amount: number | string;
+            description: string;
+        };
+        SupplierReturnLineDto: {
+            /** Format: uuid */
+            supplierReturnLineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: uuid */
+            goodsReceiptLineId: string;
+            /** Format: uuid */
+            valuedAcceptanceLineId: null | string;
+            /** Format: uuid */
+            receiptAccrualLineId: null | string;
+            /** Format: uuid */
+            supplierBillLineId: null | string;
+            /** Format: uuid */
+            poLineId: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: uuid */
+            sourceLocationId: null | string;
+            sourceLocationCode: null | string;
+            /** Format: uuid */
+            sourceStockLotId: null | string;
+            sourceLotNumber: null | string;
+            sourceStockStatus: null | string;
+            /** Format: double */
+            returnedBaseQuantity: number | string;
+            /** Format: double */
+            authorizedUnitCostBase: number | string;
+            /** Format: double */
+            inventoryCreditAmount: number | string;
+            /** Format: double */
+            grniReversalAmount: number | string;
+            /** Format: double */
+            creditSubtotalAmount: number | string;
+            /** Format: double */
+            ppnReversalAmount: number | string;
+            /** Format: double */
+            totalCreditAmount: number | string;
+            /** Format: double */
+            ppvDifferenceAmount: number | string;
+            lineNotes: null | string;
+        };
+        SupplierReturnPreviewResponse: {
+            matrixCode: string;
+            disposition: string;
+            blockingCode: null | string;
+            blockingReason: null | string;
+            requiresPeriodOpen: boolean;
+            isPeriodOpen: boolean;
+            requiresNotaRetur: boolean;
+            /** Format: double */
+            totalReturnedBaseQuantity: number | string;
+            /** Format: double */
+            totalInventoryCreditAmount: number | string;
+            /** Format: double */
+            totalGrniReversalAmount: number | string;
+            /** Format: double */
+            totalCreditSubtotalAmount: number | string;
+            /** Format: double */
+            totalPpnReversalAmount: number | string;
+            /** Format: double */
+            totalCreditNoteAmount: number | string;
+            /** Format: double */
+            totalPpvDifferenceAmount: number | string;
+            lines: components["schemas"]["SupplierReturnEvaluatedLineDto"][];
+            journalPreview: components["schemas"]["SupplierReturnJournalSuggestionDto"][];
+            od05Notice: string;
+            od07Notice: string;
+        };
+        SupplierReturnSummaryDto: {
+            /** Format: uuid */
+            supplierReturnId: string;
+            draftCode: string;
+            returnNumber: null | string;
+            returnCaseType: string;
+            resolutionMode: string;
+            matrixDisposition: string;
+            matrixBlockingCode: null | string;
+            matrixBlockingReason: null | string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            poNumberSnapshot: string;
+            /** Format: uuid */
+            goodsReceiptId: null | string;
+            receiptNumberSnapshot: null | string;
+            /** Format: uuid */
+            receiptAccrualId: null | string;
+            /** Format: uuid */
+            supplierBillId: null | string;
+            billNumberSnapshot: null | string;
+            supplierCodeSnapshot: string;
+            supplierLegalNameSnapshot: string;
+            /** Format: date */
+            returnDate: string;
+            reasonCode: string;
+            taxReturnNoteNumber: null | string;
+            status: string;
+            /** Format: double */
+            totalReturnedBaseQuantity: number | string;
+            /** Format: double */
+            totalInventoryCreditAmount: number | string;
+            /** Format: double */
+            totalGrniReversalAmount: number | string;
+            /** Format: double */
+            totalCreditSubtotalAmount: number | string;
+            /** Format: double */
+            totalPpnReversalAmount: number | string;
+            /** Format: double */
+            totalCreditNoteAmount: number | string;
+            /** Format: double */
+            totalPpvDifferenceAmount: number | string;
+            /** Format: uuid */
+            stockMovementId: null | string;
+            movementNumber: null | string;
+            /** Format: uuid */
+            glJournalId: null | string;
+            journalNumber: null | string;
+            /** Format: uuid */
+            supplierCreditId: null | string;
+            creditNumber: null | string;
+            submittedByEmail: null | string;
+            approvedByEmail: null | string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+        };
         TaxCodeDto: {
             /** Format: uuid */
             taxCodeId: string;
@@ -3979,6 +4629,16 @@ export interface components {
             declaredGrossAmount: number | string;
             notes: null | string;
             lines: components["schemas"]["BillLineInputRequest"][];
+        };
+        UpdateSupplierReturnRequest: {
+            resolutionMode: string;
+            /** Format: date */
+            returnDate: string;
+            reasonCode: string;
+            carrierOrDispatchRef: null | string;
+            taxReturnNoteNumber: null | string;
+            notes: null | string;
+            lines: components["schemas"]["ReturnLineInputRequest"][];
         };
         UpsertAccountMappingRequest: {
             purposeCode: string;
@@ -7672,6 +8332,612 @@ export interface operations {
             };
             /** @description Bad Request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetReturnsOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReturnsOverviewResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetSupplierReturnDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                returnId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierReturnDetailResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpdateSupplierReturnDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                returnId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSupplierReturnRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierReturnDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    PreviewSupplierReturn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PreviewSupplierReturnRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierReturnPreviewResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateSupplierReturnDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSupplierReturnRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierReturnDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    SubmitSupplierReturn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                returnId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierReturnDetailResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    DecideSupplierReturn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                returnId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideSupplierReturnRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierReturnDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ExecuteSupplierReturn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                returnId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExecuteSupplierReturnRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierReturnDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ReceiveLinkedReplacement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                authorizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReceiveReplacementRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceiptDetailDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceiptDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
