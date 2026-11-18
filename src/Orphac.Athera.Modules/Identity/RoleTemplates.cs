@@ -8,6 +8,7 @@ public static class RoleTemplates
     public const string ProcurementOfficer = "PROCUREMENT_OFFICER";
     public const string SalesOfficer = "SALES_OFFICER";
     public const string InventoryClerk = "INVENTORY_CLERK";
+    public const string QualityInspector = "QUALITY_INSPECTOR";
     public const string FinanceOfficer = "FINANCE_OFFICER";
     public const string EntityApprover = "ENTITY_APPROVER";
     public const string EntityAdmin = "ENTITY_ADMIN";
@@ -16,7 +17,8 @@ public static class RoleTemplates
     {
         [ProcurementOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.ProcurementManage, PermissionCodes.ReceivingRead, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.CatalogManage, PermissionCodes.ApprovalRequest],
         [SalesOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.SalesRead, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
-        [InventoryClerk] = [PermissionCodes.WorkspaceView, PermissionCodes.ReceivingRead, PermissionCodes.ReceivingManage, PermissionCodes.ReceivingAccept, PermissionCodes.InventoryRead, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
+        [InventoryClerk] = [PermissionCodes.WorkspaceView, PermissionCodes.ReceivingRead, PermissionCodes.ReceivingManage, PermissionCodes.ReceivingAccept, PermissionCodes.InventoryRead, PermissionCodes.InventoryManage, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
+        [QualityInspector] = [PermissionCodes.WorkspaceView, PermissionCodes.ReceivingRead, PermissionCodes.InventoryRead, PermissionCodes.QualityInspect, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
         [FinanceOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.FinanceRead, PermissionCodes.FinanceConfigManage, PermissionCodes.FinanceJournalPost, PermissionCodes.ReceivingRead, PermissionCodes.PartnersRead, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
         [EntityApprover] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.ProcurementApprove, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide],
         [EntityAdmin] = [PermissionCodes.WorkspaceView, PermissionCodes.AdminRead, PermissionCodes.AdminManage, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide]

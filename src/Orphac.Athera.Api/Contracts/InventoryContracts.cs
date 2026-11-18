@@ -2,7 +2,12 @@ namespace Orphac.Athera.Api.Contracts;
 
 public sealed record AcceptReceiptLineRequest(
     Guid GoodsReceiptLineId,
-    decimal AcceptedBaseQuantity);
+    decimal AcceptedBaseQuantity,
+    Guid? DestinationLocationId = null,
+    string? LotNumber = null,
+    string? SupplierLotReference = null,
+    DateOnly? ManufacturedDate = null,
+    DateOnly? ExpiryDate = null);
 
 public sealed record PreviewReceiptAcceptanceRequest(
     DateOnly AcceptanceDate,
@@ -31,7 +36,11 @@ public sealed record AcceptancePreviewLineDto(
     decimal ProjectedPoolBaseQuantity,
     decimal ProjectedCarryingValue,
     decimal ProjectedMovingAverageCost,
-    string? BlockingReason);
+    string? BlockingReason,
+    string LotTrackingPolicy,
+    string? LotNumber,
+    Guid? DestinationLocationId,
+    string? DestinationLocationCode);
 
 public sealed record PreviewJournalSuggestionDto(
     string Side,
@@ -124,11 +133,263 @@ public sealed record ValuedAcceptanceDetailDto(
     bool WasIdempotentReplay,
     IReadOnlyList<ValuedAcceptanceLineDto> Lines);
 
+public sealed record WarehouseDto(
+    Guid WarehouseId,
+    string WarehouseCode,
+    string Name,
+    bool IsDefault,
+    string Status,
+    DateTimeOffset CreatedAtUtc);
+
+public sealed record WarehouseLocationDto(
+    Guid LocationId,
+    Guid WarehouseId,
+    string WarehouseCode,
+    string WarehouseName,
+    string LocationCode,
+    string Name,
+    string ZoneType,
+    bool IsDefaultReceiving,
+    string Status,
+    DateTimeOffset CreatedAtUtc);
+
+public sealed record WarehouseListResponse(
+    IReadOnlyList<WarehouseDto> Warehouses,
+    IReadOnlyList<WarehouseLocationDto> Locations);
+
+public sealed record CreateWarehouseRequest(
+    string WarehouseCode,
+    string Name);
+
+public sealed record CreateWarehouseLocationRequest(
+    string LocationCode,
+    string Name,
+    string ZoneType,
+    bool IsDefaultReceiving);
+
+public sealed record StockLotSummaryDto(
+    Guid StockLotId,
+    Guid ItemId,
+    string LotNumber,
+    string? SupplierLotReference,
+    DateOnly? ManufacturedDate,
+    DateOnly? ExpiryDate,
+    Guid? SourceValuedAcceptanceId,
+    string? SourceAcceptanceNumber,
+    DateTimeOffset CreatedAtUtc);
+
+public sealed record StockLocationBalanceDto(
+    Guid StockLocationBalanceId,
+    Guid WarehouseId,
+    string WarehouseCode,
+    Guid LocationId,
+    string LocationCode,
+    string LocationName,
+    string ZoneType,
+    Guid? StockLotId,
+    string? LotNumber,
+    DateOnly? LotExpiryDate,
+    string StockStatus,
+    decimal OnHandBaseQuantity,
+    decimal ReservedBaseQuantity,
+    decimal AvailableBaseQuantity,
+    DateTimeOffset UpdatedAtUtc);
+
+public sealed record StockReservationDto(
+    Guid StockReservationId,
+    string ReservationNumber,
+    Guid StockLocationBalanceId,
+    Guid ItemId,
+    string ItemCode,
+    Guid WarehouseId,
+    Guid LocationId,
+    string LocationCode,
+    Guid? StockLotId,
+    string? LotNumber,
+    string SourceType,
+    Guid? SourceDocumentId,
+    string SourceDocumentNumber,
+    decimal ReservedBaseQuantity,
+    decimal ConsumedBaseQuantity,
+    decimal ReleasedBaseQuantity,
+    decimal RemainingReservedBaseQuantity,
+    string Status,
+    string? Notes,
+    DateTimeOffset? ExpiresAtUtc,
+    string CreatedByEmail,
+    DateTimeOffset CreatedAtUtc,
+    DateTimeOffset UpdatedAtUtc);
+
+public sealed record InspectionDispositionDto(
+    Guid InspectionDispositionId,
+    Guid ReceiptInspectionId,
+    Guid StockMovementId,
+    string MovementNumber,
+    DateOnly DispositionDate,
+    decimal ReleasedBaseQuantity,
+    Guid? TargetReleaseLocationId,
+    string? TargetReleaseLocationCode,
+    decimal BlockedBaseQuantity,
+    Guid? TargetBlockLocationId,
+    string? TargetBlockLocationCode,
+    string ReasonCode,
+    string? EvidenceReference,
+    string? Notes,
+    string DecidedByEmail,
+    DateTimeOffset DecidedAtUtc);
+
+public sealed record ReceiptInspectionSummaryDto(
+    Guid ReceiptInspectionId,
+    string InspectionNumber,
+    Guid ValuedAcceptanceId,
+    string AcceptanceNumber,
+    Guid GoodsReceiptId,
+    string ReceiptNumber,
+    Guid ItemId,
+    string ItemCode,
+    string ItemName,
+    string BaseUomCode,
+    Guid WarehouseId,
+    Guid QuarantineLocationId,
+    string QuarantineLocationCode,
+    Guid? StockLotId,
+    string? LotNumber,
+    decimal InspectedTotalBaseQuantity,
+    decimal PendingBaseQuantity,
+    decimal ReleasedBaseQuantity,
+    decimal BlockedBaseQuantity,
+    string Status,
+    DateTimeOffset CreatedAtUtc,
+    DateTimeOffset UpdatedAtUtc,
+    IReadOnlyList<InspectionDispositionDto> Dispositions);
+
+public sealed record ItemReconciliationDto(
+    bool IsReconciled,
+    decimal PositionOnHandTotal,
+    decimal PositionUnrestricted,
+    decimal PositionQualityInspection,
+    decimal PositionBlocked,
+    decimal PositionReserved,
+    decimal PositionAvailable,
+    decimal LocationBalancesOnHandTotal,
+    decimal LocationBalancesUnrestricted,
+    decimal LocationBalancesQualityInspection,
+    decimal LocationBalancesBlocked,
+    decimal LocationBalancesReserved,
+    decimal MovementsNetTotal,
+    decimal ActiveReservationsRemaining);
+
+public sealed record ItemMovementTraceDto(
+    Guid StockMovementId,
+    Guid MovementLineId,
+    string MovementNumber,
+    string MovementType,
+    DateOnly PostingDate,
+    string SourceDocumentType,
+    string SourceDocumentNumber,
+    string? LocationCode,
+    string? ZoneType,
+    string? LotNumber,
+    string ResultingStockStatus,
+    decimal BaseQuantityDelta,
+    decimal UnitValuationCost,
+    decimal LineValuationAmount,
+    string? Notes,
+    string CreatedByEmail,
+    DateTimeOffset CreatedAtUtc);
+
+public sealed record ItemStockDetailResponse(
+    Guid ItemId,
+    string ItemCode,
+    string ItemName,
+    string BaseUomCode,
+    string LotTrackingPolicy,
+    string CurrencyCode,
+    string PoolStatus,
+    decimal CarryingValueAmount,
+    decimal MovingAverageUnitCost,
+    ItemReconciliationDto Reconciliation,
+    IReadOnlyList<StockLocationBalanceDto> LocationBalances,
+    IReadOnlyList<StockLotSummaryDto> Lots,
+    IReadOnlyList<ReceiptInspectionSummaryDto> Inspections,
+    IReadOnlyList<StockReservationDto> Reservations,
+    IReadOnlyList<ItemMovementTraceDto> MovementTimeline);
+
+public sealed record TransferStockLocationRequest(
+    Guid ItemId,
+    Guid FromLocationId,
+    Guid ToLocationId,
+    Guid? StockLotId,
+    string StockStatus,
+    decimal Quantity,
+    DateOnly PostingDate,
+    string IdempotencyKey,
+    string? Notes);
+
+public sealed record StockStatusTransitionRequest(
+    Guid ItemId,
+    Guid FromLocationId,
+    Guid? ToLocationId,
+    Guid? StockLotId,
+    string FromStatus,
+    string ToStatus,
+    decimal Quantity,
+    DateOnly PostingDate,
+    string ReasonCode,
+    string? EvidenceReference,
+    string? Notes,
+    string IdempotencyKey);
+
+public sealed record RecordInspectionDispositionRequest(
+    DateOnly DispositionDate,
+    decimal ReleasedBaseQuantity,
+    Guid? TargetReleaseLocationId,
+    decimal BlockedBaseQuantity,
+    Guid? TargetBlockLocationId,
+    string ReasonCode,
+    string? EvidenceReference,
+    string? Notes,
+    string IdempotencyKey);
+
+public sealed record InspectionDispositionOutcomeDto(
+    ReceiptInspectionSummaryDto Inspection,
+    InspectionDispositionDto Disposition,
+    string MovementNumber,
+    bool WasIdempotentReplay);
+
+public sealed record CreateStockReservationRequest(
+    Guid ItemId,
+    Guid LocationId,
+    Guid? StockLotId,
+    string SourceType,
+    Guid? SourceDocumentId,
+    string SourceDocumentNumber,
+    Guid? SourceLineId,
+    decimal Quantity,
+    DateTimeOffset? ExpiresAtUtc,
+    string IdempotencyKey,
+    string? Notes);
+
+public sealed record ReleaseStockReservationRequest(
+    decimal? ReleaseBaseQuantity);
+
+public sealed record StockReservationOutcomeDto(
+    StockReservationDto Reservation,
+    bool WasIdempotentReplay);
+
+public sealed record InventoryMovementResultDto(
+    Guid StockMovementId,
+    string MovementNumber,
+    string MovementType,
+    DateOnly PostingDate,
+    bool WasIdempotentReplay);
+
 public sealed record StockPositionOverviewDto(
     Guid StockPositionId,
     Guid ItemId,
     string ItemCode,
     string ItemName,
+    string LotTrackingPolicy,
     Guid BaseUomId,
     string BaseUomCode,
     string ValuationGroupCode,
@@ -143,6 +404,9 @@ public sealed record StockPositionOverviewDto(
     decimal MovingAverageUnitCost,
     string PoolStatus,
     long LastEntrySequence,
+    int LocationCount,
+    int ActiveLotCount,
+    int PendingInspectionCount,
     DateTimeOffset UpdatedAtUtc);
 
 public sealed record StockMovementSummaryDto(
@@ -183,11 +447,14 @@ public sealed record InventoryOverviewResponse(
     IReadOnlyList<StockPositionOverviewDto> Positions,
     IReadOnlyList<StockMovementSummaryDto> RecentMovements,
     IReadOnlyList<ReceiptAccrualOverviewDto> OpenAccruals,
+    IReadOnlyList<WarehouseLocationDto> Locations,
+    IReadOnlyList<ReceiptInspectionSummaryDto> Inspections,
     int TotalStockedItemsWithBalance,
     decimal TotalCarryingValueIdr,
     decimal TotalOpenGrniAccrualIdr,
     int RestrictedStockItemCount,
-    string Od04Notice);
+    string Od04Notice,
+    string Od10Notice);
 
 public sealed record ValuationEntryLedgerDto(
     Guid ValuationEntryId,

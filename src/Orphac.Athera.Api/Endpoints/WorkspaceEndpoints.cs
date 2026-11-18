@@ -234,7 +234,7 @@ public static class WorkspaceEndpoints
             new("approvals", "AVAILABLE", set.Contains(PermissionCodes.WorkspaceView) || set.Contains(PermissionCodes.ApprovalRequest) || set.Contains(PermissionCodes.ApprovalDecide), PermissionCodes.ApprovalRequest),
             new("procurement", "AVAILABLE", set.Contains(PermissionCodes.ProcurementRead) || set.Contains(PermissionCodes.ProcurementManage) || set.Contains(PermissionCodes.ProcurementApprove), PermissionCodes.ProcurementRead),
             new("receiving", "AVAILABLE", set.Contains(PermissionCodes.ReceivingRead) || set.Contains(PermissionCodes.ReceivingManage) || set.Contains(PermissionCodes.ReceivingAccept), PermissionCodes.ReceivingRead),
-            new("inventory", "AVAILABLE", set.Contains(PermissionCodes.InventoryRead), PermissionCodes.InventoryRead),
+            new("inventory", "AVAILABLE", set.Contains(PermissionCodes.InventoryRead) || set.Contains(PermissionCodes.InventoryManage) || set.Contains(PermissionCodes.QualityInspect), PermissionCodes.InventoryRead),
             new("sales", "PLANNED_S12_S14", set.Contains(PermissionCodes.SalesRead), PermissionCodes.SalesRead),
             new("finance", "AVAILABLE", set.Contains(PermissionCodes.FinanceRead) || set.Contains(PermissionCodes.FinanceConfigManage) || set.Contains(PermissionCodes.FinanceJournalPost), PermissionCodes.FinanceRead),
             new("admin", "AVAILABLE", set.Contains(PermissionCodes.AdminRead) || set.Contains(PermissionCodes.AdminManage), PermissionCodes.AdminRead)

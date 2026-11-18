@@ -70,6 +70,7 @@ function CatalogSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
   const [itemCode, setItemCode] = useState("");
   const [itemName, setItemName] = useState("");
   const [itemKind, setItemKind] = useState("STOCKED_GOOD");
+  const [itemLotPolicy, setItemLotPolicy] = useState("NONE");
   const [baseUomId, setBaseUomId] = useState("");
   const [purchaseUomId, setPurchaseUomId] = useState("");
   const [salesUomId, setSalesUomId] = useState("");
@@ -97,6 +98,7 @@ function CatalogSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
   const [policyBusy, setPolicyBusy] = useState(false);
   const [policyError, setPolicyError] = useState<string | null>(null);
   const [editScopeValue, setEditScopeValue] = useState("ALL_ENTITIES");
+  const [editLotPolicyValue, setEditLotPolicyValue] = useState("NONE");
   const [statusBusy, setStatusBusy] = useState(false);
 
   useEffect(() => {
@@ -163,6 +165,7 @@ function CatalogSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
         if (!active) return;
         setSelectedItem(itemDetail);
         setEditScopeValue(itemDetail.entityScopeMode);
+        setEditLotPolicyValue(itemDetail.lotTrackingPolicy || "NONE");
         setPolicyPurchase(itemDetail.currentEntityPolicy?.purchaseAllowed ?? itemDetail.effectivePurchaseAllowed);
         setPolicySales(itemDetail.currentEntityPolicy?.salesAllowed ?? itemDetail.effectiveSalesAllowed);
         setPolicyNotes(itemDetail.currentEntityPolicy?.notes ?? "");
@@ -241,11 +244,14 @@ function CatalogSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
         defaultPurchaseUomId: purchaseUomId || baseUomId,
         defaultSalesUomId: salesUomId || baseUomId,
         entityScopeMode: itemScopeMode,
+        lotTrackingPolicy: itemKind === "NON_STOCK_SERVICE" ? "NONE" : itemLotPolicy,
       });
       setItemCode("");
       setItemName("");
+      setItemLotPolicy("NONE");
       setSelectedId(created.itemId);
       setSelectedItem(created);
+      setEditLotPolicyValue(created.lotTrackingPolicy || "NONE");
       setPolicyPurchase(created.currentEntityPolicy?.purchaseAllowed ?? created.effectivePurchaseAllowed);
       setPolicySales(created.currentEntityPolicy?.salesAllowed ?? created.effectiveSalesAllowed);
       setPolicyNotes(created.currentEntityPolicy?.notes ?? "");
@@ -344,7 +350,7 @@ function CatalogSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
     }
   }
 
-  async function handleUpdateItemMeta(nextStatus?: string, nextScope?: string) {
+  async function handleUpdateItemMeta(nextStatus?: string, nextScope?: string, nextLotPolicy?: string) {
     if (!selectedItem) return;
     setStatusBusy(true);
     setPolicyError(null);
@@ -358,9 +364,11 @@ function CatalogSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
         entityScopeMode: nextScope ?? selectedItem.entityScopeMode,
         status: nextStatus ?? selectedItem.status,
         expectedVersion: selectedItem.version,
+        lotTrackingPolicy: nextLotPolicy ?? selectedItem.lotTrackingPolicy,
       });
       setSelectedItem(updated);
       setEditScopeValue(updated.entityScopeMode);
+      setEditLotPolicyValue(updated.lotTrackingPolicy || "NONE");
       setReloadNonce((n) => n + 1);
     } catch (err) {
       const apiErr = err as ApiProblemError;
@@ -665,11 +673,34 @@ function CatalogSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
               <select
                 id="new-item-kind"
                 value={itemKind}
-                onChange={(e) => setItemKind(e.target.value)}
+                onChange={(e) => {
+                  const nextKind = e.target.value;
+                  setItemKind(nextKind);
+                  if (nextKind === "NON_STOCK_SERVICE") {
+                    setItemLotPolicy("NONE");
+                  }
+                }}
                 className="mt-1.5 h-10 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-sm text-[var(--text-primary)]"
               >
                 <option value="STOCKED_GOOD">{t.catalog.kindLabels.STOCKED_GOOD}</option>
                 <option value="NON_STOCK_SERVICE">{t.catalog.kindLabels.NON_STOCK_SERVICE}</option>
+              </select>
+            </div>
+
+            <div className="sm:col-span-3">
+              <label htmlFor="new-item-lot-policy" className="block text-xs font-semibold text-[var(--text-secondary)]">
+                {t.catalog.lotPolicyLabel}
+              </label>
+              <select
+                id="new-item-lot-policy"
+                value={itemKind === "NON_STOCK_SERVICE" ? "NONE" : itemLotPolicy}
+                disabled={itemKind === "NON_STOCK_SERVICE"}
+                onChange={(e) => setItemLotPolicy(e.target.value)}
+                className="mt-1.5 h-10 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-sm text-[var(--text-primary)] disabled:opacity-60"
+              >
+                <option value="NONE">{t.catalog.lotPolicyLabels.NONE}</option>
+                <option value="OPTIONAL">{t.catalog.lotPolicyLabels.OPTIONAL}</option>
+                <option value="REQUIRED">{t.catalog.lotPolicyLabels.REQUIRED}</option>
               </select>
             </div>
 
@@ -811,6 +842,24 @@ function CatalogSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
                         <span className="inline-flex items-center rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-2 py-0.5 text-xs font-medium text-[var(--text-primary)]">
                           {t.catalog.kindLabels[item.itemKind] ?? item.itemKind}
                         </span>
+                        {item.itemKind === "STOCKED_GOOD" && item.lotTrackingPolicy !== "NONE" ? (
+                          <div className="mt-1">
+                            <span
+                              className={`inline-flex items-center gap-1 rounded-[var(--radius-sm)] border px-2 py-0.5 text-[11px] font-medium ${
+                                item.lotTrackingPolicy === "REQUIRED"
+                                  ? "border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] text-[var(--status-warn-text)]"
+                                  : "border-[var(--border-hairline)] bg-[var(--bg-subtle)] text-[var(--text-secondary)]"
+                              }`}
+                            >
+                              {item.lotTrackingPolicy === "REQUIRED" ? (
+                                <Clock className="h-3 w-3 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                              ) : (
+                                <CheckCircle2 className="h-3 w-3 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                              )}
+                              <span>{t.catalog.lotPolicyLabels[item.lotTrackingPolicy] ?? item.lotTrackingPolicy}</span>
+                            </span>
+                          </div>
+                        ) : null}
                         <div className="mt-1">
                           <span
                             className={`inline-flex items-center gap-1 rounded-[var(--radius-sm)] border px-2 py-0.5 text-[11px] font-medium ${
@@ -931,6 +980,30 @@ function CatalogSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
                 >
                   {t.catalog.toggleScopeButton}
                 </button>
+                {selectedItem.itemKind === "STOCKED_GOOD" ? (
+                  <>
+                    <select
+                      id="edit-item-lot-policy"
+                      aria-label={t.catalog.lotPolicyLabel}
+                      value={editLotPolicyValue}
+                      disabled={statusBusy}
+                      onChange={(e) => setEditLotPolicyValue(e.target.value)}
+                      className="h-9 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)]"
+                    >
+                      <option value="NONE">{t.catalog.lotPolicyLabels.NONE}</option>
+                      <option value="OPTIONAL">{t.catalog.lotPolicyLabels.OPTIONAL}</option>
+                      <option value="REQUIRED">{t.catalog.lotPolicyLabels.REQUIRED}</option>
+                    </select>
+                    <button
+                      type="button"
+                      disabled={statusBusy || editLotPolicyValue === selectedItem.lotTrackingPolicy}
+                      onClick={() => handleUpdateItemMeta(undefined, undefined, editLotPolicyValue)}
+                      className="inline-flex min-h-9 items-center rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-chrome)] disabled:opacity-50"
+                    >
+                      {t.catalog.updateLotPolicyButton}
+                    </button>
+                  </>
+                ) : null}
                 <button
                   type="button"
                   disabled={statusBusy}

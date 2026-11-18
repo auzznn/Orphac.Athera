@@ -400,6 +400,9 @@ export interface Dictionary {
     savePolicyBusy: string;
     statusLabels: Record<string, string>;
     kindLabels: Record<string, string>;
+    lotPolicyLabel: string;
+    lotPolicyLabels: Record<string, string>;
+    updateLotPolicyButton: string;
     scopeLabels: Record<string, string>;
     validation: {
       uomCodeRequired: string;
@@ -898,6 +901,13 @@ export interface Dictionary {
       colAcceptedTotal: string;
       gate1GlBadgePrefix: string;
       glBadgePrefix: string;
+      locationLabel: string;
+      locationAutoOption: string;
+      lotNumberLabel: string;
+      lotNumberPlaceholder: string;
+      lotRequiredBadge: string;
+      lotDisabledNote: string;
+      expiryDateLabel: string;
     };
     validation: {
       poRequired: string;
@@ -918,9 +928,11 @@ export interface Dictionary {
     loadErrorTitle: string;
     retryButton: string;
     od04PolicyBanner: string;
+    od10PolicyBanner: string;
     tabListLabel: string;
     tabs: {
       positions: string;
+      inspections: string;
       accruals: string;
       movements: string;
     };
@@ -982,6 +994,124 @@ export interface Dictionary {
     colLedgerBeforeAfterCost: string;
     colLedgerCarrying: string;
     openReceivingLink: string;
+    zoneTypeLabels: Record<string, string>;
+    lotPolicyLabels: Record<string, string>;
+    inspectionStatusLabels: Record<string, string>;
+    reservationStatusLabels: Record<string, string>;
+    reservationSourceLabels: Record<string, string>;
+    qualityReasonLabels: Record<string, string>;
+    inspectionsTab: {
+      cardTitle: string;
+      emptyTitle: string;
+      emptyBody: string;
+      colInspectionRef: string;
+      colSourceLot: string;
+      colQuantities: string;
+      colStatusAction: string;
+      openItemButton: string;
+      releasedPrefix: string;
+      blockedPrefix: string;
+      pendingPrefix: string;
+    };
+    detailSheet: {
+      sectionTitle: string;
+      loadingDetail: string;
+      selectPrompt: string;
+      reconciledBadge: string;
+      unreconciledBadge: string;
+      lotPolicyPrefix: string;
+      metricTotalValued: string;
+      metricUnrestricted: string;
+      metricQualityInspection: string;
+      metricBlocked: string;
+      metricReserved: string;
+      metricAvailable: string;
+      subTabOperations: string;
+      subTabTimeline: string;
+      balancesTitle: string;
+      emptyBalances: string;
+      colLocationZone: string;
+      colLotExpiry: string;
+      colStockStatus: string;
+      colOnHandReservedAvailable: string;
+      operationsTitle: string;
+      qualityReadOnlyNotice: string;
+      warehouseManageReadOnlyNotice: string;
+      dispositionCardTitle: string;
+      inspectionSelectLabel: string;
+      releaseQtyLabel: string;
+      releaseLocationLabel: string;
+      blockQtyLabel: string;
+      blockLocationLabel: string;
+      reasonCodeLabel: string;
+      evidenceRefLabel: string;
+      notesLabel: string;
+      submitDispositionBusy: string;
+      submitDispositionButton: string;
+      dispositionSuccessPrefix: string;
+      invalidDispositionQtyError: string;
+      noPendingInspections: string;
+      transferCardTitle: string;
+      sourceBalanceLabel: string;
+      emptyMovableBalancesOption: string;
+      targetLocationLabel: string;
+      emptyTransferTargetOption: string;
+      transferQtyLabel: string;
+      postingDateLabel: string;
+      submitTransferBusy: string;
+      submitTransferButton: string;
+      transferSuccessPrefix: string;
+      statusTransitionCardTitle: string;
+      fromStatusLabel: string;
+      toStatusLabel: string;
+      fromLocationLabel: string;
+      toLocationLabel: string;
+      statusQtyLabel: string;
+      submitStatusBusy: string;
+      submitStatusButton: string;
+      statusSuccessPrefix: string;
+      reservationCardTitle: string;
+      resLocationLabel: string;
+      emptyReserveBalanceOption: string;
+      resLotLabel: string;
+      resSourceTypeLabel: string;
+      resSourceDocLabel: string;
+      resQtyLabel: string;
+      resNotesLabel: string;
+      submitReserveBusy: string;
+      submitReserveButton: string;
+      reserveSuccessPrefix: string;
+      reservationsTableTitle: string;
+      emptyReservations: string;
+      releaseQtyPlaceholder: string;
+      releaseButton: string;
+      releaseAllButton: string;
+      releaseBusy: string;
+      colResRef: string;
+      colResSource: string;
+      colResQty: string;
+      colResStatus: string;
+      warehouseToggleLabel: string;
+      warehouseCodeLabel: string;
+      warehouseNameLabel: string;
+      createWarehouseButton: string;
+      warehouseSelectLabel: string;
+      locationCodeLabel: string;
+      locationNameLabel: string;
+      zoneTypeLabel: string;
+      defaultReceivingLabel: string;
+      createLocationButton: string;
+      createBusy: string;
+      warehouseCreatedMsg: string;
+      locationCreatedMsg: string;
+      timelineTitle: string;
+      emptyTimeline: string;
+      colTimelineRef: string;
+      colTimelineLocationLot: string;
+      colTimelineDelta: string;
+      colTimelineCost: string;
+    };
+    errors: Record<string, string>;
   };
 }
 
@@ -1460,6 +1590,13 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         STOCKED_GOOD: "Barang Stok",
         NON_STOCK_SERVICE: "Jasa Non-Stok",
       },
+      lotPolicyLabel: "Kebijakan Pelacakan Lot / Batch",
+      lotPolicyLabels: {
+        NONE: "Tanpa Pelacakan Lot",
+        OPTIONAL: "Lot Opsional",
+        REQUIRED: "Lot Wajib (S08)",
+      },
+      updateLotPolicyButton: "Terapkan Kebijakan Lot",
       scopeLabels: {
         ALL_ENTITIES: "Semua Entitas",
         RESTRICTED_ENTITIES: "Terbatas per Entitas",
@@ -1480,6 +1617,9 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         unsupported_uom_conversion: "Tidak ada konversi aktif antara item ini dan satuan tersebut.",
         concurrency_conflict: "Item diubah pengguna lain. Muat ulang terlebih dahulu.",
         insufficient_entity_permission: "Anda tidak memiliki izin catalog.manage pada entitas ini.",
+        unlotted_stock_prevents_required_lot_policy:
+          "Saldo stok tanpa lot masih ada pada entitas aktif; kebijakan wajib lot ditolak.",
+        non_stock_item_cannot_enable_lot_tracking: "Barang jasa non-stok tidak dapat mengaktifkan pelacakan lot.",
       },
     },
     finance: {
@@ -2138,6 +2278,13 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         colAcceptedTotal: "Kuantitas & Nilai (IDR)",
         gate1GlBadgePrefix: "GL Gate 1:",
         glBadgePrefix: "GL Gate 2:",
+        locationLabel: "Lokasi Penyimpanan Tujuan (Opsional)",
+        locationAutoOption: "Lokasi Bawaan Sesuai Status Stok",
+        lotNumberLabel: "Nomor Lot / Batch",
+        lotNumberPlaceholder: "Contoh: LOT-JKT-2611-01",
+        lotRequiredBadge: "Lot Wajib",
+        lotDisabledNote: "Tanpa pelacakan lot",
+        expiryDateLabel: "Tanggal Kedaluwarsa (Opsional)",
       },
       validation: {
         poRequired: "Pilih PO yang telah disetujui sebelum mencatat kedatangan.",
@@ -2204,6 +2351,13 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         insufficient_entity_permission:
           "Akun Anda tidak memiliki izin melakukan aksi ini pada entitas hukum ini.",
         concurrency_conflict: "Rekaman baru saja diubah transaksi lain secara bersamaan; muat ulang sebelum mencoba lagi.",
+        lot_required_by_item_policy:
+          "Barang ini mewajibkan nomor lot pada penerimaan bernilai Gate 2.",
+        lot_not_enabled_for_item: "Barang ini dikonfigurasi tanpa pelacakan lot.",
+        location_zone_mismatch:
+          "Zona lokasi tujuan tidak sesuai dengan status stok yang dipilih.",
+        location_not_found: "Lokasi gudang tidak ditemukan pada entitas ini.",
+        location_inactive: "Lokasi gudang yang dipilih sedang nonaktif.",
       },
     },
     inventory: {
@@ -2213,9 +2367,12 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       retryButton: "Muat Ulang Data Persediaan",
       od04PolicyBanner:
         "Kebijakan OD-04 Aktif (ATH-CR-004): setiap barang dihitung dengan rata-rata bergerak per entitas (IDR); stok inspeksi mutu & blokir tetap dinilai di buku besar namun bersaldo tersedia nol untuk pemenuhan.",
+      od10PolicyBanner:
+        "Kebijakan OD-10 Aktif (ATH-CR-005): stok negatif dan reservasi melebihi saldo bebas pakai ditolak tegas; pemindahan lokasi dan disposisi inspeksi mutu menjaga nilai buku tetap utuh tanpa jurnal GL baru.",
       tabListLabel: "Tampilan modul persediaan",
       tabs: {
         positions: "Saldo & Valuasi Rata-Rata Bergerak",
+        inspections: "Antrean Inspeksi Mutu",
         accruals: "Akrual GRNI Terbuka",
         movements: "Pergerakan Stok Terbaru",
       },
@@ -2264,6 +2421,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       },
       movementTypeLabels: {
         PURCHASE_RECEIPT_ACCEPTANCE: "Penerimaan Pembelian (Gate 2)",
+        LOCATION_TRANSFER: "Pemindahan Lokasi Gudang",
+        QUALITY_STATUS_CHANGE: "Perubahan Status Mutu / Pembatasan",
       },
       entryTypeLabels: {
         RECEIPT_ACCEPTANCE: "Penerimaan Bernilai",
@@ -2294,6 +2453,180 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colLedgerBeforeAfterCost: "HPP Sebelum → Sesudah",
       colLedgerCarrying: "Qty Akhir & Nilai Buku",
       openReceivingLink: "Buka Penerimaan Gudang",
+      zoneTypeLabels: {
+        RECEIVING_STAGING: "Area Penerimaan",
+        STORAGE: "Rak Penyimpanan",
+        QUARANTINE: "Zona Karantina Mutu",
+        BLOCKED_HOLD: "Area Barang Diblokir",
+        DISPATCH: "Area Pengiriman",
+      },
+      lotPolicyLabels: {
+        NONE: "Tanpa Lot",
+        OPTIONAL: "Lot Opsional",
+        REQUIRED: "Lot Wajib",
+      },
+      inspectionStatusLabels: {
+        PENDING: "Menunggu Inspeksi",
+        PARTIALLY_DECIDED: "Sebagian Diputuskan",
+        COMPLETED: "Selesai",
+      },
+      reservationStatusLabels: {
+        ACTIVE: "Aktif",
+        PARTIALLY_CONSUMED: "Sebagian Terpakai",
+        FULFILLED: "Terpenuhi",
+        RELEASED: "Dilepaskan",
+      },
+      reservationSourceLabels: {
+        SALES_ORDER: "Pesanan Penjualan",
+        MANUAL_HOLD: "Penahanan Manual",
+        FULFILLMENT: "Pemenuhan Gudang",
+      },
+      qualityReasonLabels: {
+        PASSED_SPECIFICATION: "Lulus Uji Spesifikasi",
+        DAMAGED_OR_CONTAMINATED: "Kemasan Rusak / Terkontaminasi",
+        SPEC_DEVIATION_HOLD: "Tahan Deviasi Spesifikasi",
+        MISSING_CERTIFICATE: "Dokumen Sertifikat / COA Kurang",
+        SUPERVISOR_REEVALUATION: "Evaluasi Ulang Pengawas",
+      },
+      inspectionsTab: {
+        cardTitle: "Antrean Inspeksi Mutu Penerimaan (Gate 2 Karantina)",
+        emptyTitle: "Tidak Ada Antrean Inspeksi Mutu",
+        emptyBody: "Penerimaan Gate 2 dengan status Inspeksi Mutu akan otomatis muncul di sini untuk disposisi rilis atau blokir.",
+        colInspectionRef: "Nomor Inspeksi & Sumber",
+        colSourceLot: "Barang, Lokasi Karantina & Lot",
+        colQuantities: "Ringkasan Kuantitas (Pending / Rilis / Blokir)",
+        colStatusAction: "Status & Tindak Lanjut",
+        openItemButton: "Buka Rincian Stok & Disposisi",
+        releasedPrefix: "Dirilis",
+        blockedPrefix: "Diblokir",
+        pendingPrefix: "Menunggu",
+      },
+      detailSheet: {
+        sectionTitle: "Rincian Ketersediaan Stok, Lokasi, Lot & Operasi",
+        loadingDetail: "Memuat rincian lokasi, lot, inspeksi, dan reservasi...",
+        selectPrompt: "Pilih baris barang pada tabel posisi stok di atas untuk mengelola lokasi, lot, disposisi mutu, dan reservasi.",
+        reconciledBadge: "Terekonsiliasi",
+        unreconciledBadge: "Perlu Pemeriksaan Rekonsiliasi",
+        lotPolicyPrefix: "Kebijakan Lot",
+        metricTotalValued: "Total Dinilai",
+        metricUnrestricted: "Bebas Pakai",
+        metricQualityInspection: "Karantina Mutu",
+        metricBlocked: "Diblokir",
+        metricReserved: "Direservasi",
+        metricAvailable: "Tersedia Pemenuhan",
+        subTabOperations: "Lokasi, Lot & Operasi",
+        subTabTimeline: "Status & Linimasa Mutasi",
+        balancesTitle: "Saldo per Lokasi Gudang, Lot & Status",
+        emptyBalances: "Belum ada rincian saldo lokasi pada barang ini.",
+        colLocationZone: "Gudang & Lokasi (Zona)",
+        colLotExpiry: "Nomor Lot & Kedaluwarsa",
+        colStockStatus: "Status Stok",
+        colOnHandReservedAvailable: "Di Tangan · Direservasi · Tersedia",
+        operationsTitle: "Panel Operasi Persediaan & Mutu",
+        qualityReadOnlyNotice:
+          "Mode baca mutu: Anda memiliki izin operasional gudang (inventory.manage) tanpa izin inspeksi mutu (quality.inspect), sehingga keputusan rilis/blokir dikunci.",
+        warehouseManageReadOnlyNotice:
+          "Mode baca saja: Anda tidak memiliki izin inventory.manage pada entitas ini untuk memindahkan stok, membuat reservasi, atau menambah lokasi.",
+        dispositionCardTitle: "Keputusan Disposisi Inspeksi Mutu",
+        inspectionSelectLabel: "Dokumen Inspeksi Antrean",
+        releaseQtyLabel: "Qty Rilis ke Bebas Pakai",
+        releaseLocationLabel: "Lokasi Rak Rilis",
+        blockQtyLabel: "Qty Diblokir",
+        blockLocationLabel: "Lokasi Blokir",
+        reasonCodeLabel: "Kode Alasan Mutu",
+        evidenceRefLabel: "Ref Sertifikat / COA (Opsional)",
+        notesLabel: "Catatan Keputusan / Mutasi (Opsional)",
+        submitDispositionBusy: "Menyimpan Disposisi...",
+        submitDispositionButton: "Catat Disposisi Mutu",
+        dispositionSuccessPrefix: "Disposisi mutu tercatat permanen melalui mutasi",
+        invalidDispositionQtyError: "Masukkan kuantitas rilis dan/atau blokir bernilai positif (total > 0).",
+        noPendingInspections: "Tidak ada inspeksi karantina yang menunggu keputusan pada item ini.",
+        transferCardTitle: "Pemindahan Lokasi Dalam Gudang (Tanpa Mengubah Nilai Buku)",
+        sourceBalanceLabel: "Saldo & Lokasi Asal",
+        emptyMovableBalancesOption: "Tidak ada saldo lokasi ber-stok",
+        targetLocationLabel: "Lokasi Tujuan (Gudang Sama)",
+        emptyTransferTargetOption: "Tidak ada lokasi tujuan berzona kompatibel",
+        transferQtyLabel: "Kuantitas Pindah",
+        postingDateLabel: "Tanggal Mutasi",
+        submitTransferBusy: "Memindahkan Stok...",
+        submitTransferButton: "Pindahkan Lokasi",
+        transferSuccessPrefix: "Stok dipindahkan melalui mutasi",
+        statusTransitionCardTitle: "Penahanan / Pembukaan Blokir Status Manual (Mutu)",
+        fromStatusLabel: "Dari Status",
+        toStatusLabel: "Ke Status",
+        fromLocationLabel: "Lokasi Asal",
+        toLocationLabel: "Lokasi Tujuan",
+        statusQtyLabel: "Kuantitas Ubah Status",
+        submitStatusBusy: "Memproses Perubahan Status...",
+        submitStatusButton: "Terapkan Perubahan Status",
+        statusSuccessPrefix: "Status stok diperbarui melalui mutasi",
+        reservationCardTitle: "Buat Reservasi Stok Eksplisit (OD-10)",
+        resLocationLabel: "Lokasi Bebas Pakai",
+        emptyReserveBalanceOption: "Tidak ada saldo Bebas Pakai tersedia untuk direservasi",
+        resLotLabel: "Lot (Bila Ada)",
+        resSourceTypeLabel: "Jenis Sumber",
+        resSourceDocLabel: "Nomor Dokumen Sumber",
+        resQtyLabel: "Kuantitas Direservasi",
+        resNotesLabel: "Catatan Reservasi (Opsional)",
+        submitReserveBusy: "Membuat Reservasi...",
+        submitReserveButton: "Kunci Reservasi Stok",
+        reserveSuccessPrefix: "Reservasi dibuat:",
+        reservationsTableTitle: "Daftar Reservasi Aktif & Riwayat Pelepasan",
+        emptyReservations: "Belum ada reservasi tercatat untuk item ini.",
+        releaseQtyPlaceholder: "Kosongkan = semua",
+        releaseButton: "Lepas Sebagian / Nilai",
+        releaseAllButton: "Lepas Semua",
+        releaseBusy: "Melepas...",
+        colResRef: "Nomor Reservasi & Tanggal",
+        colResSource: "Sumber & Lokasi / Lot",
+        colResQty: "Reservasi · Lepas · Sisa",
+        colResStatus: "Status & Aksi",
+        warehouseToggleLabel: "Kelola Gudang & Lokasi Tambahan",
+        warehouseCodeLabel: "Kode Gudang",
+        warehouseNameLabel: "Nama Gudang",
+        createWarehouseButton: "Tambah Gudang",
+        warehouseSelectLabel: "Gudang Induk",
+        locationCodeLabel: "Kode Lokasi",
+        locationNameLabel: "Nama Lokasi",
+        zoneTypeLabel: "Zona Lokasi",
+        defaultReceivingLabel: "Lokasi default penerimaan",
+        createLocationButton: "Simpan Lokasi Baru",
+        createBusy: "Menyimpan...",
+        warehouseCreatedMsg: "Gudang baru berhasil dibuat:",
+        locationCreatedMsg: "Lokasi gudang baru berhasil dibuat:",
+        timelineTitle: "Linimasa Mutasi Status, Lokasi & Valuasi Append-Only",
+        emptyTimeline: "Belum ada riwayat mutasi stok untuk item ini.",
+        colTimelineRef: "Nomor Mutasi & Tanggal",
+        colTimelineLocationLot: "Lokasi, Zona & Lot",
+        colTimelineDelta: "Status & Delta Kuantitas",
+        colTimelineCost: "HPP Satuan · Nilai Buku Delta",
+      },
+      errors: {
+        od10_insufficient_available_stock:
+          "Kebijakan OD-10 menolak transaksi: saldo bebas pakai tidak mencukupi (terpotong reservasi aktif atau stok dibatasi).",
+        od10_negative_stock_forbidden:
+          "Kebijakan OD-10 melarang keras saldo stok negatif pada lokasi maupun posisi entitas.",
+        od10_restricted_stock_not_reservable:
+          "Hanya stok berstatus Bebas Pakai yang dapat direservasi untuk pemenuhan.",
+        pending_receipt_inspection_location_locked:
+          "Stok karantina masih terkunci pada antrean inspeksi mutu; gunakan panel Disposisi Mutu untuk merilis atau memblokir.",
+        location_zone_mismatch:
+          "Zona lokasi tujuan tidak kompatibel dengan status stok yang dipilih.",
+        disposition_exceeds_pending_quantity:
+          "Jumlah rilis ditambah blokir melebihi sisa kuantitas karantina yang menunggu keputusan.",
+        duplicate_warehouse_code: "Kode gudang sudah terdaftar pada entitas hukum ini.",
+        duplicate_location_code: "Kode lokasi sudah terdaftar pada entitas hukum ini.",
+        duplicate_disposition_idempotency_conflict:
+          "Kunci idempotensi disposisi mutu sudah digunakan dengan muatan berbeda.",
+        duplicate_reservation_idempotency_conflict:
+          "Kunci idempotensi reservasi sudah digunakan dengan muatan berbeda.",
+        duplicate_movement_idempotency_conflict:
+          "Kunci idempotensi mutasi stok sudah digunakan dengan muatan berbeda.",
+        insufficient_entity_permission:
+          "Peran aktif Anda tidak memiliki izin untuk menjalankan tindakan tersebut pada entitas ini.",
+        period_closed:
+          "Periode fiskal pada tanggal posting berstatus ditutup.",
+      },
     },
   },
   "en-US": {
@@ -2770,6 +3103,13 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         STOCKED_GOOD: "Stocked Good",
         NON_STOCK_SERVICE: "Non-Stock Service",
       },
+      lotPolicyLabel: "Lot / Batch Tracking Policy",
+      lotPolicyLabels: {
+        NONE: "No Lot Tracking",
+        OPTIONAL: "Optional Lot",
+        REQUIRED: "Required Lot (S08)",
+      },
+      updateLotPolicyButton: "Apply Lot Policy",
       scopeLabels: {
         ALL_ENTITIES: "All Entities",
         RESTRICTED_ENTITIES: "Restricted Entities",
@@ -2790,6 +3130,9 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         unsupported_uom_conversion: "No active conversion is registered between this item and unit.",
         concurrency_conflict: "Item was modified by another session. Reload before saving.",
         insufficient_entity_permission: "You do not hold catalog.manage permission on this entity.",
+        unlotted_stock_prevents_required_lot_policy:
+          "Existing unlotted stock prevents switching this item to required lot tracking.",
+        non_stock_item_cannot_enable_lot_tracking: "Non-stock service items cannot enable lot tracking.",
       },
     },
     finance: {
@@ -3448,6 +3791,13 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         colAcceptedTotal: "Accepted Qty & Amount (IDR)",
         gate1GlBadgePrefix: "Gate 1 GL:",
         glBadgePrefix: "Gate 2 GL:",
+        locationLabel: "Destination Storage Location (Optional)",
+        locationAutoOption: "Default Zone for Stock Status",
+        lotNumberLabel: "Lot / Batch Number",
+        lotNumberPlaceholder: "e.g., LOT-JKT-2611-01",
+        lotRequiredBadge: "Lot Required",
+        lotDisabledNote: "Lot tracking disabled",
+        expiryDateLabel: "Expiry Date (Optional)",
       },
       validation: {
         poRequired: "Select an approved purchase order before recording dock arrival.",
@@ -3514,6 +3864,13 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         insufficient_entity_permission:
           "Your active role grants do not permit performing this action in this legal entity.",
         concurrency_conflict: "Another transaction modified this record concurrently; reload and retry.",
+        lot_required_by_item_policy:
+          "This item requires a stock lot number for Gate 2 valued acceptance.",
+        lot_not_enabled_for_item: "Lot tracking is disabled on this catalog item.",
+        location_zone_mismatch:
+          "Selected destination location zone does not match the chosen stock status.",
+        location_not_found: "Warehouse location was not found in this legal entity.",
+        location_inactive: "Selected warehouse location is inactive.",
       },
     },
     inventory: {
@@ -3523,9 +3880,12 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       retryButton: "Reload Inventory Ledger",
       od04PolicyBanner:
         "OD-04 Policy Active (ATH-CR-004): per-entity moving-average valuation in functional currency (IDR); Quality Inspection and Blocked buckets retain carrying value while keeping zero fulfillment availability.",
+      od10PolicyBanner:
+        "OD-10 Policy Active (ATH-CR-005): negative stock and over-reservation are strictly blocked; intra-warehouse transfers and quality dispositions conserve stock and carrying value without extra GL journals.",
       tabListLabel: "Inventory module views",
       tabs: {
         positions: "Stock & Moving-Average Valuation",
+        inspections: "Quality Inspections",
         accruals: "Open GRNI Accruals",
         movements: "Recent Stock Movements",
       },
@@ -3574,6 +3934,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       },
       movementTypeLabels: {
         PURCHASE_RECEIPT_ACCEPTANCE: "Purchase Receipt Acceptance (Gate 2)",
+        LOCATION_TRANSFER: "Warehouse Location Transfer",
+        QUALITY_STATUS_CHANGE: "Quality Status / Hold Transition",
       },
       entryTypeLabels: {
         RECEIPT_ACCEPTANCE: "Valued Acceptance",
@@ -3604,6 +3966,180 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colLedgerBeforeAfterCost: "Before → After MAC",
       colLedgerCarrying: "Ending Qty & Carrying",
       openReceivingLink: "Open Dock Receiving",
+      zoneTypeLabels: {
+        RECEIVING_STAGING: "Receiving Staging",
+        STORAGE: "Storage Rack",
+        QUARANTINE: "Quality Quarantine",
+        BLOCKED_HOLD: "Blocked Hold Area",
+        DISPATCH: "Dispatch Staging",
+      },
+      lotPolicyLabels: {
+        NONE: "No Lot Tracking",
+        OPTIONAL: "Optional Lot",
+        REQUIRED: "Required Lot",
+      },
+      inspectionStatusLabels: {
+        PENDING: "Pending Inspection",
+        PARTIALLY_DECIDED: "Partially Decided",
+        COMPLETED: "Completed",
+      },
+      reservationStatusLabels: {
+        ACTIVE: "Active",
+        PARTIALLY_CONSUMED: "Partially Consumed",
+        FULFILLED: "Fulfilled",
+        RELEASED: "Released",
+      },
+      reservationSourceLabels: {
+        SALES_ORDER: "Sales Order",
+        MANUAL_HOLD: "Manual Hold",
+        FULFILLMENT: "Fulfillment Allocation",
+      },
+      qualityReasonLabels: {
+        PASSED_SPECIFICATION: "Passed Specification Check",
+        DAMAGED_OR_CONTAMINATED: "Damaged or Contaminated",
+        SPEC_DEVIATION_HOLD: "Specification Deviation Hold",
+        MISSING_CERTIFICATE: "Missing Certificate / COA",
+        SUPERVISOR_REEVALUATION: "Supervisor Re-Evaluation",
+      },
+      inspectionsTab: {
+        cardTitle: "Receipt Quality Inspection Queue (Gate 2 Quarantine)",
+        emptyTitle: "No Quality Inspections Queued",
+        emptyBody: "Gate 2 acceptances posted into Quality Inspection appear here automatically for release or block disposition.",
+        colInspectionRef: "Inspection Ref & Source",
+        colSourceLot: "Item, Quarantine Zone & Lot",
+        colQuantities: "Quantity Breakdown (Pending / Released / Blocked)",
+        colStatusAction: "Status & Follow-Up",
+        openItemButton: "Open Stock Detail & Dispose",
+        releasedPrefix: "Released",
+        blockedPrefix: "Blocked",
+        pendingPrefix: "Pending",
+      },
+      detailSheet: {
+        sectionTitle: "Stock Availability, Locations, Lots & Operations",
+        loadingDetail: "Loading location balances, lots, inspections, and reservations...",
+        selectPrompt: "Select any item row above to inspect locations, lots, quality dispositions, and stock reservations.",
+        reconciledBadge: "Reconciled",
+        unreconciledBadge: "Reconciliation Attention Needed",
+        lotPolicyPrefix: "Lot Policy",
+        metricTotalValued: "Total Valued On-Hand",
+        metricUnrestricted: "Unrestricted",
+        metricQualityInspection: "Quarantined (QI)",
+        metricBlocked: "Blocked",
+        metricReserved: "Reserved",
+        metricAvailable: "Fulfillment Available",
+        subTabOperations: "Locations, Lots & Operations",
+        subTabTimeline: "State & Movement Timeline",
+        balancesTitle: "Balances by Location, Lot & Status",
+        emptyBalances: "No location balance rows recorded for this item yet.",
+        colLocationZone: "Warehouse & Location (Zone)",
+        colLotExpiry: "Lot Number & Expiry",
+        colStockStatus: "Stock Status",
+        colOnHandReservedAvailable: "On-Hand · Reserved · Available",
+        operationsTitle: "Inventory & Quality Operations",
+        qualityReadOnlyNotice:
+          "Quality read-only mode: your role holds warehouse operations (inventory.manage) without quality.inspect rights, keeping release and hold actions locked.",
+        warehouseManageReadOnlyNotice:
+          "Read-only mode: your role does not hold inventory.manage in this entity to transfer stock, reserve inventory, or create locations.",
+        dispositionCardTitle: "Record Quality Inspection Disposition",
+        inspectionSelectLabel: "Queued Inspection Record",
+        releaseQtyLabel: "Release Qty to Unrestricted",
+        releaseLocationLabel: "Release Storage Location",
+        blockQtyLabel: "Block Qty",
+        blockLocationLabel: "Blocked Hold Location",
+        reasonCodeLabel: "Quality Reason Code",
+        evidenceRefLabel: "COA / Evidence Ref (Optional)",
+        notesLabel: "Disposition / Movement Notes (Optional)",
+        submitDispositionBusy: "Recording Disposition...",
+        submitDispositionButton: "Record Quality Disposition",
+        dispositionSuccessPrefix: "Quality disposition recorded via movement",
+        invalidDispositionQtyError: "Enter a non-negative release and/or block quantity greater than zero.",
+        noPendingInspections: "No pending quarantine inspections exist on this item.",
+        transferCardTitle: "Intra-Warehouse Location Transfer (Carrying Value Preserved)",
+        sourceBalanceLabel: "Source Location Balance",
+        emptyMovableBalancesOption: "No stocked location balances available",
+        targetLocationLabel: "Target Location (Same Warehouse)",
+        emptyTransferTargetOption: "No compatible target location in warehouse",
+        transferQtyLabel: "Transfer Quantity",
+        postingDateLabel: "Posting Date",
+        submitTransferBusy: "Transferring Stock...",
+        submitTransferButton: "Transfer Location",
+        transferSuccessPrefix: "Stock transferred via movement",
+        statusTransitionCardTitle: "Manual Stock Hold / Unblock (Quality)",
+        fromStatusLabel: "From Status",
+        toStatusLabel: "To Status",
+        fromLocationLabel: "Source Location",
+        toLocationLabel: "Target Location",
+        statusQtyLabel: "Transition Quantity",
+        submitStatusBusy: "Applying Status Change...",
+        submitStatusButton: "Apply Status Transition",
+        statusSuccessPrefix: "Stock status updated via movement",
+        reservationCardTitle: "Create Explicit Stock Reservation (OD-10)",
+        resLocationLabel: "Unrestricted Location",
+        emptyReserveBalanceOption: "No unrestricted stock available to reserve",
+        resLotLabel: "Lot (If Applicable)",
+        resSourceTypeLabel: "Source Type",
+        resSourceDocLabel: "Source Document Ref",
+        resQtyLabel: "Reserve Quantity",
+        resNotesLabel: "Reservation Notes (Optional)",
+        submitReserveBusy: "Reserving Stock...",
+        submitReserveButton: "Commit Stock Reservation",
+        reserveSuccessPrefix: "Reservation created:",
+        reservationsTableTitle: "Active Reservations & Release History",
+        emptyReservations: "No reservations recorded for this item yet.",
+        releaseQtyPlaceholder: "Blank = full remaining",
+        releaseButton: "Release Qty",
+        releaseAllButton: "Release All",
+        releaseBusy: "Releasing...",
+        colResRef: "Reservation Ref & Date",
+        colResSource: "Source & Location / Lot",
+        colResQty: "Reserved · Released · Remaining",
+        colResStatus: "Status & Actions",
+        warehouseToggleLabel: "Manage Warehouses & Storage Locations",
+        warehouseCodeLabel: "Warehouse Code",
+        warehouseNameLabel: "Warehouse Name",
+        createWarehouseButton: "Add Warehouse",
+        warehouseSelectLabel: "Warehouse",
+        locationCodeLabel: "Location Code",
+        locationNameLabel: "Location Name",
+        zoneTypeLabel: "Location Zone",
+        defaultReceivingLabel: "Default receiving zone",
+        createLocationButton: "Save New Location",
+        createBusy: "Saving...",
+        warehouseCreatedMsg: "Created warehouse:",
+        locationCreatedMsg: "Created warehouse location:",
+        timelineTitle: "Append-Only Location, Quality & Valuation Timeline",
+        emptyTimeline: "No stock movement lines recorded for this item yet.",
+        colTimelineRef: "Movement Ref & Date",
+        colTimelineLocationLot: "Location, Zone & Lot",
+        colTimelineDelta: "Status & Quantity Delta",
+        colTimelineCost: "Unit Cost · Valuation Delta",
+      },
+      errors: {
+        od10_insufficient_available_stock:
+          "OD-10 policy rejected operation: insufficient unreserved unrestricted stock available.",
+        od10_negative_stock_forbidden:
+          "OD-10 policy forbids negative stock on any location balance or entity position.",
+        od10_restricted_stock_not_reservable:
+          "Only unrestricted stock may be reserved for fulfillment.",
+        pending_receipt_inspection_location_locked:
+          "Quarantine stock is locked by an open receipt inspection; use Quality Disposition to release or block.",
+        location_zone_mismatch:
+          "Target location zone is incompatible with the selected stock status.",
+        disposition_exceeds_pending_quantity:
+          "Release plus block quantity exceeds the inspection's remaining pending quantity.",
+        duplicate_warehouse_code: "Warehouse code already exists in this legal entity.",
+        duplicate_location_code: "Location code already exists in this legal entity.",
+        duplicate_disposition_idempotency_conflict:
+          "Disposition idempotency key already belongs to a different payload.",
+        duplicate_reservation_idempotency_conflict:
+          "Reservation idempotency key already belongs to a different payload.",
+        duplicate_movement_idempotency_conflict:
+          "Movement idempotency key already belongs to a different payload.",
+        insufficient_entity_permission:
+          "Your active role grants do not permit performing this action in this legal entity.",
+        period_closed:
+          "The fiscal period for this posting date is CLOSED.",
+      },
     },
   },
 };

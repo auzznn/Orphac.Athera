@@ -209,6 +209,7 @@ vi.mock("@/lib/api/client", () => ({
   recordGoodsReceiptDockCheck: vi.fn(),
   previewReceiptAcceptance: vi.fn(),
   acceptGoodsReceiptValued: vi.fn(),
+  listInventoryWarehouses: async () => ({ warehouses: [], locations: [] }),
 }));
 
 describe("S06 Dock Custody & Receiving Gate 1 Math + UI", () => {

@@ -719,6 +719,13 @@ public static class ReceivingEndpoints
             a.GlJournalId is { } jid && journalNumbers.TryGetValue(jid, out var jn) ? jn : null,
             a.CreatedAtUtc)).ToList();
 
+        var lineItemIds = lines.Select(l => l.ItemId).Distinct().ToList();
+        var itemLotPolicies = lineItemIds.Count == 0
+            ? new Dictionary<Guid, string>()
+            : await db.Items.AsNoTracking()
+                .Where(i => i.TenantId == tenantId && lineItemIds.Contains(i.ItemId))
+                .ToDictionaryAsync(i => i.ItemId, i => i.LotTrackingPolicy, ct);
+
         var lineDtos = lines.Select(l =>
         {
             var approvedCap = approvedLineQtyByKey.GetValueOrDefault(l.LineageLineKey, 0m);
@@ -758,7 +765,8 @@ public static class ReceivingEndpoints
                 l.DiscrepancyNotes,
                 l.ConditionEvidenceRef,
                 maxCapForLine,
-                l.UpdatedAtUtc);
+                l.UpdatedAtUtc,
+                itemLotPolicies.GetValueOrDefault(l.ItemId, LotTrackingPolicies.None));
         }).ToList();
 
         var dockCheckDtos = dockChecks.Select(d => new DockCheckHistoryDto(

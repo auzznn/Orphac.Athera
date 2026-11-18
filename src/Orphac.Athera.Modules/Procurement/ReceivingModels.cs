@@ -849,7 +849,18 @@ public static class ValuedAcceptanceHash
         Guid goodsReceiptId,
         DateOnly acceptanceDate,
         string stockStatus,
-        IEnumerable<(Guid GoodsReceiptLineId, decimal AcceptedBaseQty)> lines)
+        IEnumerable<(Guid GoodsReceiptLineId, decimal AcceptedBaseQty)> lines) =>
+        ComputePayloadHash(
+            goodsReceiptId,
+            acceptanceDate,
+            stockStatus,
+            lines.Select(x => (x.GoodsReceiptLineId, x.AcceptedBaseQty, (Guid?)null, (string?)null)));
+
+    public static string ComputePayloadHash(
+        Guid goodsReceiptId,
+        DateOnly acceptanceDate,
+        string stockStatus,
+        IEnumerable<(Guid GoodsReceiptLineId, decimal AcceptedBaseQty, Guid? DestinationLocationId, string? LotNumber)> lines)
     {
         var sb = new StringBuilder();
         sb.Append(goodsReceiptId.ToString("D")).Append('|')
@@ -859,8 +870,14 @@ public static class ValuedAcceptanceHash
         foreach (var l in lines.OrderBy(x => x.GoodsReceiptLineId))
         {
             sb.Append(l.GoodsReceiptLineId.ToString("D")).Append('|')
-              .Append(decimal.Round(l.AcceptedBaseQty, 6, MidpointRounding.AwayFromZero).ToString("0.000000", CultureInfo.InvariantCulture))
-              .AppendLine();
+              .Append(decimal.Round(l.AcceptedBaseQty, 6, MidpointRounding.AwayFromZero).ToString("0.000000", CultureInfo.InvariantCulture));
+            if (l.DestinationLocationId.HasValue || !string.IsNullOrWhiteSpace(l.LotNumber))
+            {
+                sb.Append('|').Append(l.DestinationLocationId?.ToString("D") ?? "DEFAULT")
+                  .Append('|').Append(string.IsNullOrWhiteSpace(l.LotNumber) ? "NOLOT" : l.LotNumber.Trim().ToUpperInvariant());
+            }
+
+            sb.AppendLine();
         }
 
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(sb.ToString()))).ToLowerInvariant();

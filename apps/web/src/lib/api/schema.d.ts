@@ -948,6 +948,134 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/warehouses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListInventoryWarehouses"];
+        put?: never;
+        post: operations["CreateWarehouse"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/warehouses/{warehouseId}/locations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateWarehouseLocation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/items/{itemId}/detail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetItemStockDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/transfers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TransferInventoryLocation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/inspections/{inspectionId}/dispositions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RecordInspectionDisposition"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/status-transitions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TransitionInventoryStockStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/reservations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateStockReservation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/reservations/{reservationId}/release": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReleaseStockReservation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -997,6 +1125,11 @@ export interface components {
             /** Format: double */
             projectedMovingAverageCost: number | string;
             blockingReason: null | string;
+            lotTrackingPolicy: string;
+            lotNumber: null | string;
+            /** Format: uuid */
+            destinationLocationId: null | string;
+            destinationLocationCode: null | string;
         };
         AcceptInvitationRequest: {
             token: string;
@@ -1015,6 +1148,14 @@ export interface components {
             goodsReceiptLineId: string;
             /** Format: double */
             acceptedBaseQuantity: number | string;
+            /** Format: uuid */
+            destinationLocationId?: null | string;
+            lotNumber?: null | string;
+            supplierLotReference?: null | string;
+            /** Format: date */
+            manufacturedDate?: null | string;
+            /** Format: date */
+            expiryDate?: null | string;
         };
         AcceptReceiptRequest: {
             idempotencyKey: string;
@@ -1226,6 +1367,7 @@ export interface components {
             /** Format: uuid */
             defaultSalesUomId: null | string;
             entityScopeMode: string;
+            lotTrackingPolicy?: null | string;
         };
         CreatePartnerContactRequest: {
             contactName: string;
@@ -1263,6 +1405,26 @@ export interface components {
             notes: null | string;
             lines: components["schemas"]["PoLineInputDto"][];
         };
+        CreateStockReservationRequest: {
+            /** Format: uuid */
+            itemId: string;
+            /** Format: uuid */
+            locationId: string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            sourceType: string;
+            /** Format: uuid */
+            sourceDocumentId: null | string;
+            sourceDocumentNumber: string;
+            /** Format: uuid */
+            sourceLineId: null | string;
+            /** Format: double */
+            quantity: number | string;
+            /** Format: date-time */
+            expiresAtUtc: null | string;
+            idempotencyKey: string;
+            notes: null | string;
+        };
         CreateTaxCodeRequest: {
             code: string;
             name: string;
@@ -1290,6 +1452,16 @@ export interface components {
             name: string;
             /** Format: int32 */
             quantityPrecisionScale: number | string;
+        };
+        CreateWarehouseLocationRequest: {
+            locationCode: string;
+            name: string;
+            zoneType: string;
+            isDefaultReceiving: boolean;
+        };
+        CreateWarehouseRequest: {
+            warehouseCode: string;
+            name: string;
         };
         CsrfTokenResponse: {
             headerName: string;
@@ -1652,6 +1824,7 @@ export interface components {
             maxApprovedReleaseCapBaseQty: number | string;
             /** Format: date-time */
             updatedAtUtc: string;
+            itemLotTrackingPolicy?: null | string;
         };
         GoodsReceiptLinkedAcceptanceDto: {
             /** Format: uuid */
@@ -1734,10 +1907,54 @@ export interface components {
             /** Format: date-time */
             timestampUtc: string;
         };
+        InspectionDispositionDto: {
+            /** Format: uuid */
+            inspectionDispositionId: string;
+            /** Format: uuid */
+            receiptInspectionId: string;
+            /** Format: uuid */
+            stockMovementId: string;
+            movementNumber: string;
+            /** Format: date */
+            dispositionDate: string;
+            /** Format: double */
+            releasedBaseQuantity: number | string;
+            /** Format: uuid */
+            targetReleaseLocationId: null | string;
+            targetReleaseLocationCode: null | string;
+            /** Format: double */
+            blockedBaseQuantity: number | string;
+            /** Format: uuid */
+            targetBlockLocationId: null | string;
+            targetBlockLocationCode: null | string;
+            reasonCode: string;
+            evidenceReference: null | string;
+            notes: null | string;
+            decidedByEmail: string;
+            /** Format: date-time */
+            decidedAtUtc: string;
+        };
+        InspectionDispositionOutcomeDto: {
+            inspection: components["schemas"]["ReceiptInspectionSummaryDto"];
+            disposition: components["schemas"]["InspectionDispositionDto"];
+            movementNumber: string;
+            wasIdempotentReplay: boolean;
+        };
+        InventoryMovementResultDto: {
+            /** Format: uuid */
+            stockMovementId: string;
+            movementNumber: string;
+            movementType: string;
+            /** Format: date */
+            postingDate: string;
+            wasIdempotentReplay: boolean;
+        };
         InventoryOverviewResponse: {
             positions: components["schemas"]["StockPositionOverviewDto"][];
             recentMovements: components["schemas"]["StockMovementSummaryDto"][];
             openAccruals: components["schemas"]["ReceiptAccrualOverviewDto"][];
+            locations: components["schemas"]["WarehouseLocationDto"][];
+            inspections: components["schemas"]["ReceiptInspectionSummaryDto"][];
             /** Format: int32 */
             totalStockedItemsWithBalance: number | string;
             /** Format: double */
@@ -1747,6 +1964,7 @@ export interface components {
             /** Format: int32 */
             restrictedStockItemCount: number | string;
             od04Notice: string;
+            od10Notice: string;
         };
         InvitationDto: {
             /** Format: uuid */
@@ -1769,6 +1987,7 @@ export interface components {
             itemCode: string;
             name: string;
             itemKind: string;
+            lotTrackingPolicy: string;
             /** Format: uuid */
             baseUomId: string;
             baseUomCode: string;
@@ -1814,6 +2033,7 @@ export interface components {
             itemCode: string;
             name: string;
             itemKind: string;
+            lotTrackingPolicy: string;
             /** Format: uuid */
             baseUomId: string;
             baseUomCode: string;
@@ -1835,6 +2055,81 @@ export interface components {
             updatedAtUtc: string;
             /** Format: int64 */
             version: number | string;
+        };
+        ItemMovementTraceDto: {
+            /** Format: uuid */
+            stockMovementId: string;
+            /** Format: uuid */
+            movementLineId: string;
+            movementNumber: string;
+            movementType: string;
+            /** Format: date */
+            postingDate: string;
+            sourceDocumentType: string;
+            sourceDocumentNumber: string;
+            locationCode: null | string;
+            zoneType: null | string;
+            lotNumber: null | string;
+            resultingStockStatus: string;
+            /** Format: double */
+            baseQuantityDelta: number | string;
+            /** Format: double */
+            unitValuationCost: number | string;
+            /** Format: double */
+            lineValuationAmount: number | string;
+            notes: null | string;
+            createdByEmail: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+        };
+        ItemReconciliationDto: {
+            isReconciled: boolean;
+            /** Format: double */
+            positionOnHandTotal: number | string;
+            /** Format: double */
+            positionUnrestricted: number | string;
+            /** Format: double */
+            positionQualityInspection: number | string;
+            /** Format: double */
+            positionBlocked: number | string;
+            /** Format: double */
+            positionReserved: number | string;
+            /** Format: double */
+            positionAvailable: number | string;
+            /** Format: double */
+            locationBalancesOnHandTotal: number | string;
+            /** Format: double */
+            locationBalancesUnrestricted: number | string;
+            /** Format: double */
+            locationBalancesQualityInspection: number | string;
+            /** Format: double */
+            locationBalancesBlocked: number | string;
+            /** Format: double */
+            locationBalancesReserved: number | string;
+            /** Format: double */
+            movementsNetTotal: number | string;
+            /** Format: double */
+            activeReservationsRemaining: number | string;
+        };
+        ItemStockDetailResponse: {
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            lotTrackingPolicy: string;
+            currencyCode: string;
+            poolStatus: string;
+            /** Format: double */
+            carryingValueAmount: number | string;
+            /** Format: double */
+            movingAverageUnitCost: number | string;
+            reconciliation: components["schemas"]["ItemReconciliationDto"];
+            locationBalances: components["schemas"]["StockLocationBalanceDto"][];
+            lots: components["schemas"]["StockLotSummaryDto"][];
+            inspections: components["schemas"]["ReceiptInspectionSummaryDto"][];
+            reservations: components["schemas"]["StockReservationDto"][];
+            movementTimeline: components["schemas"]["ItemMovementTraceDto"][];
         };
         ItemUomDto: {
             /** Format: uuid */
@@ -2532,6 +2827,44 @@ export interface components {
             /** Format: date-time */
             createdAtUtc: string;
         };
+        ReceiptInspectionSummaryDto: {
+            /** Format: uuid */
+            receiptInspectionId: string;
+            inspectionNumber: string;
+            /** Format: uuid */
+            valuedAcceptanceId: string;
+            acceptanceNumber: string;
+            /** Format: uuid */
+            goodsReceiptId: string;
+            receiptNumber: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: uuid */
+            warehouseId: string;
+            /** Format: uuid */
+            quarantineLocationId: string;
+            quarantineLocationCode: string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            lotNumber: null | string;
+            /** Format: double */
+            inspectedTotalBaseQuantity: number | string;
+            /** Format: double */
+            pendingBaseQuantity: number | string;
+            /** Format: double */
+            releasedBaseQuantity: number | string;
+            /** Format: double */
+            blockedBaseQuantity: number | string;
+            status: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            dispositions: components["schemas"]["InspectionDispositionDto"][];
+        };
         RecordDockCheckRequest: {
             idempotencyKey: string;
             /** Format: double */
@@ -2559,10 +2892,73 @@ export interface components {
             notes: null | string;
             lines: components["schemas"]["ArrivalLineRequest"][];
         };
+        RecordInspectionDispositionRequest: {
+            /** Format: date */
+            dispositionDate: string;
+            /** Format: double */
+            releasedBaseQuantity: number | string;
+            /** Format: uuid */
+            targetReleaseLocationId: null | string;
+            /** Format: double */
+            blockedBaseQuantity: number | string;
+            /** Format: uuid */
+            targetBlockLocationId: null | string;
+            reasonCode: string;
+            evidenceReference: null | string;
+            notes: null | string;
+            idempotencyKey: string;
+        };
+        ReleaseStockReservationRequest: {
+            /** Format: double */
+            releaseBaseQuantity: null | number | string;
+        };
         ReverseJournalRequest: {
             /** Format: date */
             reversalPostingDate: string;
             reason: string;
+        };
+        StockLocationBalanceDto: {
+            /** Format: uuid */
+            stockLocationBalanceId: string;
+            /** Format: uuid */
+            warehouseId: string;
+            warehouseCode: string;
+            /** Format: uuid */
+            locationId: string;
+            locationCode: string;
+            locationName: string;
+            zoneType: string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            lotNumber: null | string;
+            /** Format: date */
+            lotExpiryDate: null | string;
+            stockStatus: string;
+            /** Format: double */
+            onHandBaseQuantity: number | string;
+            /** Format: double */
+            reservedBaseQuantity: number | string;
+            /** Format: double */
+            availableBaseQuantity: number | string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+        };
+        StockLotSummaryDto: {
+            /** Format: uuid */
+            stockLotId: string;
+            /** Format: uuid */
+            itemId: string;
+            lotNumber: string;
+            supplierLotReference: null | string;
+            /** Format: date */
+            manufacturedDate: null | string;
+            /** Format: date */
+            expiryDate: null | string;
+            /** Format: uuid */
+            sourceValuedAcceptanceId: null | string;
+            sourceAcceptanceNumber: null | string;
+            /** Format: date-time */
+            createdAtUtc: string;
         };
         StockMovementSummaryDto: {
             /** Format: uuid */
@@ -2589,6 +2985,7 @@ export interface components {
             itemId: string;
             itemCode: string;
             itemName: string;
+            lotTrackingPolicy: string;
             /** Format: uuid */
             baseUomId: string;
             baseUomCode: string;
@@ -2613,8 +3010,77 @@ export interface components {
             poolStatus: string;
             /** Format: int64 */
             lastEntrySequence: number | string;
+            /** Format: int32 */
+            locationCount: number | string;
+            /** Format: int32 */
+            activeLotCount: number | string;
+            /** Format: int32 */
+            pendingInspectionCount: number | string;
             /** Format: date-time */
             updatedAtUtc: string;
+        };
+        StockReservationDto: {
+            /** Format: uuid */
+            stockReservationId: string;
+            reservationNumber: string;
+            /** Format: uuid */
+            stockLocationBalanceId: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            /** Format: uuid */
+            warehouseId: string;
+            /** Format: uuid */
+            locationId: string;
+            locationCode: string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            lotNumber: null | string;
+            sourceType: string;
+            /** Format: uuid */
+            sourceDocumentId: null | string;
+            sourceDocumentNumber: string;
+            /** Format: double */
+            reservedBaseQuantity: number | string;
+            /** Format: double */
+            consumedBaseQuantity: number | string;
+            /** Format: double */
+            releasedBaseQuantity: number | string;
+            /** Format: double */
+            remainingReservedBaseQuantity: number | string;
+            status: string;
+            notes: null | string;
+            /** Format: date-time */
+            expiresAtUtc: null | string;
+            createdByEmail: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+        };
+        StockReservationOutcomeDto: {
+            reservation: components["schemas"]["StockReservationDto"];
+            wasIdempotentReplay: boolean;
+        };
+        StockStatusTransitionRequest: {
+            /** Format: uuid */
+            itemId: string;
+            /** Format: uuid */
+            fromLocationId: string;
+            /** Format: uuid */
+            toLocationId: null | string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            fromStatus: string;
+            toStatus: string;
+            /** Format: double */
+            quantity: number | string;
+            /** Format: date */
+            postingDate: string;
+            reasonCode: string;
+            evidenceReference: null | string;
+            notes: null | string;
+            idempotencyKey: string;
         };
         SubmitPoRevisionRequest: {
             poNumberOverride: null | string;
@@ -2666,6 +3132,23 @@ export interface components {
             name: string;
             status: string;
         };
+        TransferStockLocationRequest: {
+            /** Format: uuid */
+            itemId: string;
+            /** Format: uuid */
+            fromLocationId: string;
+            /** Format: uuid */
+            toLocationId: string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            stockStatus: string;
+            /** Format: double */
+            quantity: number | string;
+            /** Format: date */
+            postingDate: string;
+            idempotencyKey: string;
+            notes: null | string;
+        };
         UnitOfMeasureDto: {
             /** Format: uuid */
             uomId: string;
@@ -2704,6 +3187,7 @@ export interface components {
             status: null | string;
             /** Format: int64 */
             expectedVersion: number | string;
+            lotTrackingPolicy?: null | string;
         };
         UpdatePartnerRequest: {
             legalName: string;
@@ -2895,6 +3379,35 @@ export interface components {
             glJournalId: null | string;
             glJournalNumber: null | string;
             acceptedByEmail: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+        };
+        WarehouseDto: {
+            /** Format: uuid */
+            warehouseId: string;
+            warehouseCode: string;
+            name: string;
+            isDefault: boolean;
+            status: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+        };
+        WarehouseListResponse: {
+            warehouses: components["schemas"]["WarehouseDto"][];
+            locations: components["schemas"]["WarehouseLocationDto"][];
+        };
+        WarehouseLocationDto: {
+            /** Format: uuid */
+            locationId: string;
+            /** Format: uuid */
+            warehouseId: string;
+            warehouseCode: string;
+            warehouseName: string;
+            locationCode: string;
+            name: string;
+            zoneType: string;
+            isDefaultReceiving: boolean;
+            status: string;
             /** Format: date-time */
             createdAtUtc: string;
         };
@@ -6776,6 +7289,650 @@ export interface operations {
             };
             /** @description Not Found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListInventoryWarehouses: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WarehouseListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateWarehouse: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWarehouseRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WarehouseDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateWarehouseLocation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                warehouseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWarehouseLocationRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WarehouseLocationDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetItemStockDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                itemId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ItemStockDetailResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TransferInventoryLocation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransferStockLocationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryMovementResultDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryMovementResultDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    RecordInspectionDisposition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                inspectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecordInspectionDispositionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InspectionDispositionOutcomeDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InspectionDispositionOutcomeDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    TransitionInventoryStockStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StockStatusTransitionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryMovementResultDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InventoryMovementResultDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateStockReservation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateStockReservationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockReservationOutcomeDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockReservationOutcomeDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ReleaseStockReservation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                reservationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReleaseStockReservationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StockReservationOutcomeDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };

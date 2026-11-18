@@ -7,7 +7,9 @@ import {
   AlertCircle,
   ArrowLeft,
   ArrowRightLeft,
+  Building2,
   CheckCircle2,
+  ClipboardCheck,
   Clock,
   Eye,
   FileSpreadsheet,
@@ -17,16 +19,42 @@ import {
 } from "lucide-react";
 import {
   ApiProblemError,
+  createWarehouse,
+  createWarehouseLocation,
   EntityWorkspaceDetailResponse,
   fetchEntityWorkspaceDetail,
   fetchInventoryOverview,
   fetchItemValuationLedger,
+  getItemStockDetail,
   InventoryOverviewResponse,
+  ItemStockDetailResponse,
   ItemValuationLedgerResponse,
+  listInventoryWarehouses,
+  WarehouseDto,
 } from "@/lib/api/client";
+import {
+  InspectionStatusBadge,
+  InventoryStockDetailSheet,
+} from "@/components/inventory/InventoryStockDetailSheet";
 import { formatIdr, formatUnitCostIdr, formatJakartaDateTime } from "@/lib/i18n/messages";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import { formatQuantityValue, parseScaledBigInt } from "@/lib/receivingMath";
+
+const WAREHOUSE_ZONE_TYPES = ["STORAGE", "QUARANTINE", "BLOCKED_HOLD", "DISPATCH", "RECEIVING_STAGING"] as const;
+
+async function fetchItemLedgerAndDetail(
+  tenantId: string,
+  entityId: string,
+  itemId: string,
+): Promise<{ ledger: ItemValuationLedgerResponse; stockDetail: ItemStockDetailResponse | null }> {
+  const [ledger, stockDetail] = await Promise.all([
+    fetchItemValuationLedger(tenantId, entityId, itemId),
+    Promise.resolve(
+      typeof getItemStockDetail === "function" ? getItemStockDetail(tenantId, entityId, itemId) : null,
+    ).catch(() => null),
+  ]);
+  return { ledger, stockDetail };
+}
 
 function PoolStatusBadge({ status, label }: { status: string; label: string }) {
   if (status === "ACTIVE") {
@@ -133,7 +161,7 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
   const [loading, setLoading] = useState(true);
   const [retryNonce, setRetryNonce] = useState(0);
 
-  const [activeTab, setActiveTab] = useState<"positions" | "accruals" | "movements">("positions");
+  const [activeTab, setActiveTab] = useState<"positions" | "inspections" | "accruals" | "movements">("positions");
   const [searchFilter, setSearchFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [refreshing, setRefreshing] = useState(false);
@@ -141,6 +169,21 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [ledgerData, setLedgerData] = useState<ItemValuationLedgerResponse | null>(null);
   const [ledgerLoading, setLedgerLoading] = useState(false);
+  const [stockDetail, setStockDetail] = useState<ItemStockDetailResponse | null>(null);
+  const [stockDetailLoading, setStockDetailLoading] = useState(false);
+
+  const [warehouses, setWarehouses] = useState<WarehouseDto[]>([]);
+  const [whPanelOpen, setWhPanelOpen] = useState(false);
+  const [whCode, setWhCode] = useState("");
+  const [whName, setWhName] = useState("");
+  const [locWhId, setLocWhId] = useState("");
+  const [locCode, setLocCode] = useState("");
+  const [locName, setLocName] = useState("");
+  const [locZone, setLocZone] = useState("STORAGE");
+  const [locDefault, setLocDefault] = useState(false);
+  const [whBusy, setWhBusy] = useState(false);
+  const [whFeedback, setWhFeedback] = useState<{ kind: "warehouse" | "location"; code: string } | null>(null);
+  const [whError, setWhError] = useState<{ errorCode?: string; fallback?: string } | null>(null);
 
   useEffect(() => {
     routerRef.current = router;
@@ -152,11 +195,18 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
     Promise.all([
       fetchEntityWorkspaceDetail(tenantId, entityId),
       fetchInventoryOverview(tenantId, entityId),
+      Promise.resolve(
+        typeof listInventoryWarehouses === "function" ? listInventoryWarehouses(tenantId, entityId) : null,
+      ).catch(() => null),
     ])
-      .then(([ws, ov]) => {
+      .then(([ws, ov, whData]) => {
         if (!active) return;
         setWorkspace(ws);
         setOverview(ov);
+        if (whData?.warehouses) {
+          setWarehouses(whData.warehouses);
+          if (whData.warehouses[0]) setLocWhId(whData.warehouses[0].warehouseId);
+        }
         setProblem(null);
         setLoading(false);
 
@@ -164,16 +214,21 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
         if (firstItem) {
           setSelectedItemId(firstItem);
           setLedgerLoading(true);
-          fetchItemValuationLedger(tenantId, entityId, firstItem)
-            .then((ledger) => {
+          setStockDetailLoading(true);
+          fetchItemLedgerAndDetail(tenantId, entityId, firstItem)
+            .then(({ ledger, stockDetail: nextStockDetail }) => {
               if (!active) return;
               setLedgerData(ledger);
+              setStockDetail(nextStockDetail);
             })
             .catch(() => {
               // Non-fatal detail fetch; user can retry on item click.
             })
             .finally(() => {
-              if (active) setLedgerLoading(false);
+              if (active) {
+                setLedgerLoading(false);
+                setStockDetailLoading(false);
+              }
             });
         }
       })
@@ -199,21 +254,36 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
       try {
         const s = opts?.search !== undefined ? opts.search : searchFilter;
         const st = opts?.stockStatus !== undefined ? opts.stockStatus : statusFilter;
-        const nextOv = await fetchInventoryOverview(tenantId, entityId, {
-          search: s || undefined,
-          stockStatus: st || undefined,
-        });
+        const [nextOv, whData] = await Promise.all([
+          fetchInventoryOverview(tenantId, entityId, {
+            search: s || undefined,
+            stockStatus: st || undefined,
+          }),
+          Promise.resolve(
+            typeof listInventoryWarehouses === "function" ? listInventoryWarehouses(tenantId, entityId) : null,
+          ).catch(() => null),
+        ]);
         setOverview(nextOv);
+        if (whData?.warehouses) {
+          setWarehouses(whData.warehouses);
+          if (!locWhId && whData.warehouses[0]) setLocWhId(whData.warehouses[0].warehouseId);
+        }
         const targetItem =
           selectedItemId && nextOv.positions.some((p) => p.itemId === selectedItemId)
             ? selectedItemId
             : nextOv.positions[0]?.itemId ?? null;
         setSelectedItemId(targetItem);
         if (targetItem) {
-          const ledger = await fetchItemValuationLedger(tenantId, entityId, targetItem);
+          const { ledger, stockDetail: nextStockDetail } = await fetchItemLedgerAndDetail(
+            tenantId,
+            entityId,
+            targetItem,
+          );
           setLedgerData(ledger);
+          setStockDetail(nextStockDetail);
         } else {
           setLedgerData(null);
+          setStockDetail(null);
         }
       } catch (err) {
         const apiErr = err as ApiProblemError;
@@ -226,15 +296,21 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
         setRefreshing(false);
       }
     },
-    [tenantId, entityId, searchFilter, statusFilter, selectedItemId],
+    [tenantId, entityId, searchFilter, statusFilter, selectedItemId, locWhId],
   );
 
   const handleInspectItem = async (itemId: string) => {
     setSelectedItemId(itemId);
     setLedgerLoading(true);
+    setStockDetailLoading(true);
     try {
-      const ledger = await fetchItemValuationLedger(tenantId, entityId, itemId);
+      const { ledger, stockDetail: nextStockDetail } = await fetchItemLedgerAndDetail(
+        tenantId,
+        entityId,
+        itemId,
+      );
       setLedgerData(ledger);
+      setStockDetail(nextStockDetail);
     } catch (err) {
       const apiErr = err as ApiProblemError;
       if (apiErr.status === 401) {
@@ -244,6 +320,57 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
       setProblem(apiErr);
     } finally {
       setLedgerLoading(false);
+      setStockDetailLoading(false);
+    }
+  };
+
+  const handleCreateWarehouse = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!whCode.trim() || !whName.trim()) return;
+    setWhBusy(true);
+    setWhError(null);
+    setWhFeedback(null);
+    try {
+      const created = await createWarehouse(tenantId, entityId, {
+        warehouseCode: whCode.trim(),
+        name: whName.trim(),
+      });
+      setWhCode("");
+      setWhName("");
+      setWhFeedback({ kind: "warehouse", code: created.warehouseCode });
+      await handleRefresh();
+    } catch (err) {
+      const apiErr = err as ApiProblemError;
+      setWhError({ errorCode: apiErr.errorCode, fallback: apiErr.detail || apiErr.title });
+    } finally {
+      setWhBusy(false);
+    }
+  };
+
+  const handleCreateLocation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const targetWh = locWhId || warehouses[0]?.warehouseId;
+    if (!targetWh || !locCode.trim() || !locName.trim()) return;
+    setWhBusy(true);
+    setWhError(null);
+    setWhFeedback(null);
+    try {
+      const created = await createWarehouseLocation(tenantId, entityId, targetWh, {
+        locationCode: locCode.trim(),
+        name: locName.trim(),
+        zoneType: locZone,
+        isDefaultReceiving: locDefault,
+      });
+      setLocCode("");
+      setLocName("");
+      setLocDefault(false);
+      setWhFeedback({ kind: "location", code: created.locationCode });
+      await handleRefresh();
+    } catch (err) {
+      const apiErr = err as ApiProblemError;
+      setWhError({ errorCode: apiErr.errorCode, fallback: apiErr.detail || apiErr.title });
+    } finally {
+      setWhBusy(false);
     }
   };
 
@@ -265,6 +392,9 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
       (p) => p === "receiving.read" || p === "receiving.manage" || p === "receiving.accept",
     ),
   );
+  const canManageInventory = Boolean(workspace?.effectivePermissions.includes("inventory.manage"));
+  const canInspectQuality = Boolean(workspace?.effectivePermissions.includes("quality.inspect"));
+  const pendingInspectionCount = (overview?.inspections ?? []).filter((i) => i.status !== "COMPLETED").length;
 
   return (
     <div className="mx-auto max-w-5xl space-y-5">
@@ -312,14 +442,24 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
         </div>
       ) : null}
 
-      {/* OD-04 Safe Default Banner */}
-      <div className="flex items-start gap-2.5 rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-4 py-3 text-xs leading-5 text-[var(--text-secondary)]">
-        <ShieldCheck
-          className="mt-0.5 h-4 w-4 shrink-0 text-[var(--text-secondary)]"
-          strokeWidth={1.75}
-          aria-hidden="true"
-        />
-        <span>{t.inventory.od04PolicyBanner}</span>
+      {/* OD-04 & OD-10 Safe Default Policy Notices */}
+      <div className="grid grid-cols-1 divide-y divide-[var(--border-hairline)] overflow-hidden rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-xs leading-5 text-[var(--text-secondary)] md:grid-cols-2 md:divide-x md:divide-y-0">
+        <div className="flex items-start gap-2.5 px-4 py-3">
+          <ShieldCheck
+            className="mt-0.5 h-4 w-4 shrink-0 text-[var(--text-secondary)]"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+          <span>{t.inventory.od04PolicyBanner}</span>
+        </div>
+        <div className="flex items-start gap-2.5 px-4 py-3">
+          <ShieldCheck
+            className="mt-0.5 h-4 w-4 shrink-0 text-[var(--text-secondary)]"
+            strokeWidth={1.75}
+            aria-hidden="true"
+          />
+          <span>{t.inventory.od10PolicyBanner}</span>
+        </div>
       </div>
 
       {/* 4 KPI Summary Cards (Neutral #151412 counters) */}
@@ -404,6 +544,25 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
 
           <button
             type="button"
+            id="inv-tab-inspections"
+            role="tab"
+            aria-selected={activeTab === "inspections"}
+            onClick={() => setActiveTab("inspections")}
+            className={`inline-flex min-h-9 items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] px-3 text-xs font-semibold sm:text-sm ${
+              activeTab === "inspections"
+                ? "bg-[var(--accent-primary)] text-[var(--accent-primary-ink)]"
+                : "text-[var(--text-secondary)] hover:bg-[var(--bg-chrome)] hover:text-[var(--text-primary)]"
+            }`}
+          >
+            <ClipboardCheck className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+            <span>
+              {t.inventory.tabs.inspections}
+              {pendingInspectionCount > 0 ? ` (${String(pendingInspectionCount)})` : ""}
+            </span>
+          </button>
+
+          <button
+            type="button"
             id="inv-tab-accruals"
             role="tab"
             aria-selected={activeTab === "accruals"}
@@ -477,8 +636,187 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
             <RefreshCw className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
             <span>{t.inventory.refreshButton}</span>
           </button>
+
+          {canManageInventory ? (
+            <button
+              type="button"
+              id="inv-warehouse-toggle"
+              aria-expanded={whPanelOpen}
+              onClick={() => setWhPanelOpen((v) => !v)}
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-chrome)]"
+            >
+              <Building2 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+              <span>{t.inventory.detailSheet.warehouseToggleLabel}</span>
+            </button>
+          ) : null}
         </div>
       </div>
+
+      {canManageInventory && whPanelOpen ? (
+        <section
+          id="inv-warehouse-panel"
+          className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)]"
+        >
+          <div className="flex items-center gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-2.5">
+            <Building2 className="h-4 w-4 text-[var(--accent-primary)]" strokeWidth={1.75} aria-hidden="true" />
+            <h2 className="text-xs font-semibold text-[var(--text-primary)]">
+              {t.inventory.detailSheet.warehouseToggleLabel}
+            </h2>
+          </div>
+
+          {whError ? (
+            <div role="alert" className="flex items-start gap-2 border-b border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-4 py-2 text-xs text-[var(--status-danger-text)]">
+              <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+              <span>
+                {(whError.errorCode && t.inventory.errors[whError.errorCode]) ||
+                  whError.fallback ||
+                  t.inventory.loadErrorTitle}
+              </span>
+            </div>
+          ) : null}
+          {whFeedback ? (
+            <div role="status" className="flex items-start gap-2 border-b border-[var(--status-ok-border)] bg-[var(--status-ok-bg)] px-4 py-2 text-xs text-[var(--status-ok-text)]">
+              <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+              <span>
+                {whFeedback.kind === "warehouse"
+                  ? t.inventory.detailSheet.warehouseCreatedMsg
+                  : t.inventory.detailSheet.locationCreatedMsg}{" "}
+                {whFeedback.code}
+              </span>
+            </div>
+          ) : null}
+
+          <div className="grid grid-cols-1 divide-y divide-[var(--border-hairline)] p-4 lg:grid-cols-2 lg:divide-x lg:divide-y-0">
+            <form onSubmit={handleCreateWarehouse} className="space-y-3 pb-4 lg:pb-0 lg:pr-5">
+              <h3 className="text-xs font-semibold text-[var(--text-primary)]">
+                {t.inventory.detailSheet.createWarehouseButton}
+              </h3>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <label className="block space-y-1">
+                  <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                    {t.inventory.detailSheet.warehouseCodeLabel}
+                  </span>
+                  <input
+                    id="inv-wh-code"
+                    type="text"
+                    value={whCode}
+                    onChange={(e) => setWhCode(e.target.value)}
+                    placeholder="WH-EXT-01"
+                    className="font-code h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)]"
+                  />
+                </label>
+                <label className="block space-y-1">
+                  <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                    {t.inventory.detailSheet.warehouseNameLabel}
+                  </span>
+                  <input
+                    id="inv-wh-name"
+                    type="text"
+                    value={whName}
+                    onChange={(e) => setWhName(e.target.value)}
+                    className="h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)]"
+                  />
+                </label>
+              </div>
+              <button
+                type="submit"
+                id="inv-wh-submit"
+                disabled={whBusy}
+                className="inline-flex min-h-9 items-center rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-chrome)] disabled:opacity-60"
+              >
+                {whBusy ? t.inventory.detailSheet.createBusy : t.inventory.detailSheet.createWarehouseButton}
+              </button>
+            </form>
+
+            <form onSubmit={handleCreateLocation} className="space-y-3 pt-4 lg:pt-0 lg:pl-5">
+              <h3 className="text-xs font-semibold text-[var(--text-primary)]">
+                {t.inventory.detailSheet.createLocationButton}
+              </h3>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <label className="block space-y-1">
+                  <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                    {t.inventory.detailSheet.warehouseSelectLabel}
+                  </span>
+                  <select
+                    id="inv-loc-wh"
+                    value={locWhId || warehouses[0]?.warehouseId || ""}
+                    onChange={(e) => setLocWhId(e.target.value)}
+                    className="h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2 text-xs text-[var(--text-primary)]"
+                  >
+                    {warehouses.map((w) => (
+                      <option key={w.warehouseId} value={w.warehouseId}>
+                        {w.warehouseCode} — {w.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block space-y-1">
+                  <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                    {t.inventory.detailSheet.zoneTypeLabel}
+                  </span>
+                  <select
+                    id="inv-loc-zone"
+                    value={locZone}
+                    onChange={(e) => setLocZone(e.target.value)}
+                    className="h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2 text-xs text-[var(--text-primary)]"
+                  >
+                    {WAREHOUSE_ZONE_TYPES.map((zt) => (
+                      <option key={zt} value={zt}>
+                        {t.inventory.zoneTypeLabels[zt] ?? zt}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="block space-y-1">
+                  <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                    {t.inventory.detailSheet.locationCodeLabel}
+                  </span>
+                  <input
+                    id="inv-loc-code"
+                    type="text"
+                    value={locCode}
+                    onChange={(e) => setLocCode(e.target.value)}
+                    placeholder="LOC-RACK-C2"
+                    className="font-code h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)]"
+                  />
+                </label>
+                <label className="block space-y-1">
+                  <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                    {t.inventory.detailSheet.locationNameLabel}
+                  </span>
+                  <input
+                    id="inv-loc-name"
+                    type="text"
+                    value={locName}
+                    onChange={(e) => setLocName(e.target.value)}
+                    className="h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)]"
+                  />
+                </label>
+              </div>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="inline-flex items-center gap-2 text-xs text-[var(--text-secondary)]">
+                  <input
+                    id="inv-loc-default"
+                    type="checkbox"
+                    checked={locDefault}
+                    onChange={(e) => setLocDefault(e.target.checked)}
+                    className="h-4 w-4 rounded-[3px] border border-[var(--border-strong)] accent-[var(--accent-primary)]"
+                  />
+                  <span>{t.inventory.detailSheet.defaultReceivingLabel}</span>
+                </label>
+                <button
+                  type="submit"
+                  id="inv-loc-submit"
+                  disabled={whBusy || warehouses.length === 0}
+                  className="inline-flex min-h-9 items-center rounded-[var(--radius-sm)] bg-[var(--accent-primary)] px-3 text-xs font-semibold text-[var(--accent-primary-ink)] hover:bg-[var(--accent-primary-hover)] disabled:opacity-60"
+                >
+                  {whBusy ? t.inventory.detailSheet.createBusy : t.inventory.detailSheet.createLocationButton}
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+      ) : null}
 
       {/* TAB 1: POSITIONS & VALUATION LEDGER */}
       {activeTab === "positions" ? (
@@ -548,6 +886,23 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
                               <div className="text-[var(--text-secondary)]">
                                 {pos.itemName} ({pos.baseUomCode})
                               </div>
+                              {pos.lotTrackingPolicy !== "NONE" || Number(pos.pendingInspectionCount) > 0 ? (
+                                <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-[11px]">
+                                  {pos.lotTrackingPolicy !== "NONE" ? (
+                                    <span className="rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-1.5 py-0.5 text-[var(--text-secondary)]">
+                                      {t.inventory.lotPolicyLabels[pos.lotTrackingPolicy] ?? pos.lotTrackingPolicy}
+                                    </span>
+                                  ) : null}
+                                  {Number(pos.pendingInspectionCount) > 0 ? (
+                                    <span className="inline-flex items-center gap-1 rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-1.5 py-0.5 font-medium text-[var(--status-warn-text)]">
+                                      <Clock className="h-3 w-3 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                                      <span>
+                                        {t.inventory.inspectionsTab.pendingPrefix}: {String(pos.pendingInspectionCount)}
+                                      </span>
+                                    </span>
+                                  ) : null}
+                                </div>
+                              ) : null}
                             </div>
                           </td>
 
@@ -654,6 +1009,21 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
               </div>
             )}
           </section>
+
+          <InventoryStockDetailSheet
+            key={stockDetail?.itemId ?? "none"}
+            tenantId={tenantId}
+            entityId={entityId}
+            detail={stockDetail}
+            detailLoading={stockDetailLoading}
+            locations={overview?.locations ?? []}
+            canManageInventory={canManageInventory}
+            canInspectQuality={canInspectQuality}
+            onAuthExpired={() => routerRef.current.replace("/login")}
+            onOperationCompleted={async () => {
+              await handleRefresh();
+            }}
+          />
 
           {/* Item Sequential Moving-Average Ledger Sheet */}
           <section
@@ -793,7 +1163,94 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
         </div>
       ) : null}
 
-      {/* TAB 2: OPEN GRNI ACCRUALS */}
+      {/* TAB 2: QUALITY INSPECTIONS */}
+      {activeTab === "inspections" ? (
+        <section
+          id="inv-inspections-panel"
+          className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)]"
+        >
+          <div className="flex items-center gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-2.5">
+            <ClipboardCheck className="h-4 w-4 text-[var(--accent-primary)]" strokeWidth={1.75} aria-hidden="true" />
+            <h2 className="text-sm font-semibold text-[var(--text-primary)]">
+              {t.inventory.inspectionsTab.cardTitle}
+            </h2>
+          </div>
+
+          {!overview || overview.inspections.length === 0 ? (
+            <div className="p-8 text-center">
+              <h3 className="text-sm font-semibold text-[var(--text-primary)]">
+                {t.inventory.inspectionsTab.emptyTitle}
+              </h3>
+              <p className="mx-auto mt-1 max-w-lg text-xs text-[var(--text-secondary)]">
+                {t.inventory.inspectionsTab.emptyBody}
+              </p>
+            </div>
+          ) : (
+            <div className="md:overflow-x-auto">
+              <table className="w-full border-collapse text-left text-xs">
+                <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] font-semibold text-[var(--text-secondary)] md:table-header-group">
+                  <tr>
+                    <th scope="col" className="py-2.5 md:pl-3 md:pr-2.5">{t.inventory.inspectionsTab.colInspectionRef}</th>
+                    <th scope="col" className="py-2.5 md:px-2.5">{t.inventory.inspectionsTab.colSourceLot}</th>
+                    <th scope="col" className="py-2.5 md:px-2.5 text-right">{t.inventory.inspectionsTab.colQuantities}</th>
+                    <th scope="col" className="py-2.5 md:pl-2.5 md:pr-3 text-right">{t.inventory.inspectionsTab.colStatusAction}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[var(--border-hairline)]">
+                  {overview.inspections.map((insp) => (
+                    <tr key={insp.receiptInspectionId} className="block p-3 md:table-row md:p-0">
+                      <td className="py-1 md:table-cell md:py-2.5 md:pl-3 md:pr-2.5">
+                        <div className="font-code font-bold text-[var(--text-primary)]">{insp.inspectionNumber}</div>
+                        <div className="font-code text-[11px] text-[var(--text-secondary)]">
+                          {insp.acceptanceNumber} · {insp.receiptNumber}
+                        </div>
+                      </td>
+                      <td className="py-1 md:table-cell md:py-2.5 md:px-2.5">
+                        <div className="font-code font-semibold text-[var(--text-primary)]">
+                          {insp.itemCode} — {insp.itemName}
+                        </div>
+                        <div className="font-code text-[11px] text-[var(--text-secondary)]">
+                          {insp.quarantineLocationCode}{insp.lotNumber ? ` · ${insp.lotNumber}` : ""}
+                        </div>
+                      </td>
+                      <td className="py-1 md:table-cell md:py-2.5 md:px-2.5 md:text-right">
+                        <div className="font-code font-semibold tabular-nums text-[var(--text-primary)]">
+                          {formatQuantityValue(insp.pendingBaseQuantity, locale)} /{" "}
+                          {formatQuantityValue(insp.releasedBaseQuantity, locale)} /{" "}
+                          {formatQuantityValue(insp.blockedBaseQuantity, locale)} {insp.baseUomCode}
+                        </div>
+                        <div className="text-[11px] text-[var(--text-secondary)]">
+                          {t.inventory.inspectionsTab.pendingPrefix} / {t.inventory.inspectionsTab.releasedPrefix} / {t.inventory.inspectionsTab.blockedPrefix}
+                        </div>
+                      </td>
+                      <td className="py-1 md:table-cell md:py-2.5 md:pl-2.5 md:pr-3 md:text-right">
+                        <div className="flex flex-wrap items-center gap-2 md:justify-end">
+                          <InspectionStatusBadge
+                            status={insp.status}
+                            label={t.inventory.inspectionStatusLabels[insp.status] ?? insp.status}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setActiveTab("positions");
+                              void handleInspectItem(insp.itemId);
+                            }}
+                            className="inline-flex min-h-9 items-center rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-chrome)]"
+                          >
+                            {t.inventory.inspectionsTab.openItemButton}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      ) : null}
+
+      {/* TAB 3: OPEN GRNI ACCRUALS */}
       {activeTab === "accruals" ? (
         <section className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)]">
           <div className="flex items-center gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-2.5">

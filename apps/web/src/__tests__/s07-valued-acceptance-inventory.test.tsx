@@ -194,6 +194,10 @@ const previewMock = vi.fn(
           projectedCarryingValue: 18_000_000,
           projectedMovingAverageCost: 900_000,
           blockingReason: null,
+          lotTrackingPolicy: "NONE",
+          lotNumber: null,
+          destinationLocationId: null,
+          destinationLocationCode: null,
         },
       ],
       journalPreview: [
@@ -257,6 +261,7 @@ const overviewPayload: InventoryOverviewResponse = {
       itemId: "itm-steel",
       itemCode: "ITM-STL-PLATE-10",
       itemName: "Pelat Baja 10mm Grade SS400",
+      lotTrackingPolicy: "NONE",
       baseUomId: "uom-pcs",
       baseUomCode: "PCS",
       valuationGroupCode: "DEFAULT",
@@ -271,6 +276,9 @@ const overviewPayload: InventoryOverviewResponse = {
       movingAverageUnitCost: 900_000,
       poolStatus: "ACTIVE",
       lastEntrySequence: 2,
+      locationCount: 2,
+      activeLotCount: 0,
+      pendingInspectionCount: 0,
       updatedAtUtc: "2026-11-10T05:00:00Z",
     },
   ],
@@ -316,7 +324,10 @@ const overviewPayload: InventoryOverviewResponse = {
   totalCarryingValueIdr: 18_000_000,
   totalOpenGrniAccrualIdr: 9_500_000,
   restrictedStockItemCount: 1,
+  locations: [],
+  inspections: [],
   od04Notice: "OD-04 active.",
+  od10Notice: "OD-10 active.",
 };
 
 const ledgerPayload: ItemValuationLedgerResponse = {
@@ -401,6 +412,8 @@ vi.mock("@/lib/api/client", () => ({
   acceptGoodsReceiptValued: () => acceptMock(),
   fetchInventoryOverview: async () => overviewPayload,
   fetchItemValuationLedger: async () => ledgerPayload,
+  listInventoryWarehouses: async () => ({ warehouses: [], locations: [] }),
+  getItemStockDetail: async () => null,
 }));
 
 describe("S07 Gate 2 Valued Acceptance & Inventory Valuation UI", () => {

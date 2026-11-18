@@ -8,12 +8,18 @@ using Orphac.Athera.Modules.GeneralLedger;
 using Orphac.Athera.Modules.Integration;
 using Orphac.Athera.Modules.Inventory;
 using Orphac.Athera.Modules.Persistence;
+using Orphac.Athera.Modules.Quality;
 
 namespace Orphac.Athera.Modules.Procurement;
 
 public sealed record AcceptReceiptLineInput(
     Guid GoodsReceiptLineId,
-    decimal AcceptedBaseQuantity);
+    decimal AcceptedBaseQuantity,
+    Guid? DestinationLocationId = null,
+    string? LotNumber = null,
+    string? SupplierLotReference = null,
+    DateOnly? ManufacturedDate = null,
+    DateOnly? ExpiryDate = null);
 
 public sealed record PreviewAcceptanceCommand(
     Guid TenantId,
@@ -76,10 +82,11 @@ public sealed record ReceiptAcceptanceOutcome(
     StockMovement? StockMovement,
     ReceiptAccrual? ReceiptAccrual,
     JournalEntry? GlJournal,
-    IReadOnlyList<JournalLine> GlJournalLines)
+    IReadOnlyList<JournalLine> GlJournalLines,
+    IReadOnlyList<ReceiptInspection>? CreatedInspections = null)
 {
     public static ReceiptAcceptanceOutcome Fail(int statusCode, string errorCode, string detail) =>
-        new(false, false, statusCode, errorCode, detail, null, Array.Empty<ValuedAcceptanceLine>(), null, null, null, null, Array.Empty<JournalLine>());
+        new(false, false, statusCode, errorCode, detail, null, Array.Empty<ValuedAcceptanceLine>(), null, null, null, null, Array.Empty<JournalLine>(), null);
 }
 
 /// <summary>
@@ -141,6 +148,7 @@ public static class ReceiptAcceptanceCoordinator
                 cmd.TenantId,
                 cmd.LegalEntityId,
                 po!.CurrencyCode,
+                normalizedStatus,
                 validation.ValuationInputs.Select(x => x.ValuationInput).ToList(),
                 ct);
 
@@ -225,7 +233,7 @@ public static class ReceiptAcceptanceCoordinator
             cmd.GoodsReceiptId,
             cmd.AcceptanceDate,
             normalizedStatus,
-            cmd.Lines.Select(l => (l.GoodsReceiptLineId, l.AcceptedBaseQuantity)));
+            cmd.Lines.Select(l => (l.GoodsReceiptLineId, l.AcceptedBaseQuantity, l.DestinationLocationId, l.LotNumber)));
 
         var existingFast = await db.ValuedAcceptances.AsNoTracking()
             .SingleOrDefaultAsync(x => x.TenantId == cmd.TenantId && x.LegalEntityId == cmd.LegalEntityId && x.GoodsReceiptId == cmd.GoodsReceiptId && x.IdempotencyKey == idempotencyKey, ct);
@@ -327,6 +335,7 @@ public static class ReceiptAcceptanceCoordinator
             cmd.TenantId,
             cmd.LegalEntityId,
             po.CurrencyCode,
+            normalizedStatus,
             validation.ValuationInputs.Select(x => x.ValuationInput).ToList(),
             ct);
         var blockedPoolLine = poolPreviews.FirstOrDefault(p => !string.IsNullOrWhiteSpace(p.BlockingReason));
@@ -483,6 +492,23 @@ public static class ReceiptAcceptanceCoordinator
         db.ValuedAcceptances.Add(acceptance);
         db.ValuedAcceptanceLines.AddRange(acceptanceLines);
 
+        IReadOnlyList<ReceiptInspection> createdInspections = Array.Empty<ReceiptInspection>();
+        if (normalizedStatus == StockStatuses.QualityInspection)
+        {
+            createdInspections = await QualityInspectionService.CreateInspectionsForAcceptedReceiptAsync(
+                db,
+                cmd.TenantId,
+                cmd.LegalEntityId,
+                acceptanceId,
+                acceptanceNumber,
+                receipt.GoodsReceiptId,
+                cmd.AcceptanceDate,
+                stockOutcome.ResolvedTargets,
+                cmd.ActorUserId,
+                cmd.NowUtc,
+                ct);
+        }
+
         var eventPayload = JsonSerializer.Serialize(new
         {
             acceptance.ValuedAcceptanceId,
@@ -542,7 +568,8 @@ public static class ReceiptAcceptanceCoordinator
             stockOutcome.Movement,
             accrualOutcome.Accrual,
             accrualOutcome.Journal,
-            accrualOutcome.JournalLines);
+            accrualOutcome.JournalLines,
+            createdInspections);
     }
 
     private sealed record PlanValidationResult(
@@ -669,7 +696,12 @@ public static class ReceiptAcceptanceCoordinator
                     grLine.BaseUomCodeSnapshot,
                     qty,
                     unitPriceBase,
-                    lineAmount),
+                    lineAmount,
+                    input.DestinationLocationId,
+                    input.LotNumber,
+                    input.SupplierLotReference,
+                    input.ManufacturedDate,
+                    input.ExpiryDate),
                 unitPriceBase));
         }
 

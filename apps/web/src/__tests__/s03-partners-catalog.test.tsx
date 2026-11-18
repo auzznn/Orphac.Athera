@@ -135,6 +135,7 @@ describe("S03 Partners, Catalogue and UoM UI", () => {
           itemCode: "ITM-PKG-001",
           name: "Karton Lipat Polos 40x30x25 cm",
           itemKind: "STOCKED_GOOD",
+          lotTrackingPolicy: "NONE",
           baseUomId: "u-pcs",
           baseUomCode: "PCS",
           basePrecisionScale: 0,

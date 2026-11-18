@@ -132,6 +132,28 @@ export type ReceiptAccrualOverviewDto = components["schemas"]["ReceiptAccrualOve
 export type InventoryOverviewResponse = components["schemas"]["InventoryOverviewResponse"];
 export type ValuationEntryLedgerDto = components["schemas"]["ValuationEntryLedgerDto"];
 export type ItemValuationLedgerResponse = components["schemas"]["ItemValuationLedgerResponse"];
+export type WarehouseDto = components["schemas"]["WarehouseDto"];
+export type WarehouseLocationDto = components["schemas"]["WarehouseLocationDto"];
+export type WarehouseListResponse = components["schemas"]["WarehouseListResponse"];
+export type CreateWarehouseRequest = components["schemas"]["CreateWarehouseRequest"];
+export type CreateWarehouseLocationRequest = components["schemas"]["CreateWarehouseLocationRequest"];
+export type StockLotSummaryDto = components["schemas"]["StockLotSummaryDto"];
+export type StockLocationBalanceDto = components["schemas"]["StockLocationBalanceDto"];
+export type StockReservationDto = components["schemas"]["StockReservationDto"];
+export type InspectionDispositionDto = components["schemas"]["InspectionDispositionDto"];
+export type ReceiptInspectionSummaryDto = components["schemas"]["ReceiptInspectionSummaryDto"];
+export type ItemReconciliationDto = components["schemas"]["ItemReconciliationDto"];
+export type ItemMovementTraceDto = components["schemas"]["ItemMovementTraceDto"];
+export type ItemStockDetailResponse = components["schemas"]["ItemStockDetailResponse"];
+export type TransferStockLocationRequest = components["schemas"]["TransferStockLocationRequest"];
+export type StockStatusTransitionRequest = components["schemas"]["StockStatusTransitionRequest"];
+export type RecordInspectionDispositionRequest =
+  components["schemas"]["RecordInspectionDispositionRequest"];
+export type InspectionDispositionOutcomeDto = components["schemas"]["InspectionDispositionOutcomeDto"];
+export type CreateStockReservationRequest = components["schemas"]["CreateStockReservationRequest"];
+export type ReleaseStockReservationRequest = components["schemas"]["ReleaseStockReservationRequest"];
+export type StockReservationOutcomeDto = components["schemas"]["StockReservationOutcomeDto"];
+export type InventoryMovementResultDto = components["schemas"]["InventoryMovementResultDto"];
 
 export interface ApiProblemError {
   status: number;
@@ -1610,5 +1632,200 @@ export async function fetchItemValuationLedger(
     },
   );
   if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function listInventoryWarehouses(
+  tenantId: string,
+  entityId: string,
+): Promise<WarehouseListResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/warehouses",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function createWarehouse(
+  tenantId: string,
+  entityId: string,
+  payload: CreateWarehouseRequest,
+): Promise<WarehouseDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/warehouses",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function createWarehouseLocation(
+  tenantId: string,
+  entityId: string,
+  warehouseId: string,
+  payload: CreateWarehouseLocationRequest,
+): Promise<WarehouseLocationDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/warehouses/{warehouseId}/locations",
+    {
+      params: { path: { tenantId, entityId, warehouseId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function getItemStockDetail(
+  tenantId: string,
+  entityId: string,
+  itemId: string,
+): Promise<ItemStockDetailResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/items/{itemId}/detail",
+    {
+      params: { path: { tenantId, entityId, itemId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function transferInventoryLocation(
+  tenantId: string,
+  entityId: string,
+  payload: TransferStockLocationRequest,
+): Promise<InventoryMovementResultDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/transfers",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function recordInspectionDisposition(
+  tenantId: string,
+  entityId: string,
+  inspectionId: string,
+  payload: RecordInspectionDispositionRequest,
+): Promise<InspectionDispositionOutcomeDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/inspections/{inspectionId}/dispositions",
+    {
+      params: { path: { tenantId, entityId, inspectionId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function transitionInventoryStockStatus(
+  tenantId: string,
+  entityId: string,
+  payload: StockStatusTransitionRequest,
+): Promise<InventoryMovementResultDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/status-transitions",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function createStockReservation(
+  tenantId: string,
+  entityId: string,
+  payload: CreateStockReservationRequest,
+): Promise<StockReservationOutcomeDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/reservations",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function releaseStockReservation(
+  tenantId: string,
+  entityId: string,
+  reservationId: string,
+  payload: ReleaseStockReservationRequest,
+): Promise<StockReservationOutcomeDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/reservations/{reservationId}/release",
+    {
+      params: { path: { tenantId, entityId, reservationId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
   return data;
 }

@@ -138,7 +138,8 @@ public sealed record GoodsReceiptLineDto(
     string? DiscrepancyNotes,
     string? ConditionEvidenceRef,
     decimal MaxApprovedReleaseCapBaseQty,
-    DateTimeOffset UpdatedAtUtc);
+    DateTimeOffset UpdatedAtUtc,
+    string? ItemLotTrackingPolicy = null);
 
 public sealed record DockCheckHistoryDto(
     Guid DockCheckId,

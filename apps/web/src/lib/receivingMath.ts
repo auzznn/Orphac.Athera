@@ -99,6 +99,27 @@ export function formatQuantityValue(
 }
 
 /**
+ * Formats a signed API quantity delta into localized "+Q" / "-Q" / "0" display text via exact BigInt scaling.
+ */
+export function formatSignedQuantityValue(
+  raw: string | number | null | undefined,
+  locale: SupportedLocale = "id-ID",
+  scale = QTY_SCALE,
+): string {
+  if (raw === null || raw === undefined) return "0";
+  if (typeof raw === "number" && !Number.isFinite(raw)) return "0";
+  const rawText = (typeof raw === "number" ? String(raw) : raw).trim();
+  if (!rawText) return "0";
+
+  const negative = rawText.startsWith("-");
+  const unsignedText = negative || rawText.startsWith("+") ? rawText.slice(1).trim() : rawText;
+  const parsed = parseScaledBigInt(unsignedText, scale);
+  if (parsed === null || parsed === 0n) return "0";
+  const formatted = formatScaledBigInt(parsed, scale, locale);
+  return negative ? `-${formatted}` : `+${formatted}`;
+}
+
+/**
  * Formats a scaled BigInt into a plain dot-decimal string for HTML inputs and JSON payloads.
  */
 export function formatScaledPlainInput(scaled: bigint, scale = QTY_SCALE): string {

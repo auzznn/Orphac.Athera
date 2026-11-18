@@ -19,6 +19,7 @@ import {
 import {
   AcceptancePreviewDto,
   acceptGoodsReceiptValued,
+  AcceptReceiptLineRequest,
   ApiProblemError,
   EligiblePoReceivingLineDto,
   EligiblePurchaseOrderForReceivingDto,
@@ -30,10 +31,12 @@ import {
   GoodsReceiptDetailDto,
   GoodsReceiptLineDto,
   GoodsReceiptListResponse,
+  listInventoryWarehouses,
   previewReceiptAcceptance,
   recordGoodsReceiptArrival,
   recordGoodsReceiptDockCheck,
   ValuedAcceptanceDetailDto,
+  WarehouseLocationDto,
 } from "@/lib/api/client";
 import {
   formatIdr,
@@ -166,6 +169,12 @@ function getLineRemainingReleasedScaled(line: GoodsReceiptLineDto): bigint {
   const rel = parseScaledBigInt(line.dockReleasedBaseQuantity) ?? 0n;
   const val = parseScaledBigInt(line.valuedAcceptedBaseQuantity) ?? 0n;
   return rel > val ? rel - val : 0n;
+}
+
+function isZoneCompatibleForGate2(zoneType: string, stockStatus: string): boolean {
+  if (stockStatus === "QUALITY_INSPECTION") return zoneType === "QUARANTINE";
+  if (stockStatus === "BLOCKED") return zoneType === "BLOCKED_HOLD";
+  return zoneType === "STORAGE" || zoneType === "RECEIVING_STAGING" || zoneType === "DISPATCH";
 }
 
 function buildGate2QtyInputs(detail: GoodsReceiptDetailDto): Record<string, string> {
@@ -335,7 +344,7 @@ function DockCheckLineCard({
   return (
     <div
       data-testid={`dock-check-card-${lineIndex}`}
-      className="rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4"
+      className="space-y-3 bg-[var(--bg-surface)] p-4"
     >
       <div className="flex flex-wrap items-start justify-between gap-2 border-b border-[var(--border-hairline)] pb-3">
         <div className="space-y-0.5">
@@ -507,7 +516,7 @@ function DockCheckLineCard({
 
           <div
             data-testid={`dock-conservation-${lineIndex}`}
-            className="flex flex-wrap items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-3 py-2 text-xs"
+            className="flex flex-wrap items-center justify-between gap-2 rounded-[var(--radius-sm)] bg-[var(--bg-subtle)] px-3 py-2 text-xs"
           >
             <span className="text-[var(--text-secondary)]">
               {t.receiving.conservationFormulaLabel}:{" "}
@@ -679,7 +688,11 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
   const [dockSuccessLineId, setDockSuccessLineId] = useState<string | null>(null);
 
   // Gate 2 Valued Acceptance state
+  const [locations, setLocations] = useState<WarehouseLocationDto[]>([]);
   const [gate2QtyInputs, setGate2QtyInputs] = useState<Record<string, string>>({});
+  const [gate2LocInputs, setGate2LocInputs] = useState<Record<string, string>>({});
+  const [gate2LotInputs, setGate2LotInputs] = useState<Record<string, string>>({});
+  const [gate2ExpInputs, setGate2ExpInputs] = useState<Record<string, string>>({});
   const [gate2Date, setGate2Date] = useState<string>(() => defaultJakartaIsoDate());
   const [gate2StockStatus, setGate2StockStatus] = useState<string>("UNRESTRICTED");
   const [gate2Notes, setGate2Notes] = useState<string>("");
@@ -712,6 +725,12 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
     return null;
   }, [eligiblePos, selectedPoId]);
 
+  const compatibleGate2Locations = useMemo(() => {
+    return locations.filter(
+      (loc) => loc.status === "ACTIVE" && isZoneCompatibleForGate2(loc.zoneType, gate2StockStatus),
+    );
+  }, [locations, gate2StockStatus]);
+
   const mapApiErrorText = useCallback(
     (err: unknown): string => {
       const apiErr = err as ApiProblemError;
@@ -730,12 +749,18 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
       fetchEntityWorkspaceDetail(tenantId, entityId),
       fetchGoodsReceipts(tenantId, entityId),
       fetchEligibleReceivingPos(tenantId, entityId),
+      Promise.resolve(
+        typeof listInventoryWarehouses === "function" ? listInventoryWarehouses(tenantId, entityId) : null,
+      ).catch(() => null),
     ])
-      .then(([ws, list, eligible]) => {
+      .then(([ws, list, eligible, whData]) => {
         if (!active) return;
         setWorkspace(ws);
         setReceiptsData(list);
         setEligiblePos(eligible.items);
+        if (whData?.locations) {
+          setLocations(whData.locations);
+        }
         setProblem(null);
         setLoading(false);
 
@@ -843,6 +868,9 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
       setSelectedDetail(detail);
       setDockDrafts(mapDockDrafts(detail));
       setGate2QtyInputs(buildGate2QtyInputs(detail));
+      setGate2LocInputs({});
+      setGate2LotInputs({});
+      setGate2ExpInputs({});
     } catch (err) {
       const apiProblem = err as ApiProblemError;
       if (apiProblem.status === 401) {
@@ -1116,12 +1144,12 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
   );
 
   const buildGate2PayloadLines = useCallback(():
-    | { ok: true; lines: { goodsReceiptLineId: string; acceptedBaseQuantity: number }[] }
+    | { ok: true; lines: AcceptReceiptLineRequest[] }
     | { ok: false; message: string } => {
     if (!selectedDetail) {
       return { ok: false, message: t.receiving.validation.acceptanceLinesRequired };
     }
-    const collected: { goodsReceiptLineId: string; acceptedBaseQuantity: number }[] = [];
+    const collected: AcceptReceiptLineRequest[] = [];
     for (const line of selectedDetail.lines) {
       const remaining = getLineRemainingReleasedScaled(line);
       if (remaining <= 0n || line.itemKindSnapshot !== "STOCKED_GOOD") continue;
@@ -1133,9 +1161,15 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
         return { ok: false, message: t.receiving.validation.invalidQtyFormat };
       }
       if (parsed > 0n) {
+        const chosenLoc = (gate2LocInputs[line.goodsReceiptLineId] ?? "").trim();
+        const chosenLot = (gate2LotInputs[line.goodsReceiptLineId] ?? "").trim();
+        const chosenExp = (gate2ExpInputs[line.goodsReceiptLineId] ?? "").trim();
         collected.push({
           goodsReceiptLineId: line.goodsReceiptLineId,
           acceptedBaseQuantity: Number(formatScaledPlainInput(parsed)),
+          destinationLocationId: chosenLoc || null,
+          lotNumber: chosenLot || null,
+          expiryDate: chosenExp || null,
         });
       }
     }
@@ -1143,7 +1177,7 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
       return { ok: false, message: t.receiving.validation.acceptanceLinesRequired };
     }
     return { ok: true, lines: collected };
-  }, [selectedDetail, gate2QtyInputs, t]);
+  }, [selectedDetail, gate2QtyInputs, gate2LocInputs, gate2LotInputs, gate2ExpInputs, t]);
 
   const handleGate2Preview = async () => {
     if (!selectedDetail) return;
@@ -1700,10 +1734,10 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                 </p>
               </div>
             ) : (
-              <div className="space-y-5 p-4">
+              <div className="divide-y divide-[var(--border-hairline)]">
                 {/* Header Snapshot Summary */}
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                  <div className="rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] p-3">
+                <div className="grid grid-cols-1 gap-px bg-[var(--border-hairline)] sm:grid-cols-2 lg:grid-cols-4">
+                  <div className="bg-[var(--bg-subtle)] p-3.5">
                     <div className="text-xs text-[var(--text-secondary)]">
                       {t.receiving.fieldReceiptNumber}
                     </div>
@@ -1721,7 +1755,7 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                     </div>
                   </div>
 
-                  <div className="rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] p-3">
+                  <div className="bg-[var(--bg-subtle)] p-3.5">
                     <div className="text-xs text-[var(--text-secondary)]">
                       {t.receiving.fieldPoRef}
                     </div>
@@ -1734,7 +1768,7 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                     </div>
                   </div>
 
-                  <div className="rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] p-3">
+                  <div className="bg-[var(--bg-subtle)] p-3.5">
                     <div className="text-xs text-[var(--text-secondary)]">
                       {t.receiving.fieldDeliveryNote}
                     </div>
@@ -1746,7 +1780,7 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                     </div>
                   </div>
 
-                  <div className="rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] p-3">
+                  <div className="bg-[var(--bg-subtle)] p-3.5">
                     <div className="text-xs text-[var(--text-secondary)]">
                       {t.receiving.fieldStation}
                     </div>
@@ -1764,11 +1798,11 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
 
                 {/* Line Custody Table Summary */}
                 <div>
-                  <h3 className="mb-2 text-xs font-semibold text-[var(--text-primary)]">
+                  <h3 className="bg-[var(--bg-subtle)] px-4 py-2 text-xs font-semibold text-[var(--text-primary)]">
                     {t.receiving.fieldLineCustody}
                   </h3>
                   <div className="md:overflow-x-auto">
-                    <table className="w-full border-collapse rounded-[var(--radius-sm)] border border-[var(--border-hairline)] text-left text-xs">
+                    <table className="w-full border-collapse border-t border-[var(--border-hairline)] text-left text-xs">
                       <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] font-semibold text-[var(--text-secondary)] md:table-header-group">
                         <tr>
                           <th scope="col" className="py-2 md:pl-3 md:pr-2">
@@ -1840,7 +1874,7 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                 </div>
 
                 {/* Per-line Dock Check Interactive Cards */}
-                <div className="space-y-3">
+                <div className="divide-y divide-[var(--border-hairline)]">
                   {selectedDetail.lines.map((line, index) => (
                     <DockCheckLineCard
                       key={line.goodsReceiptLineId}
@@ -1867,8 +1901,8 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                 </div>
 
                 {/* Append-Only Dock Inspection Audit Trail */}
-                <div className="overflow-hidden rounded-[var(--radius-sm)] border border-[var(--border-hairline)]">
-                  <div className="border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-3.5 py-2 text-xs font-semibold text-[var(--text-primary)]">
+                <div>
+                  <div className="border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-2 text-xs font-semibold text-[var(--text-primary)]">
                     {t.receiving.historyCardTitle}
                   </div>
                   {selectedDetail.dockChecks.length === 0 ? (
@@ -1979,19 +2013,20 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                     </div>
                   </div>
 
-                  <div className="space-y-4 p-4">
-                    <div className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-3 py-2 text-xs text-[var(--text-secondary)]">
+                  <div className="divide-y divide-[var(--border-hairline)]">
+                    <div className="flex items-start gap-2 bg-[var(--bg-subtle)] px-4 py-2.5 text-xs text-[var(--text-secondary)]">
                       <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
                       <span>{t.receiving.gate2.od04Notice}</span>
                     </div>
 
                     {!canAccept ? (
-                      <div className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-3 py-2 text-xs text-[var(--status-warn-text)]">
+                      <div className="flex items-start gap-2 bg-[var(--status-warn-bg)] px-4 py-2.5 text-xs text-[var(--status-warn-text)]">
                         <Eye className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
                         <span>{t.receiving.gate2.readOnlyPermissionNote}</span>
                       </div>
                     ) : null}
 
+                    <div className="space-y-4 p-4">
                       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                         <label className="block space-y-1">
                           <span className="block text-xs font-medium text-[var(--text-secondary)]">
@@ -2018,6 +2053,7 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                             value={gate2StockStatus}
                             onChange={(e) => {
                               setGate2StockStatus(e.target.value);
+                              setGate2LocInputs({});
                               if (gate2Preview) setGate2PreviewStale(true);
                             }}
                             className="min-h-10 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)]"
@@ -2046,64 +2082,154 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                       </div>
 
                       {/* Line acceptance qty inputs */}
-                      <div className="space-y-2">
-                        {selectedDetail.lines
-                          .filter((l) => getLineRemainingReleasedScaled(l) > 0n)
-                          .map((line, gIdx) => {
-                            const remScaled = getLineRemainingReleasedScaled(line);
-                            return (
-                              <div
-                                key={line.goodsReceiptLineId}
-                                className="flex flex-col gap-2 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] p-3 sm:flex-row sm:items-center sm:justify-between"
-                              >
-                                <div className="space-y-0.5 text-xs">
-                                  <div className="text-[var(--text-primary)]">
-                                    <span className="font-code font-semibold tabular-nums">
-                                      L{String(line.lineNumber)} · {line.itemCodeSnapshot}
-                                    </span>{" "}
-                                    <span className="font-medium text-[var(--text-secondary)]">
-                                      — {line.itemNameSnapshot}
-                                    </span>
+                      <div className="-mx-4 divide-y divide-[var(--border-hairline)] border-y border-[var(--border-hairline)]">
+                          {selectedDetail.lines
+                            .filter((l) => getLineRemainingReleasedScaled(l) > 0n)
+                            .map((line, gIdx) => {
+                              const remScaled = getLineRemainingReleasedScaled(line);
+                              const lotPolicy = line.itemLotTrackingPolicy ?? "NONE";
+                              const showsLotInputs = lotPolicy !== "NONE";
+                              return (
+                                <div
+                                  key={line.goodsReceiptLineId}
+                                  className="space-y-2.5 bg-[var(--bg-subtle)] px-4 py-3"
+                                >
+                                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="space-y-0.5 text-xs">
+                                      <div className="flex flex-wrap items-center gap-1.5 text-[var(--text-primary)]">
+                                        <span className="font-code font-semibold tabular-nums">
+                                          L{String(line.lineNumber)} · {line.itemCodeSnapshot}
+                                        </span>{" "}
+                                        <span className="font-medium text-[var(--text-secondary)]">
+                                          — {line.itemNameSnapshot}
+                                        </span>
+                                        {lotPolicy === "REQUIRED" ? (
+                                          <span className="inline-flex items-center gap-1 rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--status-warn-text)]">
+                                            <Clock className="h-3 w-3 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                                            <span>{t.receiving.gate2.lotRequiredBadge}</span>
+                                          </span>
+                                        ) : null}
+                                      </div>
+                                      <div className="text-[11px] text-[var(--text-secondary)]">
+                                        <span>{t.receiving.gate2.colReleasedRemaining}:</span>{" "}
+                                        <span className="font-code tabular-nums">
+                                          {formatQuantityValue(formatScaledPlainInput(remScaled), locale)}{" "}
+                                          {line.baseUomCodeSnapshot}
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    <label className="block space-y-1 sm:w-44">
+                                      <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                                        {t.receiving.gate2.colAcceptQty} ({line.baseUomCodeSnapshot})
+                                      </span>
+                                      <input
+                                        id={`gate2-qty-${gIdx}`}
+                                        type="text"
+                                        inputMode="decimal"
+                                        disabled={!canAccept}
+                                        value={gate2QtyInputs[line.goodsReceiptLineId] ?? ""}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          setGate2QtyInputs((prev) => ({
+                                            ...prev,
+                                            [line.goodsReceiptLineId]: val,
+                                          }));
+                                          if (gate2Preview) setGate2PreviewStale(true);
+                                        }}
+                                        className="font-code min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-right text-xs tabular-nums text-[var(--text-primary)] disabled:opacity-60"
+                                      />
+                                    </label>
                                   </div>
-                                  <div className="text-[11px] text-[var(--text-secondary)]">
-                                    <span>{t.receiving.gate2.colReleasedRemaining}:</span>{" "}
-                                    <span className="font-code tabular-nums">
-                                      {formatQuantityValue(formatScaledPlainInput(remScaled), locale)}{" "}
-                                      {line.baseUomCodeSnapshot}
-                                    </span>
+
+                                  <div className="grid grid-cols-1 gap-2 border-t border-[var(--border-hairline)] pt-2.5 sm:grid-cols-3">
+                                    <label className="block space-y-1">
+                                      <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                                        {t.receiving.gate2.locationLabel}
+                                      </span>
+                                      <select
+                                        id={`gate2-loc-${gIdx}`}
+                                        disabled={!canAccept}
+                                        value={gate2LocInputs[line.goodsReceiptLineId] ?? ""}
+                                        onChange={(e) => {
+                                          const val = e.target.value;
+                                          setGate2LocInputs((prev) => ({
+                                            ...prev,
+                                            [line.goodsReceiptLineId]: val,
+                                          }));
+                                          if (gate2Preview) setGate2PreviewStale(true);
+                                        }}
+                                        className="min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)] disabled:opacity-60"
+                                      >
+                                        <option value="">{t.receiving.gate2.locationAutoOption}</option>
+                                        {compatibleGate2Locations.map((loc) => (
+                                          <option key={loc.locationId} value={loc.locationId}>
+                                            {loc.warehouseCode} · {loc.locationCode} — {loc.name}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </label>
+
+                                    {showsLotInputs ? (
+                                      <>
+                                        <label className="block space-y-1">
+                                          <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                                            {t.receiving.gate2.lotNumberLabel}
+                                          </span>
+                                          <input
+                                            id={`gate2-lot-${gIdx}`}
+                                            type="text"
+                                            disabled={!canAccept}
+                                            value={gate2LotInputs[line.goodsReceiptLineId] ?? ""}
+                                            placeholder={t.receiving.gate2.lotNumberPlaceholder}
+                                            onChange={(e) => {
+                                              const val = e.target.value;
+                                              setGate2LotInputs((prev) => ({
+                                                ...prev,
+                                                [line.goodsReceiptLineId]: val,
+                                              }));
+                                              if (gate2Preview) setGate2PreviewStale(true);
+                                            }}
+                                            className="font-code min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] disabled:opacity-60"
+                                          />
+                                        </label>
+
+                                        <label className="block space-y-1">
+                                          <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                                            {t.receiving.gate2.expiryDateLabel}
+                                          </span>
+                                          <input
+                                            id={`gate2-exp-${gIdx}`}
+                                            type="date"
+                                            disabled={!canAccept}
+                                            value={gate2ExpInputs[line.goodsReceiptLineId] ?? ""}
+                                            onChange={(e) => {
+                                              const val = e.target.value;
+                                              setGate2ExpInputs((prev) => ({
+                                                ...prev,
+                                                [line.goodsReceiptLineId]: val,
+                                              }));
+                                              if (gate2Preview) setGate2PreviewStale(true);
+                                            }}
+                                            className="font-code min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs tabular-nums text-[var(--text-primary)] disabled:opacity-60"
+                                          />
+                                        </label>
+                                      </>
+                                    ) : (
+                                      <div className="flex items-end pb-1 text-[11px] text-[var(--text-muted)] sm:col-span-2">
+                                        {t.receiving.gate2.lotDisabledNote}
+                                      </div>
+                                    )}
                                   </div>
                                 </div>
-
-                                <label className="block space-y-1 sm:w-44">
-                                  <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
-                                    {t.receiving.gate2.colAcceptQty} ({line.baseUomCodeSnapshot})
-                                  </span>
-                                  <input
-                                    id={`gate2-qty-${gIdx}`}
-                                    type="text"
-                                    inputMode="decimal"
-                                    disabled={!canAccept}
-                                    value={gate2QtyInputs[line.goodsReceiptLineId] ?? ""}
-                                    onChange={(e) => {
-                                      const val = e.target.value;
-                                      setGate2QtyInputs((prev) => ({
-                                        ...prev,
-                                        [line.goodsReceiptLineId]: val,
-                                      }));
-                                      if (gate2Preview) setGate2PreviewStale(true);
-                                    }}
-                                    className="font-code min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-right text-xs tabular-nums text-[var(--text-primary)] disabled:opacity-60"
-                                  />
-                                </label>
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
                       </div>
 
                       {gate2PreviewStale && gate2Preview ? (
                         <div
                           role="status"
-                          className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-3 py-2 text-xs text-[var(--status-warn-text)]"
+                          className="flex items-start gap-2 rounded-[var(--radius-sm)] bg-[var(--status-warn-bg)] px-3 py-2 text-xs text-[var(--status-warn-text)]"
                         >
                           <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
                           <span>{t.receiving.gate2.previewStaleNotice}</span>
@@ -2114,7 +2240,7 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                         <div
                           id="gate2-error"
                           role="alert"
-                          className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-2 text-xs text-[var(--status-danger-text)]"
+                          className="flex items-start gap-2 rounded-[var(--radius-sm)] bg-[var(--status-danger-bg)] px-3 py-2 text-xs text-[var(--status-danger-text)]"
                         >
                           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
                           <span>{gate2Error}</span>
@@ -2157,44 +2283,45 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                           </button>
                         ) : null}
                       </div>
+                    </div>
 
-                      {/* Preview Result Breakdown */}
-                      {gate2Preview ? (
-                        <div
-                          id="gate2-preview-card"
-                          className="space-y-3 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] p-3.5"
-                        >
-                          <div className="flex flex-wrap items-center justify-between gap-2">
-                            <span className="text-xs font-semibold text-[var(--text-primary)]">
-                              {t.receiving.gate2.previewCardTitle}
-                            </span>
-                            <span className="font-code text-xs font-bold tabular-nums text-[var(--text-primary)]">
-                              {formatIdr(gate2Preview.totalAcceptedAmount)} ({gate2Preview.currencyCode})
-                            </span>
-                          </div>
+                    {/* Preview Result Breakdown */}
+                    {gate2Preview ? (
+                      <div
+                        id="gate2-preview-card"
+                        className="divide-y divide-[var(--border-hairline)] bg-[var(--bg-subtle)]"
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
+                          <span className="text-xs font-semibold text-[var(--text-primary)]">
+                            {t.receiving.gate2.previewCardTitle}
+                          </span>
+                          <span className="font-code text-xs font-bold tabular-nums text-[var(--text-primary)]">
+                            {formatIdr(gate2Preview.totalAcceptedAmount)} ({gate2Preview.currencyCode})
+                          </span>
+                        </div>
 
-                          {!gate2Preview.canPost && gate2Preview.blockingReasons.length > 0 ? (
-                            <div
-                              id="gate2-preview-blocked"
-                              role="alert"
-                              className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-2.5 text-xs text-[var(--status-danger-text)]"
-                            >
-                              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-                              <div className="space-y-1">
-                                <div className="font-semibold">{t.receiving.gate2.blockedHeading}</div>
-                                <ul className="list-inside list-disc space-y-0.5">
-                                  {gate2Preview.blockingReasons.map((reason, rIdx) => (
-                                    <li key={rIdx}>{formatGate2BlockText(reason)}</li>
-                                  ))}
-                                </ul>
-                              </div>
+                        {!gate2Preview.canPost && gate2Preview.blockingReasons.length > 0 ? (
+                          <div
+                            id="gate2-preview-blocked"
+                            role="alert"
+                            className="flex items-start gap-2 bg-[var(--status-danger-bg)] px-4 py-2.5 text-xs text-[var(--status-danger-text)]"
+                          >
+                            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                            <div className="space-y-1">
+                              <div className="font-semibold">{t.receiving.gate2.blockedHeading}</div>
+                              <ul className="list-inside list-disc space-y-0.5">
+                                {gate2Preview.blockingReasons.map((reason, rIdx) => (
+                                  <li key={rIdx}>{formatGate2BlockText(reason)}</li>
+                                ))}
+                              </ul>
                             </div>
-                          ) : null}
+                          </div>
+                        ) : null}
 
-                          {gate2Preview.lines.length > 0 ? (
-                            <div className="md:overflow-x-auto">
-                              <table className="w-full border-collapse rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-left text-xs">
-                                <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] font-semibold text-[var(--text-secondary)] md:table-header-group">
+                        {gate2Preview.lines.length > 0 ? (
+                          <div className="md:overflow-x-auto">
+                            <table className="w-full border-collapse bg-[var(--bg-surface)] text-left text-xs">
+                              <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] font-semibold text-[var(--text-secondary)] md:table-header-group">
                                   <tr>
                                     <th scope="col" className="py-2 md:pl-3 md:pr-2">
                                       {t.receiving.gate2.colItem}
@@ -2217,10 +2344,19 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                                         <span className="font-medium text-[var(--text-secondary)] md:hidden">
                                           {t.receiving.gate2.colItem}
                                         </span>
-                                        <span className="font-code font-semibold tabular-nums text-[var(--text-primary)]">
-                                          {pl.itemCode} · +{formatQuantityValue(pl.acceptedBaseQuantity, locale)}{" "}
-                                          {pl.baseUomCode} @ {formatUnitCostIdr(pl.unitCostBase)}
-                                        </span>
+                                        <div>
+                                          <div className="font-code font-semibold tabular-nums text-[var(--text-primary)]">
+                                            {pl.itemCode} · +{formatQuantityValue(pl.acceptedBaseQuantity, locale)}{" "}
+                                            {pl.baseUomCode} @ {formatUnitCostIdr(pl.unitCostBase)}
+                                          </div>
+                                          {pl.destinationLocationCode || pl.lotNumber ? (
+                                            <div className="font-code text-[11px] tabular-nums text-[var(--text-secondary)]">
+                                              {pl.destinationLocationCode ?? ""}
+                                              {pl.destinationLocationCode && pl.lotNumber ? " · " : ""}
+                                              {pl.lotNumber ?? ""}
+                                            </div>
+                                          ) : null}
+                                        </div>
                                       </td>
                                       <td className="flex flex-col gap-0.5 py-1 sm:flex-row sm:justify-between md:table-cell md:py-2 md:px-2 md:text-right">
                                         <span className="font-medium text-[var(--text-secondary)] md:hidden">
@@ -2255,40 +2391,40 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                             </div>
                           ) : null}
 
-                          {gate2Preview.journalPreview.length > 0 ? (
-                            <div className="space-y-1.5">
-                              <div className="text-[11px] font-semibold text-[var(--text-secondary)]">
-                                {t.receiving.gate2.journalPreviewTitle}
-                              </div>
-                              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                {gate2Preview.journalPreview.map((jl, jIdx) => (
-                                  <div
-                                    key={jIdx}
-                                    className="flex items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-3 py-2 text-xs"
-                                  >
-                                    <div>
-                                      <span className="font-semibold text-[var(--text-primary)]">
-                                        {t.receiving.gate2.sideLabels[jl.side] ?? jl.side}{" "}
-                                      </span>
-                                      <span className="font-code tabular-nums text-[var(--text-secondary)]">
-                                        {jl.accountCode}
-                                      </span>
-                                      <span className="text-[var(--text-secondary)]">
-                                        {" · "}{jl.accountName}
-                                      </span>
-                                    </div>
-                                    <span className="font-code font-bold tabular-nums text-[var(--text-primary)]">
-                                      {formatIdr(jl.amount)}
+                        {gate2Preview.journalPreview.length > 0 ? (
+                          <div>
+                            <div className="px-4 py-2 text-[11px] font-semibold text-[var(--text-secondary)]">
+                              {t.receiving.gate2.journalPreviewTitle}
+                            </div>
+                            <div className="grid grid-cols-1 gap-px border-t border-[var(--border-hairline)] bg-[var(--border-hairline)] sm:grid-cols-2">
+                              {gate2Preview.journalPreview.map((jl, jIdx) => (
+                                <div
+                                  key={jIdx}
+                                  className="flex items-center justify-between gap-2 bg-[var(--bg-surface)] px-4 py-2.5 text-xs"
+                                >
+                                  <div>
+                                    <span className="font-semibold text-[var(--text-primary)]">
+                                      {t.receiving.gate2.sideLabels[jl.side] ?? jl.side}{" "}
+                                    </span>
+                                    <span className="font-code tabular-nums text-[var(--text-secondary)]">
+                                      {jl.accountCode}
+                                    </span>
+                                    <span className="text-[var(--text-secondary)]">
+                                      {" · "}{jl.accountName}
                                     </span>
                                   </div>
-                                ))}
-                              </div>
+                                  <span className="font-code font-bold tabular-nums text-[var(--text-primary)]">
+                                    {formatIdr(jl.amount)}
+                                  </span>
+                                </div>
+                              ))}
                             </div>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </div>
-                  </section>
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                </section>
                 ) : null}
 
                 {gate2Success ? (
@@ -2311,7 +2447,7 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                     {workspace?.effectivePermissions.includes("inventory.read") ? (
                       <Link
                         href={`/w/${tenantId}/${entityId}/inventory`}
-                        className="inline-flex min-h-8 items-center rounded-[var(--radius-sm)] border border-[var(--status-ok-border)] bg-[var(--bg-surface)] px-2.5 text-xs font-semibold text-[var(--accent-primary)] hover:bg-[var(--bg-chrome)]"
+                        className="inline-flex min-h-9 items-center rounded-[var(--radius-sm)] border border-[var(--status-ok-border)] bg-[var(--bg-surface)] px-2.5 text-xs font-semibold text-[var(--accent-primary)] hover:bg-[var(--bg-chrome)]"
                       >
                         {t.receiving.gate2.openInventoryLink}
                       </Link>

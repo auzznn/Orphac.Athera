@@ -2,6 +2,7 @@ using System.Data;
 using System.Globalization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Orphac.Athera.Modules.Catalog;
 using Orphac.Athera.Modules.Persistence;
 
 namespace Orphac.Athera.Modules.Inventory;
@@ -17,7 +18,12 @@ public sealed record InventoryLineValuationInput(
     string BaseUomCode,
     decimal AcceptedBaseQuantity,
     decimal UnitCostBase,
-    decimal AcceptedLineAmount);
+    decimal AcceptedLineAmount,
+    Guid? DestinationLocationId = null,
+    string? LotNumber = null,
+    string? SupplierLotReference = null,
+    DateOnly? ManufacturedDate = null,
+    DateOnly? ExpiryDate = null);
 
 public sealed record InventoryLineValuationPreview(
     Guid GoodsReceiptLineId,
@@ -34,7 +40,21 @@ public sealed record InventoryLineValuationPreview(
     decimal ProjectedPoolBaseQuantity,
     decimal ProjectedCarryingValue,
     decimal ProjectedMovingAverageCost,
-    string? BlockingReason);
+    string? BlockingReason,
+    string LotTrackingPolicy = LotTrackingPolicies.None,
+    string? LotNumber = null,
+    Guid? DestinationLocationId = null,
+    string? DestinationLocationCode = null);
+
+public sealed record ResolvedAcceptedStockTarget(
+    Guid ValuedAcceptanceLineId,
+    Guid GoodsReceiptLineId,
+    Guid ItemId,
+    Guid BaseUomId,
+    Guid WarehouseId,
+    Guid LocationId,
+    Guid? StockLotId,
+    decimal AcceptedBaseQuantity);
 
 public sealed record LockedInventoryTargets(
     IReadOnlyDictionary<Guid, StockPosition> PositionsByItem,
@@ -49,10 +69,11 @@ public sealed record PostStockAcceptanceResult(
     IReadOnlyList<MovementLine> MovementLines,
     IReadOnlyList<ValuationEntry> ValuationEntries,
     IReadOnlyList<StockPosition> UpdatedPositions,
-    IReadOnlyList<ValuationPool> UpdatedPools)
+    IReadOnlyList<ValuationPool> UpdatedPools,
+    IReadOnlyList<ResolvedAcceptedStockTarget> ResolvedTargets)
 {
     public static PostStockAcceptanceResult Fail(int statusCode, string errorCode, string detail) =>
-        new(false, statusCode, errorCode, detail, null, Array.Empty<MovementLine>(), Array.Empty<ValuationEntry>(), Array.Empty<StockPosition>(), Array.Empty<ValuationPool>());
+        new(false, statusCode, errorCode, detail, null, Array.Empty<MovementLine>(), Array.Empty<ValuationEntry>(), Array.Empty<StockPosition>(), Array.Empty<ValuationPool>(), Array.Empty<ResolvedAcceptedStockTarget>());
 }
 
 /// <summary>
@@ -66,10 +87,22 @@ public static class InventoryValuationService
         Guid tenantId,
         Guid entityId,
         string currencyCode,
+        string normalizedStockStatus,
         IReadOnlyList<InventoryLineValuationInput> lines,
         CancellationToken ct)
     {
         var itemIds = lines.Select(l => l.ItemId).Distinct().ToList();
+        var itemPolicies = await db.Items.AsNoTracking()
+            .Where(i => i.TenantId == tenantId && itemIds.Contains(i.ItemId))
+            .ToDictionaryAsync(i => i.ItemId, i => i.LotTrackingPolicy, ct);
+
+        var activeLocations = await db.WarehouseLocations.AsNoTracking()
+            .Where(l => l.TenantId == tenantId && l.LegalEntityId == entityId && l.Status == Platform.MasterStatuses.Active)
+            .ToDictionaryAsync(l => l.LocationId, ct);
+
+        var defaultLocCode = InventoryAvailabilityService.ResolveDefaultLocationCodeForStatus(normalizedStockStatus);
+        var defaultLoc = activeLocations.Values.FirstOrDefault(l => l.LocationCode == defaultLocCode);
+
         var pools = await db.ValuationPools
             .AsNoTracking()
             .Where(p =>
@@ -98,6 +131,39 @@ public static class InventoryValuationService
         foreach (var line in lines)
         {
             var cur = runningState[line.ItemId];
+            var lotPolicy = itemPolicies.GetValueOrDefault(line.ItemId, LotTrackingPolicies.None);
+            var trimmedLot = string.IsNullOrWhiteSpace(line.LotNumber) ? null : line.LotNumber.Trim().ToUpperInvariant();
+            var resolvedLoc = line.DestinationLocationId is { } explicitLocId && activeLocations.TryGetValue(explicitLocId, out var foundLoc)
+                ? foundLoc
+                : defaultLoc;
+            var locCode = resolvedLoc?.LocationCode ?? defaultLocCode;
+            var locId = resolvedLoc?.LocationId;
+
+            string? policyOrLocationError = null;
+            if (line.DestinationLocationId is { } expId)
+            {
+                if (!activeLocations.TryGetValue(expId, out var expLoc))
+                {
+                    policyOrLocationError = "location_not_found: Selected warehouse location does not exist or is inactive.";
+                }
+                else if (!InventoryAvailabilityService.IsZoneCompatibleWithStatus(expLoc.ZoneType, normalizedStockStatus))
+                {
+                    policyOrLocationError = $"location_zone_mismatch: Location '{expLoc.LocationCode}' ({expLoc.ZoneType}) cannot hold '{normalizedStockStatus}' stock.";
+                }
+            }
+
+            if (policyOrLocationError is null)
+            {
+                if (lotPolicy == LotTrackingPolicies.Required && trimmedLot is null)
+                {
+                    policyOrLocationError = $"lot_required_by_item_policy: Item '{line.ItemCode}' requires a stock lot number for Gate 2 acceptance.";
+                }
+                else if (lotPolicy == LotTrackingPolicies.None && trimmedLot is not null)
+                {
+                    policyOrLocationError = $"lot_not_enabled_for_item: Item '{line.ItemCode}' does not track stock lots.";
+                }
+            }
+
             try
             {
                 var step = ValuationPool.SimulateReceiptValuation(
@@ -131,7 +197,11 @@ public static class InventoryValuationService
                     step.NewBaseQuantity,
                     step.NewCarryingValue,
                     step.NewMovingAverageCost,
-                    null));
+                    policyOrLocationError,
+                    lotPolicy,
+                    trimmedLot,
+                    locId,
+                    locCode));
             }
             catch (InvalidOperationException ex)
             {
@@ -150,7 +220,11 @@ public static class InventoryValuationService
                     cur.Qty,
                     cur.Carrying,
                     cur.Cost,
-                    ex.Message));
+                    ex.Message,
+                    lotPolicy,
+                    trimmedLot,
+                    locId,
+                    locCode));
             }
         }
 
@@ -269,7 +343,13 @@ public static class InventoryValuationService
         try
         {
             var normalizedStatus = StockStatuses.Normalize(stockStatus);
-            var seq = await IncrementMovementSequenceAsync(db, tenantId, entityId, postingDate.Year, ct);
+            var layout = await InventoryAvailabilityService.EnsureDefaultWarehouseAndLocationsAsync(db, tenantId, entityId, nowUtc, ct);
+            var itemIds = lines.Select(l => l.Line.ItemId).Distinct().ToList();
+            var itemLotPolicies = await db.Items.AsNoTracking()
+                .Where(i => i.TenantId == tenantId && itemIds.Contains(i.ItemId))
+                .ToDictionaryAsync(i => i.ItemId, i => i.LotTrackingPolicy, ct);
+
+            var seq = await IncrementEntityYearSequenceAsync(db, "inventory.movement_sequences", tenantId, entityId, postingDate.Year, ct);
             var movementNumber = $"MOV-{postingDate.Year}-{seq.ToString("D5", CultureInfo.InvariantCulture)}";
             var movementId = Guid.NewGuid();
 
@@ -293,6 +373,7 @@ public static class InventoryValuationService
 
             var movementLines = new List<MovementLine>(lines.Count);
             var valuationEntries = new List<ValuationEntry>(lines.Count);
+            var resolvedTargets = new List<ResolvedAcceptedStockTarget>(lines.Count);
 
             for (var movLineIdx = 0; movLineIdx < lines.Count; movLineIdx++)
             {
@@ -308,8 +389,60 @@ public static class InventoryValuationService
                         $"Base UoM mismatch between accepted item '{line.ItemCode}' and inventory pool.");
                 }
 
+                var lotPolicy = itemLotPolicies.GetValueOrDefault(line.ItemId, LotTrackingPolicies.None);
+                var trimmedLot = string.IsNullOrWhiteSpace(line.LotNumber) ? null : line.LotNumber.Trim();
+                if (lotPolicy == LotTrackingPolicies.Required && trimmedLot is null)
+                {
+                    return PostStockAcceptanceResult.Fail(
+                        409,
+                        "lot_required_by_item_policy",
+                        $"Item '{line.ItemCode}' requires a stock lot number for Gate 2 acceptance.");
+                }
+
+                if (lotPolicy == LotTrackingPolicies.None && trimmedLot is not null)
+                {
+                    return PostStockAcceptanceResult.Fail(
+                        409,
+                        "lot_not_enabled_for_item",
+                        $"Item '{line.ItemCode}' does not track stock lots.");
+                }
+
+                var targetLocation = layout.ResolveForStatus(normalizedStatus, line.DestinationLocationId);
+                StockLot? lot = null;
+                if (trimmedLot is not null)
+                {
+                    lot = await InventoryAvailabilityService.UpsertStockLotAsync(
+                        db,
+                        tenantId,
+                        entityId,
+                        line.ItemId,
+                        trimmedLot,
+                        line.SupplierLotReference,
+                        line.ManufacturedDate,
+                        line.ExpiryDate,
+                        valuedAcceptanceId,
+                        actorUserId,
+                        nowUtc,
+                        ct);
+                }
+
+                var locBalance = await InventoryAvailabilityService.EnsureAndLockLocationBalanceAsync(
+                    db,
+                    tenantId,
+                    entityId,
+                    pos.StockPositionId,
+                    line.ItemId,
+                    line.BaseUomId,
+                    targetLocation.WarehouseId,
+                    targetLocation.LocationId,
+                    lot?.StockLotId,
+                    normalizedStatus,
+                    nowUtc,
+                    ct);
+
                 var step = pool.ApplyReceiptValuation(line.AcceptedBaseQuantity, line.AcceptedLineAmount, nowUtc);
                 pos.ApplyInboundReceipt(line.AcceptedBaseQuantity, normalizedStatus, nowUtc);
+                locBalance.AdjustOnHand(line.AcceptedBaseQuantity, nowUtc);
 
                 var movLineId = Guid.NewGuid();
                 var movLine = MovementLine.Create(
@@ -325,7 +458,10 @@ public static class InventoryValuationService
                     normalizedStatus,
                     line.AcceptedBaseQuantity,
                     line.UnitCostBase,
-                    line.AcceptedLineAmount);
+                    line.AcceptedLineAmount,
+                    targetLocation.WarehouseId,
+                    targetLocation.LocationId,
+                    lot?.StockLotId);
 
                 var valEntry = ValuationEntry.Record(
                     Guid.NewGuid(),
@@ -351,6 +487,15 @@ public static class InventoryValuationService
 
                 movementLines.Add(movLine);
                 valuationEntries.Add(valEntry);
+                resolvedTargets.Add(new ResolvedAcceptedStockTarget(
+                    acceptanceLineId,
+                    line.GoodsReceiptLineId,
+                    line.ItemId,
+                    line.BaseUomId,
+                    targetLocation.WarehouseId,
+                    targetLocation.LocationId,
+                    lot?.StockLotId,
+                    line.AcceptedBaseQuantity));
             }
 
             db.MovementLines.AddRange(movementLines);
@@ -365,7 +510,8 @@ public static class InventoryValuationService
                 movementLines,
                 valuationEntries,
                 locked.PositionsByItem.Values.ToList(),
-                locked.PoolsByItem.Values.ToList());
+                locked.PoolsByItem.Values.ToList(),
+                resolvedTargets);
         }
         catch (ArgumentException ex)
         {
@@ -380,13 +526,40 @@ public static class InventoryValuationService
         }
     }
 
-    private static async Task<long> IncrementMovementSequenceAsync(
+    internal static async Task<long> IncrementEntityYearSequenceAsync(
         AtheraDbContext db,
+        string qualifiedTableName,
         Guid tenantId,
         Guid entityId,
         int fiscalYear,
         CancellationToken ct)
     {
+        var sql = qualifiedTableName switch
+        {
+            "inventory.movement_sequences" => """
+                INSERT INTO inventory.movement_sequences (tenant_id, legal_entity_id, fiscal_year, last_number)
+                VALUES (@tid, @eid, @fy, 1)
+                ON CONFLICT (tenant_id, legal_entity_id, fiscal_year)
+                DO UPDATE SET last_number = inventory.movement_sequences.last_number + 1
+                RETURNING last_number;
+                """,
+            "inventory.reservation_sequences" => """
+                INSERT INTO inventory.reservation_sequences (tenant_id, legal_entity_id, fiscal_year, last_number)
+                VALUES (@tid, @eid, @fy, 1)
+                ON CONFLICT (tenant_id, legal_entity_id, fiscal_year)
+                DO UPDATE SET last_number = inventory.reservation_sequences.last_number + 1
+                RETURNING last_number;
+                """,
+            "quality.inspection_sequences" => """
+                INSERT INTO quality.inspection_sequences (tenant_id, legal_entity_id, fiscal_year, last_number)
+                VALUES (@tid, @eid, @fy, 1)
+                ON CONFLICT (tenant_id, legal_entity_id, fiscal_year)
+                DO UPDATE SET last_number = quality.inspection_sequences.last_number + 1
+                RETURNING last_number;
+                """,
+            _ => throw new ArgumentException($"Unsupported sequence table '{qualifiedTableName}'.", nameof(qualifiedTableName))
+        };
+
         var conn = db.Database.GetDbConnection();
         if (conn.State != ConnectionState.Open)
         {
@@ -395,13 +568,7 @@ public static class InventoryValuationService
 
         await using var cmd = conn.CreateCommand();
         cmd.Transaction = db.Database.CurrentTransaction?.GetDbTransaction();
-        cmd.CommandText = """
-            INSERT INTO inventory.movement_sequences (tenant_id, legal_entity_id, fiscal_year, last_number)
-            VALUES (@tid, @eid, @fy, 1)
-            ON CONFLICT (tenant_id, legal_entity_id, fiscal_year)
-            DO UPDATE SET last_number = inventory.movement_sequences.last_number + 1
-            RETURNING last_number;
-            """;
+        cmd.CommandText = sql;
 
         var pTid = cmd.CreateParameter();
         pTid.ParameterName = "tid";

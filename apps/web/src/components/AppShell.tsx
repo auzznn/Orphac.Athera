@@ -375,8 +375,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       key: "inventory",
       label: t.shell.navItems.inventory,
       icon: Package,
-      href: baseEntityPath && permissionSet.has("inventory.read") ? `${baseEntityPath}/inventory` : null,
-      permitted: permissionSet.has("inventory.read"),
+      href:
+        baseEntityPath &&
+        (permissionSet.has("inventory.read") ||
+          permissionSet.has("inventory.manage") ||
+          permissionSet.has("quality.inspect"))
+          ? `${baseEntityPath}/inventory`
+          : null,
+      permitted:
+        permissionSet.has("inventory.read") ||
+        permissionSet.has("inventory.manage") ||
+        permissionSet.has("quality.inspect"),
       active: pathname.endsWith("/inventory") || pathname.includes("/inventory/"),
     },
     {

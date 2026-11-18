@@ -137,6 +137,7 @@ public sealed record ItemListItemDto(
     string ItemCode,
     string Name,
     string ItemKind,
+    string LotTrackingPolicy,
     Guid BaseUomId,
     string BaseUomCode,
     int BasePrecisionScale,
@@ -157,6 +158,7 @@ public sealed record ItemDetailDto(
     string ItemCode,
     string Name,
     string ItemKind,
+    string LotTrackingPolicy,
     Guid BaseUomId,
     string BaseUomCode,
     int BasePrecisionScale,
@@ -188,7 +190,8 @@ public sealed record CreateItemRequest(
     Guid BaseUomId,
     Guid? DefaultPurchaseUomId,
     Guid? DefaultSalesUomId,
-    string EntityScopeMode);
+    string EntityScopeMode,
+    string? LotTrackingPolicy = null);
 
 public sealed record UpdateItemRequest(
     string Name,
@@ -197,7 +200,8 @@ public sealed record UpdateItemRequest(
     Guid DefaultSalesUomId,
     string EntityScopeMode,
     string? Status,
-    long ExpectedVersion);
+    long ExpectedVersion,
+    string? LotTrackingPolicy = null);
 
 public sealed record UpsertItemUomRequest(
     Guid UomId,

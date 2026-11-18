@@ -5841,6 +5841,920 @@
           }
         }
       }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/warehouses": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ListInventoryWarehouses",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarehouseListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CreateWarehouse",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWarehouseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarehouseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/warehouses/{warehouseId}/locations": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CreateWarehouseLocation",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "warehouseId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWarehouseLocationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarehouseLocationDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/items/{itemId}/detail": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetItemStockDetail",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemStockDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/transfers": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "TransferInventoryLocation",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TransferStockLocationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryMovementResultDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryMovementResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/inspections/{inspectionId}/dispositions": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "RecordInspectionDisposition",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "inspectionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordInspectionDispositionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspectionDispositionOutcomeDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InspectionDispositionOutcomeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/status-transitions": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "TransitionInventoryStockStatus",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockStatusTransitionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryMovementResultDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryMovementResultDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/reservations": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CreateStockReservation",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStockReservationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockReservationOutcomeDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockReservationOutcomeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/reservations/{reservationId}/release": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ReleaseStockReservation",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "reservationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleaseStockReservationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockReservationOutcomeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -5937,7 +6851,11 @@
           "projectedPoolBaseQuantity",
           "projectedCarryingValue",
           "projectedMovingAverageCost",
-          "blockingReason"
+          "blockingReason",
+          "lotTrackingPolicy",
+          "lotNumber",
+          "destinationLocationId",
+          "destinationLocationCode"
         ],
         "type": "object",
         "properties": {
@@ -6035,6 +6953,28 @@
               "null",
               "string"
             ]
+          },
+          "lotTrackingPolicy": {
+            "type": "string"
+          },
+          "lotNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "destinationLocationId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "destinationLocationCode": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -6099,6 +7039,39 @@
               "string"
             ],
             "format": "double"
+          },
+          "destinationLocationId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "lotNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "supplierLotReference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "manufacturedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "expiryDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
           }
         }
       },
@@ -6907,6 +7880,12 @@
           },
           "entityScopeMode": {
             "type": "string"
+          },
+          "lotTrackingPolicy": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -7063,6 +8042,83 @@
           }
         }
       },
+      "CreateStockReservationRequest": {
+        "required": [
+          "itemId",
+          "locationId",
+          "stockLotId",
+          "sourceType",
+          "sourceDocumentId",
+          "sourceDocumentNumber",
+          "sourceLineId",
+          "quantity",
+          "expiresAtUtc",
+          "idempotencyKey",
+          "notes"
+        ],
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "sourceType": {
+            "type": "string"
+          },
+          "sourceDocumentId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "sourceDocumentNumber": {
+            "type": "string"
+          },
+          "sourceLineId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "expiresAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "CreateTaxCodeRequest": {
         "required": [
           "code",
@@ -7174,6 +8230,44 @@
               "string"
             ],
             "format": "int32"
+          }
+        }
+      },
+      "CreateWarehouseLocationRequest": {
+        "required": [
+          "locationCode",
+          "name",
+          "zoneType",
+          "isDefaultReceiving"
+        ],
+        "type": "object",
+        "properties": {
+          "locationCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "zoneType": {
+            "type": "string"
+          },
+          "isDefaultReceiving": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateWarehouseRequest": {
+        "required": [
+          "warehouseCode",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "warehouseCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
           }
         }
       },
@@ -8581,6 +9675,12 @@
           "updatedAtUtc": {
             "type": "string",
             "format": "date-time"
+          },
+          "itemLotTrackingPolicy": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -8903,16 +10003,177 @@
           }
         }
       },
+      "InspectionDispositionDto": {
+        "required": [
+          "inspectionDispositionId",
+          "receiptInspectionId",
+          "stockMovementId",
+          "movementNumber",
+          "dispositionDate",
+          "releasedBaseQuantity",
+          "targetReleaseLocationId",
+          "targetReleaseLocationCode",
+          "blockedBaseQuantity",
+          "targetBlockLocationId",
+          "targetBlockLocationCode",
+          "reasonCode",
+          "evidenceReference",
+          "notes",
+          "decidedByEmail",
+          "decidedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "inspectionDispositionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptInspectionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "stockMovementId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movementNumber": {
+            "type": "string"
+          },
+          "dispositionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "releasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "targetReleaseLocationId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "targetReleaseLocationCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "blockedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "targetBlockLocationId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "targetBlockLocationCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "reasonCode": {
+            "type": "string"
+          },
+          "evidenceReference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "decidedByEmail": {
+            "type": "string"
+          },
+          "decidedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "InspectionDispositionOutcomeDto": {
+        "required": [
+          "inspection",
+          "disposition",
+          "movementNumber",
+          "wasIdempotentReplay"
+        ],
+        "type": "object",
+        "properties": {
+          "inspection": {
+            "$ref": "#/components/schemas/ReceiptInspectionSummaryDto"
+          },
+          "disposition": {
+            "$ref": "#/components/schemas/InspectionDispositionDto"
+          },
+          "movementNumber": {
+            "type": "string"
+          },
+          "wasIdempotentReplay": {
+            "type": "boolean"
+          }
+        }
+      },
+      "InventoryMovementResultDto": {
+        "required": [
+          "stockMovementId",
+          "movementNumber",
+          "movementType",
+          "postingDate",
+          "wasIdempotentReplay"
+        ],
+        "type": "object",
+        "properties": {
+          "stockMovementId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movementNumber": {
+            "type": "string"
+          },
+          "movementType": {
+            "type": "string"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "wasIdempotentReplay": {
+            "type": "boolean"
+          }
+        }
+      },
       "InventoryOverviewResponse": {
         "required": [
           "positions",
           "recentMovements",
           "openAccruals",
+          "locations",
+          "inspections",
           "totalStockedItemsWithBalance",
           "totalCarryingValueIdr",
           "totalOpenGrniAccrualIdr",
           "restrictedStockItemCount",
-          "od04Notice"
+          "od04Notice",
+          "od10Notice"
         ],
         "type": "object",
         "properties": {
@@ -8932,6 +10193,18 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ReceiptAccrualOverviewDto"
+            }
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WarehouseLocationDto"
+            }
+          },
+          "inspections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceiptInspectionSummaryDto"
             }
           },
           "totalStockedItemsWithBalance": {
@@ -8967,6 +10240,9 @@
             "format": "int32"
           },
           "od04Notice": {
+            "type": "string"
+          },
+          "od10Notice": {
             "type": "string"
           }
         }
@@ -9027,6 +10303,7 @@
           "itemCode",
           "name",
           "itemKind",
+          "lotTrackingPolicy",
           "baseUomId",
           "baseUomCode",
           "basePrecisionScale",
@@ -9058,6 +10335,9 @@
             "type": "string"
           },
           "itemKind": {
+            "type": "string"
+          },
+          "lotTrackingPolicy": {
             "type": "string"
           },
           "baseUomId": {
@@ -9194,6 +10474,7 @@
           "itemCode",
           "name",
           "itemKind",
+          "lotTrackingPolicy",
           "baseUomId",
           "baseUomCode",
           "basePrecisionScale",
@@ -9222,6 +10503,9 @@
             "type": "string"
           },
           "itemKind": {
+            "type": "string"
+          },
+          "lotTrackingPolicy": {
             "type": "string"
           },
           "baseUomId": {
@@ -9284,6 +10568,333 @@
               "string"
             ],
             "format": "int64"
+          }
+        }
+      },
+      "ItemMovementTraceDto": {
+        "required": [
+          "stockMovementId",
+          "movementLineId",
+          "movementNumber",
+          "movementType",
+          "postingDate",
+          "sourceDocumentType",
+          "sourceDocumentNumber",
+          "locationCode",
+          "zoneType",
+          "lotNumber",
+          "resultingStockStatus",
+          "baseQuantityDelta",
+          "unitValuationCost",
+          "lineValuationAmount",
+          "notes",
+          "createdByEmail",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "stockMovementId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movementLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movementNumber": {
+            "type": "string"
+          },
+          "movementType": {
+            "type": "string"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "sourceDocumentType": {
+            "type": "string"
+          },
+          "sourceDocumentNumber": {
+            "type": "string"
+          },
+          "locationCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "zoneType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lotNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "resultingStockStatus": {
+            "type": "string"
+          },
+          "baseQuantityDelta": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unitValuationCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lineValuationAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdByEmail": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ItemReconciliationDto": {
+        "required": [
+          "isReconciled",
+          "positionOnHandTotal",
+          "positionUnrestricted",
+          "positionQualityInspection",
+          "positionBlocked",
+          "positionReserved",
+          "positionAvailable",
+          "locationBalancesOnHandTotal",
+          "locationBalancesUnrestricted",
+          "locationBalancesQualityInspection",
+          "locationBalancesBlocked",
+          "locationBalancesReserved",
+          "movementsNetTotal",
+          "activeReservationsRemaining"
+        ],
+        "type": "object",
+        "properties": {
+          "isReconciled": {
+            "type": "boolean"
+          },
+          "positionOnHandTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "positionUnrestricted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "positionQualityInspection": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "positionBlocked": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "positionReserved": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "positionAvailable": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "locationBalancesOnHandTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "locationBalancesUnrestricted": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "locationBalancesQualityInspection": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "locationBalancesBlocked": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "locationBalancesReserved": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "movementsNetTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "activeReservationsRemaining": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "ItemStockDetailResponse": {
+        "required": [
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomCode",
+          "lotTrackingPolicy",
+          "currencyCode",
+          "poolStatus",
+          "carryingValueAmount",
+          "movingAverageUnitCost",
+          "reconciliation",
+          "locationBalances",
+          "lots",
+          "inspections",
+          "reservations",
+          "movementTimeline"
+        ],
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "lotTrackingPolicy": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "poolStatus": {
+            "type": "string"
+          },
+          "carryingValueAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "movingAverageUnitCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reconciliation": {
+            "$ref": "#/components/schemas/ItemReconciliationDto"
+          },
+          "locationBalances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StockLocationBalanceDto"
+            }
+          },
+          "lots": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StockLotSummaryDto"
+            }
+          },
+          "inspections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceiptInspectionSummaryDto"
+            }
+          },
+          "reservations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StockReservationDto"
+            }
+          },
+          "movementTimeline": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemMovementTraceDto"
+            }
           }
         }
       },
@@ -12084,6 +13695,143 @@
           }
         }
       },
+      "ReceiptInspectionSummaryDto": {
+        "required": [
+          "receiptInspectionId",
+          "inspectionNumber",
+          "valuedAcceptanceId",
+          "acceptanceNumber",
+          "goodsReceiptId",
+          "receiptNumber",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomCode",
+          "warehouseId",
+          "quarantineLocationId",
+          "quarantineLocationCode",
+          "stockLotId",
+          "lotNumber",
+          "inspectedTotalBaseQuantity",
+          "pendingBaseQuantity",
+          "releasedBaseQuantity",
+          "blockedBaseQuantity",
+          "status",
+          "createdAtUtc",
+          "updatedAtUtc",
+          "dispositions"
+        ],
+        "type": "object",
+        "properties": {
+          "receiptInspectionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "inspectionNumber": {
+            "type": "string"
+          },
+          "valuedAcceptanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "acceptanceNumber": {
+            "type": "string"
+          },
+          "goodsReceiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptNumber": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quarantineLocationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "quarantineLocationCode": {
+            "type": "string"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "lotNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "inspectedTotalBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pendingBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "releasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "blockedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "dispositions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InspectionDispositionDto"
+            }
+          }
+        }
+      },
       "RecordDockCheckRequest": {
         "required": [
           "idempotencyKey",
@@ -12209,6 +13957,91 @@
           }
         }
       },
+      "RecordInspectionDispositionRequest": {
+        "required": [
+          "dispositionDate",
+          "releasedBaseQuantity",
+          "targetReleaseLocationId",
+          "blockedBaseQuantity",
+          "targetBlockLocationId",
+          "reasonCode",
+          "evidenceReference",
+          "notes",
+          "idempotencyKey"
+        ],
+        "type": "object",
+        "properties": {
+          "dispositionDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "releasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "targetReleaseLocationId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "blockedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "targetBlockLocationId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "reasonCode": {
+            "type": "string"
+          },
+          "evidenceReference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "idempotencyKey": {
+            "type": "string"
+          }
+        }
+      },
+      "ReleaseStockReservationRequest": {
+        "required": [
+          "releaseBaseQuantity"
+        ],
+        "type": "object",
+        "properties": {
+          "releaseBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
       "ReverseJournalRequest": {
         "required": [
           "reversalPostingDate",
@@ -12222,6 +14055,167 @@
           },
           "reason": {
             "type": "string"
+          }
+        }
+      },
+      "StockLocationBalanceDto": {
+        "required": [
+          "stockLocationBalanceId",
+          "warehouseId",
+          "warehouseCode",
+          "locationId",
+          "locationCode",
+          "locationName",
+          "zoneType",
+          "stockLotId",
+          "lotNumber",
+          "lotExpiryDate",
+          "stockStatus",
+          "onHandBaseQuantity",
+          "reservedBaseQuantity",
+          "availableBaseQuantity",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "stockLocationBalanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseCode": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationCode": {
+            "type": "string"
+          },
+          "locationName": {
+            "type": "string"
+          },
+          "zoneType": {
+            "type": "string"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "lotNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lotExpiryDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "stockStatus": {
+            "type": "string"
+          },
+          "onHandBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reservedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "availableBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "StockLotSummaryDto": {
+        "required": [
+          "stockLotId",
+          "itemId",
+          "lotNumber",
+          "supplierLotReference",
+          "manufacturedDate",
+          "expiryDate",
+          "sourceValuedAcceptanceId",
+          "sourceAcceptanceNumber",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "stockLotId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lotNumber": {
+            "type": "string"
+          },
+          "supplierLotReference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "manufacturedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "expiryDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "sourceValuedAcceptanceId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "sourceAcceptanceNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -12296,6 +14290,7 @@
           "itemId",
           "itemCode",
           "itemName",
+          "lotTrackingPolicy",
           "baseUomId",
           "baseUomCode",
           "valuationGroupCode",
@@ -12310,6 +14305,9 @@
           "movingAverageUnitCost",
           "poolStatus",
           "lastEntrySequence",
+          "locationCount",
+          "activeLotCount",
+          "pendingInspectionCount",
           "updatedAtUtc"
         ],
         "type": "object",
@@ -12326,6 +14324,9 @@
             "type": "string"
           },
           "itemName": {
+            "type": "string"
+          },
+          "lotTrackingPolicy": {
             "type": "string"
           },
           "baseUomId": {
@@ -12416,9 +14417,269 @@
             ],
             "format": "int64"
           },
+          "locationCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "activeLotCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pendingInspectionCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
           "updatedAtUtc": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "StockReservationDto": {
+        "required": [
+          "stockReservationId",
+          "reservationNumber",
+          "stockLocationBalanceId",
+          "itemId",
+          "itemCode",
+          "warehouseId",
+          "locationId",
+          "locationCode",
+          "stockLotId",
+          "lotNumber",
+          "sourceType",
+          "sourceDocumentId",
+          "sourceDocumentNumber",
+          "reservedBaseQuantity",
+          "consumedBaseQuantity",
+          "releasedBaseQuantity",
+          "remainingReservedBaseQuantity",
+          "status",
+          "notes",
+          "expiresAtUtc",
+          "createdByEmail",
+          "createdAtUtc",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "stockReservationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reservationNumber": {
+            "type": "string"
+          },
+          "stockLocationBalanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationCode": {
+            "type": "string"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "lotNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "sourceType": {
+            "type": "string"
+          },
+          "sourceDocumentId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "sourceDocumentNumber": {
+            "type": "string"
+          },
+          "reservedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "consumedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "releasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingReservedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "status": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "expiresAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "createdByEmail": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "StockReservationOutcomeDto": {
+        "required": [
+          "reservation",
+          "wasIdempotentReplay"
+        ],
+        "type": "object",
+        "properties": {
+          "reservation": {
+            "$ref": "#/components/schemas/StockReservationDto"
+          },
+          "wasIdempotentReplay": {
+            "type": "boolean"
+          }
+        }
+      },
+      "StockStatusTransitionRequest": {
+        "required": [
+          "itemId",
+          "fromLocationId",
+          "toLocationId",
+          "stockLotId",
+          "fromStatus",
+          "toStatus",
+          "quantity",
+          "postingDate",
+          "reasonCode",
+          "evidenceReference",
+          "notes",
+          "idempotencyKey"
+        ],
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fromLocationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "toLocationId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "fromStatus": {
+            "type": "string"
+          },
+          "toStatus": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "reasonCode": {
+            "type": "string"
+          },
+          "evidenceReference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "idempotencyKey": {
+            "type": "string"
           }
         }
       },
@@ -12618,6 +14879,65 @@
           }
         }
       },
+      "TransferStockLocationRequest": {
+        "required": [
+          "itemId",
+          "fromLocationId",
+          "toLocationId",
+          "stockLotId",
+          "stockStatus",
+          "quantity",
+          "postingDate",
+          "idempotencyKey",
+          "notes"
+        ],
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fromLocationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "toLocationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "stockStatus": {
+            "type": "string"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "UnitOfMeasureDto": {
         "required": [
           "uomId",
@@ -12768,6 +15088,12 @@
               "string"
             ],
             "format": "int64"
+          },
+          "lotTrackingPolicy": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -13526,6 +15852,110 @@
             ]
           },
           "acceptedByEmail": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "WarehouseDto": {
+        "required": [
+          "warehouseId",
+          "warehouseCode",
+          "name",
+          "isDefault",
+          "status",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isDefault": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "WarehouseListResponse": {
+        "required": [
+          "warehouses",
+          "locations"
+        ],
+        "type": "object",
+        "properties": {
+          "warehouses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WarehouseDto"
+            }
+          },
+          "locations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WarehouseLocationDto"
+            }
+          }
+        }
+      },
+      "WarehouseLocationDto": {
+        "required": [
+          "locationId",
+          "warehouseId",
+          "warehouseCode",
+          "warehouseName",
+          "locationCode",
+          "name",
+          "zoneType",
+          "isDefaultReceiving",
+          "status",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "locationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseCode": {
+            "type": "string"
+          },
+          "warehouseName": {
+            "type": "string"
+          },
+          "locationCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "zoneType": {
+            "type": "string"
+          },
+          "isDefaultReceiving": {
+            "type": "boolean"
+          },
+          "status": {
             "type": "string"
           },
           "createdAtUtc": {

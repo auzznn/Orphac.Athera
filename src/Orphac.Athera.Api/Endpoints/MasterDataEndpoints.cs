@@ -701,6 +701,7 @@ public static class MasterDataEndpoints
                             i.ItemCode,
                             i.Name,
                             i.ItemKind,
+                            i.LotTrackingPolicy,
                             i.BaseUomId,
                             baseUom.UomCode,
                             baseUom.QuantityPrecisionScale,
@@ -785,7 +786,8 @@ public static class MasterDataEndpoints
                             request.DefaultPurchaseUomId,
                             request.DefaultSalesUomId,
                             request.EntityScopeMode,
-                            nowUtc);
+                            nowUtc,
+                            request.LotTrackingPolicy);
                     }
                     catch (ArgumentException ex)
                     {
@@ -897,6 +899,21 @@ public static class MasterDataEndpoints
                         return EndpointSupport.BadRequest(httpContext, "invalid_uom", "Selected default purchase/sales unit of measure does not belong to this tenant.");
                     }
 
+                    if (!string.IsNullOrWhiteSpace(request.LotTrackingPolicy)
+                        && LotTrackingPolicies.Normalize(request.LotTrackingPolicy) == LotTrackingPolicies.Required
+                        && item.LotTrackingPolicy != LotTrackingPolicies.Required)
+                    {
+                        var hasUnlottedStock = await db.StockLocationBalances.AsNoTracking()
+                            .AnyAsync(b => b.TenantId == tenantId && b.ItemId == itemId && b.StockLotId == null && b.OnHandBaseQuantity > 0m, innerCt);
+                        if (hasUnlottedStock)
+                        {
+                            return EndpointSupport.Conflict(
+                                httpContext,
+                                "unlotted_stock_prevents_required_lot_policy",
+                                "Cannot enforce REQUIRED lot tracking while unlotted stock balances remain on hand.");
+                        }
+                    }
+
                     var nowUtc = DateTimeOffset.UtcNow;
                     try
                     {
@@ -906,7 +923,8 @@ public static class MasterDataEndpoints
                             request.DefaultPurchaseUomId,
                             request.DefaultSalesUomId,
                             request.EntityScopeMode,
-                            nowUtc);
+                            nowUtc,
+                            request.LotTrackingPolicy);
 
                         if (!string.IsNullOrWhiteSpace(request.Status))
                         {
@@ -1415,6 +1433,7 @@ public static class MasterDataEndpoints
             item.ItemCode,
             item.Name,
             item.ItemKind,
+            item.LotTrackingPolicy,
             item.BaseUomId,
             baseUom.UomCode,
             baseUom.QuantityPrecisionScale,

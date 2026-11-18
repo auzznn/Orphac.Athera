@@ -28,6 +28,26 @@ public static class ItemKinds
     }
 }
 
+public static class LotTrackingPolicies
+{
+    public const string None = "NONE";
+    public const string Optional = "OPTIONAL";
+    public const string Required = "REQUIRED";
+
+    public static readonly IReadOnlyList<string> All = [None, Optional, Required];
+
+    public static string Normalize(string? raw)
+    {
+        var value = string.IsNullOrWhiteSpace(raw) ? None : raw.Trim().ToUpperInvariant();
+        if (value is not (None or Optional or Required))
+        {
+            throw new ArgumentException($"Unsupported lot tracking policy '{raw}'.", nameof(raw));
+        }
+
+        return value;
+    }
+}
+
 /// <summary>
 /// Tenant-scoped unit of measure defining explicit decimal precision scale (0 = discrete, 1..6 = continuous).
 /// </summary>
@@ -88,6 +108,7 @@ public sealed class Item
     public string ItemCode { get; private set; } = string.Empty;
     public string Name { get; private set; } = string.Empty;
     public string ItemKind { get; private set; } = ItemKinds.StockedGood;
+    public string LotTrackingPolicy { get; private set; } = LotTrackingPolicies.None;
     public Guid BaseUomId { get; private set; }
     public Guid DefaultPurchaseUomId { get; private set; }
     public Guid DefaultSalesUomId { get; private set; }
@@ -112,11 +133,19 @@ public sealed class Item
         Guid? defaultPurchaseUomId,
         Guid? defaultSalesUomId,
         string entityScopeMode,
-        DateTimeOffset nowUtc)
+        DateTimeOffset nowUtc,
+        string? lotTrackingPolicy = null)
     {
         GuardValidation.RequireNonEmptyGuid(itemId, nameof(itemId));
         GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
         GuardValidation.RequireNonEmptyGuid(baseUomId, nameof(baseUomId));
+
+        var normalizedKind = ItemKinds.Normalize(itemKind);
+        var normalizedLotPolicy = LotTrackingPolicies.Normalize(lotTrackingPolicy);
+        if (normalizedKind == ItemKinds.NonStockService && normalizedLotPolicy != LotTrackingPolicies.None)
+        {
+            throw new ArgumentException("Non-stock service items cannot enable lot tracking.", nameof(lotTrackingPolicy));
+        }
 
         var resolvedPurchaseUomId = defaultPurchaseUomId is { } p && p != Guid.Empty ? p : baseUomId;
         var resolvedSalesUomId = defaultSalesUomId is { } s && s != Guid.Empty ? s : baseUomId;
@@ -127,7 +156,8 @@ public sealed class Item
             TenantId = tenantId,
             ItemCode = GuardValidation.RequireMasterCode(code, nameof(code)),
             Name = GuardValidation.RequireName(name, nameof(name), 200),
-            ItemKind = ItemKinds.Normalize(itemKind),
+            ItemKind = normalizedKind,
+            LotTrackingPolicy = normalizedLotPolicy,
             BaseUomId = baseUomId,
             DefaultPurchaseUomId = resolvedPurchaseUomId,
             DefaultSalesUomId = resolvedSalesUomId,
@@ -145,13 +175,24 @@ public sealed class Item
         Guid defaultPurchaseUomId,
         Guid defaultSalesUomId,
         string entityScopeMode,
-        DateTimeOffset nowUtc)
+        DateTimeOffset nowUtc,
+        string? lotTrackingPolicy = null)
     {
         GuardValidation.RequireNonEmptyGuid(defaultPurchaseUomId, nameof(defaultPurchaseUomId));
         GuardValidation.RequireNonEmptyGuid(defaultSalesUomId, nameof(defaultSalesUomId));
 
+        var normalizedKind = ItemKinds.Normalize(itemKind);
+        var normalizedLotPolicy = lotTrackingPolicy is null
+            ? LotTrackingPolicy
+            : LotTrackingPolicies.Normalize(lotTrackingPolicy);
+        if (normalizedKind == ItemKinds.NonStockService && normalizedLotPolicy != LotTrackingPolicies.None)
+        {
+            throw new ArgumentException("Non-stock service items cannot enable lot tracking.", nameof(lotTrackingPolicy));
+        }
+
         Name = GuardValidation.RequireName(name, nameof(name), 200);
-        ItemKind = ItemKinds.Normalize(itemKind);
+        ItemKind = normalizedKind;
+        LotTrackingPolicy = normalizedLotPolicy;
         DefaultPurchaseUomId = defaultPurchaseUomId;
         DefaultSalesUomId = defaultSalesUomId;
         EntityScopeMode = EntityScopeModes.Normalize(entityScopeMode);

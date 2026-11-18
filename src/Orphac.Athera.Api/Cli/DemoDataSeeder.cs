@@ -116,7 +116,7 @@ public static class DemoDataSeeder
         await EnsureMembershipAsync(db, nusaId, u2Id, nowUtc, ct);
         await EnsureMembershipAsync(db, smdrId, u2Id, nowUtc, ct);
 
-        // U1: NUSA-JKT only (NUSA-SBY and SMDR-BDG remain inaccessible; SoD: no approval or finance grants)
+        // U1: NUSA-JKT only (NUSA-SBY and SMDR-BDG remain inaccessible; SoD: no approval, quality.inspect, or finance grants)
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.WorkspaceView, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ProcurementRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ProcurementManage, nowUtc, ct);
@@ -124,6 +124,7 @@ public static class DemoDataSeeder
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ReceivingManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ReceivingAccept, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.InventoryRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.InventoryManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.PartnersRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.CatalogRead, nowUtc, ct);
@@ -154,6 +155,8 @@ public static class DemoDataSeeder
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ReceivingManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ReceivingAccept, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.InventoryRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.InventoryManage, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.QualityInspect, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.CatalogManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.FinanceConfigManage, nowUtc, ct);
@@ -310,6 +313,21 @@ public static class DemoDataSeeder
             nusaJktId,
             supNusa.PartnerId,
             steelPlateItem.ItemId,
+            nusaPcs.UomId,
+            u1Id,
+            u2Id,
+            nowUtc,
+            ct);
+
+        // S08 warehouse locations, lot-required chemical solvent item, and pending QUALITY_INSPECTION queue on NUSA-JKT
+        await EnsureS08WarehouseAndQualityDataAsync(
+            db,
+            nusaId,
+            nusaJktId,
+            nusaSbyId,
+            smdrId,
+            smdrBdgId,
+            supNusa.PartnerId,
             nusaPcs.UomId,
             u1Id,
             u2Id,
@@ -591,7 +609,8 @@ public static class DemoDataSeeder
         string entityScopeMode,
         Guid? eligibleEntityId,
         DateTimeOffset nowUtc,
-        CancellationToken ct)
+        CancellationToken ct,
+        string? lotTrackingPolicy = null)
     {
         var item = await db.Items.SingleOrDefaultAsync(
             i => i.TenantId == tenantId && i.ItemCode == itemCode,
@@ -608,7 +627,8 @@ public static class DemoDataSeeder
                 defaultPurchaseUomId,
                 defaultSalesUomId,
                 entityScopeMode,
-                nowUtc);
+                nowUtc,
+                lotTrackingPolicy);
             db.Items.Add(item);
             await db.SaveChangesAsync(ct);
         }
@@ -1315,6 +1335,164 @@ public static class DemoDataSeeder
         if (!dock2Outcome.Succeeded)
         {
             throw new InvalidOperationException($"Failed seeding S07 Gate 1 release 2: {dock2Outcome.ErrorCode} {dock2Outcome.ErrorDetail}");
+        }
+
+        await tx.CommitAsync(ct);
+    }
+
+    private static async Task EnsureS08WarehouseAndQualityDataAsync(
+        AtheraDbContext db,
+        Guid nusaTenantId,
+        Guid nusaJktId,
+        Guid nusaSbyId,
+        Guid smdrTenantId,
+        Guid smdrBdgId,
+        Guid nusaSupplierId,
+        Guid pcsUomId,
+        Guid requesterUserId,
+        Guid inspectorApproverUserId,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
+        // Initialize WH-MAIN + default locations across all demo entities cleanly (zero stock on NUSA-SBY).
+        foreach (var (tid, eid) in new[] { (nusaTenantId, nusaJktId), (nusaTenantId, nusaSbyId), (smdrTenantId, smdrBdgId) })
+        {
+            await using var whTx = await db.Database.BeginTransactionAsync(ct);
+            await InventoryAvailabilityService.EnsureDefaultWarehouseAndLocationsAsync(db, tid, eid, nowUtc, ct);
+            await whTx.CommitAsync(ct);
+        }
+
+        // Seed secondary rack LOC-RACK-B2 on NUSA-JKT for location transfer demonstrations.
+        var jktLayout = await InventoryAvailabilityService.EnsureDefaultWarehouseAndLocationsAsync(db, nusaTenantId, nusaJktId, nowUtc, ct);
+        if (!jktLayout.LocationsByCode.ContainsKey("LOC-RACK-B2"))
+        {
+            db.WarehouseLocations.Add(WarehouseLocation.Create(
+                Guid.NewGuid(),
+                nusaTenantId,
+                nusaJktId,
+                jktLayout.DefaultWarehouse.WarehouseId,
+                "LOC-RACK-B2",
+                "Rak Penyimpanan Sekunder B2",
+                LocationZoneTypes.Storage,
+                isDefaultReceiving: false,
+                nowUtc));
+            await db.SaveChangesAsync(ct);
+        }
+
+        var chemItem = await EnsureItemAsync(
+            db,
+            nusaTenantId,
+            "ITM-CHEM-LOT-01",
+            "Pelarut Industri Grade A",
+            ItemKinds.StockedGood,
+            pcsUomId,
+            pcsUomId,
+            pcsUomId,
+            EntityScopeModes.AllEntities,
+            eligibleEntityId: null,
+            nowUtc,
+            ct,
+            LotTrackingPolicies.Required);
+
+        var alreadySeededLot = await db.StockLots.AnyAsync(
+            l => l.TenantId == nusaTenantId && l.LegalEntityId == nusaJktId && l.ItemId == chemItem.ItemId && l.LotNumber == "LOT-JKT-2611-01",
+            ct);
+        if (alreadySeededLot)
+        {
+            return;
+        }
+
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        var (poId, poLineId) = await CreateAndOptionallyApprovePoAsync(
+            db,
+            nusaTenantId,
+            nusaJktId,
+            nusaSupplierId,
+            chemItem.ItemId,
+            pcsUomId,
+            20m,
+            320_000m,
+            "Gudang Pusat Jakarta",
+            new DateOnly(2026, 11, 7),
+            "Pengadaan pelarut wajib lot untuk karantina mutu (Demo S08)",
+            "Pelarut Industri Grade A — Batch LOT-JKT-2611-01",
+            requesterUserId,
+            inspectorApproverUserId,
+            approve: true,
+            nowUtc.AddMinutes(10),
+            ct);
+
+        var grOutcome = await GoodsReceiptWorkflowService.RecordArrivalAsync(
+            db,
+            new RecordGoodsReceiptCommand(
+                nusaTenantId,
+                nusaJktId,
+                poId,
+                "SJ-JKT-DEMO-S08-01",
+                "seed:jkt-s08-gr1",
+                new DateOnly(2026, 11, 7),
+                "Dermaga Utama Jakarta",
+                "B 7742 JKT · Segel JKT-08B",
+                "DO-JKT-20261107-COA.pdf",
+                "Batch pelarut kimia lolos cek fisik, menunggu pemeriksaan mutu di Gate 2",
+                [new ArrivalLineInput(poLineId, pcsUomId, 20m, false, DiscrepancyReasonCodes.None, null, null)],
+                requesterUserId,
+                nowUtc.AddMinutes(11)),
+            ct);
+
+        if (!grOutcome.Succeeded || grOutcome.Receipt is null)
+        {
+            throw new InvalidOperationException($"Failed seeding S08 Gate 1 receipt: {grOutcome.ErrorCode} {grOutcome.ErrorDetail}");
+        }
+
+        var grLineId = await db.GoodsReceiptLines.AsNoTracking()
+            .Where(l => l.TenantId == nusaTenantId && l.LegalEntityId == nusaJktId && l.GoodsReceiptId == grOutcome.Receipt.GoodsReceiptId)
+            .Select(l => l.GoodsReceiptLineId)
+            .SingleAsync(ct);
+
+        var dockOutcome = await GoodsReceiptWorkflowService.RecordDockCheckAsync(
+            db,
+            new RecordDockCheckCommand(
+                nusaTenantId,
+                nusaJktId,
+                grOutcome.Receipt.GoodsReceiptId,
+                grLineId,
+                "seed:jkt-s08-dc1",
+                PendingCheckBaseQuantity: 0m,
+                DockHeldBaseQuantity: 0m,
+                DockReleasedBaseQuantity: 20m,
+                DockRejectedBaseQuantity: 0m,
+                DiscrepancyReasonCode: DiscrepancyReasonCodes.None,
+                InspectionNotes: "Kemasan drum utuh, dirilis ke karantina mutu Gate 2",
+                EvidenceReference: "QC-JKT-20261107-COA",
+                ActorUserId: requesterUserId,
+                NowUtc: nowUtc.AddMinutes(12)),
+            ct);
+
+        if (!dockOutcome.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed seeding S08 Gate 1 release: {dockOutcome.ErrorCode} {dockOutcome.ErrorDetail}");
+        }
+
+        var accOutcome = await ReceiptAcceptanceCoordinator.AcceptReceiptAsync(
+            db,
+            new AcceptReceiptCommand(
+                nusaTenantId,
+                nusaJktId,
+                "IDR",
+                grOutcome.Receipt.GoodsReceiptId,
+                "seed:jkt-s08-acc1",
+                new DateOnly(2026, 11, 7),
+                StockStatuses.QualityInspection,
+                "Penerimaan bernilai ke Zona Karantina (QUALITY_INSPECTION) menunggu inspeksi QC",
+                [new AcceptReceiptLineInput(grLineId, 20m, null, "LOT-JKT-2611-01", "SUP-CHEM-2611-A", new DateOnly(2026, 11, 1), new DateOnly(2027, 11, 30))],
+                inspectorApproverUserId,
+                nowUtc.AddMinutes(13)),
+            ct);
+
+        if (!accOutcome.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed seeding S08 Gate 2 quarantine acceptance: {accOutcome.ErrorCode} {accOutcome.ErrorDetail}");
         }
 
         await tx.CommitAsync(ct);

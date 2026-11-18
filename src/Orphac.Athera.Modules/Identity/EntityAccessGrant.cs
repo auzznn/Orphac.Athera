@@ -22,6 +22,8 @@ public static class PermissionCodes
     public const string ReceivingManage = "receiving.manage";
     public const string ReceivingAccept = "receiving.accept";
     public const string InventoryRead = "inventory.read";
+    public const string InventoryManage = "inventory.manage";
+    public const string QualityInspect = "quality.inspect";
     public const string SalesRead = "sales.read";
     public const string FinanceRead = "finance.read";
     public const string FinanceConfigManage = "finance.config.manage";
@@ -45,6 +47,8 @@ public static class PermissionCodes
         ReceivingManage,
         ReceivingAccept,
         InventoryRead,
+        InventoryManage,
+        QualityInspect,
         SalesRead,
         FinanceRead,
         FinanceConfigManage,
