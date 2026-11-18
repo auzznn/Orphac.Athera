@@ -1364,6 +1364,182 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetPaymentsOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSupplierPaymentDetail"];
+        put: operations["UpdateSupplierPaymentProposal"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/bank-accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpsertBankAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateSupplierPaymentProposal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/simulate-file": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SimulateSupplierPaymentFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SubmitSupplierPaymentForRelease"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/release": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReleaseSupplierPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/reject-released": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RejectReleasedSupplierPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/bank-statements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ImportBankStatement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/reconcile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReconcileBankStatementLine"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/matches/{matchId}/reverse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReverseBankPaymentMatch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1561,6 +1737,118 @@ export interface components {
             user: components["schemas"]["CurrentUserResponse"];
             csrfToken: string;
         };
+        BankAccountDto: {
+            /** Format: uuid */
+            bankAccountId: string;
+            accountCode: string;
+            bankName: string;
+            branchName: null | string;
+            accountNumber: string;
+            accountHolderName: string;
+            currencyCode: string;
+            /** Format: uuid */
+            glAccountId: string;
+            glAccountCode: string;
+            glAccountName: string;
+            /** Format: uuid */
+            clearingGlAccountId: string;
+            clearingGlAccountCode: string;
+            clearingGlAccountName: string;
+            status: string;
+        };
+        BankPaymentMatchDto: {
+            /** Format: uuid */
+            bankPaymentMatchId: string;
+            matchNumber: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            bankAccountCode: string;
+            /** Format: uuid */
+            bankStatementId: string;
+            statementNumber: string;
+            /** Format: uuid */
+            bankStatementLineId: string;
+            bankReference: string;
+            /** Format: uuid */
+            supplierPaymentId: string;
+            paymentDisplayNumber: string;
+            /** Format: date */
+            postingDate: string;
+            /** Format: double */
+            matchedAmount: number | string;
+            status: string;
+            /** Format: uuid */
+            clearingGlJournalId: string;
+            clearingGlJournalNumber: string;
+            /** Format: uuid */
+            reversalGlJournalId: null | string;
+            reversalGlJournalNumber: null | string;
+            reversalReason: null | string;
+            matchedByEmail: null | string;
+            /** Format: date-time */
+            matchedAtUtc: string;
+        };
+        BankStatementDto: {
+            /** Format: uuid */
+            bankStatementId: string;
+            statementNumber: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            bankAccountCode: string;
+            statementReference: string;
+            /** Format: date */
+            statementDate: string;
+            currencyCode: string;
+            /** Format: double */
+            openingBalance: number | string;
+            /** Format: double */
+            closingBalance: number | string;
+            /** Format: double */
+            totalDebitAmount: number | string;
+            /** Format: double */
+            totalCreditAmount: number | string;
+            /** Format: int32 */
+            lineCount: number | string;
+            sourceFormat: string;
+            importedByEmail: null | string;
+            /** Format: date-time */
+            importedAtUtc: string;
+        };
+        BankStatementLineDto: {
+            /** Format: uuid */
+            bankStatementLineId: string;
+            /** Format: uuid */
+            bankStatementId: string;
+            statementNumber: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            bankAccountCode: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: date */
+            valueDate: string;
+            direction: string;
+            /** Format: double */
+            amount: number | string;
+            /** Format: double */
+            matchedAmount: number | string;
+            /** Format: double */
+            unmatchedAmount: number | string;
+            bankReference: string;
+            counterpartyName: null | string;
+            description: string;
+            status: string;
+        };
+        BankStatementLineImportRequest: {
+            /** Format: date */
+            valueDate: string;
+            direction: string;
+            /** Format: double */
+            amount: number | string;
+            bankReference: string;
+            counterpartyName: null | string;
+            description: string;
+        };
         BillJournalSuggestionDto: {
             side: string;
             accountCode: string;
@@ -1581,6 +1869,17 @@ export interface components {
             /** Format: uuid */
             withholdingTaxCodeId: null | string;
             lineNotes: null | string;
+        };
+        ClearingReconciliationProofDto: {
+            /** Format: double */
+            glOutboundClearingCreditNetBalance: number | string;
+            /** Format: double */
+            subledgerOpenClearingBalance: number | string;
+            /** Format: double */
+            discrepancyAmount: number | string;
+            isReconciled: boolean;
+            /** Format: double */
+            glMainOperatingBankNetBalance: number | string;
         };
         CloseFinancialPeriodRequest: {
             note: null | string;
@@ -1765,6 +2064,20 @@ export interface components {
             declaredGrossAmount: number | string;
             notes: null | string;
             lines: components["schemas"]["BillLineInputRequest"][];
+        };
+        CreateSupplierPaymentProposalRequest: {
+            /** Format: uuid */
+            bankAccountId: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            beneficiaryBankName: string;
+            beneficiaryAccountNumber: string;
+            beneficiaryAccountHolder: string;
+            paymentMethod: string;
+            /** Format: date */
+            paymentDate: string;
+            notes: null | string;
+            allocations: components["schemas"]["PaymentAllocationInputRequest"][];
         };
         CreateSupplierReturnRequest: {
             returnCaseType: string;
@@ -2351,6 +2664,19 @@ export interface components {
             service: string;
             /** Format: date-time */
             timestampUtc: string;
+        };
+        ImportBankStatementRequest: {
+            /** Format: uuid */
+            bankAccountId: string;
+            statementReference: string;
+            /** Format: date */
+            statementDate: string;
+            /** Format: double */
+            openingBalance: number | string;
+            /** Format: double */
+            closingBalance: number | string;
+            csvContent: null | string;
+            lines: null | components["schemas"]["BankStatementLineImportRequest"][];
         };
         InspectionDispositionDto: {
             /** Format: uuid */
@@ -3098,6 +3424,67 @@ export interface components {
             effectiveTo: null | string;
             reviewStatus: string;
         };
+        PaymentAllocationDto: {
+            /** Format: uuid */
+            paymentAllocationId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: uuid */
+            payableItemId: string;
+            payableNumber: string;
+            /** Format: uuid */
+            supplierBillId: string;
+            supplierInvoiceNumber: string;
+            /** Format: double */
+            payableOpenBeforeAmount: number | string;
+            /** Format: double */
+            allocatedAmount: number | string;
+            /** Format: double */
+            payableRemainingAfterAmount: number | string;
+            notes: null | string;
+        };
+        PaymentAllocationInputRequest: {
+            /** Format: uuid */
+            payableItemId: string;
+            /** Format: double */
+            allocatedAmount: number | string;
+            notes: null | string;
+        };
+        PaymentInstructionDto: {
+            /** Format: uuid */
+            paymentInstructionId: string;
+            instructionNumber: string;
+            formatCode: string;
+            simulationOnly: boolean;
+            /** Format: double */
+            totalAmount: number | string;
+            currencyCode: string;
+            payloadText: string;
+            payloadSha256: string;
+            generatedByEmail: null | string;
+            /** Format: date-time */
+            generatedAtUtc: string;
+        };
+        PaymentsGlAccountOptionDto: {
+            /** Format: uuid */
+            accountId: string;
+            accountCode: string;
+            accountName: string;
+            accountCategory: string;
+        };
+        PaymentsOverviewResponse: {
+            od06PolicyNotice: string;
+            bankAccounts: components["schemas"]["BankAccountDto"][];
+            cashAndClearingAccounts: components["schemas"]["PaymentsGlAccountOptionDto"][];
+            openPayables: components["schemas"]["PayableItemDto"][];
+            payments: components["schemas"]["SupplierPaymentSummaryDto"][];
+            bankStatements: components["schemas"]["BankStatementDto"][];
+            statementLines: components["schemas"]["BankStatementLineDto"][];
+            matches: components["schemas"]["BankPaymentMatchDto"][];
+            clearingProof: components["schemas"]["ClearingReconciliationProofDto"];
+            /** Format: date-time */
+            serverTimestampUtc: string;
+        };
         PoHeaderFieldDiffDto: {
             fieldKey: string;
             previousValue: null | string;
@@ -3712,6 +4099,17 @@ export interface components {
             /** @default false */
             flagForInspection: boolean;
         };
+        ReconcileBankStatementLineRequest: {
+            /** Format: uuid */
+            bankStatementLineId: string;
+            /** Format: uuid */
+            supplierPaymentId: string;
+            /** Format: date */
+            postingDate: string;
+            /** Format: double */
+            matchedAmount: null | number | string;
+            idempotencyKey: string;
+        };
         RecordDockCheckRequest: {
             idempotencyKey: string;
             /** Format: double */
@@ -3757,9 +4155,20 @@ export interface components {
             notes: null | string;
             idempotencyKey: string;
         };
+        RejectReleasedPaymentRequest: {
+            /** Format: date */
+            reversalPostingDate: string;
+            reason: string;
+        };
         ReleaseStockReservationRequest: {
             /** Format: double */
             releaseBaseQuantity: null | number | string;
+        };
+        ReleaseSupplierPaymentRequest: {
+            /** Format: date */
+            postingDate: string;
+            releaseReference: string;
+            idempotencyKey: string;
         };
         ReplacementAuthorizationDto: {
             /** Format: uuid */
@@ -3857,10 +4266,18 @@ export interface components {
             /** Format: double */
             eligibleQuantity: number | string;
         };
+        ReverseBankMatchRequest: {
+            /** Format: date */
+            reversalPostingDate: string;
+            reason: string;
+        };
         ReverseJournalRequest: {
             /** Format: date */
             reversalPostingDate: string;
             reason: string;
+        };
+        SimulatePaymentInstructionRequest: {
+            formatCode: null | string;
         };
         StockLocationBalanceDto: {
             /** Format: uuid */
@@ -4250,6 +4667,62 @@ export interface components {
             /** Format: date-time */
             createdAtUtc: string;
         };
+        SupplierPaymentDetailResponse: {
+            payment: components["schemas"]["SupplierPaymentSummaryDto"];
+            allocations: components["schemas"]["PaymentAllocationDto"][];
+            instructions: components["schemas"]["PaymentInstructionDto"][];
+            matches: components["schemas"]["BankPaymentMatchDto"][];
+            idempotentReplay: boolean;
+        };
+        SupplierPaymentSummaryDto: {
+            /** Format: uuid */
+            supplierPaymentId: string;
+            draftCode: string;
+            paymentNumber: null | string;
+            /** Format: uuid */
+            bankAccountId: string;
+            bankAccountCode: string;
+            bankName: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCode: string;
+            supplierLegalName: string;
+            beneficiaryBankName: string;
+            beneficiaryAccountNumber: string;
+            beneficiaryAccountHolder: string;
+            currencyCode: string;
+            paymentMethod: string;
+            /** Format: date */
+            paymentDate: string;
+            /** Format: double */
+            totalAllocatedAmount: number | string;
+            /** Format: double */
+            reconciledAmount: number | string;
+            /** Format: double */
+            remainingClearingAmount: number | string;
+            status: string;
+            /** Format: int32 */
+            simulatedInstructionCount: number | string;
+            /** Format: uuid */
+            latestInstructionId: null | string;
+            latestInstructionCode: null | string;
+            releaseReference: null | string;
+            /** Format: uuid */
+            releaseJournalId: null | string;
+            releaseJournalNumber: null | string;
+            /** Format: uuid */
+            rejectionReversalJournalId: null | string;
+            rejectionReversalJournalNumber: null | string;
+            rejectionReason: null | string;
+            notes: null | string;
+            preparedByEmail: null | string;
+            submittedByEmail: null | string;
+            releasedByEmail: null | string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+        };
         SupplierReturnDetailResponse: {
             returnHeader: components["schemas"]["SupplierReturnSummaryDto"];
             lines: components["schemas"]["SupplierReturnLineDto"][];
@@ -4630,6 +5103,18 @@ export interface components {
             notes: null | string;
             lines: components["schemas"]["BillLineInputRequest"][];
         };
+        UpdateSupplierPaymentProposalRequest: {
+            /** Format: uuid */
+            bankAccountId: string;
+            beneficiaryBankName: string;
+            beneficiaryAccountNumber: string;
+            beneficiaryAccountHolder: string;
+            paymentMethod: string;
+            /** Format: date */
+            paymentDate: string;
+            notes: null | string;
+            allocations: components["schemas"]["PaymentAllocationInputRequest"][];
+        };
         UpdateSupplierReturnRequest: {
             resolutionMode: string;
             /** Format: date */
@@ -4645,6 +5130,18 @@ export interface components {
             /** Format: uuid */
             accountId: string;
             notes: null | string;
+        };
+        UpsertBankAccountRequest: {
+            accountCode: string;
+            bankName: string;
+            branchName: null | string;
+            accountNumber: string;
+            accountHolderName: string;
+            /** Format: uuid */
+            glAccountId: string;
+            /** Format: uuid */
+            clearingGlAccountId: null | string;
+            status: string;
         };
         UpsertItemEntityPolicyRequest: {
             purchaseAllowed: boolean;
@@ -10703,6 +11200,802 @@ export interface operations {
             };
             /** @description Forbidden */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetPaymentsOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentsOverviewResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetSupplierPaymentDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                paymentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierPaymentDetailResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpdateSupplierPaymentProposal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                paymentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSupplierPaymentProposalRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierPaymentDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpsertBankAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertBankAccountRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankAccountDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateSupplierPaymentProposal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSupplierPaymentProposalRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierPaymentDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    SimulateSupplierPaymentFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                paymentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SimulatePaymentInstructionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierPaymentDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    SubmitSupplierPaymentForRelease: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                paymentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierPaymentDetailResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ReleaseSupplierPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                paymentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReleaseSupplierPaymentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierPaymentDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    RejectReleasedSupplierPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                paymentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RejectReleasedPaymentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierPaymentDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ImportBankStatement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportBankStatementRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankStatementDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ReconcileBankStatementLine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReconcileBankStatementLineRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankPaymentMatchDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ReverseBankPaymentMatch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                matchId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReverseBankMatchRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BankPaymentMatchDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

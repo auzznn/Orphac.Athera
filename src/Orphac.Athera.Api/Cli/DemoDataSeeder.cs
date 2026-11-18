@@ -45,7 +45,9 @@ public static partial class DemoDataSeeder
         using var scope = services.CreateScope();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var db = scope.ServiceProvider.GetRequiredService<AtheraDbContext>();
-        var nowUtc = DateTimeOffset.UtcNow;
+        // Anchor seed timestamps 3 hours in the past so sequential demo fixtures (+1..+67+ min)
+        // never outrank live interactive/E2E audit events sorted newest-first.
+        var nowUtc = DateTimeOffset.UtcNow.AddHours(-3);
 
         var u1Id = await EnsureUserAsync(
             userManager,
@@ -380,6 +382,22 @@ public static partial class DemoDataSeeder
             db,
             nusaId,
             nusaJktId,
+            supNusa.PartnerId,
+            nusaPcs.UomId,
+            u1Id,
+            u2Id,
+            u4Id,
+            nowUtc,
+            ct);
+
+        // S11 bank accounts, simulated instruction pending four-eyes release, outbound clearing batch & unmatched bank statement line
+        await EnsureS11PaymentsDemoDataAsync(
+            db,
+            nusaId,
+            nusaJktId,
+            nusaSbyId,
+            smdrId,
+            smdrBdgId,
             supNusa.PartnerId,
             nusaPcs.UomId,
             u1Id,

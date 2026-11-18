@@ -544,6 +544,112 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                     b.ToTable("payable_sequences", "ap");
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.PaymentAllocation", b =>
+                {
+                    b.Property<Guid>("PaymentAllocationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("payment_allocation_id");
+
+                    b.Property<decimal>("AllocatedAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("allocated_amount");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("LineNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("line_number");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("notes");
+
+                    b.Property<Guid>("PayableItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("payable_item_id");
+
+                    b.Property<string>("PayableNumberSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("payable_number_snapshot");
+
+                    b.Property<decimal>("PayableOpenBeforeAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("payable_open_before_amount");
+
+                    b.Property<decimal>("PayableRemainingAfterAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("payable_remaining_after_amount");
+
+                    b.Property<Guid>("SupplierBillId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_id");
+
+                    b.Property<string>("SupplierInvoiceNumberSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("supplier_invoice_number_snapshot");
+
+                    b.Property<Guid>("SupplierPaymentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_payment_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("PaymentAllocationId");
+
+                    b.HasAlternateKey("TenantId", "LegalEntityId", "PaymentAllocationId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PayableItemId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierBillId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierPaymentId", "LineNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_payment_allocations_line");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierPaymentId", "PayableItemId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_payment_allocations_payable");
+
+                    b.ToTable("payment_allocations", "ap", t =>
+                        {
+                            t.HasCheckConstraint("ck_payment_allocations_amounts", "payable_open_before_amount > 0 AND allocated_amount > 0 AND payable_remaining_after_amount >= 0 AND allocated_amount <= payable_open_before_amount");
+
+                            t.HasCheckConstraint("ck_payment_allocations_line_number", "line_number >= 1");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.PaymentSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "FiscalYear");
+
+                    b.ToTable("payment_sequences", "ap");
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.SupplierBill", b =>
                 {
                     b.Property<Guid>("SupplierBillId")
@@ -1340,6 +1446,240 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.SupplierPayment", b =>
+                {
+                    b.Property<Guid>("SupplierPaymentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_payment_id");
+
+                    b.Property<string>("BankAccountCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("bank_account_code_snapshot");
+
+                    b.Property<Guid>("BankAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_account_id");
+
+                    b.Property<string>("BankNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("bank_name_snapshot");
+
+                    b.Property<string>("BeneficiaryAccountHolder")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("beneficiary_account_holder");
+
+                    b.Property<string>("BeneficiaryAccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("beneficiary_account_number");
+
+                    b.Property<string>("BeneficiaryBankName")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("beneficiary_bank_name");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<string>("DraftCode")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("draft_code");
+
+                    b.Property<string>("LatestInstructionCode")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("latest_instruction_code");
+
+                    b.Property<Guid?>("LatestInstructionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("latest_instruction_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(400)
+                        .HasColumnType("character varying(400)")
+                        .HasColumnName("notes");
+
+                    b.Property<DateOnly>("PaymentDate")
+                        .HasColumnType("date")
+                        .HasColumnName("payment_date");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("payment_method");
+
+                    b.Property<string>("PaymentNumber")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("payment_number");
+
+                    b.Property<Guid>("PreparedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("prepared_by_user_id");
+
+                    b.Property<decimal>("ReconciledAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("reconciled_amount");
+
+                    b.Property<DateTimeOffset?>("RejectedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("rejected_at_utc");
+
+                    b.Property<Guid?>("RejectedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("rejected_by_user_id");
+
+                    b.Property<string>("RejectionReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("rejection_reason");
+
+                    b.Property<Guid?>("RejectionReversalJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("rejection_reversal_journal_id");
+
+                    b.Property<string>("ReleaseIdempotencyKey")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("release_idempotency_key");
+
+                    b.Property<Guid?>("ReleaseJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("release_journal_id");
+
+                    b.Property<string>("ReleaseReference")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("release_reference");
+
+                    b.Property<DateTimeOffset?>("ReleasedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("released_at_utc");
+
+                    b.Property<Guid?>("ReleasedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("released_by_user_id");
+
+                    b.Property<decimal>("RemainingClearingAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("remaining_clearing_amount");
+
+                    b.Property<int>("SimulatedInstructionCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("simulated_instruction_count");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset?>("SubmittedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at_utc");
+
+                    b.Property<Guid?>("SubmittedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("submitted_by_user_id");
+
+                    b.Property<string>("SupplierCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)")
+                        .HasColumnName("supplier_code_snapshot");
+
+                    b.Property<string>("SupplierLegalNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("supplier_legal_name_snapshot");
+
+                    b.Property<Guid>("SupplierPartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_partner_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("TotalAllocatedAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_allocated_amount");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("SupplierPaymentId");
+
+                    b.HasIndex("TenantId", "PreparedByUserId");
+
+                    b.HasIndex("TenantId", "SupplierPartnerId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "BankAccountId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "DraftCode")
+                        .IsUnique()
+                        .HasDatabaseName("ux_supplier_payments_draft_code");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PaymentNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_supplier_payments_number")
+                        .HasFilter("payment_number IS NOT NULL");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "RejectionReversalJournalId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReleaseIdempotencyKey")
+                        .IsUnique()
+                        .HasDatabaseName("ux_supplier_payments_release_idemp")
+                        .HasFilter("release_idempotency_key IS NOT NULL");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReleaseJournalId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "Status")
+                        .HasDatabaseName("ix_supplier_payments_status");
+
+                    b.ToTable("supplier_payments", "ap", t =>
+                        {
+                            t.HasCheckConstraint("ck_supplier_payments_amounts", "total_allocated_amount > 0 AND reconciled_amount >= 0 AND remaining_clearing_amount >= 0 AND ((status IN ('RELEASED', 'PARTIALLY_RECONCILED', 'RECONCILED') AND total_allocated_amount = reconciled_amount + remaining_clearing_amount) OR status NOT IN ('RELEASED', 'PARTIALLY_RECONCILED', 'RECONCILED'))");
+
+                            t.HasCheckConstraint("ck_supplier_payments_currency", "currency_code = 'IDR'");
+
+                            t.HasCheckConstraint("ck_supplier_payments_method", "payment_method IN ('BANK_TRANSFER_IDR', 'CLEARING_RTGS', 'BIFAST_IDR')");
+
+                            t.HasCheckConstraint("ck_supplier_payments_status", "status IN ('DRAFT', 'PENDING_RELEASE', 'RELEASED', 'PARTIALLY_RECONCILED', 'RECONCILED', 'BANK_REJECTED', 'CANCELLED')");
+                        });
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Approval.ApprovalCase", b =>
                 {
                     b.Property<Guid>("CaseId")
@@ -1712,6 +2052,612 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                     b.HasIndex("TenantId", "LegalEntityId", "OccurredAtUtc");
 
                     b.ToTable("audit_events", "audit");
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.BankAccount", b =>
+                {
+                    b.Property<Guid>("BankAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_account_id");
+
+                    b.Property<string>("AccountCode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("account_code");
+
+                    b.Property<string>("AccountHolderName")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("account_holder_name");
+
+                    b.Property<string>("AccountNumber")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("account_number");
+
+                    b.Property<string>("BankName")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("bank_name");
+
+                    b.Property<string>("BranchName")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("branch_name");
+
+                    b.Property<Guid>("ClearingGlAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("clearing_gl_account_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<Guid>("GlAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("gl_account_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("BankAccountId");
+
+                    b.HasIndex("TenantId", "CreatedByUserId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "AccountCode")
+                        .IsUnique()
+                        .HasDatabaseName("ux_bank_accounts_code");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ClearingGlAccountId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "GlAccountId");
+
+                    b.ToTable("bank_accounts", "cash", t =>
+                        {
+                            t.HasCheckConstraint("ck_bank_accounts_currency", "currency_code = 'IDR'");
+
+                            t.HasCheckConstraint("ck_bank_accounts_status", "status IN ('ACTIVE', 'INACTIVE')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.BankPaymentMatch", b =>
+                {
+                    b.Property<Guid>("BankPaymentMatchId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_payment_match_id");
+
+                    b.Property<Guid>("BankAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_account_id");
+
+                    b.Property<Guid>("BankStatementId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_statement_id");
+
+                    b.Property<Guid>("BankStatementLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_statement_line_id");
+
+                    b.Property<Guid>("ClearingGlJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("clearing_gl_journal_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("MatchIdempotencyKey")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("match_idempotency_key");
+
+                    b.Property<string>("MatchNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("match_number");
+
+                    b.Property<decimal>("MatchedAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("matched_amount");
+
+                    b.Property<DateTimeOffset>("MatchedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("matched_at_utc");
+
+                    b.Property<Guid>("MatchedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("matched_by_user_id");
+
+                    b.Property<DateOnly>("PostingDate")
+                        .HasColumnType("date")
+                        .HasColumnName("posting_date");
+
+                    b.Property<Guid?>("ReversalGlJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reversal_gl_journal_id");
+
+                    b.Property<string>("ReversalReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("reversal_reason");
+
+                    b.Property<DateTimeOffset?>("ReversedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reversed_at_utc");
+
+                    b.Property<Guid?>("ReversedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reversed_by_user_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("SupplierPaymentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_payment_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("BankPaymentMatchId");
+
+                    b.HasAlternateKey("TenantId", "LegalEntityId", "BankPaymentMatchId");
+
+                    b.HasIndex("TenantId", "MatchedByUserId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "BankAccountId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "BankStatementId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "BankStatementLineId")
+                        .HasDatabaseName("IX_bank_payment_matches_tenant_id_legal_entity_id_bank_statem~1");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ClearingGlJournalId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "MatchIdempotencyKey")
+                        .IsUnique()
+                        .HasDatabaseName("ux_bank_payment_matches_idemp");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "MatchNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_bank_payment_matches_number");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReversalGlJournalId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierPaymentId", "Status")
+                        .HasDatabaseName("ix_bank_payment_matches_payment");
+
+                    b.ToTable("bank_payment_matches", "cash", t =>
+                        {
+                            t.HasCheckConstraint("ck_bank_payment_matches_amount", "matched_amount > 0");
+
+                            t.HasCheckConstraint("ck_bank_payment_matches_status", "status IN ('POSTED', 'REVERSED')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.BankStatement", b =>
+                {
+                    b.Property<Guid>("BankStatementId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_statement_id");
+
+                    b.Property<string>("BankAccountCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("bank_account_code_snapshot");
+
+                    b.Property<Guid>("BankAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_account_id");
+
+                    b.Property<decimal>("ClosingBalance")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("closing_balance");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<DateTimeOffset>("ImportedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("imported_at_utc");
+
+                    b.Property<Guid>("ImportedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("imported_by_user_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("LineCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("line_count");
+
+                    b.Property<decimal>("OpeningBalance")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("opening_balance");
+
+                    b.Property<string>("PayloadSha256")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("payload_sha256");
+
+                    b.Property<string>("SourceFormat")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("source_format");
+
+                    b.Property<DateOnly>("StatementDate")
+                        .HasColumnType("date")
+                        .HasColumnName("statement_date");
+
+                    b.Property<string>("StatementNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("statement_number");
+
+                    b.Property<string>("StatementReference")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("statement_reference");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("TotalCreditAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_credit_amount");
+
+                    b.Property<decimal>("TotalDebitAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_debit_amount");
+
+                    b.HasKey("BankStatementId");
+
+                    b.HasIndex("TenantId", "ImportedByUserId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "StatementNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_bank_statements_number");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "BankAccountId", "StatementReference")
+                        .IsUnique()
+                        .HasDatabaseName("ux_bank_statements_reference");
+
+                    b.ToTable("bank_statements", "cash", t =>
+                        {
+                            t.HasCheckConstraint("ck_bank_statements_currency", "currency_code = 'IDR'");
+
+                            t.HasCheckConstraint("ck_bank_statements_totals", "line_count >= 1 AND total_debit_amount >= 0 AND total_credit_amount >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.BankStatementLine", b =>
+                {
+                    b.Property<Guid>("BankStatementLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_statement_line_id");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("amount");
+
+                    b.Property<Guid>("BankAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_account_id");
+
+                    b.Property<string>("BankReference")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("bank_reference");
+
+                    b.Property<Guid>("BankStatementId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_statement_id");
+
+                    b.Property<string>("CounterpartyName")
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("counterparty_name");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Direction")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("direction");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("LineFingerprintSha256")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("line_fingerprint_sha256");
+
+                    b.Property<int>("LineNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("line_number");
+
+                    b.Property<decimal>("MatchedAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("matched_amount");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("UnmatchedAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("unmatched_amount");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<DateOnly>("ValueDate")
+                        .HasColumnType("date")
+                        .HasColumnName("value_date");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("BankStatementLineId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "BankAccountId", "LineFingerprintSha256")
+                        .IsUnique()
+                        .HasDatabaseName("ux_bank_statement_lines_fingerprint");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "BankStatementId", "LineNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_bank_statement_lines_number");
+
+                    b.ToTable("bank_statement_lines", "cash", t =>
+                        {
+                            t.HasCheckConstraint("ck_bank_statement_lines_amounts", "amount > 0 AND matched_amount >= 0 AND unmatched_amount >= 0 AND amount = matched_amount + unmatched_amount");
+
+                            t.HasCheckConstraint("ck_bank_statement_lines_direction", "direction IN ('DEBIT', 'CREDIT')");
+
+                            t.HasCheckConstraint("ck_bank_statement_lines_status", "status IN ('UNMATCHED', 'PARTIALLY_MATCHED', 'MATCHED', 'IGNORED')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.InstructionSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "FiscalYear");
+
+                    b.ToTable("instruction_sequences", "cash");
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.MatchSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "FiscalYear");
+
+                    b.ToTable("match_sequences", "cash");
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.PaymentInstruction", b =>
+                {
+                    b.Property<Guid>("PaymentInstructionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("payment_instruction_id");
+
+                    b.Property<Guid>("BankAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_account_id");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<string>("FormatCode")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("format_code");
+
+                    b.Property<DateTimeOffset>("GeneratedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("generated_at_utc");
+
+                    b.Property<Guid>("GeneratedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("generated_by_user_id");
+
+                    b.Property<string>("InstructionNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("instruction_number");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("PayloadSha256")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("payload_sha256");
+
+                    b.Property<string>("PayloadText")
+                        .IsRequired()
+                        .HasMaxLength(16000)
+                        .HasColumnType("character varying(16000)")
+                        .HasColumnName("payload_text");
+
+                    b.Property<bool>("SimulationOnly")
+                        .HasColumnType("boolean")
+                        .HasColumnName("simulation_only");
+
+                    b.Property<Guid>("SupplierPaymentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_payment_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_amount");
+
+                    b.HasKey("PaymentInstructionId");
+
+                    b.HasAlternateKey("TenantId", "LegalEntityId", "PaymentInstructionId");
+
+                    b.HasIndex("TenantId", "GeneratedByUserId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "BankAccountId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "InstructionNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_payment_instructions_number");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierPaymentId")
+                        .HasDatabaseName("ix_payment_instructions_payment");
+
+                    b.ToTable("payment_instructions", "cash", t =>
+                        {
+                            t.HasCheckConstraint("ck_payment_instructions_amount", "total_amount > 0");
+
+                            t.HasCheckConstraint("ck_payment_instructions_currency", "currency_code = 'IDR'");
+
+                            t.HasCheckConstraint("ck_payment_instructions_simulation_only", "simulation_only = true");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.StatementSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "FiscalYear");
+
+                    b.ToTable("statement_sequences", "cash");
                 });
 
             modelBuilder.Entity("Orphac.Athera.Modules.Catalog.Item", b =>
@@ -7553,6 +8499,40 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.PaymentAllocation", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.PayableItem", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "PayableItemId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "PayableItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.SupplierBill", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.SupplierPayment", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupplierPaymentId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SupplierPaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.PaymentSequence", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.SupplierBill", b =>
                 {
                     b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
@@ -7790,6 +8770,50 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.SupplierPayment", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "PreparedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Partners.Partner", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "SupplierPartnerId")
+                        .HasPrincipalKey("TenantId", "PartnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Cash.BankAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "BankAccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "BankAccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.JournalEntry", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "RejectionReversalJournalId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "JournalId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.JournalEntry", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ReleaseJournalId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "JournalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_supplier_payments_journal_entries_tenant_id_legal_entity_i~1");
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Approval.ApprovalCase", b =>
                 {
                     b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
@@ -7866,6 +8890,198 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                 });
 
             modelBuilder.Entity("Orphac.Athera.Modules.Audit.AuditEvent", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.BankAccount", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "CreatedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.GlAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ClearingGlAccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.GlAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "GlAccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.BankPaymentMatch", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "MatchedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Cash.BankAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "BankAccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "BankAccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Cash.BankStatement", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "BankStatementId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "BankStatementId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Cash.BankStatementLine", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "BankStatementLineId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "BankStatementLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.JournalEntry", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ClearingGlJournalId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "JournalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.JournalEntry", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ReversalGlJournalId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "JournalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_bank_payment_matches_journal_entries_tenant_id_legal_entit~1");
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.SupplierPayment", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupplierPaymentId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SupplierPaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.BankStatement", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "ImportedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Cash.BankAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "BankAccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "BankAccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.BankStatementLine", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Cash.BankAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "BankAccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "BankAccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Cash.BankStatement", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "BankStatementId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "BankStatementId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.InstructionSequence", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.MatchSequence", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.PaymentInstruction", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "GeneratedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Cash.BankAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "BankAccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "BankAccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.SupplierPayment", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupplierPaymentId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SupplierPaymentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Cash.StatementSequence", b =>
                 {
                     b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
                         .WithMany()

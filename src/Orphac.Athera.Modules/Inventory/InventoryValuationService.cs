@@ -616,6 +616,34 @@ public static class InventoryValuationService
                 DO UPDATE SET last_number = ap.credit_sequences.last_number + 1
                 RETURNING last_number;
                 """,
+            "ap.payment_sequences" => """
+                INSERT INTO ap.payment_sequences (tenant_id, legal_entity_id, fiscal_year, last_number)
+                VALUES (@tid, @eid, @fy, 1)
+                ON CONFLICT (tenant_id, legal_entity_id, fiscal_year)
+                DO UPDATE SET last_number = ap.payment_sequences.last_number + 1
+                RETURNING last_number;
+                """,
+            "cash.instruction_sequences" => """
+                INSERT INTO cash.instruction_sequences (tenant_id, legal_entity_id, fiscal_year, last_number)
+                VALUES (@tid, @eid, @fy, 1)
+                ON CONFLICT (tenant_id, legal_entity_id, fiscal_year)
+                DO UPDATE SET last_number = cash.instruction_sequences.last_number + 1
+                RETURNING last_number;
+                """,
+            "cash.statement_sequences" => """
+                INSERT INTO cash.statement_sequences (tenant_id, legal_entity_id, fiscal_year, last_number)
+                VALUES (@tid, @eid, @fy, 1)
+                ON CONFLICT (tenant_id, legal_entity_id, fiscal_year)
+                DO UPDATE SET last_number = cash.statement_sequences.last_number + 1
+                RETURNING last_number;
+                """,
+            "cash.match_sequences" => """
+                INSERT INTO cash.match_sequences (tenant_id, legal_entity_id, fiscal_year, last_number)
+                VALUES (@tid, @eid, @fy, 1)
+                ON CONFLICT (tenant_id, legal_entity_id, fiscal_year)
+                DO UPDATE SET last_number = cash.match_sequences.last_number + 1
+                RETURNING last_number;
+                """,
             _ => throw new ArgumentException($"Unsupported sequence table '{qualifiedTableName}'.", nameof(qualifiedTableName))
         };
 

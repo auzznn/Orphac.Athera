@@ -201,6 +201,28 @@ export type UpdateSupplierReturnRequest = components["schemas"]["UpdateSupplierR
 export type DecideSupplierReturnRequest = components["schemas"]["DecideSupplierReturnRequest"];
 export type ExecuteSupplierReturnRequest = components["schemas"]["ExecuteSupplierReturnRequest"];
 export type ReceiveReplacementRequest = components["schemas"]["ReceiveReplacementRequest"];
+export type UpsertBankAccountRequest = components["schemas"]["UpsertBankAccountRequest"];
+export type PaymentAllocationInputRequest = components["schemas"]["PaymentAllocationInputRequest"];
+export type CreateSupplierPaymentProposalRequest = components["schemas"]["CreateSupplierPaymentProposalRequest"];
+export type UpdateSupplierPaymentProposalRequest = components["schemas"]["UpdateSupplierPaymentProposalRequest"];
+export type SimulatePaymentInstructionRequest = components["schemas"]["SimulatePaymentInstructionRequest"];
+export type ReleaseSupplierPaymentRequest = components["schemas"]["ReleaseSupplierPaymentRequest"];
+export type RejectReleasedPaymentRequest = components["schemas"]["RejectReleasedPaymentRequest"];
+export type BankStatementLineImportRequest = components["schemas"]["BankStatementLineImportRequest"];
+export type ImportBankStatementRequest = components["schemas"]["ImportBankStatementRequest"];
+export type ReconcileBankStatementLineRequest = components["schemas"]["ReconcileBankStatementLineRequest"];
+export type ReverseBankMatchRequest = components["schemas"]["ReverseBankMatchRequest"];
+export type BankAccountDto = components["schemas"]["BankAccountDto"];
+export type PaymentAllocationDto = components["schemas"]["PaymentAllocationDto"];
+export type PaymentInstructionDto = components["schemas"]["PaymentInstructionDto"];
+export type SupplierPaymentSummaryDto = components["schemas"]["SupplierPaymentSummaryDto"];
+export type BankStatementDto = components["schemas"]["BankStatementDto"];
+export type BankStatementLineDto = components["schemas"]["BankStatementLineDto"];
+export type BankPaymentMatchDto = components["schemas"]["BankPaymentMatchDto"];
+export type ClearingReconciliationProofDto = components["schemas"]["ClearingReconciliationProofDto"];
+export type PaymentsGlAccountOptionDto = components["schemas"]["PaymentsGlAccountOptionDto"];
+export type PaymentsOverviewResponse = components["schemas"]["PaymentsOverviewResponse"];
+export type SupplierPaymentDetailResponse = components["schemas"]["SupplierPaymentDetailResponse"];
 
 export interface ApiProblemError {
   status: number;
@@ -2306,6 +2328,275 @@ export async function receiveLinkedReplacement(
     "/api/workspaces/{tenantId}/entities/{entityId}/returns/replacements/{authorizationId}/receive",
     {
       params: { path: { tenantId, entityId, authorizationId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchPaymentsOverview(
+  tenantId: string,
+  entityId: string,
+): Promise<PaymentsOverviewResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/overview",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function fetchSupplierPaymentDetail(
+  tenantId: string,
+  entityId: string,
+  paymentId: string,
+): Promise<SupplierPaymentDetailResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}",
+    {
+      params: { path: { tenantId, entityId, paymentId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function upsertBankAccount(
+  tenantId: string,
+  entityId: string,
+  payload: UpsertBankAccountRequest,
+): Promise<BankAccountDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/bank-accounts",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function createSupplierPaymentProposal(
+  tenantId: string,
+  entityId: string,
+  payload: CreateSupplierPaymentProposalRequest,
+): Promise<SupplierPaymentDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function updateSupplierPaymentProposal(
+  tenantId: string,
+  entityId: string,
+  paymentId: string,
+  payload: UpdateSupplierPaymentProposalRequest,
+): Promise<SupplierPaymentDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}",
+    {
+      params: { path: { tenantId, entityId, paymentId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function simulateSupplierPaymentFile(
+  tenantId: string,
+  entityId: string,
+  paymentId: string,
+  payload: SimulatePaymentInstructionRequest = { formatCode: null },
+): Promise<SupplierPaymentDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/simulate-file",
+    {
+      params: { path: { tenantId, entityId, paymentId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function submitSupplierPaymentForRelease(
+  tenantId: string,
+  entityId: string,
+  paymentId: string,
+): Promise<SupplierPaymentDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/submit",
+    {
+      params: { path: { tenantId, entityId, paymentId } },
+      headers: { "X-CSRF-Token": csrf },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function releaseSupplierPayment(
+  tenantId: string,
+  entityId: string,
+  paymentId: string,
+  payload: ReleaseSupplierPaymentRequest,
+): Promise<SupplierPaymentDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/release",
+    {
+      params: { path: { tenantId, entityId, paymentId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function rejectReleasedSupplierPayment(
+  tenantId: string,
+  entityId: string,
+  paymentId: string,
+  payload: RejectReleasedPaymentRequest,
+): Promise<SupplierPaymentDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/reject-released",
+    {
+      params: { path: { tenantId, entityId, paymentId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function importBankStatement(
+  tenantId: string,
+  entityId: string,
+  payload: ImportBankStatementRequest,
+): Promise<BankStatementDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/bank-statements",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function reconcileBankStatementLine(
+  tenantId: string,
+  entityId: string,
+  payload: ReconcileBankStatementLineRequest,
+): Promise<BankPaymentMatchDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/reconcile",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function reverseBankPaymentMatch(
+  tenantId: string,
+  entityId: string,
+  matchId: string,
+  payload: ReverseBankMatchRequest,
+): Promise<BankPaymentMatchDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/matches/{matchId}/reverse",
+    {
+      params: { path: { tenantId, entityId, matchId } },
       headers: { "X-CSRF-Token": csrf },
       body: payload,
       cache: "no-store",

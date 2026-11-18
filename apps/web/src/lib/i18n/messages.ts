@@ -50,6 +50,7 @@ export interface Dictionary {
       returns: string;
       inventory: string;
       payables: string;
+      payments: string;
       sales: string;
       finance: string;
       admin: string;
@@ -1502,6 +1503,197 @@ export interface Dictionary {
     reasonCodeLabels: Record<string, string>;
     errors: Record<string, string>;
   };
+  payments: {
+    pageTitle: string;
+    lead: string;
+    backToOverview: string;
+    openPayablesLink: string;
+    loadErrorTitle: string;
+    retryButton: string;
+    refreshButton: string;
+    readOnlyBanner: string;
+    od06PolicyBanner: string;
+    policyToggleShow: string;
+    policyToggleHide: string;
+    policyStagesTitle: string;
+    statsAriaLabel: string;
+    preparedByPrefix: string;
+    releasedByPrefix: string;
+    clearingOpenShort: string;
+    settledShort: string;
+    paidShort: string;
+    openShort: string;
+    glCashPrefix: string;
+    glClearingPrefix: string;
+    statusActiveLabel: string;
+    statusInactiveLabel: string;
+    stageCards: {
+      stage1Title: string;
+      stage1Body: string;
+      stage2Title: string;
+      stage2Body: string;
+      stage3Title: string;
+      stage3Body: string;
+      stage4Title: string;
+      stage4Body: string;
+    };
+    stats: {
+      openPayablesTotal: string;
+      pendingReleaseTotal: string;
+      outboundClearingOpen: string;
+      reconciledBankTotal: string;
+    };
+    proofReconciled: string;
+    proofMismatch: string;
+    tabListLabel: string;
+    tabs: {
+      payments: string;
+      reconciliation: string;
+      accounts: string;
+    };
+    composer: {
+      toggleOpen: string;
+      toggleClose: string;
+      title: string;
+      bankAccountLabel: string;
+      payableLabel: string;
+      allocatedAmountLabel: string;
+      beneficiaryBankLabel: string;
+      beneficiaryAccountLabel: string;
+      beneficiaryHolderLabel: string;
+      paymentMethodLabel: string;
+      paymentDateLabel: string;
+      notesLabel: string;
+      previewTitle: string;
+      previewSimulationWarning: string;
+      submitCreate: string;
+      creating: string;
+      noOpenPayables: string;
+      noActiveBankAccounts: string;
+    };
+    tables: {
+      paymentsTitle: string;
+      emptyPayments: string;
+      colPaymentRef: string;
+      colSupplierBank: string;
+      colStageAmount: string;
+      colClearingJournal: string;
+      colActions: string;
+      openDetailCta: string;
+      openPayablesTitle: string;
+      emptyOpenPayables: string;
+      colPayable: string;
+      colInvoiceDue: string;
+      colBalance: string;
+      statementsTitle: string;
+      emptyStatements: string;
+      colStatement: string;
+      colBankTotals: string;
+      statementLinesTitle: string;
+      emptyStatementLines: string;
+      colLineRef: string;
+      colDirectionAmt: string;
+      colMatchStatus: string;
+      colReconcileAction: string;
+      matchesTitle: string;
+      emptyMatches: string;
+      colMatchNo: string;
+      colMatchedDocs: string;
+      colMatchGl: string;
+      colReverseAction: string;
+      bankAccountsTitle: string;
+      emptyBankAccounts: string;
+    };
+    statementImport: {
+      toggleOpen: string;
+      toggleClose: string;
+      title: string;
+      bankAccountLabel: string;
+      statementRefLabel: string;
+      statementDateLabel: string;
+      openingBalLabel: string;
+      closingBalLabel: string;
+      csvLabel: string;
+      csvHelper: string;
+      importCta: string;
+      importing: string;
+    };
+    reconcilePanel: {
+      matchAction: string;
+      targetPaymentLabel: string;
+      postingDateLabel: string;
+      matchAmountLabel: string;
+      confirmMatch: string;
+      matching: string;
+      cancelMatch: string;
+      noEligiblePayments: string;
+      reverseCta: string;
+      reversing: string;
+      reverseReasonLabel: string;
+      defaultReverseReason: string;
+    };
+    bankConfig: {
+      title: string;
+      accountCodeLabel: string;
+      bankNameLabel: string;
+      branchNameLabel: string;
+      accountNumberLabel: string;
+      holderNameLabel: string;
+      glCashLabel: string;
+      glClearingLabel: string;
+      saveCta: string;
+      saving: string;
+      clearingProofTitle: string;
+      glClearingBalance: string;
+      subledgerClearingBalance: string;
+      discrepancyLabel: string;
+      glCashBalance: string;
+    };
+    detail: {
+      sheetLabel: string;
+      closeLabel: string;
+      headerPayment: string;
+      headerBankBeneficiary: string;
+      headerAmounts: string;
+      stageBannerSimulated: string;
+      stageBannerReleased: string;
+      stageBannerReconciled: string;
+      stageBannerRejected: string;
+      allocationsTitle: string;
+      colPayableNo: string;
+      colInvoiceNo: string;
+      colBefore: string;
+      colAllocated: string;
+      colAfter: string;
+      instructionsTitle: string;
+      noInstructions: string;
+      simulateFileBtn: string;
+      simulatingFile: string;
+      simulationWarningBadge: string;
+      submitBtn: string;
+      submitting: string;
+      releaseTitle: string;
+      releaseRefLabel: string;
+      postingDateLabel: string;
+      releaseBtn: string;
+      releasing: string;
+      sodHint: string;
+      noReleasePermHint: string;
+      rejectTitle: string;
+      rejectReasonLabel: string;
+      rejectBtn: string;
+      rejecting: string;
+      defaultRejectReason: string;
+      matchesSectionTitle: string;
+      journalLabel: string;
+      reversalJournalLabel: string;
+    };
+    statusLabels: Record<string, string>;
+    statementLineStatusLabels: Record<string, string>;
+    matchStatusLabels: Record<string, string>;
+    methodLabels: Record<string, string>;
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -1567,6 +1759,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         returns: "Retur & Kredit Pemasok",
         inventory: "Persediaan",
         payables: "Hutang Usaha (AP)",
+        payments: "Pembayaran & Bank",
         sales: "Penjualan",
         finance: "Keuangan & GL",
         admin: "Administrasi",
@@ -1694,6 +1887,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         receiving: "Penerimaan Dermaga & Gate 1 (Tanpa Valuasi)",
         inventory: "Persediaan & Buku Besar Stok",
         payables: "Hutang Usaha (AP), Match 3-Arah & Selisih Harga",
+        payments: "Pembayaran Pemasok, Kliring Keluar & Rekonsiliasi Bank",
         sales: "Penjualan & Penagihan",
         finance: "Keuangan, Pajak PPN/PPh & GL",
         admin: "Administrasi Organisasi, Undangan & Audit",
@@ -3569,6 +3763,236 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Izin entitas aktif Anda tidak mencukupi untuk menjalankan tindakan retur ini.",
       },
     },
+    payments: {
+      pageTitle: "Pembayaran Pemasok, Kliring Keluar & Rekonsiliasi Bank",
+      lead: "Penyelesaian AP dua tahap: usulan & simulasi berkas instruksi (0 dampak GL/AP), rilis empat mata ke Kliring Keluar 1120 (Dr 2100 / Cr 1120), dan rekonsiliasi mutasi bank ke Kas 1110.",
+      backToOverview: "Kembali ke Ringkasan",
+      openPayablesLink: "Buka Buku Besar AP",
+      loadErrorTitle: "Gagal memuat data pembayaran dan perbankan",
+      retryButton: "Muat Ulang Data",
+      refreshButton: "Segarkan",
+      readOnlyBanner: "Mode hanya-baca: akun Anda memiliki otoritas melihat pembayaran/bank, namun mutasi usulan, rilis, impor mutasi, dan rekonsiliasi memerlukan izin AP/Keuangan aktif.",
+      od06PolicyBanner: "Kebijakan OD-06 & OD-02 Aktif (ATH-CR-008): Simulasi berkas instruksi tidak mengirim dana ke bank dan tidak memposting GL/AP; pelepasan ke Kliring Keluar membutuhkan otorisasi empat mata dan referensi rilis eksplisit.",
+      policyToggleShow: "Lihat Tahapan Kliring (OD-06)",
+      policyToggleHide: "Sembunyikan Tahapan",
+      policyStagesTitle: "Kontrol Penyelesaian Dua Tahap & Kliring Keluar (1120)",
+      statsAriaLabel: "Ringkasan metrik penyelesaian dan kliring bank",
+      preparedByPrefix: "Disiapkan:",
+      releasedByPrefix: "Dirilis:",
+      clearingOpenShort: "Kliring 1120:",
+      settledShort: "Terekonsiliasi:",
+      paidShort: "Dibayar:",
+      openShort: "Belum Padan:",
+      glCashPrefix: "Kas GL:",
+      glClearingPrefix: "Kliring:",
+      statusActiveLabel: "Aktif",
+      statusInactiveLabel: "Nonaktif",
+      stageCards: {
+        stage1Title: "1. Draf & Simulasi Berkas",
+        stage1Body: "Alokasi faktur AP terbuka; pratinjau CSV hanya simulasi (0 GL, AP tetap terbuka).",
+        stage2Title: "2. Rilis Empat Mata (OD-02)",
+        stage2Body: "Penyetuju independen + referensi rilis memposting Dr 2100 Hutang / Cr 1120 Kliring Keluar.",
+        stage3Title: "3. Rekonsiliasi Mutasi Bank",
+        stage3Body: "Padankan baris debit rekening koran (Dr 1120 Kliring / Cr 1110 Kas & Bank) satu kali.",
+        stage4Title: "4. Penolakan & Pembalikan",
+        stage4Body: "Pembayaran dirilis yang ditolak bank dibalik via jurnal kompensasi, membuka kembali AP.",
+      },
+      stats: {
+        openPayablesTotal: "Saldo Hutang Terbuka Layak",
+        pendingReleaseTotal: "Usulan Simulasi / Siap Rilis (0 GL)",
+        outboundClearingOpen: "Saldo Kliring Keluar 1120 Terbuka",
+        reconciledBankTotal: "Mutasi Kas 1110 Terekonsiliasi",
+      },
+      proofReconciled: "Kliring 1120 Cocok (GL = Subledger)",
+      proofMismatch: "Selisih Kliring 1120 Terdeteksi",
+      tabListLabel: "Tampilan penyelesaian pemasok dan bank",
+      tabs: {
+        payments: "Usulan & Kliring Pembayaran (PAY)",
+        reconciliation: "Mutasi Bank & Rekonsiliasi (BST / BMK)",
+        accounts: "Rekening Bank & Bukti Kliring 1120",
+      },
+      composer: {
+        toggleOpen: "Buat Usulan Pembayaran",
+        toggleClose: "Tutup Form Usulan",
+        title: "Komposer Usulan Pembayaran Pemasok (0 GL Saat Draf)",
+        bankAccountLabel: "Rekening Sumber Pembayaran",
+        payableLabel: "Faktur Hutang Terbuka (AP)",
+        allocatedAmountLabel: "Nominal Dialokasikan (IDR)",
+        beneficiaryBankLabel: "Bank Tujuan Pemasok",
+        beneficiaryAccountLabel: "No. Rekening Pemasok",
+        beneficiaryHolderLabel: "Nama Pemilik Rekening",
+        paymentMethodLabel: "Metode Pembayaran",
+        paymentDateLabel: "Tanggal Pembayaran",
+        notesLabel: "Catatan / Keterangan",
+        previewTitle: "Konfirmasi Ringkasan Sebelum Rilis",
+        previewSimulationWarning: "Menyimpan draf hanya mengunci alokasi antrean — saldo AP dan GL baru berubah setelah rilis empat mata.",
+        submitCreate: "Simpan Usulan Pembayaran",
+        creating: "Menyimpan usulan...",
+        noOpenPayables: "Tidak ada hutang terbuka yang bebas blokir pembayaran.",
+        noActiveBankAccounts: "Belum ada rekening bank aktif terkonfigurasi.",
+      },
+      tables: {
+        paymentsTitle: "Daftar Pembayaran & Kliring Pemasok",
+        emptyPayments: "Belum ada usulan atau pembayaran pemasok tercatat.",
+        colPaymentRef: "Referensi & Berkas Simulasi",
+        colSupplierBank: "Pemasok & Rekening Tujuan",
+        colStageAmount: "Nominal & Sisa Kliring 1120",
+        colClearingJournal: "Status & Jurnal GL",
+        colActions: "Tindakan",
+        openDetailCta: "Detail & Kontrol",
+        openPayablesTitle: "Hutang Usaha (AP) Terbuka Layak Bayar",
+        emptyOpenPayables: "Tidak ada saldo AP terbuka.",
+        colPayable: "Nomor AP & Pemasok",
+        colInvoiceDue: "Faktur & Jatuh Tempo",
+        colBalance: "Sisa Terbuka / Sudah Dibayar",
+        statementsTitle: "Rekening Koran Bank Terimpor",
+        emptyStatements: "Belum ada rekening koran bank diimpor.",
+        colStatement: "Nomor & Referensi Mutasi",
+        colBankTotals: "Rekening · Total Debit",
+        statementLinesTitle: "Baris Mutasi Bank (Staging Rekonsiliasi)",
+        emptyStatementLines: "Belum ada baris mutasi bank.",
+        colLineRef: "Referensi & Keterangan",
+        colDirectionAmt: "Arah & Sisa Belum Padan",
+        colMatchStatus: "Status Padan",
+        colReconcileAction: "Padankan",
+        matchesTitle: "Riwayat Rekonsiliasi Bank (BMK)",
+        emptyMatches: "Belum ada padanan rekonsiliasi bank.",
+        colMatchNo: "Nomor Padan & Tanggal",
+        colMatchedDocs: "Pembayaran & Ref Mutasi",
+        colMatchGl: "Jurnal Kliring & Nilai",
+        colReverseAction: "Pembalikan",
+        bankAccountsTitle: "Master Rekening Bank Entitas",
+        emptyBankAccounts: "Belum ada rekening bank.",
+      },
+      statementImport: {
+        toggleOpen: "Impor Mutasi CSV",
+        toggleClose: "Tutup Form Impor",
+        title: "Impor Baris Rekening Koran CSV (Cegah Duplikasi Sidik Jari)",
+        bankAccountLabel: "Rekening Bank Target",
+        statementRefLabel: "Referensi Rekening Koran",
+        statementDateLabel: "Tanggal Mutasi",
+        openingBalLabel: "Saldo Awal (IDR)",
+        closingBalLabel: "Saldo Akhir (IDR)",
+        csvLabel: "Isi CSV (ValueDate,Direction,Amount,BankReference,Counterparty,Description)",
+        csvHelper: "Sidik jari per baris dicegah terimpor dua kali sehingga baris tidak pernah melunasi kliring lebih dari sekali.",
+        importCta: "Impor Rekening Koran",
+        importing: "Mengimpor...",
+      },
+      reconcilePanel: {
+        matchAction: "Rekonsiliasi Baris",
+        targetPaymentLabel: "Pembayaran di Kliring 1120",
+        postingDateLabel: "Tanggal Posting GL (1120 -> 1110)",
+        matchAmountLabel: "Nominal Padanan (IDR)",
+        confirmMatch: "Konfirmasi & Posting Dr 1120 / Cr 1110",
+        matching: "Memposting rekonsiliasi...",
+        cancelMatch: "Batal",
+        noEligiblePayments: "Tidak ada pembayaran berstatus Dirilis / Sebagian Terekonsiliasi pada rekening ini.",
+        reverseCta: "Balikkan Padanan",
+        reversing: "Membalikkan...",
+        reverseReasonLabel: "Alasan Pembalikan",
+        defaultReverseReason: "Koreksi pencocokan rekening koran bank",
+      },
+      bankConfig: {
+        title: "Konfigurasi Rekening Bank Operasional",
+        accountCodeLabel: "Kode Rekening",
+        bankNameLabel: "Nama Bank",
+        branchNameLabel: "Cabang",
+        accountNumberLabel: "Nomor Rekening",
+        holderNameLabel: "Atas Nama",
+        glCashLabel: "Akun GL Kas & Bank (1110)",
+        glClearingLabel: "Akun GL Kliring Keluar (1120)",
+        saveCta: "Simpan Rekening Bank",
+        saving: "Menyimpan...",
+        clearingProofTitle: "Pembuktian Saldo Kliring Keluar 1120 (GL vs Subledger)",
+        glClearingBalance: "Saldo Kredit Neto Akun 1120 di GL",
+        subledgerClearingBalance: "Total Sisa Kliring Pembayaran Dirilis",
+        discrepancyLabel: "Selisih GL vs Subledger",
+        glCashBalance: "Saldo Neto Kas & Bank 1110",
+      },
+      detail: {
+        sheetLabel: "Rincian Penyelesaian Pembayaran",
+        closeLabel: "Tutup panel rincian pembayaran",
+        headerPayment: "Pembayaran & Pembuat",
+        headerBankBeneficiary: "Rekening Sumber & Penerima",
+        headerAmounts: "Total & Saldo Kliring",
+        stageBannerSimulated: "Tahap 1/2: Berkas simulasi tidak memengaruhi GL atau saldo AP sampai dirilis independen.",
+        stageBannerReleased: "Tahap 3 (Kliring Terbuka): Dr 2100 / Cr 1120 sudah diposting; menunggu padanan mutasi bank.",
+        stageBannerReconciled: "Tahap 4 (Selesai): Kliring Keluar 1120 telah ditutup bersih ke Kas 1110.",
+        stageBannerRejected: "Dibatalkan Bank: Jurnal kompensasi Dr 1120 / Cr 2100 membuka kembali faktur AP.",
+        allocationsTitle: "Alokasi Faktur Hutang Pemasok",
+        colPayableNo: "Nomor AP",
+        colInvoiceNo: "Faktur Pemasok",
+        colBefore: "Terbuka Sebelum",
+        colAllocated: "Dialokasikan",
+        colAfter: "Sisa Setelah",
+        instructionsTitle: "Berkas Instruksi Simulasi (Non-Live · 0 GL)",
+        noInstructions: "Belum ada berkas simulasi dibuat.",
+        simulateFileBtn: "Hasilkan Berkas Simulasi (0 GL)",
+        simulatingFile: "Membuat simulasi...",
+        simulationWarningBadge: "SIMULASI · BUKAN TRANSFER LANGSUNG",
+        submitBtn: "Ajukan Rilis Empat Mata",
+        submitting: "Mengajukan...",
+        releaseTitle: "Otorisasi Rilis Pembayaran Empat Mata (OD-02 & OD-06)",
+        releaseRefLabel: "Referensi Rilis Bank / Batch Token",
+        postingDateLabel: "Tanggal Posting GL Rilis",
+        releaseBtn: "Rilis & Posting Dr 2100 / Cr 1120",
+        releasing: "Merilis ke kliring...",
+        sodHint: "Segregasi Empat Mata (OD-02): Pembuat dan pengaju usulan tidak dapat merilis pembayaran sendiri.",
+        noReleasePermHint: "Memerlukan izin ap.approve, ap.post, atau finance.journal.post dari pengguna berbeda untuk merilis.",
+        rejectTitle: "Catat Penolakan Bank (Pembalikan Dr 1120 / Cr 2100)",
+        rejectReasonLabel: "Alasan Penolakan Bank",
+        rejectBtn: "Tolak & Pulihkan Saldo AP",
+        rejecting: "Membalikkan rilis...",
+        defaultRejectReason: "Ditolak bank kliring: data rekening tujuan tidak valid",
+        matchesSectionTitle: "Jejak Padanan Rekening Koran (BMK)",
+        journalLabel: "Jurnal Rilis 1120",
+        reversalJournalLabel: "Jurnal Pembalikan",
+      },
+      statusLabels: {
+        DRAFT: "Draf Usulan",
+        PENDING_RELEASE: "Menunggu Rilis (0 GL)",
+        RELEASED: "Dirilis ke Kliring (1120)",
+        PARTIALLY_RECONCILED: "Sebagian Terekonsiliasi",
+        RECONCILED: "Terekonsiliasi Penuh",
+        BANK_REJECTED: "Ditolak Bank (Dibalik)",
+        CANCELLED: "Dibatalkan",
+      },
+      statementLineStatusLabels: {
+        UNMATCHED: "Belum Dipadankan",
+        PARTIALLY_MATCHED: "Sebagian Padan",
+        MATCHED: "Sudah Padan",
+        IGNORED: "Diabaikan",
+      },
+      matchStatusLabels: {
+        POSTED: "Diposting (1120 -> 1110)",
+        REVERSED: "Dibalik",
+      },
+      methodLabels: {
+        BANK_TRANSFER_IDR: "Transfer Bank (IDR)",
+        CLEARING_RTGS: "SKN / RTGS",
+        BIFAST_IDR: "BI-FAST (IDR)",
+      },
+      errors: {
+        four_eyes_violation:
+          "Kontrol Empat Mata (OD-02): Anda tidak dapat merilis pembayaran yang Anda buat atau ajukan sendiri.",
+        release_reference_required:
+          "Referensi otorisasi rilis wajib diisi sesuai kebijakan OD-06 sebelum memposting ke Kliring Keluar.",
+        payable_payment_blocked:
+          "Faktur AP yang dipilih sedang memiliki status blokir pembayaran (PAYMENT_BLOCKED).",
+        allocation_exceeds_open_payable:
+          "Nominal alokasi melebihi sisa saldo AP terbuka (atau sudah dipesan pada usulan pembayaran lain).",
+        duplicate_bank_statement_reference:
+          "Referensi rekening koran ini sudah pernah diimpor pada rekening bank tersebut.",
+        duplicate_bank_statement_line:
+          "Baris transaksi mutasi bank terdeteksi duplikat (sidik jari sama) dan ditolak demi mencegah pelunasan ganda.",
+        payment_already_reconciled_reverse_match_first:
+          "Balikkan padanan rekonsiliasi bank terlebih dahulu sebelum mencatat penolakan bank atas pembayaran dirilis.",
+        period_closed:
+          "Periode akuntansi pada tanggal posting transaksi berstatus DITUTUP.",
+        insufficient_entity_permission:
+          "Izin entitas aktif Anda tidak mencukupi untuk tindakan pembayaran atau rekonsiliasi ini.",
+      },
+    },
   },
   "en-US": {
     appName: "Orphac Athera",
@@ -3632,6 +4056,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         returns: "Returns & Credits",
         inventory: "Inventory",
         payables: "Accounts Payable",
+        payments: "Payments & Bank",
         sales: "Sales",
         finance: "Finance & GL",
         admin: "Administration",
@@ -3759,6 +4184,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         receiving: "Dock Custody & Gate 1 Receiving",
         inventory: "Inventory & Stock Ledger",
         payables: "Accounts Payable, 3-Way Match & Price Diff",
+        payments: "Supplier Payments, Outbound Clearing & Bank Reconciliation",
         sales: "Sales & Invoicing",
         finance: "Finance, Indonesian Tax & GL",
         admin: "Organization Administration & Audit",
@@ -5632,6 +6058,236 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "OD-04 blocks returning inventory at a cost that would leave remaining stock at zero or negative carrying value.",
         insufficient_entity_permission:
           "Your active role grants do not permit performing this supplier return action in this legal entity.",
+      },
+    },
+    payments: {
+      pageTitle: "Supplier Payments, Outbound Clearing & Bank Reconciliation",
+      lead: "Two-stage AP settlement: draft proposals & simulated payment files (0 GL/AP effect), four-eyes release into Outbound Clearing 1120 (Dr 2100 / Cr 1120), and bank statement matching to Cash & Bank 1110.",
+      backToOverview: "Back to Overview",
+      openPayablesLink: "Open AP Ledger",
+      loadErrorTitle: "Failed to load payments and banking ledger",
+      retryButton: "Retry Loading",
+      refreshButton: "Refresh",
+      readOnlyBanner: "Read-only mode: your entity role permits inspecting payments and bank reconciliation, but proposals, releases, imports, and matches require active AP/Finance permissions.",
+      od06PolicyBanner: "OD-06 & OD-02 Active (ATH-CR-008): Simulated payment instruction files never initiate transfers or touch GL/AP; release into Outbound Clearing requires independent four-eyes authorization and an explicit release reference.",
+      policyToggleShow: "Show Clearing Controls (OD-06)",
+      policyToggleHide: "Hide Controls",
+      policyStagesTitle: "Two-Stage Settlement & Outbound Clearing (1120) Lifecycle",
+      statsAriaLabel: "Settlement and bank clearing summary",
+      preparedByPrefix: "Prepared:",
+      releasedByPrefix: "Released:",
+      clearingOpenShort: "1120 Open:",
+      settledShort: "Settled:",
+      paidShort: "Paid:",
+      openShort: "Open:",
+      glCashPrefix: "GL Cash:",
+      glClearingPrefix: "Clearing:",
+      statusActiveLabel: "Active",
+      statusInactiveLabel: "Inactive",
+      stageCards: {
+        stage1Title: "1. Proposal & Simulated File",
+        stage1Body: "Allocate open payables and preview CSV instruction (0 GL, AP open).",
+        stage2Title: "2. Four-Eyes Release (OD-02)",
+        stage2Body: "Independent approver + release reference posts Dr 2100 AP / Cr 1120 Outbound Clearing.",
+        stage3Title: "3. Bank Statement Match",
+        stage3Body: "Reconcile debit bank statement lines (Dr 1120 Clearing / Cr 1110 Cash) once per transaction.",
+        stage4Title: "4. Reject & Reversal Control",
+        stage4Body: "Unreconciled bank rejections reverse cleanly via linked journal, reopening supplier payables.",
+      },
+      stats: {
+        openPayablesTotal: "Open Eligible Payables",
+        pendingReleaseTotal: "Simulated / Pending Release (0 GL)",
+        outboundClearingOpen: "Open Outbound Clearing 1120",
+        reconciledBankTotal: "Reconciled Bank Outflows 1110",
+      },
+      proofReconciled: "1120 Clearing Reconciled (GL = Subledger)",
+      proofMismatch: "1120 Clearing Variance Detected",
+      tabListLabel: "Supplier settlement and bank views",
+      tabs: {
+        payments: "Payment Proposals & Clearing (PAY)",
+        reconciliation: "Bank Statements & Matching (BST / BMK)",
+        accounts: "Bank Accounts & 1120 Proof",
+      },
+      composer: {
+        toggleOpen: "Prepare Payment Proposal",
+        toggleClose: "Close Composer",
+        title: "Supplier Payment Proposal Composer (0 GL While Draft)",
+        bankAccountLabel: "Source Operating Bank Account",
+        payableLabel: "Open Eligible AP Payable",
+        allocatedAmountLabel: "Allocated Amount (IDR)",
+        beneficiaryBankLabel: "Beneficiary Bank Name",
+        beneficiaryAccountLabel: "Beneficiary Account Number",
+        beneficiaryHolderLabel: "Beneficiary Account Holder",
+        paymentMethodLabel: "Payment Method",
+        paymentDateLabel: "Payment Date",
+        notesLabel: "Remittance / Payment Notes",
+        previewTitle: "Pre-Release Summary Confirmation",
+        previewSimulationWarning: "Saving this proposal reserves open allocation capacity only — AP balances and GL remain untouched until four-eyes release.",
+        submitCreate: "Save Payment Proposal",
+        creating: "Saving proposal...",
+        noOpenPayables: "No unblocked open payables remain in this entity.",
+        noActiveBankAccounts: "No active bank account configured.",
+      },
+      tables: {
+        paymentsTitle: "Supplier Payments & Clearing Batches",
+        emptyPayments: "No supplier payment proposals or clearing batches recorded yet.",
+        colPaymentRef: "Reference & Simulated File",
+        colSupplierBank: "Supplier & Beneficiary",
+        colStageAmount: "Amount & Open Clearing 1120",
+        colClearingJournal: "Status & GL Journal",
+        colActions: "Action",
+        openDetailCta: "Inspect / Act",
+        openPayablesTitle: "Eligible Open Accounts Payable",
+        emptyOpenPayables: "No open payables currently due.",
+        colPayable: "Payable & Supplier",
+        colInvoiceDue: "Invoice & Due Date",
+        colBalance: "Remaining Open / Paid",
+        statementsTitle: "Imported Bank Statements",
+        emptyStatements: "No bank statements imported yet.",
+        colStatement: "Statement & Reference",
+        colBankTotals: "Account · Debit Total",
+        statementLinesTitle: "Bank Statement Lines (Reconciliation Staging)",
+        emptyStatementLines: "No bank statement lines staged yet.",
+        colLineRef: "Bank Reference & Description",
+        colDirectionAmt: "Direction & Unmatched",
+        colMatchStatus: "Match Status",
+        colReconcileAction: "Match",
+        matchesTitle: "Posted Bank Payment Matches (BMK)",
+        emptyMatches: "No bank reconciliation matches posted yet.",
+        colMatchNo: "Match No & Posting Date",
+        colMatchedDocs: "Payment & Statement Line",
+        colMatchGl: "Clearing Journal & Amount",
+        colReverseAction: "Reversal",
+        bankAccountsTitle: "Entity Bank Master Accounts",
+        emptyBankAccounts: "No bank accounts configured.",
+      },
+      statementImport: {
+        toggleOpen: "Import CSV Statement",
+        toggleClose: "Close Import Form",
+        title: "Import CSV Bank Statement (Fingerprint Deduplication)",
+        bankAccountLabel: "Target Bank Account",
+        statementRefLabel: "Bank Statement Reference",
+        statementDateLabel: "Statement Date",
+        openingBalLabel: "Opening Balance (IDR)",
+        closingBalLabel: "Closing Balance (IDR)",
+        csvLabel: "CSV Rows (ValueDate,Direction,Amount,BankReference,Counterparty,Description)",
+        csvHelper: "Each line computes a SHA-256 fingerprint preventing duplicate statement imports from double-settling payments.",
+        importCta: "Import Bank Statement",
+        importing: "Importing...",
+      },
+      reconcilePanel: {
+        matchAction: "Reconcile Line",
+        targetPaymentLabel: "Released Payment in Outbound Clearing 1120",
+        postingDateLabel: "GL Posting Date (1120 -> 1110)",
+        matchAmountLabel: "Amount to Reconcile (IDR)",
+        confirmMatch: "Confirm & Post Dr 1120 / Cr 1110",
+        matching: "Reconciling...",
+        cancelMatch: "Cancel",
+        noEligiblePayments: "No Released / Partially Reconciled payments remain on this bank account.",
+        reverseCta: "Reverse Match",
+        reversing: "Reversing...",
+        reverseReasonLabel: "Reversal Reason",
+        defaultReverseReason: "Bank statement matching correction",
+      },
+      bankConfig: {
+        title: "Configure Operating Bank Account",
+        accountCodeLabel: "Account Code",
+        bankNameLabel: "Bank Name",
+        branchNameLabel: "Branch",
+        accountNumberLabel: "Bank Account Number",
+        holderNameLabel: "Account Holder",
+        glCashLabel: "Cash & Bank GL Account (1110)",
+        glClearingLabel: "Outbound Clearing GL Account (1120)",
+        saveCta: "Save Bank Account",
+        saving: "Saving...",
+        clearingProofTitle: "Live Outbound Clearing 1120 Proof (GL vs Subledger)",
+        glClearingBalance: "GL Account 1120 Net Credit Balance",
+        subledgerClearingBalance: "Sum of Unreconciled Released Payments",
+        discrepancyLabel: "Variance (GL vs Subledger)",
+        glCashBalance: "Cash & Bank 1110 Net Balance",
+      },
+      detail: {
+        sheetLabel: "Supplier Payment Clearing Detail",
+        closeLabel: "Close payment detail sheet",
+        headerPayment: "Payment & Originators",
+        headerBankBeneficiary: "Bank Account & Beneficiary",
+        headerAmounts: "Total & Open Clearing",
+        stageBannerSimulated: "Stage 1/2: File simulation performs zero fund transfers and zero GL/AP posting until four-eyes release.",
+        stageBannerReleased: "Stage 3 (Outbound Clearing Open): Dr 2100 / Cr 1120 posted; awaiting bank statement match.",
+        stageBannerReconciled: "Stage 4 (Settled): Outbound Clearing 1120 cleared cleanly into Cash & Bank 1110.",
+        stageBannerRejected: "Bank Rejected: Linked compensating journal Dr 1120 / Cr 2100 restored open supplier payables.",
+        allocationsTitle: "Payable Invoice Allocations",
+        colPayableNo: "Payable No",
+        colInvoiceNo: "Supplier Invoice",
+        colBefore: "Open Before",
+        colAllocated: "Allocated",
+        colAfter: "Remaining After",
+        instructionsTitle: "Simulated Payment Instruction Snapshots (Non-Live · 0 GL)",
+        noInstructions: "No simulated instruction file generated yet.",
+        simulateFileBtn: "Generate Simulated File (0 GL)",
+        simulatingFile: "Simulating...",
+        simulationWarningBadge: "SIMULATED FILE · ZERO LIVE BANK TRANSFER",
+        submitBtn: "Submit for Four-Eyes Release",
+        submitting: "Submitting...",
+        releaseTitle: "Authorize Four-Eyes Payment Release (OD-02 & OD-06)",
+        releaseRefLabel: "Portal / Bank Release Reference",
+        postingDateLabel: "Release GL Posting Date",
+        releaseBtn: "Release & Post Dr 2100 / Cr 1120",
+        releasing: "Releasing...",
+        sodHint: "Four-Eyes Segregation (OD-02): Payment preparer and submitter cannot release their own proposal.",
+        noReleasePermHint: "Requires ap.approve, ap.post, or finance.journal.post grant by a different actor.",
+        rejectTitle: "Record Bank Rejection (Reverse Dr 1120 / Cr 2100)",
+        rejectReasonLabel: "Bank Rejection Reason",
+        rejectBtn: "Record Bank Rejection & Restore AP",
+        rejecting: "Reversing...",
+        defaultRejectReason: "Clearing bank rejected: invalid beneficiary account details",
+        matchesSectionTitle: "Linked Bank Statement Reconciliations (BMK)",
+        journalLabel: "Release Journal (1120)",
+        reversalJournalLabel: "Reversal Journal",
+      },
+      statusLabels: {
+        DRAFT: "Draft Proposal",
+        PENDING_RELEASE: "Pending Release (0 GL)",
+        RELEASED: "Released to Clearing (1120)",
+        PARTIALLY_RECONCILED: "Partially Reconciled",
+        RECONCILED: "Bank Reconciled",
+        BANK_REJECTED: "Bank Rejected (Reversed)",
+        CANCELLED: "Cancelled",
+      },
+      statementLineStatusLabels: {
+        UNMATCHED: "Unmatched",
+        PARTIALLY_MATCHED: "Partially Matched",
+        MATCHED: "Matched",
+        IGNORED: "Ignored",
+      },
+      matchStatusLabels: {
+        POSTED: "Posted (1120 -> 1110)",
+        REVERSED: "Reversed",
+      },
+      methodLabels: {
+        BANK_TRANSFER_IDR: "Bank Transfer (IDR)",
+        CLEARING_RTGS: "SKN / RTGS Clearing",
+        BIFAST_IDR: "BI-FAST (IDR)",
+      },
+      errors: {
+        four_eyes_violation:
+          "Four-Eyes Segregation of Duties (OD-02) forbids releasing your own prepared or submitted payment.",
+        release_reference_required:
+          "An explicit bank/portal release reference is required under OD-06 before posting to Outbound Clearing.",
+        payable_payment_blocked:
+          "Selected supplier payable currently holds an active PAYMENT_BLOCKED lock.",
+        allocation_exceeds_open_payable:
+          "Allocated amount exceeds remaining open AP balance (or capacity reserved by another draft proposal).",
+        duplicate_bank_statement_reference:
+          "This bank statement reference was already imported for the selected bank account.",
+        duplicate_bank_statement_line:
+          "Duplicate statement transaction fingerprint detected — rejected to prevent double settlement.",
+        payment_already_reconciled_reverse_match_first:
+          "Reverse posted bank reconciliation matches before recording a bank rejection on this payment.",
+        period_closed:
+          "The accounting period for the selected posting date is CLOSED.",
+        insufficient_entity_permission:
+          "Your active role grants do not permit performing this payment or bank reconciliation action.",
       },
     },
   },

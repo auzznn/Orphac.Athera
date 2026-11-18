@@ -8719,6 +8719,1167 @@
           }
         }
       }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/overview": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetPaymentsOverview",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentsOverviewResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetSupplierPaymentDetail",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "paymentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierPaymentDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "UpdateSupplierPaymentProposal",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "paymentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSupplierPaymentProposalRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierPaymentDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/bank-accounts": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "UpsertBankAccount",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertBankAccountRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BankAccountDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CreateSupplierPaymentProposal",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSupplierPaymentProposalRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierPaymentDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/simulate-file": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "SimulateSupplierPaymentFile",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "paymentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulatePaymentInstructionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierPaymentDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/submit": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "SubmitSupplierPaymentForRelease",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "paymentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierPaymentDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/release": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ReleaseSupplierPayment",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "paymentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleaseSupplierPaymentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierPaymentDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/{paymentId}/reject-released": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "RejectReleasedSupplierPayment",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "paymentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectReleasedPaymentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierPaymentDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/bank-statements": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ImportBankStatement",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ImportBankStatementRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BankStatementDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/reconcile": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ReconcileBankStatementLine",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReconcileBankStatementLineRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BankPaymentMatchDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payments/matches/{matchId}/reverse": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ReverseBankPaymentMatch",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "matchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReverseBankMatchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BankPaymentMatchDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -9500,6 +10661,421 @@
           }
         }
       },
+      "BankAccountDto": {
+        "required": [
+          "bankAccountId",
+          "accountCode",
+          "bankName",
+          "branchName",
+          "accountNumber",
+          "accountHolderName",
+          "currencyCode",
+          "glAccountId",
+          "glAccountCode",
+          "glAccountName",
+          "clearingGlAccountId",
+          "clearingGlAccountCode",
+          "clearingGlAccountName",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accountCode": {
+            "type": "string"
+          },
+          "bankName": {
+            "type": "string"
+          },
+          "branchName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "accountNumber": {
+            "type": "string"
+          },
+          "accountHolderName": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "glAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "glAccountCode": {
+            "type": "string"
+          },
+          "glAccountName": {
+            "type": "string"
+          },
+          "clearingGlAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clearingGlAccountCode": {
+            "type": "string"
+          },
+          "clearingGlAccountName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "BankPaymentMatchDto": {
+        "required": [
+          "bankPaymentMatchId",
+          "matchNumber",
+          "bankAccountId",
+          "bankAccountCode",
+          "bankStatementId",
+          "statementNumber",
+          "bankStatementLineId",
+          "bankReference",
+          "supplierPaymentId",
+          "paymentDisplayNumber",
+          "postingDate",
+          "matchedAmount",
+          "status",
+          "clearingGlJournalId",
+          "clearingGlJournalNumber",
+          "reversalGlJournalId",
+          "reversalGlJournalNumber",
+          "reversalReason",
+          "matchedByEmail",
+          "matchedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "bankPaymentMatchId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "matchNumber": {
+            "type": "string"
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bankAccountCode": {
+            "type": "string"
+          },
+          "bankStatementId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "statementNumber": {
+            "type": "string"
+          },
+          "bankStatementLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bankReference": {
+            "type": "string"
+          },
+          "supplierPaymentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "paymentDisplayNumber": {
+            "type": "string"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "matchedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "status": {
+            "type": "string"
+          },
+          "clearingGlJournalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clearingGlJournalNumber": {
+            "type": "string"
+          },
+          "reversalGlJournalId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "reversalGlJournalNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "reversalReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "matchedByEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "matchedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "BankStatementDto": {
+        "required": [
+          "bankStatementId",
+          "statementNumber",
+          "bankAccountId",
+          "bankAccountCode",
+          "statementReference",
+          "statementDate",
+          "currencyCode",
+          "openingBalance",
+          "closingBalance",
+          "totalDebitAmount",
+          "totalCreditAmount",
+          "lineCount",
+          "sourceFormat",
+          "importedByEmail",
+          "importedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "bankStatementId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "statementNumber": {
+            "type": "string"
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bankAccountCode": {
+            "type": "string"
+          },
+          "statementReference": {
+            "type": "string"
+          },
+          "statementDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "openingBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "closingBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalDebitAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalCreditAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lineCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sourceFormat": {
+            "type": "string"
+          },
+          "importedByEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "importedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "BankStatementLineDto": {
+        "required": [
+          "bankStatementLineId",
+          "bankStatementId",
+          "statementNumber",
+          "bankAccountId",
+          "bankAccountCode",
+          "lineNumber",
+          "valueDate",
+          "direction",
+          "amount",
+          "matchedAmount",
+          "unmatchedAmount",
+          "bankReference",
+          "counterpartyName",
+          "description",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "bankStatementLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bankStatementId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "statementNumber": {
+            "type": "string"
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bankAccountCode": {
+            "type": "string"
+          },
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "valueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "direction": {
+            "type": "string"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "matchedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unmatchedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "bankReference": {
+            "type": "string"
+          },
+          "counterpartyName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "BankStatementLineImportRequest": {
+        "required": [
+          "valueDate",
+          "direction",
+          "amount",
+          "bankReference",
+          "counterpartyName",
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "valueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "direction": {
+            "type": "string"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "bankReference": {
+            "type": "string"
+          },
+          "counterpartyName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
       "BillJournalSuggestionDto": {
         "required": [
           "side",
@@ -9579,6 +11155,53 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "ClearingReconciliationProofDto": {
+        "required": [
+          "glOutboundClearingCreditNetBalance",
+          "subledgerOpenClearingBalance",
+          "discrepancyAmount",
+          "isReconciled",
+          "glMainOperatingBankNetBalance"
+        ],
+        "type": "object",
+        "properties": {
+          "glOutboundClearingCreditNetBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "subledgerOpenClearingBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "discrepancyAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "isReconciled": {
+            "type": "boolean"
+          },
+          "glMainOperatingBankNetBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -10295,6 +11918,58 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BillLineInputRequest"
+            }
+          }
+        }
+      },
+      "CreateSupplierPaymentProposalRequest": {
+        "required": [
+          "bankAccountId",
+          "supplierPartnerId",
+          "beneficiaryBankName",
+          "beneficiaryAccountNumber",
+          "beneficiaryAccountHolder",
+          "paymentMethod",
+          "paymentDate",
+          "notes",
+          "allocations"
+        ],
+        "type": "object",
+        "properties": {
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "beneficiaryBankName": {
+            "type": "string"
+          },
+          "beneficiaryAccountNumber": {
+            "type": "string"
+          },
+          "beneficiaryAccountHolder": {
+            "type": "string"
+          },
+          "paymentMethod": {
+            "type": "string"
+          },
+          "paymentDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "allocations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentAllocationInputRequest"
             }
           }
         }
@@ -12579,6 +14254,62 @@
           "timestampUtc": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "ImportBankStatementRequest": {
+        "required": [
+          "bankAccountId",
+          "statementReference",
+          "statementDate",
+          "openingBalance",
+          "closingBalance",
+          "csvContent",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "statementReference": {
+            "type": "string"
+          },
+          "statementDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "openingBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "closingBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "csvContent": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lines": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/BankStatementLineImportRequest"
+            }
           }
         }
       },
@@ -15554,6 +17285,257 @@
           }
         }
       },
+      "PaymentAllocationDto": {
+        "required": [
+          "paymentAllocationId",
+          "lineNumber",
+          "payableItemId",
+          "payableNumber",
+          "supplierBillId",
+          "supplierInvoiceNumber",
+          "payableOpenBeforeAmount",
+          "allocatedAmount",
+          "payableRemainingAfterAmount",
+          "notes"
+        ],
+        "type": "object",
+        "properties": {
+          "paymentAllocationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "payableItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "payableNumber": {
+            "type": "string"
+          },
+          "supplierBillId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierInvoiceNumber": {
+            "type": "string"
+          },
+          "payableOpenBeforeAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "allocatedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "payableRemainingAfterAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PaymentAllocationInputRequest": {
+        "required": [
+          "payableItemId",
+          "allocatedAmount",
+          "notes"
+        ],
+        "type": "object",
+        "properties": {
+          "payableItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "allocatedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PaymentInstructionDto": {
+        "required": [
+          "paymentInstructionId",
+          "instructionNumber",
+          "formatCode",
+          "simulationOnly",
+          "totalAmount",
+          "currencyCode",
+          "payloadText",
+          "payloadSha256",
+          "generatedByEmail",
+          "generatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "paymentInstructionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "instructionNumber": {
+            "type": "string"
+          },
+          "formatCode": {
+            "type": "string"
+          },
+          "simulationOnly": {
+            "type": "boolean"
+          },
+          "totalAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "payloadText": {
+            "type": "string"
+          },
+          "payloadSha256": {
+            "type": "string"
+          },
+          "generatedByEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "generatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PaymentsGlAccountOptionDto": {
+        "required": [
+          "accountId",
+          "accountCode",
+          "accountName",
+          "accountCategory"
+        ],
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accountCode": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "accountCategory": {
+            "type": "string"
+          }
+        }
+      },
+      "PaymentsOverviewResponse": {
+        "required": [
+          "od06PolicyNotice",
+          "bankAccounts",
+          "cashAndClearingAccounts",
+          "openPayables",
+          "payments",
+          "bankStatements",
+          "statementLines",
+          "matches",
+          "clearingProof",
+          "serverTimestampUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "od06PolicyNotice": {
+            "type": "string"
+          },
+          "bankAccounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BankAccountDto"
+            }
+          },
+          "cashAndClearingAccounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentsGlAccountOptionDto"
+            }
+          },
+          "openPayables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayableItemDto"
+            }
+          },
+          "payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplierPaymentSummaryDto"
+            }
+          },
+          "bankStatements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BankStatementDto"
+            }
+          },
+          "statementLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BankStatementLineDto"
+            }
+          },
+          "matches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BankPaymentMatchDto"
+            }
+          },
+          "clearingProof": {
+            "$ref": "#/components/schemas/ClearingReconciliationProofDto"
+          },
+          "serverTimestampUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "PoHeaderFieldDiffDto": {
         "required": [
           "fieldKey",
@@ -17971,6 +19953,42 @@
           }
         }
       },
+      "ReconcileBankStatementLineRequest": {
+        "required": [
+          "bankStatementLineId",
+          "supplierPaymentId",
+          "postingDate",
+          "matchedAmount",
+          "idempotencyKey"
+        ],
+        "type": "object",
+        "properties": {
+          "bankStatementLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierPaymentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "matchedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          }
+        }
+      },
       "RecordDockCheckRequest": {
         "required": [
           "idempotencyKey",
@@ -18171,6 +20189,22 @@
           }
         }
       },
+      "RejectReleasedPaymentRequest": {
+        "required": [
+          "reversalPostingDate",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "reversalPostingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
       "ReleaseStockReservationRequest": {
         "required": [
           "releaseBaseQuantity"
@@ -18185,6 +20219,26 @@
               "string"
             ],
             "format": "double"
+          }
+        }
+      },
+      "ReleaseSupplierPaymentRequest": {
+        "required": [
+          "postingDate",
+          "releaseReference",
+          "idempotencyKey"
+        ],
+        "type": "object",
+        "properties": {
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "releaseReference": {
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "type": "string"
           }
         }
       },
@@ -18579,6 +20633,22 @@
           }
         }
       },
+      "ReverseBankMatchRequest": {
+        "required": [
+          "reversalPostingDate",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "reversalPostingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
       "ReverseJournalRequest": {
         "required": [
           "reversalPostingDate",
@@ -18592,6 +20662,20 @@
           },
           "reason": {
             "type": "string"
+          }
+        }
+      },
+      "SimulatePaymentInstructionRequest": {
+        "required": [
+          "formatCode"
+        ],
+        "type": "object",
+        "properties": {
+          "formatCode": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -20121,6 +22205,253 @@
             "type": "string"
           },
           "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SupplierPaymentDetailResponse": {
+        "required": [
+          "payment",
+          "allocations",
+          "instructions",
+          "matches",
+          "idempotentReplay"
+        ],
+        "type": "object",
+        "properties": {
+          "payment": {
+            "$ref": "#/components/schemas/SupplierPaymentSummaryDto"
+          },
+          "allocations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentAllocationDto"
+            }
+          },
+          "instructions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentInstructionDto"
+            }
+          },
+          "matches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BankPaymentMatchDto"
+            }
+          },
+          "idempotentReplay": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SupplierPaymentSummaryDto": {
+        "required": [
+          "supplierPaymentId",
+          "draftCode",
+          "paymentNumber",
+          "bankAccountId",
+          "bankAccountCode",
+          "bankName",
+          "supplierPartnerId",
+          "supplierCode",
+          "supplierLegalName",
+          "beneficiaryBankName",
+          "beneficiaryAccountNumber",
+          "beneficiaryAccountHolder",
+          "currencyCode",
+          "paymentMethod",
+          "paymentDate",
+          "totalAllocatedAmount",
+          "reconciledAmount",
+          "remainingClearingAmount",
+          "status",
+          "simulatedInstructionCount",
+          "latestInstructionId",
+          "latestInstructionCode",
+          "releaseReference",
+          "releaseJournalId",
+          "releaseJournalNumber",
+          "rejectionReversalJournalId",
+          "rejectionReversalJournalNumber",
+          "rejectionReason",
+          "notes",
+          "preparedByEmail",
+          "submittedByEmail",
+          "releasedByEmail",
+          "createdAtUtc",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "supplierPaymentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "draftCode": {
+            "type": "string"
+          },
+          "paymentNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bankAccountCode": {
+            "type": "string"
+          },
+          "bankName": {
+            "type": "string"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "supplierLegalName": {
+            "type": "string"
+          },
+          "beneficiaryBankName": {
+            "type": "string"
+          },
+          "beneficiaryAccountNumber": {
+            "type": "string"
+          },
+          "beneficiaryAccountHolder": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "paymentMethod": {
+            "type": "string"
+          },
+          "paymentDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "totalAllocatedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reconciledAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingClearingAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "status": {
+            "type": "string"
+          },
+          "simulatedInstructionCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "latestInstructionId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "latestInstructionCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "releaseReference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "releaseJournalId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "releaseJournalNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "rejectionReversalJournalId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "rejectionReversalJournalNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "rejectionReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "preparedByEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "submittedByEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "releasedByEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
             "type": "string",
             "format": "date-time"
           }
@@ -21725,6 +24056,53 @@
           }
         }
       },
+      "UpdateSupplierPaymentProposalRequest": {
+        "required": [
+          "bankAccountId",
+          "beneficiaryBankName",
+          "beneficiaryAccountNumber",
+          "beneficiaryAccountHolder",
+          "paymentMethod",
+          "paymentDate",
+          "notes",
+          "allocations"
+        ],
+        "type": "object",
+        "properties": {
+          "bankAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "beneficiaryBankName": {
+            "type": "string"
+          },
+          "beneficiaryAccountNumber": {
+            "type": "string"
+          },
+          "beneficiaryAccountHolder": {
+            "type": "string"
+          },
+          "paymentMethod": {
+            "type": "string"
+          },
+          "paymentDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "allocations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentAllocationInputRequest"
+            }
+          }
+        }
+      },
       "UpdateSupplierReturnRequest": {
         "required": [
           "resolutionMode",
@@ -21793,6 +24171,53 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "UpsertBankAccountRequest": {
+        "required": [
+          "accountCode",
+          "bankName",
+          "branchName",
+          "accountNumber",
+          "accountHolderName",
+          "glAccountId",
+          "clearingGlAccountId",
+          "status"
+        ],
+        "type": "object",
+        "properties": {
+          "accountCode": {
+            "type": "string"
+          },
+          "bankName": {
+            "type": "string"
+          },
+          "branchName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "accountNumber": {
+            "type": "string"
+          },
+          "accountHolderName": {
+            "type": "string"
+          },
+          "glAccountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clearingGlAccountId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "status": {
+            "type": "string"
           }
         }
       },

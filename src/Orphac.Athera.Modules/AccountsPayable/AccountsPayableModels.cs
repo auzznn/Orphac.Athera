@@ -1003,6 +1003,74 @@ public sealed class PayableItem
         UpdatedAtUtc = nowUtc;
         Version++;
     }
+
+    public void ApplyPaymentSettlement(decimal paymentAmount, DateTimeOffset nowUtc)
+    {
+        if (PaymentBlockStatus == PaymentBlockStatuses.PaymentBlocked)
+        {
+            throw new InvalidOperationException(
+                "payable_payment_blocked: Payable item has an active PAYMENT_BLOCKED hold and cannot be settled.");
+        }
+
+        if (Status is not (PayableStatuses.Open or PayableStatuses.PartiallyPaid))
+        {
+            throw new InvalidOperationException(
+                $"payable_not_open: Payable '{PayableNumber}' is in status '{Status}' and cannot accept new payment settlements.");
+        }
+
+        var amt = decimal.Round(paymentAmount, 4, MidpointRounding.AwayFromZero);
+        if (amt <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(paymentAmount), "Payment amount must be strictly positive.");
+        }
+
+        if (amt > RemainingOpenAmount)
+        {
+            throw new InvalidOperationException(
+                $"allocation_exceeds_open_payable: Allocation ({amt:F4}) exceeds open payable balance ({RemainingOpenAmount:F4}) on '{PayableNumber}'.");
+        }
+
+        PaidAmount = decimal.Round(PaidAmount + amt, 4, MidpointRounding.AwayFromZero);
+        RemainingOpenAmount = decimal.Round(NetPayableAmount - PaidAmount - CreditedAmount, 4, MidpointRounding.AwayFromZero);
+        if (RemainingOpenAmount < 0m || NetPayableAmount != PaidAmount + CreditedAmount + RemainingOpenAmount)
+        {
+            throw new InvalidOperationException("payable_settlement_conservation_failed: Payable amounts failed conservation.");
+        }
+
+        Status = RemainingOpenAmount == 0m ? PayableStatuses.Paid : PayableStatuses.PartiallyPaid;
+        UpdatedAtUtc = nowUtc;
+        Version++;
+    }
+
+    public void ReversePaymentSettlement(decimal reversalAmount, DateTimeOffset nowUtc)
+    {
+        var amt = decimal.Round(reversalAmount, 4, MidpointRounding.AwayFromZero);
+        if (amt <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(reversalAmount), "Reversal amount must be strictly positive.");
+        }
+
+        if (amt > PaidAmount)
+        {
+            throw new InvalidOperationException(
+                $"reversal_exceeds_paid_amount: Reversal ({amt:F4}) exceeds settled paid amount ({PaidAmount:F4}) on '{PayableNumber}'.");
+        }
+
+        PaidAmount = decimal.Round(PaidAmount - amt, 4, MidpointRounding.AwayFromZero);
+        RemainingOpenAmount = decimal.Round(NetPayableAmount - PaidAmount - CreditedAmount, 4, MidpointRounding.AwayFromZero);
+        if (RemainingOpenAmount < 0m || NetPayableAmount != PaidAmount + CreditedAmount + RemainingOpenAmount)
+        {
+            throw new InvalidOperationException("payable_settlement_conservation_failed: Payable amounts failed conservation on reversal.");
+        }
+
+        Status = PaidAmount > 0m
+            ? PayableStatuses.PartiallyPaid
+            : RemainingOpenAmount == 0m && CreditedAmount > 0m
+                ? PayableStatuses.Credited
+                : PayableStatuses.Open;
+        UpdatedAtUtc = nowUtc;
+        Version++;
+    }
 }
 
 public sealed class CreditSequence

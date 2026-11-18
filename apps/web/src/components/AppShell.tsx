@@ -27,6 +27,7 @@ import {
   ShoppingCart,
   Tags,
   Users,
+  Wallet,
   X,
 } from "lucide-react";
 import {
@@ -433,6 +434,24 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         permissionSet.has("ap.post"),
       active: pathname.endsWith("/payables") || pathname.includes("/payables/"),
     },
+    (() => {
+      const paymentsPermitted =
+        permissionSet.has("ap.read") ||
+        permissionSet.has("ap.manage") ||
+        permissionSet.has("ap.approve") ||
+        permissionSet.has("ap.post") ||
+        permissionSet.has("finance.read") ||
+        permissionSet.has("finance.config.manage") ||
+        permissionSet.has("finance.journal.post");
+      return {
+        key: "payments",
+        label: t.shell.navItems.payments,
+        icon: Wallet,
+        href: baseEntityPath && paymentsPermitted ? `${baseEntityPath}/payments` : null,
+        permitted: paymentsPermitted,
+        active: pathname.endsWith("/payments") || pathname.includes("/payments/"),
+      };
+    })(),
     {
       key: "finance",
       label: t.shell.navItems.finance,

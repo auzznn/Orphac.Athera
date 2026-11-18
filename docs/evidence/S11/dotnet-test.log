@@ -1,0 +1,3303 @@
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Orphac.Athera.Modules -> /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Modules/bin/Debug/net10.0/Orphac.Athera.Modules.dll
+  Orphac.Athera.Api -> /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api/bin/Debug/net10.0/Orphac.Athera.Api.dll
+  Orphac.Athera.UnitTests -> /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/bin/Debug/net10.0/Orphac.Athera.UnitTests.dll
+Test run for /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/bin/Debug/net10.0/Orphac.Athera.UnitTests.dll (.NETCoreApp,Version=v10.0)
+  Orphac.Athera.IntegrationTests -> /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/Orphac.Athera.IntegrationTests.dll
+Test run for /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/Orphac.Athera.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v3.1.4+50e68bbb8b (64-bit .NET 10.0.12)
+[xUnit.net 00:00:00.10]   Discovering: Orphac.Athera.UnitTests
+[xUnit.net 00:00:00.17]   Discovered:  Orphac.Athera.UnitTests
+[xUnit.net 00:00:00.17]   Discovering: Orphac.Athera.IntegrationTests
+[xUnit.net 00:00:00.20]   Starting:    Orphac.Athera.UnitTests
+[xUnit.net 00:00:00.21]   Discovered:  Orphac.Athera.IntegrationTests
+[xUnit.net 00:00:00.25]   Starting:    Orphac.Athera.IntegrationTests
+  Passed Orphac.Athera.UnitTests.S08StockAvailabilityQualityTests.StockPosition_StatusTransitionsAndAvailableProtection_EnforceOd10 [25 ms]
+  Passed Orphac.Athera.UnitTests.S11SupplierSettlementAndBankReconciliationUnitTests.BankStatementLine_CsvParserFingerprintAndMatchConservation [23 ms]
+  Passed Orphac.Athera.UnitTests.S07ValuedAcceptanceValuationTests.MovingAverageValuation_TwoBatchesAndNonTerminatingDivision_PreservesCarryingValueAndPrecision [26 ms]
+  Passed Orphac.Athera.UnitTests.S04FinancialPostingKernelTests.GlAccountAndAccountMappingValidator_EnforceHeaderPostingTypeAndEntityBoundaries [27 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.UserAccount_CreateAndDeactivate_TracksStateAndVersion [26 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "https://evil.example.net", host: "127.0.0.1:3200", expected: False) [3 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "not-a-uri", host: "127.0.0.1:3200", expected: False) [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "http://localhost:3200", host: "localhost:3200", expected: True) [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.OriginValidator_ChecksBrowserOriginAgainstAllowedOrigins(origin: "http://127.0.0.1:3200", host: "127.0.0.1:3200", expected: True) [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "ID", expected: "id-ID") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "", expected: "id-ID") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "id-ID", expected: "id-ID") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: null, expected: "id-ID") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "en", expected: "en-US") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ReturnsSupportedLocale(raw: "en-US", expected: "en-US") [< 1 ms]
+  Passed Orphac.Athera.UnitTests.IdentityFoundationTests.NormalizeLocale_ThrowsOnUnsupportedLocale [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S08StockAvailabilityQualityTests.ReceiptInspection_PartialAndFinalDisposition_ConservesQuantitiesAndBlocksOverDisposition [7 ms]
+  Passed Orphac.Athera.UnitTests.S04FinancialPostingKernelTests.S04PermissionCodesAndFinanceOfficerTemplate_ExposeLeastPrivilegeFinanceScope [10 ms]
+  Passed Orphac.Athera.UnitTests.S02AdminApprovalOutboxTests.PermissionCodesAndRoleTemplates_RejectEscalatedOrUnknownPermissions [3 ms]
+  Passed Orphac.Athera.UnitTests.S07ValuedAcceptanceValuationTests.GoodsReceiptLine_RecordValuedAcceptance_ConservesBucketsAndBlocksOvershootOrFractionalDiscrete [14 ms]
+  Passed Orphac.Athera.UnitTests.S07ValuedAcceptanceValuationTests.StockPosition_UnrestrictedVsRestrictedStatuses_MaintainExactAvailabilityInvariants [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S10SupplierReturnMatrixUnitTests.ReceiptAccrualAndPayableItem_ConserveReturnedAndCreditedTotals [42 ms]
+  Passed Orphac.Athera.UnitTests.S08StockAvailabilityQualityTests.LocationBalanceAndReservation_Od10NoNegativeAndNoOverReserve_Enforced [7 ms]
+  Passed Orphac.Athera.UnitTests.S08StockAvailabilityQualityTests.RoleTemplates_SegregateWarehouseClerkAndQualityInspectorDuties [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S07ValuedAcceptanceValuationTests.Od04Guards_BlockZeroOrNegativeValueAndAnomalousPools [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S02AdminApprovalOutboxTests.UserInvitation_Create_HashesTokenAndEnforcesExpiryAndStateTransitions [8 ms]
+  Passed Orphac.Athera.UnitTests.S08StockAvailabilityQualityTests.CatalogItem_LotTrackingPolicies_AllowStockedAndRejectNonStockService [5 ms]
+  Passed Orphac.Athera.UnitTests.S11SupplierSettlementAndBankReconciliationUnitTests.SupplierPayment_FourEyesSoD_FileSimulationNonPosting_AndClearingConservation [20 ms]
+  Passed Orphac.Athera.UnitTests.S10SupplierReturnMatrixUnitTests.Matrix_M3_ValuedBilledReturn_ApCreditNoteAndNotaRetur [9 ms]
+  Passed Orphac.Athera.UnitTests.S02AdminApprovalOutboxTests.ApprovalCaseAndDecision_ForbidSelfApprovalAndDoubleDecision [4 ms]
+  Passed Orphac.Athera.UnitTests.S04FinancialPostingKernelTests.JournalEntry_EnforcesDecimalBalanceSingleSidedLinesAndDeterministicPayloadHash [15 ms]
+  Passed Orphac.Athera.UnitTests.S11SupplierSettlementAndBankReconciliationUnitTests.PayableItem_ApplyPaymentSettlement_ConservesBalancesAndBlocksPaymentBlocked [3 ms]
+  Passed Orphac.Athera.UnitTests.S10SupplierReturnMatrixUnitTests.Matrix_M4_M5_M6_M7_FailClosedDispositions [2 ms]
+  Passed Orphac.Athera.UnitTests.S09SupplierInvoiceMatchValuationTests.ExactThreeWayMatch_ProducesZeroVariancesAndMatchedStatus [2 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.Tenant_Create_NormalizesCodeAndNameAndDefaultsToActive [1 ms]
+  Passed Orphac.Athera.UnitTests.S10SupplierReturnMatrixUnitTests.Matrix_M2_ValuedUnbilledReturn_ComputesGrniMacAndPpvDelta [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S03PartnersCatalogueUomTests.UomConverter_PerformsExactRoundTripRejectsFractionalDiscreteAndCapturesImmutableSnapshot [6 ms]
+  Passed Orphac.Athera.UnitTests.S09SupplierInvoiceMatchValuationTests.ZeroOnHandStock_RoutesOneHundredPercentVarianceToPpv5200 [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S09SupplierInvoiceMatchValuationTests.OverbillingQuantityDq_TriggersPostingBlockedRegardlessOfApproval [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S09SupplierInvoiceMatchValuationTests.NegativePriceVariance_SplitsNegativeInventoryAndEnforcesOd04PositiveFloor [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S09SupplierInvoiceMatchValuationTests.BalanceDifferenceBd_BlockedUnderSafeDefaultButAllowedWithinReviewedTolerance [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S10SupplierReturnMatrixUnitTests.Matrix_M1_UnvaluedDockRejection_ZeroGlZeroInventory_AndReplacementSupported [7 ms]
+  Passed Orphac.Athera.UnitTests.S03PartnersCatalogueUomTests.Partner_NormalizesCodeRequiresRoleAndEnforcesEntityScopeAndDeactivation [7 ms]
+  Passed Orphac.Athera.UnitTests.S09SupplierInvoiceMatchValuationTests.Od03AndOd08DomainGuards_RejectUnreviewedTolerancesAndNonPoBills [5 ms]
+  Passed Orphac.Athera.UnitTests.S03PartnersCatalogueUomTests.S03PermissionCodesAndRoleTemplates_ExposeMasterDataAndSalesOfficerSafely [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S05PurchaseOrdersTests.PurchaseOrderAndRevision_EnforceFrozenImmutabilityDownstreamCancelGuardAndShortClose [3 ms]
+  Passed Orphac.Athera.UnitTests.S09SupplierInvoiceMatchValuationTests.PositivePriceVarianceWithPartialStock_ApportionsDecP2p013AndRequiresApproval [3 ms]
+  Passed Orphac.Athera.UnitTests.S05PurchaseOrdersTests.S05PermissionCodesAndRoleTemplates_SeparateProcurementManageFromApprove [< 1 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.TenantMembership_SuspendAndRevokeTransitionStateAndRecordRevocationTimestamp [12 ms]
+  Passed Orphac.Athera.UnitTests.S05PurchaseOrdersTests.DeliveryTolerancePolicy_EnforcesOd01SafeDefaultZeroTolerance [1 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.EntityAccessGrant_EnforcesValidityWindowAndStatusIndependently [1 ms]
+  Passed Orphac.Athera.UnitTests.S04FinancialPostingKernelTests.FinancialPeriodAndTaxCode_EnforceClosedBlocksExplicitTaxSelectionAndDpp1112Math [15 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.Tenant_Create_RejectsInvalidIdentifiersAndBlankFields [< 1 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.LegalEntity_Create_RejectsEmptyTenantOrInvalidIsoCodes [1 ms]
+  Passed Orphac.Athera.UnitTests.TenancyModelTests.LegalEntity_Create_DefaultsIndonesianContextAndValidatesCodes [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S06DockReceivingTests.GoodsReceiptLine_EnforcesConservationAndRejectsInvalidBucketsOrMissingReason [28 ms]
+  Passed Orphac.Athera.UnitTests.S06DockReceivingTests.GoodsReceiptLine_SegregatesOd01OverdeliveryIntoDockHeldAndBlocksUnauthorizedRelease [< 1 ms]
+  Passed Orphac.Athera.UnitTests.S05PurchaseOrdersTests.PurchaseOrderDiffCalculator_DetectsHeaderAddedModifiedRemovedLinesAndTotals [4 ms]
+  Passed Orphac.Athera.UnitTests.S05PurchaseOrdersTests.DocumentApproval_EnforcesFourEyesSelfApprovalAndSingleDecision [2 ms]
+  Passed Orphac.Athera.UnitTests.S10SupplierReturnMatrixUnitTests.ReplacementAuthorization_EnforcesZeroCommercialPricePositiveInventoryCostAndQuantityBounds [19 ms]
+[xUnit.net 00:00:00.35]   Finished:    Orphac.Athera.UnitTests
+  Passed Orphac.Athera.UnitTests.S06DockReceivingTests.ReceivingPermissions_AndDeterministicPayloadHashes_VerifyCleanly [10 ms]
+  Passed Orphac.Athera.UnitTests.S10SupplierReturnMatrixUnitTests.ValuationPool_ApplyPurchaseReturn_EnforcesOd04PartialFloorAndCleanZeroDrain [< 1 ms]
+
+Test Run Successful.
+Total tests: 62
+     Passed: 62
+ Total time: 1,1881 Seconds
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_01_HealthEndpointVerifiesPostgreSqlAsRuntimeRole [16 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_API_02_PrivilegeEscalationAndEntityBoundariesBlocked [16 s]
+  Passed Orphac.Athera.IntegrationTests.S11SupplierSettlementPostgresTests.S11_PG_02_MigrationM11DownToM10AndUpRoundTrip [16 s]
+  Passed Orphac.Athera.IntegrationTests.S07ValuedAcceptancePostgresTests.S07_PG_02_MigrationM07DownAndUpRoundTripSucceeds [16 s]
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_API_03_HostileTenantEntityAndReadOnlyPermissionsFailSafely [16 s]
+fail: Microsoft.EntityFrameworkCore.Update[10000]
+      An exception occurred in the database while saving changes for context type 'Orphac.Athera.Modules.Persistence.AtheraDbContext'.
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "ux_purchase_orders_entity_po_number"
+         at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+         at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+        Exception data:
+          Severity: ERROR
+          SqlState: 23505
+          MessageText: duplicate key value violates unique constraint "ux_purchase_orders_entity_po_number"
+          SchemaName: procurement
+          TableName: purchase_orders
+          ConstraintName: ux_purchase_orders_entity_po_number
+          File: nbtinsert.c
+          Line: 666
+          Routine: _bt_check_unique
+         --- End of inner exception stack trace ---
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "ux_purchase_orders_entity_po_number"
+         at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+         at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+        Exception data:
+          Severity: ERROR
+          SqlState: 23505
+          MessageText: duplicate key value violates unique constraint "ux_purchase_orders_entity_po_number"
+          SchemaName: procurement
+          TableName: purchase_orders
+          ConstraintName: ux_purchase_orders_entity_po_number
+          File: nbtinsert.c
+          Line: 666
+          Routine: _bt_check_unique
+         --- End of inner exception stack trace ---
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S05ProcurementPostgresTests.S05_API_01_MultiLineDraftSubmitFourEyesSelfApproveBlockedApproveAndDuplicatePoNumber [21 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S06ReceivingPostgresTests.S06_PG_03_AppendOnlyDockChecksNoDeleteAndConservationCheckConstraintsEnforced [22 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_03_InvalidPasswordAndLockoutEnforced [7 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+fail: Microsoft.EntityFrameworkCore.Update[10000]
+      An exception occurred in the database while saving changes for context type 'Orphac.Athera.Modules.Persistence.AtheraDbContext'.
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "IX_partners_tenant_id_partner_code"
+         at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+         at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+        Exception data:
+          Severity: ERROR
+          SqlState: 23505
+          MessageText: duplicate key value violates unique constraint "IX_partners_tenant_id_partner_code"
+          SchemaName: partners
+          TableName: partners
+          ConstraintName: IX_partners_tenant_id_partner_code
+          File: nbtinsert.c
+          Line: 666
+          Routine: _bt_check_unique
+         --- End of inner exception stack trace ---
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "IX_partners_tenant_id_partner_code"
+         at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+         at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+        Exception data:
+          Severity: ERROR
+          SqlState: 23505
+          MessageText: duplicate key value violates unique constraint "IX_partners_tenant_id_partner_code"
+          SchemaName: partners
+          TableName: partners
+          ConstraintName: IX_partners_tenant_id_partner_code
+          File: nbtinsert.c
+          Line: 666
+          Routine: _bt_check_unique
+         --- End of inner exception stack trace ---
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Update.Internal.NpgsqlModificationCommandBatch.Consume(RelationalDataReader reader, Boolean async, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+      Failed executing DbCommand (15ms) [Parameters=[@p4='?' (DbType = Guid), @p0='?' (DbType = DateTime), @p1='?' (DbType = Guid), @p2='?', @p3='?' (DbType = Int64), @p5='?' (DbType = Int64), @p6='?' (DbType = Guid), @p7='?' (DbType = Boolean), @p8='?' (DbType = Guid), @p9='?' (DbType = DateTime), @p10='?' (DbType = Guid), @p11='?', @p12='?' (DbType = Guid), @p13='?', @p14='?' (DbType = Guid), @p15='?' (DbType = Guid), @p16='?' (DbType = Guid), @p17='?' (DbType = Guid), @p18='?', @p19='?' (DbType = Guid), @p20='?' (DbType = DateTime), @p21='?' (DbType = Object), @p22='?', @p23='?', @p24='?', @p25='?' (DbType = Guid), @p26='?' (DbType = Guid), @p27='?' (DbType = DateTime), @p28='?' (DbType = Guid), @p29='?', @p30='?' (DbType = DateTime), @p31='?', @p32='?' (DbType = Guid), @p33='?' (DbType = DateTime), @p34='?' (DbType = Guid), @p35='?' (DbType = DateTime), @p36='?' (DbType = DateTime), @p37='?' (DbType = Int64), @p38='?' (DbType = Guid), @p39='?' (DbType = DateTime), @p40='?', @p41='?' (DbType = Guid), @p42='?' (DbType = DateTime), @p43='?' (DbType = Object), @p44='?' (DbType = DateTime), @p45='?', @p46='?', @p47='?' (DbType = Guid), @p48='?', @p49='?' (DbType = Int64)], CommandType='Text', CommandTimeout='30']
+      UPDATE approval.approval_cases SET decided_at_utc = @p0, decided_by_user_id = @p1, status = @p2, version = @p3
+      WHERE case_id = @p4 AND version = @p5;
+      INSERT INTO approval.approval_decisions (decision_id, approver_mfa_verified, case_id, decided_at_utc, decided_by_user_id, decision, legal_entity_id, reason, requested_by_user_id, tenant_id)
+      VALUES (@p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15);
+      INSERT INTO audit.audit_events (event_id, actor_user_id, event_type, legal_entity_id, occurred_at_utc, payload_json, subject_id, subject_type, summary, tenant_id)
+      VALUES (@p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, @p24, @p25);
+      INSERT INTO identity.entity_access_grants (grant_id, created_at_utc, legal_entity_id, permission_code, revoked_at_utc, status, tenant_id, updated_at_utc, user_id, valid_from_utc, valid_until_utc, version)
+      VALUES (@p26, @p27, @p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, @p36, @p37);
+      INSERT INTO integration.outbox_messages (message_id, created_at_utc, last_error, legal_entity_id, next_attempt_at_utc, payload_json, processed_at_utc, source_key, status, tenant_id, topic, version)
+      VALUES (@p38, @p39, @p40, @p41, @p42, @p43, @p44, @p45, @p46, @p47, @p48, @p49)
+      RETURNING attempt_count;
+fail: Microsoft.EntityFrameworkCore.Update[10000]
+      An exception occurred in the database while saving changes for context type 'Orphac.Athera.Modules.Persistence.AtheraDbContext'.
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "IX_approval_decisions_tenant_id_legal_entity_id_case_id"
+         at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+         at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+        Exception data:
+          Severity: ERROR
+          SqlState: 23505
+          MessageText: duplicate key value violates unique constraint "IX_approval_decisions_tenant_id_legal_entity_id_case_id"
+          SchemaName: approval
+          TableName: approval_decisions
+          ConstraintName: IX_approval_decisions_tenant_id_legal_entity_id_case_id
+          File: nbtinsert.c
+          Line: 666
+          Routine: _bt_check_unique
+         --- End of inner exception stack trace ---
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+      Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+       ---> Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "IX_approval_decisions_tenant_id_legal_entity_id_case_id"
+         at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+         at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+         at Npgsql.NpgsqlCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+        Exception data:
+          Severity: ERROR
+          SqlState: 23505
+          MessageText: duplicate key value violates unique constraint "IX_approval_decisions_tenant_id_legal_entity_id_case_id"
+          SchemaName: approval
+          TableName: approval_decisions
+          ConstraintName: IX_approval_decisions_tenant_id_legal_entity_id_case_id
+          File: nbtinsert.c
+          Line: 666
+          Routine: _bt_check_unique
+         --- End of inner exception stack trace ---
+         at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChangesAsync(IList`1 entries, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+         at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+         at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+  Passed Orphac.Athera.IntegrationTests.S10SupplierReturnsPostgresTests.S10_PG_01_ForcedRlsMissingContextAndAppendOnlyImmutability [25 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_API_01_DualPartnerLifecycleDuplicateCodeRestrictionAndAudit [10 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_API_03_FourEyesApprovalIdempotencyConcurrencyAndMfaEnforcement [11 s]
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_PG_02_RuntimeRoleLacksSuperuserBypassAndTableOwnership [4 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S07ValuedAcceptancePostgresTests.S07_API_01_PreviewMultiBatchMovingAverageGrniGlAndFaultRollbackVerified [16 s]
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_PG_01_MigrationUpDownUpRoundTripSucceeds [5 s]
+  Passed Orphac.Athera.IntegrationTests.S05ProcurementPostgresTests.S05_API_04_MasterScopeOd01ToleranceDownstreamCancelBlockShortCloseAndRbac [11 s]
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_PG_02_MigrationM03UpDownUpRoundTripSucceeds [6 s]
+  Passed Orphac.Athera.IntegrationTests.S11SupplierSettlementPostgresTests.S11_API_01_SimulationNonPostingFourEyesReleaseBankReconcilePartialReversalBankRejectClosedPeriodAndSavepoint [16 s]
+  Passed Orphac.Athera.IntegrationTests.S06ReceivingPostgresTests.S06_API_04_RbacAndCrossTenantBoundariesEnforced [10 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_PG_04_TenantSafeOutboxRetryIdempotencyAndZeroPoolLeakage [8 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S10SupplierReturnsPostgresTests.S10_API_03_FourEyesSodRbacReadOnlyEntityCrossTenant404AndAuditOutbox [14 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_05b_DeactivatedUserAccountRejectedImmediately [7 s]
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_PG_01_MissingContextDeniesAndCrossTenantMastersIsolatedUnderForcedRls [7 s]
+  Passed Orphac.Athera.IntegrationTests.S06ReceivingPostgresTests.S06_PG_02_MigrationM06DownAndUpRoundTripSucceeds [7 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S05ProcurementPostgresTests.S05_PG_01_MissingContextDeniesAndCrossTenantProcurementIsolatedUnderForcedRls [10 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S11SupplierSettlementPostgresTests.S11_PG_01_ForcedRlsMissingContextAppendOnlyAndImmutabilityTriggers [16 s]
+  Passed Orphac.Athera.IntegrationTests.S07ValuedAcceptancePostgresTests.S07_PG_01_SchemaRlsAppendOnlyAndDeferredBackingTriggerEnforced [16 s]
+  Passed Orphac.Athera.IntegrationTests.S00AuthAndMigrationTests.S00_API_02_04_05_CsrfLoginMeAndLogoutEndToEnd [8 s]
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_API_01_InvitationExpiryRevocationAndRejoinNeverReactivatesStaleGrants [13 s]
+  Passed Orphac.Athera.IntegrationTests.S05ProcurementPostgresTests.S05_PG_02_MigrationM05DownAndUpRoundTripSucceeds [6 s]
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_API_02_CatalogItemExactUomRoundTripFractionalRejectAndRestriction [8 s]
+  Passed Orphac.Athera.IntegrationTests.S06ReceivingPostgresTests.S06_PG_01_ForcedRlsMissingContextAndCrossTenantForeignKeysRejected [9 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S03PartnersCataloguePostgresTests.S03_PG_03_RuntimeRoleCannotHardDeletePartnersOrItems [10 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S09SupplierInvoicePostgresTests.S09_PG_01_RlsAppendOnlyAndPostedBillImmutabilityTriggersEnforced [10 s]
+  Passed Orphac.Athera.IntegrationTests.S10SupplierReturnsPostgresTests.S10_API_01_M1UnvaluedReplacementZeroGlM2UnbilledCompensationM3BilledCreditNotaReturAndM4ToM7BlocksAndSavepointAtomicity [20 s]
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_PG_02_AuditEventsAndApprovalDecisionsAreAppendOnlyUnderRuntimeRole [10 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S11SupplierSettlementPostgresTests.S11_API_03_FourEyesSodRbacReadOnlyEntityCrossTenant404AndAuditOutbox [17 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S07ValuedAcceptancePostgresTests.S07_API_02_ConcurrentAcceptancesAndIdempotencyReplayNeverDoublePost [17 s]
+  Passed Orphac.Athera.IntegrationTests.S06ReceivingPostgresTests.S06_API_01_PartialDeliveriesDamageRejectSplitPoCancelBlockedAndZeroFinanceEffects [17 s]
+  Passed Orphac.Athera.IntegrationTests.S05ProcurementPostgresTests.S05_API_03_RevisionFreezePreservesOldSnapshotSupportsDiffAndRejectionRecovery [17 s]
+  Passed Orphac.Athera.IntegrationTests.S02AdminApprovalAuditTests.S02_PG_01_M02MigrationUpDownUpAndForcedRlsVerified [6 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S10SupplierReturnsPostgresTests.S10_PG_02_MigrationM10DownToM09AndUpRoundTrip [13 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_01_M01MigrationUpDownAndReapplySucceeds [6 s]
+  Passed Orphac.Athera.IntegrationTests.S08StockAvailabilityPostgresTests.S08_API_03_PermissionSegregationAndHostileCrossScopeDenials [13 s]
+  Passed Orphac.Athera.IntegrationTests.S09SupplierInvoicePostgresTests.S09_API_02_ConcurrentBillPostRaceAndIdempotencyProtectGrniAndAp [13 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S05ProcurementPostgresTests.S05_PG_03_SqlDeleteRevokedFourEyesConstraintAndFrozenSnapshotTriggersBlockTampering [15 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_03_MissingTenantContextDeniesReadsAndRejectsWrites [9 s]
+  Passed Orphac.Athera.IntegrationTests.S06ReceivingPostgresTests.S06_API_02_OverdeliveryHeldUnderOd01BlocksOverReleaseAndUnblocksOnlyAfterApprovedAmendment [16 s]
+  Passed Orphac.Athera.IntegrationTests.S07ValuedAcceptancePostgresTests.S07_API_03_PermissionSeparationHoldExclusionAndHostileSelectorsEnforced [16 s]
+  Passed Orphac.Athera.IntegrationTests.S11SupplierSettlementPostgresTests.S11_API_02_ConcurrencyRacesAndIdempotentReplays [16 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S09SupplierInvoicePostgresTests.S09_PG_02_MigrationM09DownToM08AndUpRoundTripSucceeds [13 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S10SupplierReturnsPostgresTests.S10_API_02_ConcurrencyAndIdempotency [15 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S08StockAvailabilityPostgresTests.S08_API_01_QuarantineDispositionAndLocationTransferConserveStockAndValuation [15 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_API_04_MembershipRevocationTakesImmediateEffectDespiteActiveGrant [10 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S08StockAvailabilityPostgresTests.S08_PG_02_MigrationM08DownToM07AndUpRoundTripSucceeds [4 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S04FinancialKernelPostgresTests.S04_API_02_SequentialAndTrueConcurrentDuplicatePostingsStayStrictlyIdempotent [12 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S05ProcurementPostgresTests.S05_API_02_ConcurrentSixApprovalsAllowSingleDecision [20 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S06ReceivingPostgresTests.S06_API_03_IdempotencyDuplicateDeliveryNoteUnapprovedPoAndConcurrentReleaseRaceSafe [20 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_API_01_02_03_AuthorizedWorkspacesHostileProbesSpoofedHeadersAndMultiTenantSwitch [12 s]
+  Passed Orphac.Athera.IntegrationTests.S09SupplierInvoicePostgresTests.S09_API_01_OperationalIssueThreeWayMatchValuationApTaxesAndSavepointRollback [18 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S08StockAvailabilityPostgresTests.S08_API_02_ConcurrentReservationRaceIdempotentReplayAndRelease [14 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S04FinancialKernelPostgresTests.S04_API_03_ClosedPeriodBlocksPostingAndSingleCompensatingReversalPreventsDoubleReversal [12 s]
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_02_RuntimeRolePrivilegesAndForcedRlsVerified [2 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_05_CompositeForeignKeysBlockCrossTenantLinksEvenUnderMigrator [7 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S04FinancialKernelPostgresTests.S04_PG_01_MissingContextDeniesAndCrossTenantFinanceIsolatedUnderForcedRls [7 s]
+  Passed Orphac.Athera.IntegrationTests.S08StockAvailabilityPostgresTests.S08_PG_01_RlsAppendOnlyAndCheckConstraintsEnforced [7 s]
+  Passed Orphac.Athera.IntegrationTests.S09SupplierInvoicePostgresTests.S09_API_03_PermissionSegregationSoDHostileCrossScopeAndPaymentBlockRelease [10 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_06_ConcurrentPoolAndRollbackExecutionHasZeroTenantLeakage [4 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S04FinancialKernelPostgresTests.S04_API_04_TaxRulesRequireExplicitCodeCompute1112DppEnforceNpwpAndRbac [6 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+  Passed Orphac.Athera.IntegrationTests.S01TenantIsolationTests.S01_PG_04_TenantScopedAppConnectionBlocksCrossTenantReadsAndWrites [3 s]
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+  Passed Orphac.Athera.IntegrationTests.S04FinancialKernelPostgresTests.S04_API_01_CoaPeriodsMappingsAndBalancedJournalPostAtomically [4 s]
+  Passed Orphac.Athera.IntegrationTests.S04FinancialKernelPostgresTests.S04_PG_02_MigrationM04UpDownUpRoundTripSucceeds [1 s]
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://127.0.0.1:5200
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Testing
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api
+info: Microsoft.Hosting.Lifetime[0]
+      Application is shutting down...
+[xUnit.net 00:02:11.55]   Finished:    Orphac.Athera.IntegrationTests
+  Passed Orphac.Athera.IntegrationTests.S04FinancialKernelPostgresTests.S04_PG_03_JournalTablesAppendOnlyAndDeferredSqlTriggerBlocksUnbalancedRawSql [2 s]
+
+Test Run Successful.
+Total tests: 72
+     Passed: 72
+ Total time: 2,2070 Minutes
