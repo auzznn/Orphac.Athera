@@ -481,4 +481,315 @@ public static class GlPostingKernel
         var result = await cmd.ExecuteScalarAsync(ct);
         return Convert.ToInt64(result, CultureInfo.InvariantCulture);
     }
+
+    public sealed record ReceiptAccrualLineInput(
+        Guid ValuedAcceptanceLineId,
+        Guid GoodsReceiptLineId,
+        Guid PoLineId,
+        int LineNumber,
+        Guid ItemId,
+        string ItemCode,
+        decimal AcceptedBaseQuantity,
+        decimal UnitCostBase,
+        decimal AcceptedLineAmount);
+
+    public sealed record PostReceiptAccrualCommand(
+        Guid TenantId,
+        Guid LegalEntityId,
+        string ExpectedFunctionalCurrencyCode,
+        DateOnly PostingDate,
+        string CurrencyCode,
+        Guid ValuedAcceptanceId,
+        string AcceptanceNumber,
+        Guid GoodsReceiptId,
+        Guid PurchaseOrderId,
+        Guid SupplierPartnerId,
+        string IdempotencyKey,
+        IReadOnlyList<ReceiptAccrualLineInput> Lines,
+        Guid ActorUserId,
+        DateTimeOffset NowUtc);
+
+    public sealed record AccrualAccountResolution(
+        bool IsValid,
+        Guid InventoryAssetAccountId,
+        string InventoryAssetAccountCode,
+        string InventoryAssetAccountName,
+        Guid GrniAccountId,
+        string GrniAccountCode,
+        string GrniAccountName,
+        string? PeriodCode,
+        IReadOnlyList<string> BlockingReasons);
+
+    public sealed record ReceiptAccrualOutcome(
+        bool Succeeded,
+        int FailureHttpStatus,
+        string? ErrorCode,
+        string? ErrorDetail,
+        JournalEntry? Journal,
+        IReadOnlyList<JournalLine> JournalLines,
+        ReceiptAccrual? Accrual,
+        IReadOnlyList<ReceiptAccrualLine> AccrualLines,
+        string? PeriodCode)
+    {
+        public static ReceiptAccrualOutcome Fail(int statusCode, string errorCode, string detail) =>
+            new(false, statusCode, errorCode, detail, null, Array.Empty<JournalLine>(), null, Array.Empty<ReceiptAccrualLine>(), null);
+    }
+
+    public static async Task<AccrualAccountResolution> PreviewPeriodAndAccrualMappingsAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        Guid entityId,
+        DateOnly postingDate,
+        CancellationToken ct)
+    {
+        var blocks = new List<string>();
+
+        var period = await db.FinancialPeriods.AsNoTracking()
+            .Where(p => p.TenantId == tenantId && p.LegalEntityId == entityId && p.StartDate <= postingDate && p.EndDate >= postingDate)
+            .OrderBy(p => p.PeriodNumber)
+            .FirstOrDefaultAsync(ct);
+
+        if (period is null)
+        {
+            blocks.Add($"period_not_found_for_date: No fiscal period configured for {postingDate:yyyy-MM-dd}.");
+        }
+        else if (!period.IsOpenForPosting(postingDate))
+        {
+            blocks.Add($"period_closed: Fiscal period '{period.PeriodCode}' is '{period.Status}' and refuses postings.");
+        }
+
+        var mappings = await db.AccountMappings.AsNoTracking()
+            .Where(m =>
+                m.TenantId == tenantId &&
+                m.LegalEntityId == entityId &&
+                (m.PurposeCode == GlMappingPurposes.InventoryAsset || m.PurposeCode == GlMappingPurposes.GrniClearing))
+            .ToDictionaryAsync(m => m.PurposeCode, ct);
+
+        Guid invAccountId = Guid.Empty;
+        string invCode = string.Empty;
+        string invName = string.Empty;
+        Guid grniAccountId = Guid.Empty;
+        string grniCode = string.Empty;
+        string grniName = string.Empty;
+
+        var accountIds = mappings.Values.Select(m => m.AccountId).Distinct().ToList();
+        var accounts = accountIds.Count == 0
+            ? new Dictionary<Guid, GlAccount>()
+            : await db.GlAccounts.AsNoTracking()
+                .Where(a => a.TenantId == tenantId && a.LegalEntityId == entityId && accountIds.Contains(a.AccountId))
+                .ToDictionaryAsync(a => a.AccountId, ct);
+
+        if (!mappings.TryGetValue(GlMappingPurposes.InventoryAsset, out var invMap) ||
+            !accounts.TryGetValue(invMap.AccountId, out var invAcc))
+        {
+            blocks.Add("missing_inventory_asset_mapping: Configure an active Inventory Asset account mapping in Finance.");
+        }
+        else
+        {
+            invAccountId = invAcc.AccountId;
+            invCode = invAcc.AccountCode;
+            invName = invAcc.Name;
+            if (invAcc.Status != MasterStatuses.Active || !invAcc.AllowPosting)
+            {
+                blocks.Add($"account_not_postable: Inventory Asset account '{invAcc.AccountCode}' must be active and postable.");
+            }
+        }
+
+        if (!mappings.TryGetValue(GlMappingPurposes.GrniClearing, out var grniMap) ||
+            !accounts.TryGetValue(grniMap.AccountId, out var grniAcc))
+        {
+            blocks.Add("missing_grni_clearing_mapping: Configure an active GRNI Clearing account mapping in Finance.");
+        }
+        else
+        {
+            grniAccountId = grniAcc.AccountId;
+            grniCode = grniAcc.AccountCode;
+            grniName = grniAcc.Name;
+            if (grniAcc.Status != MasterStatuses.Active || !grniAcc.AllowPosting)
+            {
+                blocks.Add($"account_not_postable: GRNI Clearing account '{grniAcc.AccountCode}' must be active and postable.");
+            }
+        }
+
+        return new AccrualAccountResolution(
+            blocks.Count == 0,
+            invAccountId,
+            invCode,
+            invName,
+            grniAccountId,
+            grniCode,
+            grniName,
+            period?.PeriodCode,
+            blocks);
+    }
+
+    public static async Task<ReceiptAccrualOutcome> PostReceiptAccrualAsync(
+        AtheraDbContext db,
+        PostReceiptAccrualCommand cmd,
+        CancellationToken ct)
+    {
+        if (cmd.Lines is null || cmd.Lines.Count == 0)
+        {
+            return ReceiptAccrualOutcome.Fail(400, "acceptance_lines_required", "At least one valued acceptance line is required.");
+        }
+
+        var mappings = await db.AccountMappings.AsNoTracking()
+            .Where(m =>
+                m.TenantId == cmd.TenantId &&
+                m.LegalEntityId == cmd.LegalEntityId &&
+                (m.PurposeCode == GlMappingPurposes.InventoryAsset || m.PurposeCode == GlMappingPurposes.GrniClearing))
+            .ToDictionaryAsync(m => m.PurposeCode, ct);
+
+        if (!mappings.TryGetValue(GlMappingPurposes.InventoryAsset, out var invMap))
+        {
+            return ReceiptAccrualOutcome.Fail(
+                409,
+                "missing_inventory_asset_mapping",
+                "INVENTORY_ASSET GL account mapping is missing for this legal entity.");
+        }
+
+        if (!mappings.TryGetValue(GlMappingPurposes.GrniClearing, out var grniMap))
+        {
+            return ReceiptAccrualOutcome.Fail(
+                409,
+                "missing_grni_clearing_mapping",
+                "GRNI_CLEARING GL account mapping is missing for this legal entity.");
+        }
+
+        var totalAccrued = decimal.Round(cmd.Lines.Sum(l => l.AcceptedLineAmount), 4, MidpointRounding.AwayFromZero);
+        if (totalAccrued <= 0m)
+        {
+            return ReceiptAccrualOutcome.Fail(
+                409,
+                "od04_zero_or_negative_acceptance_value_blocked",
+                "Valued acceptance requires a strictly positive accrued monetary amount under OD-04.");
+        }
+
+        var glLines = new List<GlJournalLineInput>(cmd.Lines.Count + 1);
+        foreach (var line in cmd.Lines)
+        {
+            glLines.Add(new GlJournalLineInput(
+                invMap.AccountId,
+                $"Dr Inventory {line.ItemCode} ({line.AcceptedBaseQuantity:0.######}) · {cmd.AcceptanceNumber}",
+                DebitAmount: decimal.Round(line.AcceptedLineAmount, 4, MidpointRounding.AwayFromZero),
+                CreditAmount: 0m,
+                PartnerId: cmd.SupplierPartnerId,
+                ItemId: line.ItemId));
+        }
+
+        glLines.Add(new GlJournalLineInput(
+            grniMap.AccountId,
+            $"Cr GRNI Accrual · {cmd.AcceptanceNumber}",
+            DebitAmount: 0m,
+            CreditAmount: totalAccrued,
+            PartnerId: cmd.SupplierPartnerId));
+
+        var rawJournalKey = $"acc:{cmd.GoodsReceiptId:N}:{cmd.IdempotencyKey.Trim()}";
+        var journalIdempotencyKey = rawJournalKey.Length <= 80
+            ? rawJournalKey
+            : $"acc:{cmd.GoodsReceiptId:N}:{Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(cmd.IdempotencyKey.Trim())))[..32].ToLowerInvariant()}";
+
+        var journalOutcome = await PostJournalAsync(
+            db,
+            new GlPostJournalCommand(
+                cmd.TenantId,
+                cmd.LegalEntityId,
+                cmd.ExpectedFunctionalCurrencyCode,
+                cmd.PostingDate,
+                cmd.CurrencyCode,
+                $"Valued Receipt {cmd.AcceptanceNumber} (Dr Inventory / Cr GRNI)",
+                "PROCUREMENT",
+                "VALUED_ACCEPTANCE",
+                cmd.AcceptanceNumber,
+                journalIdempotencyKey,
+                glLines,
+                cmd.ActorUserId,
+                cmd.NowUtc),
+            ct);
+
+        if (!journalOutcome.Succeeded || journalOutcome.Journal is null)
+        {
+            return ReceiptAccrualOutcome.Fail(
+                journalOutcome.FailureHttpStatus,
+                journalOutcome.ErrorCode ?? "gl_posting_failed",
+                journalOutcome.ErrorDetail ?? "Failed posting Inventory / GRNI journal.");
+        }
+
+        var existingAccrual = await db.ReceiptAccruals.AsNoTracking()
+            .SingleOrDefaultAsync(
+                a => a.TenantId == cmd.TenantId && a.LegalEntityId == cmd.LegalEntityId && a.ValuedAcceptanceId == cmd.ValuedAcceptanceId,
+                ct);
+
+        if (existingAccrual is not null)
+        {
+            var existingLines = await db.ReceiptAccrualLines.AsNoTracking()
+                .Where(l => l.TenantId == cmd.TenantId && l.LegalEntityId == cmd.LegalEntityId && l.ReceiptAccrualId == existingAccrual.ReceiptAccrualId)
+                .OrderBy(l => l.LineNumber)
+                .ToListAsync(ct);
+
+            return new ReceiptAccrualOutcome(
+                true,
+                200,
+                null,
+                null,
+                journalOutcome.Journal,
+                journalOutcome.Lines,
+                existingAccrual,
+                existingLines,
+                journalOutcome.PeriodCode);
+        }
+
+        var accrualId = Guid.NewGuid();
+        var accrualNumber = cmd.AcceptanceNumber.StartsWith("ACC-", StringComparison.Ordinal)
+            ? $"GRNI-{cmd.AcceptanceNumber[4..]}"
+            : $"GRNI-{cmd.AcceptanceNumber}";
+
+        var accrual = ReceiptAccrual.Create(
+            accrualId,
+            cmd.TenantId,
+            cmd.LegalEntityId,
+            accrualNumber,
+            cmd.ValuedAcceptanceId,
+            cmd.GoodsReceiptId,
+            cmd.PurchaseOrderId,
+            cmd.SupplierPartnerId,
+            journalOutcome.Journal.JournalId,
+            invMap.AccountId,
+            grniMap.AccountId,
+            cmd.PostingDate,
+            cmd.CurrencyCode,
+            totalAccrued,
+            cmd.ActorUserId,
+            cmd.NowUtc);
+
+        var accrualLines = cmd.Lines
+            .Select(l => ReceiptAccrualLine.Create(
+                Guid.NewGuid(),
+                cmd.TenantId,
+                cmd.LegalEntityId,
+                accrualId,
+                l.LineNumber,
+                l.ValuedAcceptanceLineId,
+                l.GoodsReceiptLineId,
+                l.PoLineId,
+                l.ItemId,
+                l.AcceptedBaseQuantity,
+                l.UnitCostBase,
+                l.AcceptedLineAmount))
+            .ToList();
+
+        db.ReceiptAccruals.Add(accrual);
+        db.ReceiptAccrualLines.AddRange(accrualLines);
+
+        return new ReceiptAccrualOutcome(
+            true,
+            201,
+            null,
+            null,
+            journalOutcome.Journal,
+            journalOutcome.Lines,
+            accrual,
+            accrualLines,
+            journalOutcome.PeriodCode);
+    }
 }

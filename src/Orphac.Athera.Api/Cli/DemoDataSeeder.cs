@@ -4,6 +4,7 @@ using Orphac.Athera.Modules.Approval;
 using Orphac.Athera.Modules.Catalog;
 using Orphac.Athera.Modules.GeneralLedger;
 using Orphac.Athera.Modules.Identity;
+using Orphac.Athera.Modules.Inventory;
 using Orphac.Athera.Modules.Partners;
 using Orphac.Athera.Modules.Persistence;
 using Orphac.Athera.Modules.Platform;
@@ -121,6 +122,8 @@ public static class DemoDataSeeder
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ProcurementManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ReceivingRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ReceivingManage, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ReceivingAccept, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.InventoryRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.PartnersRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.CatalogRead, nowUtc, ct);
@@ -149,6 +152,8 @@ public static class DemoDataSeeder
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ProcurementApprove, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ReceivingRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ReceivingManage, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ReceivingAccept, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.InventoryRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.CatalogManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.FinanceConfigManage, nowUtc, ct);
@@ -282,6 +287,34 @@ public static class DemoDataSeeder
 
         // S06 Gate 1 dock custody seed on NUSA-SBY (read-only showcase without altering NUSA-JKT test baseline)
         await EnsureSeedGoodsReceiptAsync(db, nusaId, nusaSbyId, nusaBox.UomId, u2Id, nowUtc, ct);
+
+        // S07 moving-average inventory & GRNI seed on NUSA-JKT (dedicated S07 item so S05/S06 assertions remain unchanged)
+        var steelPlateItem = await EnsureItemAsync(
+            db,
+            nusaId,
+            "ITM-STL-PLATE-10",
+            "Pelat Baja 10mm Grade SS400",
+            ItemKinds.StockedGood,
+            nusaPcs.UomId,
+            nusaPcs.UomId,
+            nusaPcs.UomId,
+            EntityScopeModes.AllEntities,
+            eligibleEntityId: null,
+            nowUtc,
+            ct);
+        await db.SaveChangesAsync(ct);
+
+        await EnsureS07InventoryDemoDataAsync(
+            db,
+            nusaId,
+            nusaJktId,
+            supNusa.PartnerId,
+            steelPlateItem.ItemId,
+            nusaPcs.UomId,
+            u1Id,
+            u2Id,
+            nowUtc,
+            ct);
     }
 
     private static async Task<Guid> EnsureUserAsync(
@@ -925,12 +958,52 @@ public static class DemoDataSeeder
             return;
         }
 
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        await CreateAndOptionallyApprovePoAsync(
+            db,
+            tenantId,
+            entityId,
+            supplierPartnerId,
+            itemId,
+            orderedUomId,
+            orderedQty,
+            unitPrice,
+            destination,
+            new DateOnly(2026, 11, 1),
+            "Seeded S05 purchase commitment",
+            "Pengadaan kemasan awal (Demo S05)",
+            requesterUserId,
+            approverUserId,
+            approve,
+            nowUtc,
+            ct);
+        await tx.CommitAsync(ct);
+    }
+
+    private static async Task<(Guid PurchaseOrderId, Guid PoLineId)> CreateAndOptionallyApprovePoAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        Guid entityId,
+        Guid supplierPartnerId,
+        Guid itemId,
+        Guid orderedUomId,
+        decimal orderedQty,
+        decimal unitPrice,
+        string destination,
+        DateOnly orderDate,
+        string poNotes,
+        string lineDescription,
+        Guid requesterUserId,
+        Guid approverUserId,
+        bool approve,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
         var taxId = await db.TaxCodes.AsNoTracking()
             .Where(t => t.TenantId == tenantId && t.LegalEntityId == entityId && t.Code == "PPN-IN-11" && t.Status == MasterStatuses.Active)
             .Select(t => (Guid?)t.TaxCodeId)
             .FirstOrDefaultAsync(ct);
 
-        await using var tx = await db.Database.BeginTransactionAsync(ct);
         var draftOutcome = await PurchaseOrderWorkflowService.CreateDraftAsync(
             db,
             new CreatePoDraftCommand(
@@ -939,20 +1012,20 @@ public static class DemoDataSeeder
                 "IDR",
                 "IDR",
                 supplierPartnerId,
-                new DateOnly(2026, 11, 1),
-                new DateOnly(2026, 11, 15),
+                orderDate,
+                orderDate.AddDays(14),
                 destination,
                 30,
                 null,
-                "Seeded S05 purchase commitment",
-                [new PoLineInput("L001", itemId, orderedUomId, orderedQty, unitPrice, taxId, 0m, 0m, false, "Pengadaan kemasan awal (Demo S05)")],
+                poNotes,
+                [new PoLineInput("L001", itemId, orderedUomId, orderedQty, unitPrice, taxId, 0m, 0m, false, lineDescription)],
                 requesterUserId,
                 nowUtc),
             ct);
 
-        if (!draftOutcome.Succeeded)
+        if (!draftOutcome.Succeeded || draftOutcome.PurchaseOrder is null || draftOutcome.Revision is null)
         {
-            throw new InvalidOperationException($"Failed seeding S05 PO draft: {draftOutcome.ErrorCode} {draftOutcome.ErrorDetail}");
+            throw new InvalidOperationException($"Failed seeding PO draft: {draftOutcome.ErrorCode} {draftOutcome.ErrorDetail}");
         }
 
         if (approve)
@@ -962,15 +1035,15 @@ public static class DemoDataSeeder
                 new SubmitPoRevisionCommand(
                     tenantId,
                     entityId,
-                    draftOutcome.PurchaseOrder!.PurchaseOrderId,
-                    draftOutcome.Revision!.RevisionId,
+                    draftOutcome.PurchaseOrder.PurchaseOrderId,
+                    draftOutcome.Revision.RevisionId,
                     null,
                     requesterUserId,
                     nowUtc.AddMinutes(1)),
                 ct);
             if (!submitOutcome.Succeeded)
             {
-                throw new InvalidOperationException($"Failed seeding S05 PO submit: {submitOutcome.ErrorCode} {submitOutcome.ErrorDetail}");
+                throw new InvalidOperationException($"Failed seeding PO submit: {submitOutcome.ErrorCode} {submitOutcome.ErrorDetail}");
             }
 
             var decideOutcome = await PurchaseOrderWorkflowService.DecideRevisionAsync(
@@ -981,17 +1054,22 @@ public static class DemoDataSeeder
                     draftOutcome.PurchaseOrder.PurchaseOrderId,
                     draftOutcome.Revision.RevisionId,
                     ApprovalDecisions.Approved,
-                    "Disetujui sebagai baseline komitmen PO Demo S05",
+                    "Disetujui sebagai baseline komitmen PO Demo",
                     approverUserId,
                     nowUtc.AddMinutes(2)),
                 ct);
             if (!decideOutcome.Succeeded)
             {
-                throw new InvalidOperationException($"Failed seeding S05 PO approval: {decideOutcome.ErrorCode} {decideOutcome.ErrorDetail}");
+                throw new InvalidOperationException($"Failed seeding PO approval: {decideOutcome.ErrorCode} {decideOutcome.ErrorDetail}");
             }
         }
 
-        await tx.CommitAsync(ct);
+        var seededLineId = await db.PurchaseOrderLines.AsNoTracking()
+            .Where(l => l.TenantId == tenantId && l.LegalEntityId == entityId && l.RevisionId == draftOutcome.Revision.RevisionId)
+            .Select(l => l.PoLineId)
+            .SingleAsync(ct);
+
+        return (draftOutcome.PurchaseOrder.PurchaseOrderId, seededLineId);
     }
 
     private static async Task EnsureSeedGoodsReceiptAsync(
@@ -1049,6 +1127,194 @@ public static class DemoDataSeeder
         if (!arrivalOutcome.Succeeded)
         {
             throw new InvalidOperationException($"Failed seeding S06 Gate 1 receipt: {arrivalOutcome.ErrorCode} {arrivalOutcome.ErrorDetail}");
+        }
+
+        await tx.CommitAsync(ct);
+    }
+
+    private static async Task EnsureS07InventoryDemoDataAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        Guid entityId,
+        Guid supplierPartnerId,
+        Guid steelItemId,
+        Guid pcsUomId,
+        Guid requesterUserId,
+        Guid approverUserId,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
+        var alreadySeeded = await db.ValuedAcceptances.AnyAsync(a => a.TenantId == tenantId && a.LegalEntityId == entityId, ct);
+        if (alreadySeeded)
+        {
+            return;
+        }
+
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+
+        // Batch 1 (10 PCS @ Rp 850.000) -> already valued-accepted as opening moving-average pool & GRNI accrual
+        var (po1Id, po1LineId) = await CreateAndOptionallyApprovePoAsync(
+            db,
+            tenantId,
+            entityId,
+            supplierPartnerId,
+            steelItemId,
+            pcsUomId,
+            10m,
+            850_000m,
+            "Gudang Pusat Jakarta",
+            new DateOnly(2026, 11, 5),
+            "Komitmen pengadaan pelat baja batch 1 (Demo S07)",
+            "Pelat Baja 10mm Grade SS400 — Batch 1",
+            requesterUserId,
+            approverUserId,
+            approve: true,
+            nowUtc,
+            ct);
+
+        var gr1Outcome = await GoodsReceiptWorkflowService.RecordArrivalAsync(
+            db,
+            new RecordGoodsReceiptCommand(
+                tenantId,
+                entityId,
+                po1Id,
+                "SJ-JKT-DEMO-S07-01",
+                "seed:jkt-s07-gr1",
+                new DateOnly(2026, 11, 5),
+                "Dermaga Utama Jakarta",
+                "B 8821 KTR · Segel JKT-07",
+                "DO-JKT-20261105.pdf",
+                "Batch 1 pelat baja lolos cek fisik awal menuju Gate 2",
+                [new ArrivalLineInput(po1LineId, pcsUomId, 10m, false, DiscrepancyReasonCodes.None, null, null)],
+                requesterUserId,
+                nowUtc.AddMinutes(3)),
+            ct);
+
+        if (!gr1Outcome.Succeeded || gr1Outcome.Receipt is null)
+        {
+            throw new InvalidOperationException($"Failed seeding S07 Gate 1 batch 1: {gr1Outcome.ErrorCode} {gr1Outcome.ErrorDetail}");
+        }
+
+        var gr1LineId = await db.GoodsReceiptLines.AsNoTracking()
+            .Where(l => l.TenantId == tenantId && l.LegalEntityId == entityId && l.GoodsReceiptId == gr1Outcome.Receipt.GoodsReceiptId)
+            .Select(l => l.GoodsReceiptLineId)
+            .SingleAsync(ct);
+
+        var dock1Outcome = await GoodsReceiptWorkflowService.RecordDockCheckAsync(
+            db,
+            new RecordDockCheckCommand(
+                tenantId,
+                entityId,
+                gr1Outcome.Receipt.GoodsReceiptId,
+                gr1LineId,
+                "seed:jkt-s07-dc1",
+                PendingCheckBaseQuantity: 0m,
+                DockHeldBaseQuantity: 0m,
+                DockReleasedBaseQuantity: 10m,
+                DockRejectedBaseQuantity: 0m,
+                DiscrepancyReasonCode: DiscrepancyReasonCodes.None,
+                InspectionNotes: "Lolos cek fisik lengkap 10 PCS untuk masuk ke Gate 2",
+                EvidenceReference: "QC-JKT-20261105-01",
+                ActorUserId: requesterUserId,
+                NowUtc: nowUtc.AddMinutes(3).AddSeconds(30)),
+            ct);
+
+        if (!dock1Outcome.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed seeding S07 Gate 1 release 1: {dock1Outcome.ErrorCode} {dock1Outcome.ErrorDetail}");
+        }
+
+        var acc1Outcome = await ReceiptAcceptanceCoordinator.AcceptReceiptAsync(
+            db,
+            new AcceptReceiptCommand(
+                tenantId,
+                entityId,
+                "IDR",
+                gr1Outcome.Receipt.GoodsReceiptId,
+                "seed:jkt-s07-acc1",
+                new DateOnly(2026, 11, 5),
+                StockStatuses.Unrestricted,
+                "Penerimaan bernilai Batch 1 pelat baja untuk baseline biaya rata-rata bergerak",
+                [new AcceptReceiptLineInput(gr1LineId, 10m)],
+                approverUserId,
+                nowUtc.AddMinutes(4)),
+            ct);
+
+        if (!acc1Outcome.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed seeding S07 Gate 2 acceptance 1: {acc1Outcome.ErrorCode} {acc1Outcome.ErrorDetail}");
+        }
+
+        // Batch 2 (10 PCS @ Rp 950.000) -> released at Gate 1 and ready for operator Gate 2 preview & acceptance
+        var (po2Id, po2LineId) = await CreateAndOptionallyApprovePoAsync(
+            db,
+            tenantId,
+            entityId,
+            supplierPartnerId,
+            steelItemId,
+            pcsUomId,
+            10m,
+            950_000m,
+            "Gudang Pusat Jakarta",
+            new DateOnly(2026, 11, 6),
+            "Komitmen pengadaan pelat baja batch 2 (Demo S07)",
+            "Pelat Baja 10mm Grade SS400 — Batch 2",
+            requesterUserId,
+            approverUserId,
+            approve: true,
+            nowUtc.AddMinutes(5),
+            ct);
+
+        var gr2Outcome = await GoodsReceiptWorkflowService.RecordArrivalAsync(
+            db,
+            new RecordGoodsReceiptCommand(
+                tenantId,
+                entityId,
+                po2Id,
+                "SJ-JKT-DEMO-S07-02",
+                "seed:jkt-s07-gr2",
+                new DateOnly(2026, 11, 6),
+                "Dermaga Utama Jakarta",
+                "B 9104 JKT · Segel JKT-08",
+                "DO-JKT-20261106.pdf",
+                "Batch 2 pelat baja dirilis Gate 1, siap ditinjau dan diterima di Gate 2",
+                [new ArrivalLineInput(po2LineId, pcsUomId, 10m, false, DiscrepancyReasonCodes.None, null, null)],
+                requesterUserId,
+                nowUtc.AddMinutes(8)),
+            ct);
+
+        if (!gr2Outcome.Succeeded || gr2Outcome.Receipt is null)
+        {
+            throw new InvalidOperationException($"Failed seeding S07 Gate 1 batch 2: {gr2Outcome.ErrorCode} {gr2Outcome.ErrorDetail}");
+        }
+
+        var gr2LineId = await db.GoodsReceiptLines.AsNoTracking()
+            .Where(l => l.TenantId == tenantId && l.LegalEntityId == entityId && l.GoodsReceiptId == gr2Outcome.Receipt.GoodsReceiptId)
+            .Select(l => l.GoodsReceiptLineId)
+            .SingleAsync(ct);
+
+        var dock2Outcome = await GoodsReceiptWorkflowService.RecordDockCheckAsync(
+            db,
+            new RecordDockCheckCommand(
+                tenantId,
+                entityId,
+                gr2Outcome.Receipt.GoodsReceiptId,
+                gr2LineId,
+                "seed:jkt-s07-dc2",
+                PendingCheckBaseQuantity: 0m,
+                DockHeldBaseQuantity: 0m,
+                DockReleasedBaseQuantity: 10m,
+                DockRejectedBaseQuantity: 0m,
+                DiscrepancyReasonCode: DiscrepancyReasonCodes.None,
+                InspectionNotes: "Lolos cek fisik lengkap 10 PCS, siap preview dan penerimaan Gate 2",
+                EvidenceReference: "QC-JKT-20261106-02",
+                ActorUserId: requesterUserId,
+                NowUtc: nowUtc.AddMinutes(9)),
+            ct);
+
+        if (!dock2Outcome.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed seeding S07 Gate 1 release 2: {dock2Outcome.ErrorCode} {dock2Outcome.ErrorDetail}");
         }
 
         await tx.CommitAsync(ct);

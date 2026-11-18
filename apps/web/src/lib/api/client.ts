@@ -113,6 +113,26 @@ export type ArrivalLineRequest = components["schemas"]["ArrivalLineRequest"];
 export type RecordGoodsReceiptRequest = components["schemas"]["RecordGoodsReceiptRequest"];
 export type RecordDockCheckRequest = components["schemas"]["RecordDockCheckRequest"];
 
+export type GoodsReceiptLinkedAcceptanceDto =
+  components["schemas"]["GoodsReceiptLinkedAcceptanceDto"];
+export type AcceptReceiptLineRequest = components["schemas"]["AcceptReceiptLineRequest"];
+export type PreviewReceiptAcceptanceRequest =
+  components["schemas"]["PreviewReceiptAcceptanceRequest"];
+export type AcceptReceiptRequest = components["schemas"]["AcceptReceiptRequest"];
+export type AcceptancePreviewLineDto = components["schemas"]["AcceptancePreviewLineDto"];
+export type PreviewJournalSuggestionDto = components["schemas"]["PreviewJournalSuggestionDto"];
+export type AcceptancePreviewDto = components["schemas"]["AcceptancePreviewDto"];
+export type ValuedAcceptanceLineDto = components["schemas"]["ValuedAcceptanceLineDto"];
+export type ValuedAcceptanceSummaryDto = components["schemas"]["ValuedAcceptanceSummaryDto"];
+export type ValuedAcceptanceListResponse = components["schemas"]["ValuedAcceptanceListResponse"];
+export type ValuedAcceptanceDetailDto = components["schemas"]["ValuedAcceptanceDetailDto"];
+export type StockPositionOverviewDto = components["schemas"]["StockPositionOverviewDto"];
+export type StockMovementSummaryDto = components["schemas"]["StockMovementSummaryDto"];
+export type ReceiptAccrualOverviewDto = components["schemas"]["ReceiptAccrualOverviewDto"];
+export type InventoryOverviewResponse = components["schemas"]["InventoryOverviewResponse"];
+export type ValuationEntryLedgerDto = components["schemas"]["ValuationEntryLedgerDto"];
+export type ItemValuationLedgerResponse = components["schemas"]["ItemValuationLedgerResponse"];
+
 export interface ApiProblemError {
   status: number;
   errorCode: string;
@@ -1485,5 +1505,110 @@ export async function recordGoodsReceiptDockCheck(
     handleCsrfFailure(status);
     throw extractProblemError(error, status);
   }
+  return data;
+}
+
+export async function previewReceiptAcceptance(
+  tenantId: string,
+  entityId: string,
+  receiptId: string,
+  payload: PreviewReceiptAcceptanceRequest,
+): Promise<AcceptancePreviewDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts/{receiptId}/accept-preview",
+    {
+      params: { path: { tenantId, entityId, receiptId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function acceptGoodsReceiptValued(
+  tenantId: string,
+  entityId: string,
+  receiptId: string,
+  payload: AcceptReceiptRequest,
+): Promise<ValuedAcceptanceDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts/{receiptId}/accept",
+    {
+      params: { path: { tenantId, entityId, receiptId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchValuedAcceptances(
+  tenantId: string,
+  entityId: string,
+  receiptId?: string,
+): Promise<ValuedAcceptanceListResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/acceptances",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query: { receiptId: receiptId || undefined },
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function fetchInventoryOverview(
+  tenantId: string,
+  entityId: string,
+  filters?: { search?: string; stockStatus?: string },
+): Promise<InventoryOverviewResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/overview",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query: {
+          search: filters?.search || undefined,
+          stockStatus: filters?.stockStatus || undefined,
+        },
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function fetchItemValuationLedger(
+  tenantId: string,
+  entityId: string,
+  itemId: string,
+): Promise<ItemValuationLedgerResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/items/{itemId}/ledger",
+    {
+      params: { path: { tenantId, entityId, itemId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
   return data;
 }

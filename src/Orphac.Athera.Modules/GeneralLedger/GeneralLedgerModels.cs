@@ -784,3 +784,190 @@ public sealed class JournalLine
             TaxCodeId = taxCodeId
         };
 }
+
+public static class ReceiptAccrualStatuses
+{
+    public const string Open = "OPEN";
+    public const string PartiallyCleared = "PARTIALLY_CLEARED";
+    public const string Cleared = "CLEARED";
+
+    public static readonly IReadOnlyList<string> All = [Open, PartiallyCleared, Cleared];
+}
+
+/// <summary>
+/// GRNI subledger header created atomically when Gate 2 valued acceptance posts Dr Inventory Asset / Cr GRNI.
+/// </summary>
+public sealed class ReceiptAccrual
+{
+    public Guid ReceiptAccrualId { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public string AccrualNumber { get; private set; } = string.Empty;
+    public Guid ValuedAcceptanceId { get; private set; }
+    public Guid GoodsReceiptId { get; private set; }
+    public Guid PurchaseOrderId { get; private set; }
+    public Guid SupplierPartnerId { get; private set; }
+    public Guid JournalId { get; private set; }
+    public Guid InventoryAssetAccountId { get; private set; }
+    public Guid GrniAccountId { get; private set; }
+    public DateOnly PostingDate { get; private set; }
+    public string CurrencyCode { get; private set; } = "IDR";
+    public decimal AccruedAmount { get; private set; }
+    public decimal ClearedAmount { get; private set; }
+    public decimal RemainingOpenAmount { get; private set; }
+    public string Status { get; private set; } = ReceiptAccrualStatuses.Open;
+    public Guid CreatedByUserId { get; private set; }
+    public DateTimeOffset CreatedAtUtc { get; private set; }
+    public DateTimeOffset UpdatedAtUtc { get; private set; }
+    public long Version { get; private set; }
+
+    private ReceiptAccrual()
+    {
+    }
+
+    public static ReceiptAccrual Create(
+        Guid receiptAccrualId,
+        Guid tenantId,
+        Guid legalEntityId,
+        string accrualNumber,
+        Guid valuedAcceptanceId,
+        Guid goodsReceiptId,
+        Guid purchaseOrderId,
+        Guid supplierPartnerId,
+        Guid journalId,
+        Guid inventoryAssetAccountId,
+        Guid grniAccountId,
+        DateOnly postingDate,
+        string currencyCode,
+        decimal accruedAmount,
+        Guid createdByUserId,
+        DateTimeOffset nowUtc)
+    {
+        GuardValidation.RequireNonEmptyGuid(receiptAccrualId, nameof(receiptAccrualId));
+        GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
+        GuardValidation.RequireNonEmptyGuid(legalEntityId, nameof(legalEntityId));
+        GuardValidation.RequireNonEmptyGuid(valuedAcceptanceId, nameof(valuedAcceptanceId));
+        GuardValidation.RequireNonEmptyGuid(goodsReceiptId, nameof(goodsReceiptId));
+        GuardValidation.RequireNonEmptyGuid(purchaseOrderId, nameof(purchaseOrderId));
+        GuardValidation.RequireNonEmptyGuid(supplierPartnerId, nameof(supplierPartnerId));
+        GuardValidation.RequireNonEmptyGuid(journalId, nameof(journalId));
+        GuardValidation.RequireNonEmptyGuid(inventoryAssetAccountId, nameof(inventoryAssetAccountId));
+        GuardValidation.RequireNonEmptyGuid(grniAccountId, nameof(grniAccountId));
+        GuardValidation.RequireNonEmptyGuid(createdByUserId, nameof(createdByUserId));
+
+        var amount = decimal.Round(accruedAmount, 4, MidpointRounding.AwayFromZero);
+        if (amount <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(accruedAmount), "Accrued GRNI amount must be positive.");
+        }
+
+        return new ReceiptAccrual
+        {
+            ReceiptAccrualId = receiptAccrualId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            AccrualNumber = GuardValidation.RequireMasterCode(accrualNumber, nameof(accrualNumber), 2, 40),
+            ValuedAcceptanceId = valuedAcceptanceId,
+            GoodsReceiptId = goodsReceiptId,
+            PurchaseOrderId = purchaseOrderId,
+            SupplierPartnerId = supplierPartnerId,
+            JournalId = journalId,
+            InventoryAssetAccountId = inventoryAssetAccountId,
+            GrniAccountId = grniAccountId,
+            PostingDate = postingDate,
+            CurrencyCode = GuardValidation.RequireExactIsoCode(currencyCode, "IDR", 3, nameof(currencyCode)),
+            AccruedAmount = amount,
+            ClearedAmount = 0m,
+            RemainingOpenAmount = amount,
+            Status = ReceiptAccrualStatuses.Open,
+            CreatedByUserId = createdByUserId,
+            CreatedAtUtc = nowUtc,
+            UpdatedAtUtc = nowUtc,
+            Version = 1L
+        };
+    }
+}
+
+/// <summary>
+/// GRNI subledger line linking an accepted receipt line to open unbilled PO capacity for S09 three-way matching.
+/// </summary>
+public sealed class ReceiptAccrualLine
+{
+    public Guid ReceiptAccrualLineId { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public Guid ReceiptAccrualId { get; private set; }
+    public int LineNumber { get; private set; }
+    public Guid ValuedAcceptanceLineId { get; private set; }
+    public Guid GoodsReceiptLineId { get; private set; }
+    public Guid PoLineId { get; private set; }
+    public Guid ItemId { get; private set; }
+    public decimal AcceptedBaseQuantity { get; private set; }
+    public decimal BilledBaseQuantity { get; private set; }
+    public decimal RemainingUnbilledBaseQuantity { get; private set; }
+    public decimal UnitCostBase { get; private set; }
+    public decimal AccruedLineAmount { get; private set; }
+    public decimal ClearedLineAmount { get; private set; }
+    public decimal RemainingOpenLineAmount { get; private set; }
+
+    private ReceiptAccrualLine()
+    {
+    }
+
+    public static ReceiptAccrualLine Create(
+        Guid receiptAccrualLineId,
+        Guid tenantId,
+        Guid legalEntityId,
+        Guid receiptAccrualId,
+        int lineNumber,
+        Guid valuedAcceptanceLineId,
+        Guid goodsReceiptLineId,
+        Guid poLineId,
+        Guid itemId,
+        decimal acceptedBaseQuantity,
+        decimal unitCostBase,
+        decimal accruedLineAmount)
+    {
+        GuardValidation.RequireNonEmptyGuid(receiptAccrualLineId, nameof(receiptAccrualLineId));
+        GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
+        GuardValidation.RequireNonEmptyGuid(legalEntityId, nameof(legalEntityId));
+        GuardValidation.RequireNonEmptyGuid(receiptAccrualId, nameof(receiptAccrualId));
+        GuardValidation.RequireNonEmptyGuid(valuedAcceptanceLineId, nameof(valuedAcceptanceLineId));
+        GuardValidation.RequireNonEmptyGuid(goodsReceiptLineId, nameof(goodsReceiptLineId));
+        GuardValidation.RequireNonEmptyGuid(poLineId, nameof(poLineId));
+        GuardValidation.RequireNonEmptyGuid(itemId, nameof(itemId));
+
+        if (lineNumber < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(lineNumber), "LineNumber must be >= 1.");
+        }
+
+        var qty = decimal.Round(acceptedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        var unitCost = decimal.Round(unitCostBase, 6, MidpointRounding.AwayFromZero);
+        var amount = decimal.Round(accruedLineAmount, 4, MidpointRounding.AwayFromZero);
+        if (qty <= 0m || unitCost <= 0m || amount <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(acceptedBaseQuantity), "Accrual line requires positive quantity, unit cost and amount.");
+        }
+
+        return new ReceiptAccrualLine
+        {
+            ReceiptAccrualLineId = receiptAccrualLineId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            ReceiptAccrualId = receiptAccrualId,
+            LineNumber = lineNumber,
+            ValuedAcceptanceLineId = valuedAcceptanceLineId,
+            GoodsReceiptLineId = goodsReceiptLineId,
+            PoLineId = poLineId,
+            ItemId = itemId,
+            AcceptedBaseQuantity = qty,
+            BilledBaseQuantity = 0m,
+            RemainingUnbilledBaseQuantity = qty,
+            UnitCostBase = unitCost,
+            AccruedLineAmount = amount,
+            ClearedLineAmount = 0m,
+            RemainingOpenLineAmount = amount
+        };
+    }
+}

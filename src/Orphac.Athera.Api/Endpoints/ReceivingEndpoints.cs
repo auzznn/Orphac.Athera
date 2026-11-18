@@ -676,6 +676,49 @@ public static class ReceivingEndpoints
                 j.SourceDocumentId == receiptIdStr,
                 ct);
 
+        var valuedAcceptancesRaw = await db.ValuedAcceptances.AsNoTracking()
+            .Where(a => a.TenantId == tenantId && a.LegalEntityId == entityId && a.GoodsReceiptId == receipt.GoodsReceiptId)
+            .OrderByDescending(a => a.AcceptanceDate)
+            .ThenByDescending(a => a.CreatedAtUtc)
+            .ToListAsync(ct);
+
+        var movementIds = valuedAcceptancesRaw.Where(a => a.StockMovementId.HasValue).Select(a => a.StockMovementId!.Value).Distinct().ToList();
+        var accrualIds = valuedAcceptancesRaw.Where(a => a.ReceiptAccrualId.HasValue).Select(a => a.ReceiptAccrualId!.Value).Distinct().ToList();
+        var journalIds = valuedAcceptancesRaw.Where(a => a.GlJournalId.HasValue).Select(a => a.GlJournalId!.Value).Distinct().ToList();
+
+        var movementNumbers = movementIds.Count == 0
+            ? new Dictionary<Guid, string>()
+            : await db.StockMovements.AsNoTracking()
+                .Where(m => m.TenantId == tenantId && m.LegalEntityId == entityId && movementIds.Contains(m.StockMovementId))
+                .ToDictionaryAsync(m => m.StockMovementId, m => m.MovementNumber, ct);
+
+        var accrualNumbers = accrualIds.Count == 0
+            ? new Dictionary<Guid, string>()
+            : await db.ReceiptAccruals.AsNoTracking()
+                .Where(a => a.TenantId == tenantId && a.LegalEntityId == entityId && accrualIds.Contains(a.ReceiptAccrualId))
+                .ToDictionaryAsync(a => a.ReceiptAccrualId, a => a.AccrualNumber, ct);
+
+        var journalNumbers = journalIds.Count == 0
+            ? new Dictionary<Guid, string>()
+            : await db.JournalEntries.AsNoTracking()
+                .Where(j => j.TenantId == tenantId && j.LegalEntityId == entityId && journalIds.Contains(j.JournalId))
+                .ToDictionaryAsync(j => j.JournalId, j => j.JournalNumber, ct);
+
+        var valuedAcceptanceDtos = valuedAcceptancesRaw.Select(a => new GoodsReceiptLinkedAcceptanceDto(
+            a.ValuedAcceptanceId,
+            a.AcceptanceNumber,
+            a.AcceptanceDate,
+            a.StockStatus,
+            a.TotalAcceptedBaseQuantity,
+            a.TotalAcceptedAmount,
+            a.StockMovementId,
+            a.StockMovementId is { } mid && movementNumbers.TryGetValue(mid, out var mn) ? mn : null,
+            a.ReceiptAccrualId,
+            a.ReceiptAccrualId is { } aid && accrualNumbers.TryGetValue(aid, out var an) ? an : null,
+            a.GlJournalId,
+            a.GlJournalId is { } jid && journalNumbers.TryGetValue(jid, out var jn) ? jn : null,
+            a.CreatedAtUtc)).ToList();
+
         var lineDtos = lines.Select(l =>
         {
             var approvedCap = approvedLineQtyByKey.GetValueOrDefault(l.LineageLineKey, 0m);
@@ -769,6 +812,8 @@ public static class ReceivingEndpoints
             receipt.UpdatedAtUtc,
             receipt.Version,
             wasIdempotentReplay,
+            valuedAcceptanceDtos.Count(a => a.GlJournalId.HasValue),
+            valuedAcceptanceDtos,
             lineDtos,
             dockCheckDtos);
     }

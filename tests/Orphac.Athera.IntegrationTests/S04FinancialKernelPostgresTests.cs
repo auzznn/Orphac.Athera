@@ -137,7 +137,7 @@ public sealed class S04FinancialKernelPostgresTests
         {
             await conn.OpenAsync();
             await using var upCheck = conn.CreateCommand();
-            upCheck.CommandText = "SELECT count(*) FROM information_schema.tables WHERE table_schema IN ('gl', 'tax');";
+            upCheck.CommandText = "SELECT count(*) FROM information_schema.tables WHERE (table_schema = 'gl' AND table_name IN ('accounts', 'financial_periods', 'account_mappings', 'journal_entries', 'journal_sequences', 'journal_lines')) OR (table_schema = 'tax' AND table_name = 'tax_codes');";
             Assert.Equal(7L, Convert.ToInt64(await upCheck.ExecuteScalarAsync()));
         }
     }

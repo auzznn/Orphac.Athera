@@ -449,6 +449,24 @@ public sealed class PurchaseOrder
         UpdatedAtUtc = nowUtc;
         Version++;
     }
+
+    public void RecordAcceptedQuantity(decimal acceptedBaseDelta, DateTimeOffset nowUtc)
+    {
+        if (Status != PurchaseOrderStatuses.Approved)
+        {
+            throw new InvalidOperationException($"po_not_approved_for_downstream: PO '{PoNumber ?? DraftCode}' is in status '{Status}'.");
+        }
+
+        var delta = decimal.Round(acceptedBaseDelta, 6, MidpointRounding.AwayFromZero);
+        if (delta <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(acceptedBaseDelta), "Accepted quantity delta must be positive.");
+        }
+
+        AcceptedBaseQuantityTotal = decimal.Round(AcceptedBaseQuantityTotal + delta, 6, MidpointRounding.AwayFromZero);
+        UpdatedAtUtc = nowUtc;
+        Version++;
+    }
 }
 
 public sealed class PurchaseOrderRevision

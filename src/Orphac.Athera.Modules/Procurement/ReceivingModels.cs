@@ -10,6 +10,8 @@ public static class GoodsReceiptStatuses
     public const string Arrived = "ARRIVED";
     public const string InDockInspection = "IN_DOCK_INSPECTION";
     public const string ReleasedForAcceptance = "RELEASED_FOR_ACCEPTANCE";
+    public const string PartiallyAccepted = "PARTIALLY_ACCEPTED";
+    public const string ValuedAccepted = "VALUED_ACCEPTED";
     public const string FullyRejectedUnvalued = "FULLY_REJECTED_UNVALUED";
 
     public static readonly IReadOnlyList<string> All =
@@ -17,6 +19,8 @@ public static class GoodsReceiptStatuses
         Arrived,
         InDockInspection,
         ReleasedForAcceptance,
+        PartiallyAccepted,
+        ValuedAccepted,
         FullyRejectedUnvalued
     ];
 }
@@ -225,9 +229,17 @@ public sealed class GoodsReceipt
             throw new InvalidOperationException("dock_quantity_conservation_mismatch: Receipt totals do not conserve delivered base quantity.");
         }
 
+        HasFinancialPosting = TotalValuedAcceptedBaseQuantity > 0m;
+
         if (TotalRejectedBaseQuantity == TotalDeliveredBaseQuantity)
         {
             Status = GoodsReceiptStatuses.FullyRejectedUnvalued;
+        }
+        else if (TotalValuedAcceptedBaseQuantity > 0m)
+        {
+            Status = TotalUnresolvedCustodyBaseQuantity == 0m
+                ? GoodsReceiptStatuses.ValuedAccepted
+                : GoodsReceiptStatuses.PartiallyAccepted;
         }
         else if (lines.All(l => l.CustodyStatus == DockCustodyStatuses.Arrived))
         {
@@ -483,6 +495,39 @@ public sealed class GoodsReceiptLine
         Version++;
     }
 
+    public void RecordValuedAcceptance(decimal acceptedDeltaBaseQty, int baseUomPrecisionScale, DateTimeOffset nowUtc)
+    {
+        var scale = Math.Clamp(baseUomPrecisionScale, 0, 6);
+        var delta = decimal.Round(acceptedDeltaBaseQty, 6, MidpointRounding.AwayFromZero);
+        if (delta <= 0m)
+        {
+            throw new InvalidOperationException("acceptance_qty_must_be_positive: Valued acceptance quantity must be positive.");
+        }
+
+        if (scale == 0 && delta != decimal.Truncate(delta))
+        {
+            throw new InvalidOperationException(
+                $"fractional_discrete_base_quantity: Accepted quantity for '{BaseUomCodeSnapshot}' must be a whole integer.");
+        }
+
+        var availableToAccept = decimal.Round(DockReleasedBaseQuantity - ValuedAcceptedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        if (delta > availableToAccept)
+        {
+            throw new InvalidOperationException(
+                $"acceptance_exceeds_released_quantity: Accepted quantity ({delta} {BaseUomCodeSnapshot}) exceeds eligible Gate 1 released balance ({Math.Max(0m, availableToAccept)} {BaseUomCodeSnapshot}).");
+        }
+
+        ValuedAcceptedBaseQuantity = decimal.Round(ValuedAcceptedBaseQuantity + delta, 6, MidpointRounding.AwayFromZero);
+        UnresolvedCustodyBaseQuantity = decimal.Round(
+            PendingCheckBaseQuantity + DockHeldBaseQuantity + (DockReleasedBaseQuantity - ValuedAcceptedBaseQuantity),
+            6,
+            MidpointRounding.AwayFromZero);
+
+        AssertConservation();
+        UpdatedAtUtc = nowUtc;
+        Version++;
+    }
+
     public void AssertConservation()
     {
         var expectedUnresolved = PendingCheckBaseQuantity + DockHeldBaseQuantity + (DockReleasedBaseQuantity - ValuedAcceptedBaseQuantity);
@@ -616,5 +661,208 @@ public static class ReceivingHash
             evidenceReference?.Trim() ?? string.Empty);
 
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(raw))).ToLowerInvariant();
+    }
+}
+
+public sealed class AcceptanceSequence
+{
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public int FiscalYear { get; private set; }
+    public long LastNumber { get; private set; }
+
+    private AcceptanceSequence()
+    {
+    }
+}
+
+/// <summary>
+/// Strictly append-only Gate 2 valued acceptance header in `procurement.valued_acceptances`.
+/// Links immutable Gate 1 receipt lines to Inventory StockMovement, GRNI ReceiptAccrual, and GL JournalEntry.
+/// </summary>
+public sealed class ValuedAcceptance
+{
+    public Guid ValuedAcceptanceId { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public string AcceptanceNumber { get; private set; } = string.Empty;
+    public Guid GoodsReceiptId { get; private set; }
+    public Guid PurchaseOrderId { get; private set; }
+    public Guid PoRevisionId { get; private set; }
+    public Guid SupplierPartnerId { get; private set; }
+    public DateOnly AcceptanceDate { get; private set; }
+    public string StockStatus { get; private set; } = "UNRESTRICTED";
+    public string CurrencyCode { get; private set; } = "IDR";
+    public string IdempotencyKey { get; private set; } = string.Empty;
+    public string PayloadHash { get; private set; } = string.Empty;
+    public decimal TotalAcceptedBaseQuantity { get; private set; }
+    public decimal TotalAcceptedAmount { get; private set; }
+    public Guid? StockMovementId { get; private set; }
+    public Guid? ReceiptAccrualId { get; private set; }
+    public Guid? GlJournalId { get; private set; }
+    public string? Notes { get; private set; }
+    public Guid AcceptedByUserId { get; private set; }
+    public DateTimeOffset CreatedAtUtc { get; private set; }
+
+    private ValuedAcceptance()
+    {
+    }
+
+    public static ValuedAcceptance Create(
+        Guid valuedAcceptanceId,
+        Guid tenantId,
+        Guid legalEntityId,
+        string acceptanceNumber,
+        GoodsReceipt receipt,
+        DateOnly acceptanceDate,
+        string stockStatus,
+        string currencyCode,
+        string idempotencyKey,
+        string payloadHash,
+        decimal totalAcceptedBaseQuantity,
+        decimal totalAcceptedAmount,
+        Guid stockMovementId,
+        Guid receiptAccrualId,
+        Guid glJournalId,
+        string? notes,
+        Guid acceptedByUserId,
+        DateTimeOffset nowUtc)
+    {
+        GuardValidation.RequireNonEmptyGuid(valuedAcceptanceId, nameof(valuedAcceptanceId));
+        GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
+        GuardValidation.RequireNonEmptyGuid(legalEntityId, nameof(legalEntityId));
+        GuardValidation.RequireNonEmptyGuid(stockMovementId, nameof(stockMovementId));
+        GuardValidation.RequireNonEmptyGuid(receiptAccrualId, nameof(receiptAccrualId));
+        GuardValidation.RequireNonEmptyGuid(glJournalId, nameof(glJournalId));
+        GuardValidation.RequireNonEmptyGuid(acceptedByUserId, nameof(acceptedByUserId));
+        ArgumentNullException.ThrowIfNull(receipt);
+
+        var totalQty = decimal.Round(totalAcceptedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        var totalAmt = decimal.Round(totalAcceptedAmount, 4, MidpointRounding.AwayFromZero);
+        if (totalQty <= 0m || totalAmt <= 0m)
+        {
+            throw new InvalidOperationException("od04_zero_or_negative_acceptance_value_blocked: Valued acceptance requires positive quantity and positive monetary amount under OD-04.");
+        }
+
+        return new ValuedAcceptance
+        {
+            ValuedAcceptanceId = valuedAcceptanceId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            AcceptanceNumber = GuardValidation.RequireCode(acceptanceNumber, nameof(acceptanceNumber), 40),
+            GoodsReceiptId = receipt.GoodsReceiptId,
+            PurchaseOrderId = receipt.PurchaseOrderId,
+            PoRevisionId = receipt.PoRevisionId,
+            SupplierPartnerId = receipt.SupplierPartnerId,
+            AcceptanceDate = acceptanceDate,
+            StockStatus = GuardValidation.RequireCode(stockStatus, nameof(stockStatus), 24),
+            CurrencyCode = GuardValidation.RequireExactIsoCode(currencyCode, "IDR", 3, nameof(currencyCode)),
+            IdempotencyKey = GuardValidation.RequireName(idempotencyKey, nameof(idempotencyKey), 80),
+            PayloadHash = GuardValidation.RequireName(payloadHash, nameof(payloadHash), 64),
+            TotalAcceptedBaseQuantity = totalQty,
+            TotalAcceptedAmount = totalAmt,
+            StockMovementId = stockMovementId,
+            ReceiptAccrualId = receiptAccrualId,
+            GlJournalId = glJournalId,
+            Notes = GuardValidation.NormalizeOptional(notes, 400, nameof(notes)),
+            AcceptedByUserId = acceptedByUserId,
+            CreatedAtUtc = nowUtc
+        };
+    }
+}
+
+/// <summary>
+/// Strictly append-only Gate 2 valued acceptance line in `procurement.valued_acceptance_lines`.
+/// </summary>
+public sealed class ValuedAcceptanceLine
+{
+    public Guid ValuedAcceptanceLineId { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public Guid ValuedAcceptanceId { get; private set; }
+    public int LineNumber { get; private set; }
+    public Guid GoodsReceiptLineId { get; private set; }
+    public Guid PoLineId { get; private set; }
+    public Guid ItemId { get; private set; }
+    public Guid BaseUomId { get; private set; }
+    public string BaseUomCodeSnapshot { get; private set; } = string.Empty;
+    public decimal AcceptedBaseQuantity { get; private set; }
+    public decimal UnitPriceBaseSnapshot { get; private set; }
+    public decimal AcceptedLineAmount { get; private set; }
+
+    private ValuedAcceptanceLine()
+    {
+    }
+
+    public static ValuedAcceptanceLine Create(
+        Guid valuedAcceptanceLineId,
+        Guid tenantId,
+        Guid legalEntityId,
+        Guid valuedAcceptanceId,
+        int lineNumber,
+        GoodsReceiptLine receiptLine,
+        decimal acceptedBaseQuantity,
+        decimal unitPriceBaseSnapshot,
+        decimal acceptedLineAmount)
+    {
+        GuardValidation.RequireNonEmptyGuid(valuedAcceptanceLineId, nameof(valuedAcceptanceLineId));
+        GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
+        GuardValidation.RequireNonEmptyGuid(legalEntityId, nameof(legalEntityId));
+        GuardValidation.RequireNonEmptyGuid(valuedAcceptanceId, nameof(valuedAcceptanceId));
+        ArgumentNullException.ThrowIfNull(receiptLine);
+
+        if (lineNumber < 1)
+        {
+            throw new ArgumentOutOfRangeException(nameof(lineNumber), "LineNumber must be >= 1.");
+        }
+
+        var qty = decimal.Round(acceptedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        var unitPriceBase = decimal.Round(unitPriceBaseSnapshot, 6, MidpointRounding.AwayFromZero);
+        var amount = decimal.Round(acceptedLineAmount, 4, MidpointRounding.AwayFromZero);
+        if (qty <= 0m || unitPriceBase <= 0m || amount <= 0m)
+        {
+            throw new InvalidOperationException("od04_zero_or_negative_acceptance_value_blocked: Acceptance line requires positive quantity and valuation amount.");
+        }
+
+        return new ValuedAcceptanceLine
+        {
+            ValuedAcceptanceLineId = valuedAcceptanceLineId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            ValuedAcceptanceId = valuedAcceptanceId,
+            LineNumber = lineNumber,
+            GoodsReceiptLineId = receiptLine.GoodsReceiptLineId,
+            PoLineId = receiptLine.PoLineId,
+            ItemId = receiptLine.ItemId,
+            BaseUomId = receiptLine.BaseUomId,
+            BaseUomCodeSnapshot = receiptLine.BaseUomCodeSnapshot,
+            AcceptedBaseQuantity = qty,
+            UnitPriceBaseSnapshot = unitPriceBase,
+            AcceptedLineAmount = amount
+        };
+    }
+}
+
+public static class ValuedAcceptanceHash
+{
+    public static string ComputePayloadHash(
+        Guid goodsReceiptId,
+        DateOnly acceptanceDate,
+        string stockStatus,
+        IEnumerable<(Guid GoodsReceiptLineId, decimal AcceptedBaseQty)> lines)
+    {
+        var sb = new StringBuilder();
+        sb.Append(goodsReceiptId.ToString("D")).Append('|')
+          .Append(acceptanceDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)).Append('|')
+          .Append(stockStatus.Trim().ToUpperInvariant()).AppendLine();
+
+        foreach (var l in lines.OrderBy(x => x.GoodsReceiptLineId))
+        {
+            sb.Append(l.GoodsReceiptLineId.ToString("D")).Append('|')
+              .Append(decimal.Round(l.AcceptedBaseQty, 6, MidpointRounding.AwayFromZero).ToString("0.000000", CultureInfo.InvariantCulture))
+              .AppendLine();
+        }
+
+        return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(sb.ToString()))).ToLowerInvariant();
     }
 }

@@ -5303,10 +5303,741 @@
           }
         }
       }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts/{receiptId}/accept-preview": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "PreviewReceiptAcceptance",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "receiptId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewReceiptAcceptanceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptancePreviewDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts/{receiptId}/accept": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "AcceptGoodsReceiptValued",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "receiptId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptReceiptRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValuedAcceptanceDetailDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValuedAcceptanceDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/acceptances": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ListValuedAcceptances",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "receiptId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValuedAcceptanceListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/acceptances/{acceptanceId}": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetValuedAcceptanceDetail",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "acceptanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValuedAcceptanceDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/overview": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetInventoryOverview",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "stockStatus",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InventoryOverviewResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/items/{itemId}/ledger": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetItemValuationLedger",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ItemValuationLedgerResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AcceptancePreviewDto": {
+        "required": [
+          "goodsReceiptId",
+          "receiptNumber",
+          "currencyCode",
+          "acceptanceDate",
+          "stockStatus",
+          "canPost",
+          "totalAcceptedBaseQuantity",
+          "totalAcceptedAmount",
+          "od04Notice",
+          "lines",
+          "journalPreview",
+          "blockingReasons"
+        ],
+        "type": "object",
+        "properties": {
+          "goodsReceiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptNumber": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "acceptanceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "stockStatus": {
+            "type": "string"
+          },
+          "canPost": {
+            "type": "boolean"
+          },
+          "totalAcceptedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalAcceptedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "od04Notice": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AcceptancePreviewLineDto"
+            }
+          },
+          "journalPreview": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PreviewJournalSuggestionDto"
+            }
+          },
+          "blockingReasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "AcceptancePreviewLineDto": {
+        "required": [
+          "goodsReceiptLineId",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomCode",
+          "acceptedBaseQuantity",
+          "unitCostBase",
+          "acceptedLineAmount",
+          "previousPoolBaseQuantity",
+          "previousCarryingValue",
+          "previousMovingAverageCost",
+          "projectedPoolBaseQuantity",
+          "projectedCarryingValue",
+          "projectedMovingAverageCost",
+          "blockingReason"
+        ],
+        "type": "object",
+        "properties": {
+          "goodsReceiptLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "acceptedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unitCostBase": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "acceptedLineAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "previousPoolBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "previousCarryingValue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "previousMovingAverageCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "projectedPoolBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "projectedCarryingValue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "projectedMovingAverageCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "blockingReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "AcceptInvitationRequest": {
         "required": [
           "token"
@@ -5346,6 +6077,61 @@
             "type": "array",
             "items": {
               "type": "string"
+            }
+          }
+        }
+      },
+      "AcceptReceiptLineRequest": {
+        "required": [
+          "goodsReceiptLineId",
+          "acceptedBaseQuantity"
+        ],
+        "type": "object",
+        "properties": {
+          "goodsReceiptLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "acceptedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "AcceptReceiptRequest": {
+        "required": [
+          "idempotencyKey",
+          "acceptanceDate",
+          "stockStatus",
+          "notes",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "idempotencyKey": {
+            "type": "string"
+          },
+          "acceptanceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "stockStatus": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AcceptReceiptLineRequest"
             }
           }
         }
@@ -7392,6 +8178,8 @@
           "updatedAtUtc",
           "version",
           "wasIdempotentReplay",
+          "valuedAcceptanceJournalCount",
+          "valuedAcceptances",
           "lines",
           "dockChecks"
         ],
@@ -7557,6 +8345,20 @@
           },
           "wasIdempotentReplay": {
             "type": "boolean"
+          },
+          "valuedAcceptanceJournalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "valuedAcceptances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoodsReceiptLinkedAcceptanceDto"
+            }
           },
           "lines": {
             "type": "array",
@@ -7777,6 +8579,99 @@
             "format": "double"
           },
           "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GoodsReceiptLinkedAcceptanceDto": {
+        "required": [
+          "valuedAcceptanceId",
+          "acceptanceNumber",
+          "acceptanceDate",
+          "stockStatus",
+          "totalAcceptedBaseQuantity",
+          "totalAcceptedAmount",
+          "stockMovementId",
+          "movementNumber",
+          "receiptAccrualId",
+          "accrualNumber",
+          "glJournalId",
+          "glJournalNumber",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "valuedAcceptanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "acceptanceNumber": {
+            "type": "string"
+          },
+          "acceptanceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "stockStatus": {
+            "type": "string"
+          },
+          "totalAcceptedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalAcceptedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "stockMovementId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "movementNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "receiptAccrualId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "accrualNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "glJournalId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "glJournalNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAtUtc": {
             "type": "string",
             "format": "date-time"
           }
@@ -8005,6 +8900,74 @@
           "timestampUtc": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "InventoryOverviewResponse": {
+        "required": [
+          "positions",
+          "recentMovements",
+          "openAccruals",
+          "totalStockedItemsWithBalance",
+          "totalCarryingValueIdr",
+          "totalOpenGrniAccrualIdr",
+          "restrictedStockItemCount",
+          "od04Notice"
+        ],
+        "type": "object",
+        "properties": {
+          "positions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StockPositionOverviewDto"
+            }
+          },
+          "recentMovements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StockMovementSummaryDto"
+            }
+          },
+          "openAccruals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceiptAccrualOverviewDto"
+            }
+          },
+          "totalStockedItemsWithBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalCarryingValueIdr": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalOpenGrniAccrualIdr": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "restrictedStockItemCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "od04Notice": {
+            "type": "string"
           }
         }
       },
@@ -8382,6 +9345,112 @@
               "string"
             ],
             "format": "int64"
+          }
+        }
+      },
+      "ItemValuationLedgerResponse": {
+        "required": [
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomCode",
+          "currencyCode",
+          "valuationGroupCode",
+          "poolStatus",
+          "currentValuedBaseQuantity",
+          "currentCarryingValueAmount",
+          "currentMovingAverageUnitCost",
+          "unrestrictedBaseQuantity",
+          "qualityInspectionBaseQuantity",
+          "blockedBaseQuantity",
+          "availableBaseQuantity",
+          "entries"
+        ],
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "valuationGroupCode": {
+            "type": "string"
+          },
+          "poolStatus": {
+            "type": "string"
+          },
+          "currentValuedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentCarryingValueAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentMovingAverageUnitCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unrestrictedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "qualityInspectionBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "blockedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "availableBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValuationEntryLedgerDto"
+            }
           }
         }
       },
@@ -9739,6 +10808,61 @@
           }
         }
       },
+      "PreviewJournalSuggestionDto": {
+        "required": [
+          "side",
+          "accountCode",
+          "accountName",
+          "amount",
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "side": {
+            "type": "string"
+          },
+          "accountCode": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "PreviewReceiptAcceptanceRequest": {
+        "required": [
+          "acceptanceDate",
+          "stockStatus",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "acceptanceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "stockStatus": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AcceptReceiptLineRequest"
+            }
+          }
+        }
+      },
       "ProblemDetails": {
         "type": "object",
         "properties": {
@@ -10850,6 +11974,116 @@
           }
         }
       },
+      "ReceiptAccrualOverviewDto": {
+        "required": [
+          "receiptAccrualId",
+          "accrualNumber",
+          "valuedAcceptanceId",
+          "acceptanceNumber",
+          "goodsReceiptId",
+          "receiptNumber",
+          "purchaseOrderId",
+          "poNumber",
+          "supplierPartnerId",
+          "supplierCode",
+          "supplierName",
+          "journalId",
+          "journalNumber",
+          "postingDate",
+          "currencyCode",
+          "accruedAmount",
+          "clearedAmount",
+          "remainingOpenAmount",
+          "status",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "receiptAccrualId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accrualNumber": {
+            "type": "string"
+          },
+          "valuedAcceptanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "acceptanceNumber": {
+            "type": "string"
+          },
+          "goodsReceiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptNumber": {
+            "type": "string"
+          },
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poNumber": {
+            "type": "string"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "supplierName": {
+            "type": "string"
+          },
+          "journalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "journalNumber": {
+            "type": "string"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "accruedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "clearedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingOpenAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "status": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "RecordDockCheckRequest": {
         "required": [
           "idempotencyKey",
@@ -10988,6 +12222,203 @@
           },
           "reason": {
             "type": "string"
+          }
+        }
+      },
+      "StockMovementSummaryDto": {
+        "required": [
+          "stockMovementId",
+          "movementNumber",
+          "movementType",
+          "postingDate",
+          "sourceDocumentNumber",
+          "lineCount",
+          "totalBaseQuantity",
+          "totalValuationAmount",
+          "createdByEmail",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "stockMovementId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movementNumber": {
+            "type": "string"
+          },
+          "movementType": {
+            "type": "string"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "sourceDocumentNumber": {
+            "type": "string"
+          },
+          "lineCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalValuationAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "createdByEmail": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "StockPositionOverviewDto": {
+        "required": [
+          "stockPositionId",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomId",
+          "baseUomCode",
+          "valuationGroupCode",
+          "currencyCode",
+          "unrestrictedBaseQuantity",
+          "qualityInspectionBaseQuantity",
+          "blockedBaseQuantity",
+          "reservedBaseQuantity",
+          "totalValuedOnHandBaseQuantity",
+          "availableBaseQuantity",
+          "carryingValueAmount",
+          "movingAverageUnitCost",
+          "poolStatus",
+          "lastEntrySequence",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "stockPositionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "valuationGroupCode": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "unrestrictedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "qualityInspectionBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "blockedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reservedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalValuedOnHandBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "availableBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "carryingValueAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "movingAverageUnitCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "poolStatus": {
+            "type": "string"
+          },
+          "lastEntrySequence": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -11559,6 +12990,547 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "ValuationEntryLedgerDto": {
+        "required": [
+          "valuationEntryId",
+          "poolSequenceNumber",
+          "postingDate",
+          "entryType",
+          "sourceDocumentType",
+          "sourceDocumentId",
+          "sourceDocumentNumber",
+          "movementNumber",
+          "glJournalId",
+          "journalNumber",
+          "quantityDelta",
+          "unitCostApplied",
+          "valueDelta",
+          "previousPoolBaseQuantity",
+          "previousPoolCarryingValue",
+          "previousMovingAverageCost",
+          "newPoolBaseQuantity",
+          "newPoolCarryingValue",
+          "newMovingAverageCost",
+          "createdByEmail",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "valuationEntryId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poolSequenceNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "entryType": {
+            "type": "string"
+          },
+          "sourceDocumentType": {
+            "type": "string"
+          },
+          "sourceDocumentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceDocumentNumber": {
+            "type": "string"
+          },
+          "movementNumber": {
+            "type": "string"
+          },
+          "glJournalId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "journalNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "quantityDelta": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unitCostApplied": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "valueDelta": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "previousPoolBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "previousPoolCarryingValue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "previousMovingAverageCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "newPoolBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "newPoolCarryingValue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "newMovingAverageCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "createdByEmail": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ValuedAcceptanceDetailDto": {
+        "required": [
+          "valuedAcceptanceId",
+          "acceptanceNumber",
+          "goodsReceiptId",
+          "receiptNumber",
+          "receiptStatus",
+          "purchaseOrderId",
+          "poNumber",
+          "poRevisionNumber",
+          "supplierPartnerId",
+          "supplierCode",
+          "supplierName",
+          "acceptanceDate",
+          "stockStatus",
+          "currencyCode",
+          "totalAcceptedBaseQuantity",
+          "totalAcceptedAmount",
+          "stockMovementId",
+          "movementNumber",
+          "receiptAccrualId",
+          "accrualNumber",
+          "glJournalId",
+          "glJournalNumber",
+          "notes",
+          "acceptedByUserId",
+          "acceptedByEmail",
+          "createdAtUtc",
+          "wasIdempotentReplay",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "valuedAcceptanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "acceptanceNumber": {
+            "type": "string"
+          },
+          "goodsReceiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptNumber": {
+            "type": "string"
+          },
+          "receiptStatus": {
+            "type": "string"
+          },
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poNumber": {
+            "type": "string"
+          },
+          "poRevisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "supplierName": {
+            "type": "string"
+          },
+          "acceptanceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "stockStatus": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "totalAcceptedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalAcceptedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "stockMovementId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "movementNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "receiptAccrualId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "accrualNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "glJournalId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "glJournalNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "acceptedByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "acceptedByEmail": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "wasIdempotentReplay": {
+            "type": "boolean"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValuedAcceptanceLineDto"
+            }
+          }
+        }
+      },
+      "ValuedAcceptanceLineDto": {
+        "required": [
+          "valuedAcceptanceLineId",
+          "lineNumber",
+          "goodsReceiptLineId",
+          "poLineId",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomId",
+          "baseUomCode",
+          "acceptedBaseQuantity",
+          "unitPriceBaseSnapshot",
+          "acceptedLineAmount"
+        ],
+        "type": "object",
+        "properties": {
+          "valuedAcceptanceLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "goodsReceiptLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "acceptedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unitPriceBaseSnapshot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "acceptedLineAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "ValuedAcceptanceListResponse": {
+        "required": [
+          "items"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValuedAcceptanceSummaryDto"
+            }
+          }
+        }
+      },
+      "ValuedAcceptanceSummaryDto": {
+        "required": [
+          "valuedAcceptanceId",
+          "acceptanceNumber",
+          "goodsReceiptId",
+          "receiptNumber",
+          "purchaseOrderId",
+          "poNumber",
+          "supplierCode",
+          "supplierName",
+          "acceptanceDate",
+          "stockStatus",
+          "currencyCode",
+          "totalAcceptedBaseQuantity",
+          "totalAcceptedAmount",
+          "stockMovementId",
+          "movementNumber",
+          "receiptAccrualId",
+          "accrualNumber",
+          "glJournalId",
+          "glJournalNumber",
+          "acceptedByEmail",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "valuedAcceptanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "acceptanceNumber": {
+            "type": "string"
+          },
+          "goodsReceiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptNumber": {
+            "type": "string"
+          },
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poNumber": {
+            "type": "string"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "supplierName": {
+            "type": "string"
+          },
+          "acceptanceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "stockStatus": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "totalAcceptedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalAcceptedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "stockMovementId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "movementNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "receiptAccrualId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "accrualNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "glJournalId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "glJournalNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "acceptedByEmail": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },

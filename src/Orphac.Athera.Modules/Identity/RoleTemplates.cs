@@ -16,7 +16,7 @@ public static class RoleTemplates
     {
         [ProcurementOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.ProcurementManage, PermissionCodes.ReceivingRead, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.CatalogManage, PermissionCodes.ApprovalRequest],
         [SalesOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.SalesRead, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
-        [InventoryClerk] = [PermissionCodes.WorkspaceView, PermissionCodes.ReceivingRead, PermissionCodes.ReceivingManage, PermissionCodes.InventoryRead, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
+        [InventoryClerk] = [PermissionCodes.WorkspaceView, PermissionCodes.ReceivingRead, PermissionCodes.ReceivingManage, PermissionCodes.ReceivingAccept, PermissionCodes.InventoryRead, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
         [FinanceOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.FinanceRead, PermissionCodes.FinanceConfigManage, PermissionCodes.FinanceJournalPost, PermissionCodes.ReceivingRead, PermissionCodes.PartnersRead, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
         [EntityApprover] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.ProcurementApprove, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide],
         [EntityAdmin] = [PermissionCodes.WorkspaceView, PermissionCodes.AdminRead, PermissionCodes.AdminManage, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide]

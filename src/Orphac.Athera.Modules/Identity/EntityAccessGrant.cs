@@ -20,6 +20,7 @@ public static class PermissionCodes
     public const string ProcurementApprove = "procurement.approve";
     public const string ReceivingRead = "receiving.read";
     public const string ReceivingManage = "receiving.manage";
+    public const string ReceivingAccept = "receiving.accept";
     public const string InventoryRead = "inventory.read";
     public const string SalesRead = "sales.read";
     public const string FinanceRead = "finance.read";
@@ -42,6 +43,7 @@ public static class PermissionCodes
         ProcurementApprove,
         ReceivingRead,
         ReceivingManage,
+        ReceivingAccept,
         InventoryRead,
         SalesRead,
         FinanceRead,

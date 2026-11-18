@@ -272,10 +272,10 @@ public sealed class S06ReceivingPostgresTests
             await rb2.ExecuteNonQueryAsync();
         }
 
-        // Direct SQL attempting S06 valued_accepted > 0 rejected by ck_gr_lines_s06_unvalued (23514)
+        // Direct SQL attempting valued_accepted > released rejected by ck_gr_lines_valued_le_released / conservation (23514)
         await using var valCmd = conn.CreateCommand();
         valCmd.Transaction = tx;
-        valCmd.CommandText = "UPDATE procurement.goods_receipt_lines SET valued_accepted_base_quantity = 5, dock_released_base_quantity = 5, pending_check_base_quantity = 15, unresolved_custody_base_quantity = 15 WHERE goods_receipt_line_id = @lid;";
+        valCmd.CommandText = "UPDATE procurement.goods_receipt_lines SET valued_accepted_base_quantity = 10, dock_released_base_quantity = 5, pending_check_base_quantity = 15, unresolved_custody_base_quantity = 10 WHERE goods_receipt_line_id = @lid;";
         valCmd.Parameters.AddWithValue("lid", grn.Lines[0].GoodsReceiptLineId);
         var valEx = await Assert.ThrowsAsync<PostgresException>(() => valCmd.ExecuteNonQueryAsync());
         Assert.Equal("23514", valEx.SqlState);

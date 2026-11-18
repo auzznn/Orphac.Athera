@@ -361,13 +361,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       href:
         baseEntityPath &&
         (permissionSet.has("receiving.read") ||
-          permissionSet.has("receiving.manage"))
+          permissionSet.has("receiving.manage") ||
+          permissionSet.has("receiving.accept"))
           ? `${baseEntityPath}/receiving`
           : null,
       permitted:
         permissionSet.has("receiving.read") ||
-        permissionSet.has("receiving.manage"),
+        permissionSet.has("receiving.manage") ||
+        permissionSet.has("receiving.accept"),
       active: pathname.endsWith("/receiving"),
+    },
+    {
+      key: "inventory",
+      label: t.shell.navItems.inventory,
+      icon: Package,
+      href: baseEntityPath && permissionSet.has("inventory.read") ? `${baseEntityPath}/inventory` : null,
+      permitted: permissionSet.has("inventory.read"),
+      active: pathname.endsWith("/inventory") || pathname.includes("/inventory/"),
     },
     {
       key: "finance",
@@ -397,12 +407,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   ];
 
   const plannedModuleItems = [
-    {
-      key: "inventory",
-      label: t.shell.navItems.inventory,
-      icon: Package,
-      permitted: permissionSet.has("inventory.read"),
-    },
     {
       key: "sales",
       label: t.shell.navItems.sales,

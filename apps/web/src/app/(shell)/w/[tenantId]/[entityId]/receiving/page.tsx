@@ -17,6 +17,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import {
+  AcceptancePreviewDto,
+  acceptGoodsReceiptValued,
   ApiProblemError,
   EligiblePoReceivingLineDto,
   EligiblePurchaseOrderForReceivingDto,
@@ -28,10 +30,17 @@ import {
   GoodsReceiptDetailDto,
   GoodsReceiptLineDto,
   GoodsReceiptListResponse,
+  previewReceiptAcceptance,
   recordGoodsReceiptArrival,
   recordGoodsReceiptDockCheck,
+  ValuedAcceptanceDetailDto,
 } from "@/lib/api/client";
-import { formatJakartaDateTime, type SupportedLocale } from "@/lib/i18n/messages";
+import {
+  formatIdr,
+  formatJakartaDateTime,
+  formatUnitCostIdr,
+  type SupportedLocale,
+} from "@/lib/i18n/messages";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
 import {
   convertArrivalQtyToBase,
@@ -55,8 +64,12 @@ const RECEIPT_FILTER_STATUSES = [
   "ARRIVED",
   "IN_DOCK_INSPECTION",
   "RELEASED_FOR_ACCEPTANCE",
+  "PARTIALLY_ACCEPTED",
+  "VALUED_ACCEPTED",
   "FULLY_REJECTED_UNVALUED",
 ] as const;
+
+const STOCK_STATUS_OPTIONS = ["UNRESTRICTED", "QUALITY_INSPECTION", "BLOCKED"] as const;
 
 interface ArrivalLineDraft {
   poLineId: string;
@@ -149,6 +162,20 @@ function mapDockDrafts(detail: GoodsReceiptDetailDto): Record<string, DockCheckD
   return next;
 }
 
+function getLineRemainingReleasedScaled(line: GoodsReceiptLineDto): bigint {
+  const rel = parseScaledBigInt(line.dockReleasedBaseQuantity) ?? 0n;
+  const val = parseScaledBigInt(line.valuedAcceptedBaseQuantity) ?? 0n;
+  return rel > val ? rel - val : 0n;
+}
+
+function buildGate2QtyInputs(detail: GoodsReceiptDetailDto): Record<string, string> {
+  const next: Record<string, string> = {};
+  for (const line of detail.lines) {
+    next[line.goodsReceiptLineId] = formatScaledPlainInput(getLineRemainingReleasedScaled(line));
+  }
+  return next;
+}
+
 function ReceivingStatusBadge({
   status,
   label,
@@ -156,7 +183,11 @@ function ReceivingStatusBadge({
   status: string;
   label: string;
 }) {
-  if (status === "RELEASED_FOR_ACCEPTANCE" || status === "DOCK_RELEASED") {
+  if (
+    status === "RELEASED_FOR_ACCEPTANCE" ||
+    status === "VALUED_ACCEPTED" ||
+    status === "DOCK_RELEASED"
+  ) {
     return (
       <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--status-ok-border)] bg-[var(--status-ok-bg)] px-2 py-0.5 text-xs font-medium text-[var(--status-ok-text)]">
         <CheckCircle2 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
@@ -647,6 +678,19 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
   const [dockErrors, setDockErrors] = useState<Record<string, string>>({});
   const [dockSuccessLineId, setDockSuccessLineId] = useState<string | null>(null);
 
+  // Gate 2 Valued Acceptance state
+  const [gate2QtyInputs, setGate2QtyInputs] = useState<Record<string, string>>({});
+  const [gate2Date, setGate2Date] = useState<string>(() => defaultJakartaIsoDate());
+  const [gate2StockStatus, setGate2StockStatus] = useState<string>("UNRESTRICTED");
+  const [gate2Notes, setGate2Notes] = useState<string>("");
+  const [gate2IdemKey, setGate2IdemKey] = useState<string>(() => makeIdempotencyKey("acc"));
+  const [gate2Preview, setGate2Preview] = useState<AcceptancePreviewDto | null>(null);
+  const [gate2PreviewStale, setGate2PreviewStale] = useState(false);
+  const [gate2PreviewBusy, setGate2PreviewBusy] = useState(false);
+  const [gate2Submitting, setGate2Submitting] = useState(false);
+  const [gate2Error, setGate2Error] = useState<string | null>(null);
+  const [gate2Success, setGate2Success] = useState<ValuedAcceptanceDetailDto | null>(null);
+
   useEffect(() => {
     routerRef.current = router;
   }, [router]);
@@ -654,6 +698,11 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
   const canManage = useMemo(() => {
     if (!workspace) return false;
     return workspace.effectivePermissions.includes("receiving.manage");
+  }, [workspace]);
+
+  const canAccept = useMemo(() => {
+    if (!workspace) return false;
+    return workspace.effectivePermissions.includes("receiving.accept");
   }, [workspace]);
 
   const selectedEligiblePo = useMemo(() => {
@@ -707,6 +756,9 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
               if (!active) return;
               setSelectedDetail(detail);
               setDockDrafts(mapDockDrafts(detail));
+              setGate2QtyInputs(buildGate2QtyInputs(detail));
+              setGate2Preview(null);
+              setGate2PreviewStale(false);
             })
             .catch(() => {
               // Keep initial ledger usable even if auto-detail load hits transient error.
@@ -757,6 +809,9 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
             setSelectedReceiptId(targetId);
             setSelectedDetail(detail);
             setDockDrafts(mapDockDrafts(detail));
+            setGate2QtyInputs(buildGate2QtyInputs(detail));
+            setGate2Preview(null);
+            setGate2PreviewStale(false);
           }
         }
       } catch (err) {
@@ -778,10 +833,16 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
     setDetailLoading(true);
     setDockErrors({});
     setDockSuccessLineId(null);
+    setGate2Error(null);
+    setGate2Success(null);
+    setGate2Preview(null);
+    setGate2PreviewStale(false);
+    setGate2IdemKey(makeIdempotencyKey("acc"));
     try {
       const detail = await fetchGoodsReceiptDetail(tenantId, entityId, receiptId);
       setSelectedDetail(detail);
       setDockDrafts(mapDockDrafts(detail));
+      setGate2QtyInputs(buildGate2QtyInputs(detail));
     } catch (err) {
       const apiProblem = err as ApiProblemError;
       if (apiProblem.status === 401) {
@@ -1022,6 +1083,9 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
 
       setSelectedDetail(updated);
       setDockDrafts(mapDockDrafts(updated));
+      setGate2QtyInputs(buildGate2QtyInputs(updated));
+      setGate2Preview(null);
+      setGate2PreviewStale(false);
       setDockSuccessLineId(line.goodsReceiptLineId);
       await refreshData({ skipDetailFetch: true });
     } catch (err) {
@@ -1036,6 +1100,127 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
       }));
     } finally {
       setDockSubmittingLineId(null);
+    }
+  };
+
+  const formatGate2BlockText = useCallback(
+    (rawReason: string): string => {
+      const colonIdx = rawReason.indexOf(":");
+      const candidateCode = (colonIdx > 0 ? rawReason.slice(0, colonIdx) : rawReason).trim();
+      if (t.receiving.errors[candidateCode]) {
+        return t.receiving.errors[candidateCode];
+      }
+      return rawReason;
+    },
+    [t],
+  );
+
+  const buildGate2PayloadLines = useCallback(():
+    | { ok: true; lines: { goodsReceiptLineId: string; acceptedBaseQuantity: number }[] }
+    | { ok: false; message: string } => {
+    if (!selectedDetail) {
+      return { ok: false, message: t.receiving.validation.acceptanceLinesRequired };
+    }
+    const collected: { goodsReceiptLineId: string; acceptedBaseQuantity: number }[] = [];
+    for (const line of selectedDetail.lines) {
+      const remaining = getLineRemainingReleasedScaled(line);
+      if (remaining <= 0n || line.itemKindSnapshot !== "STOCKED_GOOD") continue;
+
+      const rawText = (gate2QtyInputs[line.goodsReceiptLineId] ?? "").trim();
+      if (!rawText) continue;
+      const parsed = parseScaledBigInt(rawText);
+      if (parsed === null || parsed < 0n) {
+        return { ok: false, message: t.receiving.validation.invalidQtyFormat };
+      }
+      if (parsed > 0n) {
+        collected.push({
+          goodsReceiptLineId: line.goodsReceiptLineId,
+          acceptedBaseQuantity: Number(formatScaledPlainInput(parsed)),
+        });
+      }
+    }
+    if (collected.length === 0) {
+      return { ok: false, message: t.receiving.validation.acceptanceLinesRequired };
+    }
+    return { ok: true, lines: collected };
+  }, [selectedDetail, gate2QtyInputs, t]);
+
+  const handleGate2Preview = async () => {
+    if (!selectedDetail) return;
+    setGate2Error(null);
+    setGate2Success(null);
+
+    const parsed = buildGate2PayloadLines();
+    if (!parsed.ok) {
+      setGate2Error(parsed.message);
+      return;
+    }
+
+    setGate2PreviewBusy(true);
+    try {
+      const preview = await previewReceiptAcceptance(
+        tenantId,
+        entityId,
+        selectedDetail.goodsReceiptId,
+        {
+          acceptanceDate: gate2Date,
+          stockStatus: gate2StockStatus,
+          lines: parsed.lines,
+        },
+      );
+      setGate2Preview(preview);
+      setGate2PreviewStale(false);
+    } catch (err) {
+      const apiErr = err as ApiProblemError;
+      if (apiErr.status === 401) {
+        routerRef.current.replace("/login");
+        return;
+      }
+      setGate2Error(mapApiErrorText(err));
+    } finally {
+      setGate2PreviewBusy(false);
+    }
+  };
+
+  const handleGate2Confirm = async () => {
+    if (!selectedDetail || !gate2Preview?.canPost || gate2PreviewStale) return;
+    setGate2Error(null);
+
+    const parsed = buildGate2PayloadLines();
+    if (!parsed.ok) {
+      setGate2Error(parsed.message);
+      return;
+    }
+
+    setGate2Submitting(true);
+    try {
+      const outcome = await acceptGoodsReceiptValued(
+        tenantId,
+        entityId,
+        selectedDetail.goodsReceiptId,
+        {
+          idempotencyKey: gate2IdemKey,
+          acceptanceDate: gate2Date,
+          stockStatus: gate2StockStatus,
+          notes: gate2Notes.trim() || null,
+          lines: parsed.lines,
+        },
+      );
+      setGate2Success(outcome);
+      setGate2Notes("");
+      setGate2Preview(null);
+      setGate2PreviewStale(false);
+      setGate2IdemKey(makeIdempotencyKey("acc"));
+      await refreshData({ receiptId: selectedDetail.goodsReceiptId });
+    } catch (err) {
+      const apiErr = err as ApiProblemError;
+      if (apiErr.status === 401) {
+        routerRef.current.replace("/login");
+        return;
+      }
+      setGate2Error(mapApiErrorText(err));
+    } finally {
+      setGate2Submitting(false);
     }
   };
 
@@ -1063,7 +1248,7 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
   const heldSummaryScaled = parseScaledBigInt(receiptsData?.sumHeldBaseQuantity ?? 0) ?? 0n;
 
   return (
-    <div className="space-y-5">
+    <div className="mx-auto max-w-5xl space-y-5">
       {/* Page Header */}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
@@ -1101,7 +1286,7 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
 
       {/* Read-Only / Gate 1 Boundary & OD-01 Notice */}
       <div className="space-y-2.5">
-        {!canManage ? (
+        {!canManage && !canAccept ? (
           <div
             data-testid="receiving-readonly-banner"
             className="flex items-start gap-2.5 rounded-[var(--radius-md)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-4 py-3 text-sm text-[var(--status-warn-text)]"
@@ -1472,17 +1657,39 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                 </h2>
               </div>
               {selectedDetail ? (
-                <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--status-ok-border)] bg-[var(--status-ok-bg)] px-2 py-0.5 font-code text-xs font-medium tabular-nums text-[var(--status-ok-text)]">
-                  <ShieldCheck className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-                  <span>
-                    GL: {String(selectedDetail.linkedGlJournalCount)} · {t.receiving.noGlPostingBadge}
-                  </span>
-                </span>
+                <div className="flex flex-wrap items-center gap-2">
+                  {Number(selectedDetail.valuedAcceptanceJournalCount) > 0 ? (
+                    <>
+                      <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-2 py-0.5 text-xs font-medium text-[var(--text-secondary)]">
+                        <ShieldCheck className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                        <span>{t.receiving.gate2.gate1GlBadgePrefix}</span>
+                        <span className="font-code font-semibold tabular-nums text-[var(--text-primary)]">
+                          {String(selectedDetail.linkedGlJournalCount)}
+                        </span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--status-ok-border)] bg-[var(--status-ok-bg)] px-2 py-0.5 text-xs font-medium text-[var(--status-ok-text)]">
+                        <CheckCircle2 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                        <span>{t.receiving.gate2.glBadgePrefix}</span>
+                        <span className="font-code font-semibold tabular-nums">
+                          {String(selectedDetail.valuedAcceptanceJournalCount)}
+                        </span>
+                      </span>
+                    </>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--status-ok-border)] bg-[var(--status-ok-bg)] px-2 py-0.5 text-xs font-medium text-[var(--status-ok-text)]">
+                      <ShieldCheck className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                      <span className="font-code font-semibold tabular-nums">
+                        GL: {String(selectedDetail.linkedGlJournalCount)}
+                      </span>
+                      <span>· {t.receiving.noGlPostingBadge}</span>
+                    </span>
+                  )}
+                </div>
               ) : null}
             </div>
 
             {detailLoading ? (
-              <div className="p-6 text-xs text-[var(--text-secondary)]">...</div>
+              <div className="p-6 text-xs text-[var(--text-secondary)]">{t.receiving.loadingDetail}</div>
             ) : !selectedDetail ? (
               <div className="p-6 text-center">
                 <h3 className="text-sm font-semibold text-[var(--text-primary)]">
@@ -1750,6 +1957,451 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
               </div>
             )}
           </section>
+
+          {/* Gate 2 Valued Acceptance Sections (sibling sheets below Gate 1 Detail) */}
+          {!detailLoading && selectedDetail ? (
+            <>
+              {selectedDetail.lines.some((line) => getLineRemainingReleasedScaled(line) > 0n) ? (
+                <section
+                  id="gate2-acceptance-panel"
+                  className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)]"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-2.5">
+                    <div className="flex items-center gap-2">
+                      <PackageCheck
+                        className="h-4 w-4 text-[var(--accent-primary)]"
+                        strokeWidth={1.75}
+                        aria-hidden="true"
+                      />
+                      <h2 className="text-sm font-semibold text-[var(--text-primary)]">
+                        {t.receiving.gate2.sectionTitle}
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 p-4">
+                    <div className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-3 py-2 text-xs text-[var(--text-secondary)]">
+                      <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                      <span>{t.receiving.gate2.od04Notice}</span>
+                    </div>
+
+                    {!canAccept ? (
+                      <div className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-3 py-2 text-xs text-[var(--status-warn-text)]">
+                        <Eye className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                        <span>{t.receiving.gate2.readOnlyPermissionNote}</span>
+                      </div>
+                    ) : null}
+
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        <label className="block space-y-1">
+                          <span className="block text-xs font-medium text-[var(--text-secondary)]">
+                            {t.receiving.gate2.acceptanceDateLabel}
+                          </span>
+                          <input
+                            id="gate2-acceptance-date"
+                            type="date"
+                            value={gate2Date}
+                            onChange={(e) => {
+                              setGate2Date(e.target.value);
+                              if (gate2Preview) setGate2PreviewStale(true);
+                            }}
+                            className="font-code min-h-10 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs tabular-nums text-[var(--text-primary)]"
+                          />
+                        </label>
+
+                        <label className="block space-y-1">
+                          <span className="block text-xs font-medium text-[var(--text-secondary)]">
+                            {t.receiving.gate2.stockStatusLabel}
+                          </span>
+                          <select
+                            id="gate2-stock-status"
+                            value={gate2StockStatus}
+                            onChange={(e) => {
+                              setGate2StockStatus(e.target.value);
+                              if (gate2Preview) setGate2PreviewStale(true);
+                            }}
+                            className="min-h-10 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)]"
+                          >
+                            {STOCK_STATUS_OPTIONS.map((code) => (
+                              <option key={code} value={code}>
+                                {t.receiving.stockStatusLabels[code] ?? code}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+
+                        <label className="block space-y-1">
+                          <span className="block text-xs font-medium text-[var(--text-secondary)]">
+                            {t.receiving.gate2.notesLabel}
+                          </span>
+                          <input
+                            id="gate2-notes"
+                            type="text"
+                            value={gate2Notes}
+                            placeholder={t.receiving.gate2.notesPlaceholder}
+                            onChange={(e) => setGate2Notes(e.target.value)}
+                            className="min-h-10 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)]"
+                          />
+                        </label>
+                      </div>
+
+                      {/* Line acceptance qty inputs */}
+                      <div className="space-y-2">
+                        {selectedDetail.lines
+                          .filter((l) => getLineRemainingReleasedScaled(l) > 0n)
+                          .map((line, gIdx) => {
+                            const remScaled = getLineRemainingReleasedScaled(line);
+                            return (
+                              <div
+                                key={line.goodsReceiptLineId}
+                                className="flex flex-col gap-2 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] p-3 sm:flex-row sm:items-center sm:justify-between"
+                              >
+                                <div className="space-y-0.5 text-xs">
+                                  <div className="text-[var(--text-primary)]">
+                                    <span className="font-code font-semibold tabular-nums">
+                                      L{String(line.lineNumber)} · {line.itemCodeSnapshot}
+                                    </span>{" "}
+                                    <span className="font-medium text-[var(--text-secondary)]">
+                                      — {line.itemNameSnapshot}
+                                    </span>
+                                  </div>
+                                  <div className="text-[11px] text-[var(--text-secondary)]">
+                                    <span>{t.receiving.gate2.colReleasedRemaining}:</span>{" "}
+                                    <span className="font-code tabular-nums">
+                                      {formatQuantityValue(formatScaledPlainInput(remScaled), locale)}{" "}
+                                      {line.baseUomCodeSnapshot}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                <label className="block space-y-1 sm:w-44">
+                                  <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                                    {t.receiving.gate2.colAcceptQty} ({line.baseUomCodeSnapshot})
+                                  </span>
+                                  <input
+                                    id={`gate2-qty-${gIdx}`}
+                                    type="text"
+                                    inputMode="decimal"
+                                    disabled={!canAccept}
+                                    value={gate2QtyInputs[line.goodsReceiptLineId] ?? ""}
+                                    onChange={(e) => {
+                                      const val = e.target.value;
+                                      setGate2QtyInputs((prev) => ({
+                                        ...prev,
+                                        [line.goodsReceiptLineId]: val,
+                                      }));
+                                      if (gate2Preview) setGate2PreviewStale(true);
+                                    }}
+                                    className="font-code min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-right text-xs tabular-nums text-[var(--text-primary)] disabled:opacity-60"
+                                  />
+                                </label>
+                              </div>
+                            );
+                          })}
+                      </div>
+
+                      {gate2PreviewStale && gate2Preview ? (
+                        <div
+                          role="status"
+                          className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-3 py-2 text-xs text-[var(--status-warn-text)]"
+                        >
+                          <Clock className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                          <span>{t.receiving.gate2.previewStaleNotice}</span>
+                        </div>
+                      ) : null}
+
+                      {gate2Error ? (
+                        <div
+                          id="gate2-error"
+                          role="alert"
+                          className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-2 text-xs text-[var(--status-danger-text)]"
+                        >
+                          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                          <span>{gate2Error}</span>
+                        </div>
+                      ) : null}
+
+                      <div className="flex flex-wrap items-center justify-end gap-2">
+                        <button
+                          type="button"
+                          id="gate2-preview-btn"
+                          disabled={gate2PreviewBusy || gate2Submitting}
+                          onClick={() => void handleGate2Preview()}
+                          className="inline-flex min-h-10 items-center gap-1.5 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3.5 text-xs font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-chrome)] disabled:opacity-60"
+                        >
+                          <Eye className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                          <span>
+                            {gate2PreviewBusy ? t.receiving.gate2.previewBusy : t.receiving.gate2.previewButton}
+                          </span>
+                        </button>
+
+                        {canAccept ? (
+                          <button
+                            type="button"
+                            id="gate2-confirm-btn"
+                            disabled={
+                              gate2Submitting ||
+                              gate2PreviewBusy ||
+                              !gate2Preview?.canPost ||
+                              gate2PreviewStale
+                            }
+                            onClick={() => void handleGate2Confirm()}
+                            className="inline-flex min-h-10 items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--accent-primary)] px-4 text-xs font-semibold text-[var(--accent-primary-ink)] hover:bg-[var(--accent-primary-hover)] disabled:opacity-50"
+                          >
+                            <CheckCircle2 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                            <span>
+                              {gate2Submitting
+                                ? t.receiving.gate2.confirmBusy
+                                : t.receiving.gate2.confirmButton}
+                            </span>
+                          </button>
+                        ) : null}
+                      </div>
+
+                      {/* Preview Result Breakdown */}
+                      {gate2Preview ? (
+                        <div
+                          id="gate2-preview-card"
+                          className="space-y-3 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] p-3.5"
+                        >
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="text-xs font-semibold text-[var(--text-primary)]">
+                              {t.receiving.gate2.previewCardTitle}
+                            </span>
+                            <span className="font-code text-xs font-bold tabular-nums text-[var(--text-primary)]">
+                              {formatIdr(gate2Preview.totalAcceptedAmount)} ({gate2Preview.currencyCode})
+                            </span>
+                          </div>
+
+                          {!gate2Preview.canPost && gate2Preview.blockingReasons.length > 0 ? (
+                            <div
+                              id="gate2-preview-blocked"
+                              role="alert"
+                              className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--status-danger-border)] bg-[var(--status-danger-bg)] px-3 py-2.5 text-xs text-[var(--status-danger-text)]"
+                            >
+                              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                              <div className="space-y-1">
+                                <div className="font-semibold">{t.receiving.gate2.blockedHeading}</div>
+                                <ul className="list-inside list-disc space-y-0.5">
+                                  {gate2Preview.blockingReasons.map((reason, rIdx) => (
+                                    <li key={rIdx}>{formatGate2BlockText(reason)}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          ) : null}
+
+                          {gate2Preview.lines.length > 0 ? (
+                            <div className="md:overflow-x-auto">
+                              <table className="w-full border-collapse rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-left text-xs">
+                                <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] font-semibold text-[var(--text-secondary)] md:table-header-group">
+                                  <tr>
+                                    <th scope="col" className="py-2 md:pl-3 md:pr-2">
+                                      {t.receiving.gate2.colItem}
+                                    </th>
+                                    <th scope="col" className="py-2 md:px-2 text-right">
+                                      {t.receiving.gate2.colPrevCost}
+                                    </th>
+                                    <th scope="col" className="py-2 md:px-2 text-right">
+                                      {t.receiving.gate2.colProjectedCost}
+                                    </th>
+                                    <th scope="col" className="py-2 md:pl-2 md:pr-3 text-right">
+                                      {t.receiving.gate2.colAcceptedAmt}
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-[var(--border-hairline)]">
+                                  {gate2Preview.lines.map((pl) => (
+                                    <tr key={pl.goodsReceiptLineId} className="block p-2.5 md:table-row md:p-0">
+                                      <td className="flex flex-col gap-0.5 py-1 sm:flex-row sm:justify-between md:table-cell md:py-2 md:pl-3 md:pr-2">
+                                        <span className="font-medium text-[var(--text-secondary)] md:hidden">
+                                          {t.receiving.gate2.colItem}
+                                        </span>
+                                        <span className="font-code font-semibold tabular-nums text-[var(--text-primary)]">
+                                          {pl.itemCode} · +{formatQuantityValue(pl.acceptedBaseQuantity, locale)}{" "}
+                                          {pl.baseUomCode} @ {formatUnitCostIdr(pl.unitCostBase)}
+                                        </span>
+                                      </td>
+                                      <td className="flex flex-col gap-0.5 py-1 sm:flex-row sm:justify-between md:table-cell md:py-2 md:px-2 md:text-right">
+                                        <span className="font-medium text-[var(--text-secondary)] md:hidden">
+                                          {t.receiving.gate2.colPrevCost}
+                                        </span>
+                                        <span className="font-code tabular-nums text-[var(--text-secondary)]">
+                                          {formatQuantityValue(pl.previousPoolBaseQuantity, locale)} ·{" "}
+                                          {formatUnitCostIdr(pl.previousMovingAverageCost)}
+                                        </span>
+                                      </td>
+                                      <td className="flex flex-col gap-0.5 py-1 sm:flex-row sm:justify-between md:table-cell md:py-2 md:px-2 md:text-right">
+                                        <span className="font-medium text-[var(--text-secondary)] md:hidden">
+                                          {t.receiving.gate2.colProjectedCost}
+                                        </span>
+                                        <span className="font-code font-semibold tabular-nums text-[var(--text-primary)]">
+                                          {formatQuantityValue(pl.projectedPoolBaseQuantity, locale)} ·{" "}
+                                          {formatUnitCostIdr(pl.projectedMovingAverageCost)}
+                                        </span>
+                                      </td>
+                                      <td className="flex flex-col gap-0.5 py-1 sm:flex-row sm:justify-between md:table-cell md:py-2 md:pl-2 md:pr-3 md:text-right">
+                                        <span className="font-medium text-[var(--text-secondary)] md:hidden">
+                                          {t.receiving.gate2.colAcceptedAmt}
+                                        </span>
+                                        <span className="font-code font-semibold tabular-nums text-[var(--text-primary)]">
+                                          {formatIdr(pl.acceptedLineAmount)}
+                                        </span>
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          ) : null}
+
+                          {gate2Preview.journalPreview.length > 0 ? (
+                            <div className="space-y-1.5">
+                              <div className="text-[11px] font-semibold text-[var(--text-secondary)]">
+                                {t.receiving.gate2.journalPreviewTitle}
+                              </div>
+                              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                {gate2Preview.journalPreview.map((jl, jIdx) => (
+                                  <div
+                                    key={jIdx}
+                                    className="flex items-center justify-between gap-2 rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-3 py-2 text-xs"
+                                  >
+                                    <div>
+                                      <span className="font-semibold text-[var(--text-primary)]">
+                                        {t.receiving.gate2.sideLabels[jl.side] ?? jl.side}{" "}
+                                      </span>
+                                      <span className="font-code tabular-nums text-[var(--text-secondary)]">
+                                        {jl.accountCode}
+                                      </span>
+                                      <span className="text-[var(--text-secondary)]">
+                                        {" · "}{jl.accountName}
+                                      </span>
+                                    </div>
+                                    <span className="font-code font-bold tabular-nums text-[var(--text-primary)]">
+                                      {formatIdr(jl.amount)}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+                      ) : null}
+                    </div>
+                  </section>
+                ) : null}
+
+                {gate2Success ? (
+                  <div
+                    id="gate2-success-banner"
+                    role="status"
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-[var(--radius-md)] border border-[var(--status-ok-border)] bg-[var(--status-ok-bg)] px-4 py-3 text-xs font-medium text-[var(--status-ok-text)]"
+                  >
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                      <span>
+                        {t.receiving.gate2.successPrefix}{" "}
+                        <span className="font-code font-bold tabular-nums">
+                          {gate2Success.acceptanceNumber} · {gate2Success.movementNumber} ·{" "}
+                          {gate2Success.accrualNumber} · {gate2Success.glJournalNumber}
+                        </span>
+                        {gate2Success.wasIdempotentReplay ? ` ${t.receiving.gate2.replaySuffix}` : ""}
+                      </span>
+                    </div>
+                    {workspace?.effectivePermissions.includes("inventory.read") ? (
+                      <Link
+                        href={`/w/${tenantId}/${entityId}/inventory`}
+                        className="inline-flex min-h-8 items-center rounded-[var(--radius-sm)] border border-[var(--status-ok-border)] bg-[var(--bg-surface)] px-2.5 text-xs font-semibold text-[var(--accent-primary)] hover:bg-[var(--bg-chrome)]"
+                      >
+                        {t.receiving.gate2.openInventoryLink}
+                      </Link>
+                    ) : null}
+                  </div>
+                ) : null}
+
+                {/* Linked Gate 2 Valued Acceptances */}
+                {selectedDetail.valuedAcceptances.length > 0 ? (
+                  <section
+                    id="gate2-linked-acceptances"
+                    className="overflow-hidden rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)]"
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-2.5">
+                      <h2 className="text-sm font-semibold text-[var(--text-primary)]">
+                        {t.receiving.gate2.linkedSectionTitle}
+                      </h2>
+                      {workspace?.effectivePermissions.includes("inventory.read") ? (
+                        <Link
+                          href={`/w/${tenantId}/${entityId}/inventory`}
+                          className="text-xs font-semibold text-[var(--accent-primary)] hover:underline"
+                        >
+                          {t.receiving.gate2.openInventoryLink}
+                        </Link>
+                      ) : null}
+                    </div>
+                    <div className="md:overflow-x-auto">
+                      <table className="w-full border-collapse text-left text-xs">
+                        <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] font-semibold text-[var(--text-secondary)] md:table-header-group">
+                          <tr>
+                            <th scope="col" className="py-2 md:pl-3.5 md:pr-2">
+                              {t.receiving.gate2.colAcceptanceRef}
+                            </th>
+                            <th scope="col" className="py-2 md:px-2">
+                              {t.receiving.gate2.colLinkedRefs}
+                            </th>
+                            <th scope="col" className="py-2 md:pl-2 md:pr-3.5 text-right">
+                              {t.receiving.gate2.colAcceptedTotal}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[var(--border-hairline)]">
+                          {selectedDetail.valuedAcceptances.map((va) => (
+                            <tr key={va.valuedAcceptanceId} className="block p-3 md:table-row md:p-0">
+                              <td className="flex flex-col gap-0.5 py-1 sm:flex-row sm:justify-between md:table-cell md:py-2.5 md:pl-3.5 md:pr-2">
+                                <span className="font-medium text-[var(--text-secondary)] md:hidden">
+                                  {t.receiving.gate2.colAcceptanceRef}
+                                </span>
+                                <div className="sm:text-right md:text-left">
+                                  <div className="font-code font-bold tabular-nums text-[var(--text-primary)]">
+                                    {va.acceptanceNumber} · {va.acceptanceDate}
+                                  </div>
+                                  <div className="text-[11px] text-[var(--text-secondary)]">
+                                    {t.receiving.stockStatusLabels[va.stockStatus] ?? va.stockStatus}
+                                  </div>
+                                </div>
+                              </td>
+
+                              <td className="flex flex-col gap-0.5 py-1 sm:flex-row sm:justify-between md:table-cell md:py-2.5 md:px-2">
+                                <span className="font-medium text-[var(--text-secondary)] md:hidden">
+                                  {t.receiving.gate2.colLinkedRefs}
+                                </span>
+                                <span className="font-code tabular-nums text-[var(--text-primary)]">
+                                  {va.movementNumber ?? "—"} · {va.accrualNumber ?? "—"} ·{" "}
+                                  {va.glJournalNumber ?? "—"}
+                                </span>
+                              </td>
+
+                              <td className="flex flex-col gap-0.5 py-1 sm:flex-row sm:justify-between md:table-cell md:py-2.5 md:pl-2 md:pr-3.5 md:text-right">
+                                <span className="font-medium text-[var(--text-secondary)] md:hidden">
+                                  {t.receiving.gate2.colAcceptedTotal}
+                                </span>
+                                <div className="font-code tabular-nums">
+                                  <div className="font-semibold text-[var(--text-primary)]">
+                                    {formatIdr(va.totalAcceptedAmount)}
+                                  </div>
+                                  <div className="text-[11px] text-[var(--text-secondary)]">
+                                    {formatQuantityValue(va.totalAcceptedBaseQuantity, locale)}
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </section>
+                ) : null}
+            </>
+          ) : null}
         </div>
       ) : null}
 

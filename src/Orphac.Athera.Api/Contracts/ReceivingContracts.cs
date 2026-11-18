@@ -157,6 +157,21 @@ public sealed record DockCheckHistoryDto(
     string CheckedByEmail,
     DateTimeOffset CheckedAtUtc);
 
+public sealed record GoodsReceiptLinkedAcceptanceDto(
+    Guid ValuedAcceptanceId,
+    string AcceptanceNumber,
+    DateOnly AcceptanceDate,
+    string StockStatus,
+    decimal TotalAcceptedBaseQuantity,
+    decimal TotalAcceptedAmount,
+    Guid? StockMovementId,
+    string? MovementNumber,
+    Guid? ReceiptAccrualId,
+    string? AccrualNumber,
+    Guid? GlJournalId,
+    string? GlJournalNumber,
+    DateTimeOffset CreatedAtUtc);
+
 public sealed record GoodsReceiptDetailDto(
     Guid GoodsReceiptId,
     string ReceiptNumber,
@@ -191,5 +206,7 @@ public sealed record GoodsReceiptDetailDto(
     DateTimeOffset UpdatedAtUtc,
     long Version,
     bool WasIdempotentReplay,
+    int ValuedAcceptanceJournalCount,
+    IReadOnlyList<GoodsReceiptLinkedAcceptanceDto> ValuedAcceptances,
     IReadOnlyList<GoodsReceiptLineDto> Lines,
     IReadOnlyList<DockCheckHistoryDto> DockChecks);

@@ -155,6 +155,8 @@ const receiptDetailPayload: GoodsReceiptDetailDto = {
   updatedAtUtc: "2026-11-18T03:00:00Z",
   version: 1,
   wasIdempotentReplay: false,
+  valuedAcceptanceJournalCount: 0,
+  valuedAcceptances: [],
   lines: [
     {
       goodsReceiptLineId: "grl-1",
@@ -205,6 +207,8 @@ vi.mock("@/lib/api/client", () => ({
   fetchGoodsReceiptDetail: async () => receiptDetailPayload,
   recordGoodsReceiptArrival: vi.fn(),
   recordGoodsReceiptDockCheck: vi.fn(),
+  previewReceiptAcceptance: vi.fn(),
+  acceptGoodsReceiptValued: vi.fn(),
 }));
 
 describe("S06 Dock Custody & Receiving Gate 1 Math + UI", () => {

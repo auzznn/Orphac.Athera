@@ -803,6 +803,7 @@ export interface Dictionary {
     arrivalSuccessPrefix: string;
     arrivalReplaySuffix: string;
     detailCardTitle: string;
+    loadingDetail: string;
     selectReceiptPromptTitle: string;
     selectReceiptPromptBody: string;
     fieldReceiptNumber: string;
@@ -863,6 +864,41 @@ export interface Dictionary {
       released: string;
       rejected: string;
     };
+    stockStatusLabels: Record<string, string>;
+    gate2: {
+      sectionTitle: string;
+      od04Notice: string;
+      readOnlyPermissionNote: string;
+      acceptanceDateLabel: string;
+      stockStatusLabel: string;
+      notesLabel: string;
+      notesPlaceholder: string;
+      colItem: string;
+      colReleasedRemaining: string;
+      colAcceptQty: string;
+      previewButton: string;
+      previewBusy: string;
+      confirmButton: string;
+      confirmBusy: string;
+      previewStaleNotice: string;
+      previewCardTitle: string;
+      colPrevCost: string;
+      colProjectedCost: string;
+      colAcceptedAmt: string;
+      journalPreviewTitle: string;
+      sideLabels: Record<string, string>;
+      blockedHeading: string;
+      successPrefix: string;
+      replaySuffix: string;
+      openInventoryLink: string;
+      linkedSectionTitle: string;
+      emptyLinked: string;
+      colAcceptanceRef: string;
+      colLinkedRefs: string;
+      colAcceptedTotal: string;
+      gate1GlBadgePrefix: string;
+      glBadgePrefix: string;
+    };
     validation: {
       poRequired: string;
       deliveryNoteRequired: string;
@@ -872,8 +908,80 @@ export interface Dictionary {
       invalidQtyFormat: string;
       conservationMismatch: string;
       discrepancyReasonRequired: string;
+      acceptanceLinesRequired: string;
     };
     errors: Record<string, string>;
+  };
+  inventory: {
+    pageTitle: string;
+    backToOverview: string;
+    loadErrorTitle: string;
+    retryButton: string;
+    od04PolicyBanner: string;
+    tabListLabel: string;
+    tabs: {
+      positions: string;
+      accruals: string;
+      movements: string;
+    };
+    stats: {
+      stockedItemsWithBalance: string;
+      carryingValueTotal: string;
+      openGrniTotal: string;
+      restrictedItemCount: string;
+    };
+    filterSearchLabel: string;
+    filterSearchPlaceholder: string;
+    filterStatusLabel: string;
+    allStockStatuses: string;
+    refreshButton: string;
+    positionsCardTitle: string;
+    emptyPositionsTitle: string;
+    emptyPositionsBody: string;
+    colItem: string;
+    colBuckets: string;
+    colValuedQty: string;
+    colMovingAverageCost: string;
+    colPoolStatus: string;
+    colAction: string;
+    inspectLedgerButton: string;
+    activeLedgerButton: string;
+    bucketCodes: {
+      unrestricted: string;
+      qi: string;
+      blocked: string;
+      available: string;
+    };
+    poolStatusLabels: Record<string, string>;
+    stockStatusLabels: Record<string, string>;
+    accrualStatusLabels: Record<string, string>;
+    movementTypeLabels: Record<string, string>;
+    entryTypeLabels: Record<string, string>;
+    accrualsCardTitle: string;
+    emptyAccrualsTitle: string;
+    emptyAccrualsBody: string;
+    colAccrualRef: string;
+    colSourceChain: string;
+    colSupplier: string;
+    colOpenVsAccrued: string;
+    colAccrualStatus: string;
+    movementsCardTitle: string;
+    emptyMovementsTitle: string;
+    emptyMovementsBody: string;
+    colMovementRef: string;
+    colMovementType: string;
+    colMovementQtyVal: string;
+    colMovementActor: string;
+    ledgerCardTitle: string;
+    loadingLedger: string;
+    selectItemPrompt: string;
+    emptyLedgerEntries: string;
+    colLedgerSeq: string;
+    colLedgerSource: string;
+    colLedgerDelta: string;
+    colLedgerBeforeAfterCost: string;
+    colLedgerCarrying: string;
+    openReceivingLink: string;
   };
 }
 
@@ -1045,7 +1153,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Modul Operasional",
       colPermission: "Kode Izin",
       colReadiness: "Status Kesiapan",
-      availableState: "Tersedia (S01–S06)",
+      availableState: "Tersedia (S01–S07)",
       permittedPlannedPrefix: "Diizinkan · Tahap",
       notGrantedState: "Tidak Diizinkan",
       loadingEntity: "Memuat ruang kerja entitas terisolasi...",
@@ -1826,7 +1934,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       },
     },
     receiving: {
-      pageTitle: "Penerimaan Dermaga & Gate 1 (Tanpa Valuasi)",
+      pageTitle: "Penerimaan Dermaga (Gate 1) & Valuasi (Gate 2)",
       backToOverview: "Ringkasan Entitas",
       loadErrorTitle: "Gagal memuat modul Penerimaan Dermaga",
       retryButton: "Muat Ulang Data",
@@ -1903,6 +2011,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       arrivalSuccessPrefix: "Penerimaan dermaga berhasil dicatat:",
       arrivalReplaySuffix: "(Pemutaran ulang idempoten aman — tidak ada duplikasi)",
       detailCardTitle: "Rincian GRN & Pemeriksaan Kustodi Gate 1",
+      loadingDetail: "Memuat rincian penerimaan...",
       selectReceiptPromptTitle: "Pilih Dokumen GRN",
       selectReceiptPromptBody:
         "Pilih baris pada Daftar Kedatangan Dermaga untuk melihat komposisi kuantitas dasar, melakukan pemeriksaan fisik, dan mengaudit riwayat pelepasan ke Gate 2.",
@@ -1953,6 +2062,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         ARRIVED: "Tiba di Dermaga",
         IN_DOCK_INSPECTION: "Dalam Pemeriksaan Dermaga",
         RELEASED_FOR_ACCEPTANCE: "Dirilis ke Gate 2",
+        PARTIALLY_ACCEPTED: "Sebagian Diterima (Bernilai)",
+        VALUED_ACCEPTED: "Diterima & Divaluasi",
         FULLY_REJECTED_UNVALUED: "Ditolak Penuh (Tanpa Nilai)",
       },
       custodyStatusLabels: {
@@ -1983,6 +2094,51 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         released: "Rilis",
         rejected: "Tolak",
       },
+      stockStatusLabels: {
+        UNRESTRICTED: "Stok Bebas Pakai (Unrestricted)",
+        QUALITY_INSPECTION: "Karantina Inspeksi Mutu (QI)",
+        BLOCKED: "Stok Diblokir (Blocked)",
+      },
+      gate2: {
+        sectionTitle: "Penerimaan Bernilai Gate 2 — Valuasi Rata-Rata Bergerak & GRNI",
+        od04Notice:
+          "Aturan OD-04 aktif (ATH-CR-004): penerimaan bernilai memposting Dr Persediaan / Cr GRNI dalam satu transaksi atomik dan menghitung ulang biaya rata-rata bergerak secara presisi.",
+        readOnlyPermissionNote:
+          "Akun Anda belum memiliki izin receiving.accept pada entitas ini; pratinjau valuasi tersedia dalam mode baca.",
+        acceptanceDateLabel: "Tanggal Posting Penerimaan Bernilai",
+        stockStatusLabel: "Status Ketersediaan Stok Tujuan",
+        notesLabel: "Catatan Penerimaan Bernilai (Opsional)",
+        notesPlaceholder: "Contoh: Batch 2 diterima di gudang utama",
+        colItem: "Baris & Barang (Satuan Dasar)",
+        colReleasedRemaining: "Sisa Rilis Gate 1",
+        colAcceptQty: "Kuantitas Diterima (Dasar)",
+        previewButton: "Hitung Pratinjau Valuasi & GL",
+        previewBusy: "Menghitung pratinjau...",
+        confirmButton: "Konfirmasi Penerimaan Bernilai",
+        confirmBusy: "Memposting Persediaan & GRNI...",
+        previewStaleNotice:
+          "Angka atau tanggal berubah. Hitung ulang pratinjau sebelum melakukan posting permanen.",
+        previewCardTitle: "Pratinjau Dampak Rata-Rata Bergerak & Jurnal GL",
+        colPrevCost: "Saldo / HPP Sebelum",
+        colProjectedCost: "Saldo / HPP Proyeksi",
+        colAcceptedAmt: "Nilai Diterima (IDR)",
+        journalPreviewTitle: "Pratinjau Entri Jurnal Seimbang (Dr / Cr)",
+        sideLabels: {
+          DEBIT: "Debit",
+          CREDIT: "Kredit",
+        },
+        blockedHeading: "Posting Diblokir Kebijakan (OD-04 / Periode / Kustodi)",
+        successPrefix: "Penerimaan bernilai diposting permanen:",
+        replaySuffix: "(Putar ulang idempoten tanpa duplikasi stok atau jurnal GL.)",
+        openInventoryLink: "Lihat di Persediaan & Valuasi",
+        linkedSectionTitle: "Riwayat Penerimaan Bernilai Gate 2 pada GRN Ini",
+        emptyLinked: "Belum ada penerimaan bernilai Gate 2 pada dokumen kedatangan ini.",
+        colAcceptanceRef: "Nomor Penerimaan & Tanggal",
+        colLinkedRefs: "Referensi Mutasi, GRNI & Jurnal GL",
+        colAcceptedTotal: "Kuantitas & Nilai (IDR)",
+        gate1GlBadgePrefix: "GL Gate 1:",
+        glBadgePrefix: "GL Gate 2:",
+      },
       validation: {
         poRequired: "Pilih PO yang telah disetujui sebelum mencatat kedatangan.",
         deliveryNoteRequired: "Masukkan nomor Surat Jalan pemasok.",
@@ -1994,6 +2150,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Jumlah Menunggu + Ditahan + Dirilis + Ditolak harus sama persis dengan kuantitas fisik tiba.",
         discrepancyReasonRequired:
           "Pilih kode alasan selisih atau tuliskan catatan bila terdapat penahanan atau penolakan.",
+        acceptanceLinesRequired:
+          "Masukkan kuantitas terima lebih besar dari nol (maksimal sesuai sisa rilis Gate 1).",
       },
       errors: {
         idempotency_key_required: "Kunci idempotensi wajib tersedia; coba muat ulang formulir.",
@@ -2019,10 +2177,123 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Hukum konservasi gagal: Menunggu + Ditahan + Dirilis + Ditolak harus sama dengan fisik tiba.",
         dock_release_below_valued_accepted:
           "Kuantitas rilis tidak boleh lebih kecil dari jumlah yang sudah diterima di Gate 2.",
+        acceptance_lines_required:
+          "Masukkan kuantitas penerimaan Gate 2 minimal pada satu baris rilis.",
+        invalid_stock_status: "Status stok tujuan tidak valid.",
+        receipt_fully_rejected_unvalued:
+          "Penerimaan yang seluruhnya ditolak tanpa nilai tidak memiliki sisa rilis untuk Gate 2.",
+        non_stocked_item_not_inventory_eligible:
+          "Barang non-stok atau jasa tidak masuk buku besar persediaan.",
+        acceptance_qty_must_be_positive: "Kuantitas penerimaan bernilai harus lebih besar dari nol.",
+        acceptance_exceeds_released_quantity:
+          "Kuantitas melebihi saldo yang sudah dirilis Gate 1; barang ditahan atau ditolak tidak boleh masuk persediaan bernilai.",
+        od04_zero_or_negative_acceptance_value_blocked:
+          "Kebijakan OD-04 memblokir penerimaan bernilai nol atau negatif.",
+        od04_anomalous_valuation_pool_blocked:
+          "Pool valuasi barang sedang diblokir oleh aturan keamanan OD-04 dan memerlukan keputusan Pemilik Produk (ATH-CR-004).",
+        duplicate_acceptance_idempotency_conflict:
+          "Kunci idempotensi Gate 2 sudah dipakai untuk muatan penerimaan yang berbeda.",
+        missing_inventory_asset_mapping:
+          "Pemetaan akun GL Persediaan (1300) belum dikonfigurasi pada modul Keuangan.",
+        missing_grni_clearing_mapping:
+          "Pemetaan akun GL Kliring GRNI (2110) belum dikonfigurasi pada modul Keuangan.",
+        period_closed:
+          "Periode fiskal pada tanggal posting sudah ditutup (CLOSED) dan menolak posting akrual.",
+        period_not_found_for_date:
+          "Periode fiskal belum dibuat untuk tanggal posting yang dipilih.",
         insufficient_entity_permission:
-          "Akun Anda tidak memiliki izin pencatatan atau pemeriksaan penerimaan pada entitas ini.",
-        concurrency_conflict: "Rekaman kustodi baru saja diubah pengguna lain; muat ulang sebelum menyimpan.",
+          "Akun Anda tidak memiliki izin melakukan aksi ini pada entitas hukum ini.",
+        concurrency_conflict: "Rekaman baru saja diubah transaksi lain secara bersamaan; muat ulang sebelum mencoba lagi.",
       },
+    },
+    inventory: {
+      pageTitle: "Persediaan, Valuasi Rata-Rata Bergerak & Akrual GRNI",
+      backToOverview: "Ringkasan Entitas",
+      loadErrorTitle: "Gagal memuat buku besar persediaan entitas",
+      retryButton: "Muat Ulang Data Persediaan",
+      od04PolicyBanner:
+        "Kebijakan OD-04 Aktif (ATH-CR-004): setiap barang dihitung dengan rata-rata bergerak per entitas (IDR); stok inspeksi mutu & blokir tetap dinilai di buku besar namun bersaldo tersedia nol untuk pemenuhan.",
+      tabListLabel: "Tampilan modul persediaan",
+      tabs: {
+        positions: "Saldo & Valuasi Rata-Rata Bergerak",
+        accruals: "Akrual GRNI Terbuka",
+        movements: "Pergerakan Stok Terbaru",
+      },
+      stats: {
+        stockedItemsWithBalance: "Barang Stok Ber-Saldo",
+        carryingValueTotal: "Total Nilai Buku Persediaan",
+        openGrniTotal: "Total Akrual GRNI Terbuka",
+        restrictedItemCount: "Item Berstatus Dibatasi (QI / Blokir)",
+      },
+      filterSearchLabel: "Cari SKU, referensi GRNI, atau PO",
+      filterSearchPlaceholder: "Cari kode SKU, GRNI, atau PO...",
+      filterStatusLabel: "Saring bucket status stok",
+      allStockStatuses: "Semua Status Stok",
+      refreshButton: "Segarkan",
+      positionsCardTitle: "Posisi Stok & Biaya Rata-Rata Bergerak (Perpetual)",
+      emptyPositionsTitle: "Belum Ada Saldo Persediaan Bernilai",
+      emptyPositionsBody:
+        "Rekam dan konfirmasi penerimaan bernilai Gate 2 pada modul Penerimaan Gudang untuk mengisi posisi stok dan pool valuasi entitas ini.",
+      colItem: "Kode & Nama Barang",
+      colBuckets: "Bucket Status Stok & Tersedia",
+      colValuedQty: "Total Dinilai",
+      colMovingAverageCost: "HPP Rata-Rata & Nilai Buku",
+      colPoolStatus: "Status Pool",
+      colAction: "Buku Besar",
+      inspectLedgerButton: "Buka Buku Besar",
+      activeLedgerButton: "Buku Besar Dibuka",
+      bucketCodes: {
+        unrestricted: "Bebas",
+        qi: "Inspeksi Mutu",
+        blocked: "Diblokir",
+        available: "Siap Pakai",
+      },
+      poolStatusLabels: {
+        ACTIVE: "Pool Aktif",
+        BLOCKED: "Diblokir OD-04",
+      },
+      stockStatusLabels: {
+        UNRESTRICTED: "Bebas Pakai",
+        QUALITY_INSPECTION: "Inspeksi Mutu",
+        BLOCKED: "Diblokir",
+      },
+      accrualStatusLabels: {
+        OPEN: "Terbuka (Belum Ditagih)",
+        PARTIALLY_CLEARED: "Sebagian Dikliring",
+        CLEARED: "Lunas Dikliring",
+      },
+      movementTypeLabels: {
+        PURCHASE_RECEIPT_ACCEPTANCE: "Penerimaan Pembelian (Gate 2)",
+      },
+      entryTypeLabels: {
+        RECEIPT_ACCEPTANCE: "Penerimaan Bernilai",
+      },
+      accrualsCardTitle: "Sub-Buku Besar Akrual GRNI (Menunggu Pencocokan 3-Arah S09)",
+      emptyAccrualsTitle: "Belum Ada Akrual GRNI Terbuka",
+      emptyAccrualsBody:
+        "Akrual GRNI terbentuk otomatis ketika penerimaan barang dirilis ke Gate 2 dan diterima bernilai.",
+      colAccrualRef: "Nomor GRNI & Tanggal",
+      colSourceChain: "Rantai Sumber (Gate 2 / GRN / PO / GL)",
+      colSupplier: "Pemasok",
+      colOpenVsAccrued: "Sisa Terbuka & Nilai Akrual",
+      colAccrualStatus: "Status GRNI",
+      movementsCardTitle: "Riwayat Pergerakan Stok Append-Only",
+      emptyMovementsTitle: "Belum Ada Mutasi Stok",
+      emptyMovementsBody: "Belum terdapat transaksi mutasi persediaan pada entitas ini.",
+      colMovementRef: "Nomor Mutasi & Tanggal",
+      colMovementType: "Jenis & Sumber Dokumen",
+      colMovementQtyVal: "Kuantitas & Valuasi (IDR)",
+      colMovementActor: "Operator Pelaksana",
+      ledgerCardTitle: "Buku Besar Valuasi Rata-Rata Bergerak Per Item",
+      loadingLedger: "Memuat buku besar valuasi...",
+      selectItemPrompt: "Pilih baris barang pada tabel posisi stok di atas untuk menelusuri riwayat HPP dan tautan jurnal GL.",
+      emptyLedgerEntries: "Belum terdapat entri buku besar valuasi untuk barang ini.",
+      colLedgerSeq: "Urutan",
+      colLedgerSource: "Tanggal, Sumber & Jurnal GL",
+      colLedgerDelta: "Tambah Qty · Biaya Satuan · Nilai",
+      colLedgerBeforeAfterCost: "HPP Sebelum → Sesudah",
+      colLedgerCarrying: "Qty Akhir & Nilai Buku",
+      openReceivingLink: "Buka Penerimaan Gudang",
     },
   },
   "en-US": {
@@ -2192,7 +2463,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Operational Module",
       colPermission: "Permission Code",
       colReadiness: "Readiness State",
-      availableState: "Available (S01–S06)",
+      availableState: "Available (S01–S07)",
       permittedPlannedPrefix: "Permitted · Stage",
       notGrantedState: "Not Granted",
       loadingEntity: "Loading isolated entity workspace...",
@@ -2973,7 +3244,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       },
     },
     receiving: {
-      pageTitle: "Dock Custody & Gate 1 Receiving (Unvalued)",
+      pageTitle: "Dock Custody (Gate 1) & Valued Receiving (Gate 2)",
       backToOverview: "Entity Overview",
       loadErrorTitle: "Failed to load Dock Receiving workspace",
       retryButton: "Reload Data",
@@ -3050,6 +3321,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       arrivalSuccessPrefix: "Dock arrival recorded:",
       arrivalReplaySuffix: "(Idempotent replay confirmed — zero duplicates created)",
       detailCardTitle: "GRN Detail & Gate 1 Custody Inspection",
+      loadingDetail: "Loading receipt details...",
       selectReceiptPromptTitle: "Select a Dock Receipt",
       selectReceiptPromptBody:
         "Select a row in the Dock Receipt Register to inspect base-quantity conservation, adjust custody splits, and audit append-only Gate 1 history.",
@@ -3100,6 +3372,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         ARRIVED: "Arrived at Dock",
         IN_DOCK_INSPECTION: "In Dock Inspection",
         RELEASED_FOR_ACCEPTANCE: "Released to Gate 2",
+        PARTIALLY_ACCEPTED: "Partially Accepted (Valued)",
+        VALUED_ACCEPTED: "Valued & Accepted",
         FULLY_REJECTED_UNVALUED: "Fully Rejected (Unvalued)",
       },
       custodyStatusLabels: {
@@ -3130,6 +3404,51 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         released: "Rel",
         rejected: "Rej",
       },
+      stockStatusLabels: {
+        UNRESTRICTED: "Unrestricted Available",
+        QUALITY_INSPECTION: "Quality Inspection Hold",
+        BLOCKED: "Blocked Inventory",
+      },
+      gate2: {
+        sectionTitle: "Gate 2 Valued Acceptance — Moving-Average Valuation & GRNI",
+        od04Notice:
+          "OD-04 policy active (ATH-CR-004): valued acceptance atomically posts Dr Inventory Asset / Cr GRNI and recalculates entity moving-average cost with decimal precision.",
+        readOnlyPermissionNote:
+          "Your role grants do not include receiving.accept in this legal entity; valuation preview remains read-only.",
+        acceptanceDateLabel: "Valued Posting Date",
+        stockStatusLabel: "Destination Stock Status",
+        notesLabel: "Valued Acceptance Notes (Optional)",
+        notesPlaceholder: "e.g. Batch 2 accepted into main stockroom",
+        colItem: "Line & Item (Base UoM)",
+        colReleasedRemaining: "Remaining Released",
+        colAcceptQty: "Accept Quantity (Base)",
+        previewButton: "Calculate Valuation & GL Preview",
+        previewBusy: "Calculating preview...",
+        confirmButton: "Confirm Valued Acceptance",
+        confirmBusy: "Posting Stock & GRNI...",
+        previewStaleNotice:
+          "Inputs changed after preview calculation. Recalculate preview before confirming.",
+        previewCardTitle: "Moving-Average Recalculation & Balanced GL Preview",
+        colPrevCost: "Before Qty / MAC",
+        colProjectedCost: "Projected Qty / MAC",
+        colAcceptedAmt: "Accepted Value (IDR)",
+        journalPreviewTitle: "Balanced Journal Preview (Dr / Cr)",
+        sideLabels: {
+          DEBIT: "Debit",
+          CREDIT: "Credit",
+        },
+        blockedHeading: "Posting Blocked by Policy (OD-04 / Period / Custody)",
+        successPrefix: "Valued acceptance committed permanently:",
+        replaySuffix: "(Idempotent replay without duplicate stock or GL postings.)",
+        openInventoryLink: "Inspect in Inventory & Valuation",
+        linkedSectionTitle: "Linked Gate 2 Valued Acceptances on This GRN",
+        emptyLinked: "No Gate 2 valued acceptances posted for this receipt yet.",
+        colAcceptanceRef: "Acceptance Ref & Date",
+        colLinkedRefs: "Movement, GRNI & GL Journal",
+        colAcceptedTotal: "Accepted Qty & Amount (IDR)",
+        gate1GlBadgePrefix: "Gate 1 GL:",
+        glBadgePrefix: "Gate 2 GL:",
+      },
       validation: {
         poRequired: "Select an approved purchase order before recording dock arrival.",
         deliveryNoteRequired: "Enter the supplier delivery note (Surat Jalan) number.",
@@ -3141,6 +3460,8 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Pending + Held + Released + Rejected must equal the physically delivered base quantity.",
         discrepancyReasonRequired:
           "Select a discrepancy reason or provide notes whenever holding or rejecting goods.",
+        acceptanceLinesRequired:
+          "Enter a positive valued acceptance quantity on at least one released line.",
       },
       errors: {
         idempotency_key_required: "An idempotency key is required; reload the form and retry.",
@@ -3166,10 +3487,123 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Conservation mismatch: Pending + Held + Released + Rejected must equal Physically Delivered.",
         dock_release_below_valued_accepted:
           "Released quantity cannot drop below quantities already accepted at Gate 2.",
+        acceptance_lines_required:
+          "Provide at least one released receipt line with positive accepted quantity.",
+        invalid_stock_status: "Selected inventory destination status is invalid.",
+        receipt_fully_rejected_unvalued:
+          "Fully rejected Gate 1 receipts have no released balance eligible for Gate 2.",
+        non_stocked_item_not_inventory_eligible:
+          "Non-stock or service lines cannot enter valued inventory.",
+        acceptance_qty_must_be_positive: "Valued acceptance quantity must be positive.",
+        acceptance_exceeds_released_quantity:
+          "Accepted quantity exceeds Gate 1 released balance; held or rejected quantities cannot enter valued inventory.",
+        od04_zero_or_negative_acceptance_value_blocked:
+          "OD-04 blocks zero or negative monetary valuation entries.",
+        od04_anomalous_valuation_pool_blocked:
+          "Item valuation pool is blocked by OD-04 safety checks and requires Product Owner resolution (ATH-CR-004).",
+        duplicate_acceptance_idempotency_conflict:
+          "This Gate 2 idempotency key already belongs to a different acceptance payload.",
+        missing_inventory_asset_mapping:
+          "Inventory Asset (1300) GL account mapping is missing in Finance configuration.",
+        missing_grni_clearing_mapping:
+          "GRNI Clearing (2110) GL account mapping is missing in Finance configuration.",
+        period_closed:
+          "The fiscal period covering this posting date is CLOSED and refuses accrual journals.",
+        period_not_found_for_date:
+          "No fiscal period exists covering the chosen posting date.",
         insufficient_entity_permission:
-          "Your active role grants do not permit recording arrivals or dock inspections.",
-        concurrency_conflict: "Another update modified this receipt concurrently; reload and retry.",
+          "Your active role grants do not permit performing this action in this legal entity.",
+        concurrency_conflict: "Another transaction modified this record concurrently; reload and retry.",
       },
+    },
+    inventory: {
+      pageTitle: "Inventory, Moving-Average Valuation & Open GRNI",
+      backToOverview: "Entity Overview",
+      loadErrorTitle: "Unable to load entity inventory ledger",
+      retryButton: "Reload Inventory Ledger",
+      od04PolicyBanner:
+        "OD-04 Policy Active (ATH-CR-004): per-entity moving-average valuation in functional currency (IDR); Quality Inspection and Blocked buckets retain carrying value while keeping zero fulfillment availability.",
+      tabListLabel: "Inventory module views",
+      tabs: {
+        positions: "Stock & Moving-Average Valuation",
+        accruals: "Open GRNI Accruals",
+        movements: "Recent Stock Movements",
+      },
+      stats: {
+        stockedItemsWithBalance: "Stocked Items in Pool",
+        carryingValueTotal: "Total Carrying Value",
+        openGrniTotal: "Open GRNI Liability",
+        restrictedItemCount: "Items with Restricted Stock",
+      },
+      filterSearchLabel: "Search SKU, GRNI reference, or PO",
+      filterSearchPlaceholder: "Filter SKU, GRNI ref, or PO...",
+      filterStatusLabel: "Filter by stock bucket",
+      allStockStatuses: "All Stock Buckets",
+      refreshButton: "Refresh",
+      positionsCardTitle: "Perpetual Stock Balances & Moving-Average Cost Pools",
+      emptyPositionsTitle: "No Valued Inventory Balances Yet",
+      emptyPositionsBody:
+        "Confirm a Gate 2 valued acceptance in Dock Receiving to initialize stock positions and moving-average valuation pools.",
+      colItem: "Item Code & Name",
+      colBuckets: "Stock Status & Available",
+      colValuedQty: "Total Valued Qty",
+      colMovingAverageCost: "Moving-Avg Cost & Carrying Value",
+      colPoolStatus: "Pool Status",
+      colAction: "Ledger",
+      inspectLedgerButton: "Inspect Ledger",
+      activeLedgerButton: "Ledger Open",
+      bucketCodes: {
+        unrestricted: "Unrest.",
+        qi: "QI",
+        blocked: "Blocked",
+        available: "Avail.",
+      },
+      poolStatusLabels: {
+        ACTIVE: "Pool Active",
+        BLOCKED: "Blocked (OD-04)",
+      },
+      stockStatusLabels: {
+        UNRESTRICTED: "Unrestricted",
+        QUALITY_INSPECTION: "Quality Inspection",
+        BLOCKED: "Blocked",
+      },
+      accrualStatusLabels: {
+        OPEN: "Open (Unbilled)",
+        PARTIALLY_CLEARED: "Partially Cleared",
+        CLEARED: "Cleared",
+      },
+      movementTypeLabels: {
+        PURCHASE_RECEIPT_ACCEPTANCE: "Purchase Receipt Acceptance (Gate 2)",
+      },
+      entryTypeLabels: {
+        RECEIPT_ACCEPTANCE: "Valued Acceptance",
+      },
+      accrualsCardTitle: "GRNI Accrual Subledger (Pending S09 Three-Way Match)",
+      emptyAccrualsTitle: "No GRNI Accruals Yet",
+      emptyAccrualsBody:
+        "Open GRNI accrual records appear atomically when Gate 2 valued receipt acceptances post.",
+      colAccrualRef: "GRNI Ref & Date",
+      colSourceChain: "Source Chain (Gate 2 / GRN / PO / GL)",
+      colSupplier: "Supplier",
+      colOpenVsAccrued: "Remaining Open & Accrued",
+      colAccrualStatus: "Accrual Status",
+      movementsCardTitle: "Append-Only Stock Movement History",
+      emptyMovementsTitle: "No Stock Movements Recorded",
+      emptyMovementsBody: "No inventory stock movements exist in this legal entity yet.",
+      colMovementRef: "Movement Ref & Date",
+      colMovementType: "Type & Source Document",
+      colMovementQtyVal: "Quantity & Valuation (IDR)",
+      colMovementActor: "Posted By",
+      ledgerCardTitle: "Item Moving-Average Valuation Ledger",
+      loadingLedger: "Loading valuation ledger...",
+      selectItemPrompt: "Select any item row above to inspect sequential moving-average recalculations and linked GL journals.",
+      emptyLedgerEntries: "No valuation ledger entries exist for this item yet.",
+      colLedgerSeq: "Seq",
+      colLedgerSource: "Date, Source & GL Journal",
+      colLedgerDelta: "Qty Delta · Unit Cost · Value",
+      colLedgerBeforeAfterCost: "Before → After MAC",
+      colLedgerCarrying: "Ending Qty & Carrying",
+      openReceivingLink: "Open Dock Receiving",
     },
   },
 };
@@ -3185,10 +3619,21 @@ export function formatJakartaDateTime(isoUtc: string | null | undefined, locale:
   }).format(date);
 }
 
-export function formatIdr(amount: number): string {
+export function formatIdr(amount: number | string): string {
+  const numeric = typeof amount === "number" ? amount : Number(amount || 0);
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
     maximumFractionDigits: 2,
-  }).format(amount);
+  }).format(Number.isFinite(numeric) ? numeric : 0);
+}
+
+export function formatUnitCostIdr(amount: number | string): string {
+  const numeric = typeof amount === "number" ? amount : Number(amount || 0);
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 6,
+  }).format(Number.isFinite(numeric) ? numeric : 0);
 }
