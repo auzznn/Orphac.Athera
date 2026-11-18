@@ -788,6 +788,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/eligible-pos": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListEligiblePurchaseOrdersForReceiving"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListGoodsReceipts"];
+        put?: never;
+        post: operations["RecordGoodsReceiptArrival"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts/{receiptId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetGoodsReceiptDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts/{receiptId}/lines/{lineId}/dock-checks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RecordGoodsReceiptDockCheck"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -874,6 +938,18 @@ export interface components {
             requiresFourEyes: boolean;
             requiresApproverMfa: boolean;
             isActive: boolean;
+        };
+        ArrivalLineRequest: {
+            /** Format: uuid */
+            poLineId: string;
+            /** Format: uuid */
+            receivedUomId: string;
+            /** Format: double */
+            physicallyDeliveredQuantity: number | string;
+            flagForInspection: boolean;
+            discrepancyReasonCode: null | string;
+            discrepancyNotes: null | string;
+            conditionEvidenceRef: null | string;
         };
         AuditEventDto: {
             /** Format: uuid */
@@ -1098,6 +1174,31 @@ export interface components {
             reviewStatus: string;
             isDefault: boolean;
         };
+        DockCheckHistoryDto: {
+            /** Format: uuid */
+            dockCheckId: string;
+            /** Format: uuid */
+            goodsReceiptLineId: string;
+            payloadHash: string;
+            previousCustodyStatus: string;
+            resultingCustodyStatus: string;
+            /** Format: double */
+            pendingCheckBaseQuantity: number | string;
+            /** Format: double */
+            dockHeldBaseQuantity: number | string;
+            /** Format: double */
+            dockReleasedBaseQuantity: number | string;
+            /** Format: double */
+            dockRejectedBaseQuantity: number | string;
+            discrepancyReasonCode: string;
+            inspectionNotes: null | string;
+            evidenceReference: null | string;
+            /** Format: uuid */
+            checkedByUserId: string;
+            checkedByEmail: string;
+            /** Format: date-time */
+            checkedAtUtc: string;
+        };
         DocumentApprovalDto: {
             /** Format: uuid */
             approvalId: string;
@@ -1116,6 +1217,75 @@ export interface components {
             /** Format: date-time */
             decidedAtUtc: null | string;
             decisionReason: null | string;
+        };
+        EligiblePoReceivingLineDto: {
+            /** Format: uuid */
+            poLineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            lineageLineKey: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            itemKind: string;
+            /** Format: uuid */
+            orderedUomId: string;
+            orderedUomCode: string;
+            /** Format: uuid */
+            baseUomId: string;
+            baseUomCode: string;
+            /** Format: double */
+            approvedOrderedBaseQuantity: number | string;
+            /** Format: double */
+            deliveredBaseQuantity: number | string;
+            /** Format: double */
+            pendingCheckBaseQuantity: number | string;
+            /** Format: double */
+            heldBaseQuantity: number | string;
+            /** Format: double */
+            releasedBaseQuantity: number | string;
+            /** Format: double */
+            rejectedBaseQuantity: number | string;
+            /** Format: double */
+            valuedAcceptedBaseQuantity: number | string;
+            /** Format: double */
+            remainingEligibleBaseQuantity: number | string;
+            allowedUoms: components["schemas"]["EligiblePoReceivingUomDto"][];
+        };
+        EligiblePoReceivingUomDto: {
+            /** Format: uuid */
+            uomId: string;
+            uomCode: string;
+            name: string;
+            /** Format: double */
+            factorToBase: number | string;
+            /** Format: int32 */
+            precisionScale: number | string;
+        };
+        EligiblePurchaseOrderForReceivingDto: {
+            /** Format: uuid */
+            purchaseOrderId: string;
+            poNumber: string;
+            /** Format: uuid */
+            approvedRevisionId: string;
+            /** Format: int32 */
+            approvedRevisionNumber: number | string;
+            snapshotHash: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCode: string;
+            supplierName: string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            expectedDeliveryDate: null | string;
+            deliveryDestination: string;
+            lines: components["schemas"]["EligiblePoReceivingLineDto"][];
+        };
+        EligibleReceivingPosResponse: {
+            items: components["schemas"]["EligiblePurchaseOrderForReceivingDto"][];
+            od01Notice: string;
         };
         EntityMemberDto: {
             /** Format: uuid */
@@ -1215,6 +1385,161 @@ export interface components {
         };
         GlAccountListResponse: {
             items: components["schemas"]["GlAccountDto"][];
+        };
+        GoodsReceiptDetailDto: {
+            /** Format: uuid */
+            goodsReceiptId: string;
+            receiptNumber: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            /** Format: uuid */
+            poRevisionId: string;
+            poNumberSnapshot: string;
+            /** Format: int32 */
+            poRevisionNumberSnapshot: number | string;
+            poSnapshotHash: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCodeSnapshot: string;
+            supplierLegalNameSnapshot: string;
+            supplierDeliveryNoteNumber: string;
+            idempotencyKey: string;
+            arrivalPayloadHash: string;
+            /** Format: date */
+            receivedDate: string;
+            receivingStation: string;
+            vehicleOrSealRef: null | string;
+            documentEvidenceRef: null | string;
+            status: string;
+            /** Format: double */
+            totalDeliveredBaseQuantity: number | string;
+            /** Format: double */
+            totalRejectedBaseQuantity: number | string;
+            /** Format: double */
+            totalValuedAcceptedBaseQuantity: number | string;
+            /** Format: double */
+            totalUnresolvedCustodyBaseQuantity: number | string;
+            /** Format: double */
+            totalReleasedBaseQuantity: number | string;
+            /** Format: double */
+            totalHeldBaseQuantity: number | string;
+            hasFinancialPosting: boolean;
+            /** Format: int32 */
+            linkedGlJournalCount: number | string;
+            notes: null | string;
+            /** Format: uuid */
+            receivedByUserId: string;
+            receivedByEmail: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+            wasIdempotentReplay: boolean;
+            lines: components["schemas"]["GoodsReceiptLineDto"][];
+            dockChecks: components["schemas"]["DockCheckHistoryDto"][];
+        };
+        GoodsReceiptLineDto: {
+            /** Format: uuid */
+            goodsReceiptLineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            /** Format: uuid */
+            poRevisionId: string;
+            /** Format: uuid */
+            poLineId: string;
+            lineageLineKey: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCodeSnapshot: string;
+            itemNameSnapshot: string;
+            itemKindSnapshot: string;
+            /** Format: uuid */
+            receivedUomId: string;
+            receivedUomCodeSnapshot: string;
+            /** Format: uuid */
+            baseUomId: string;
+            baseUomCodeSnapshot: string;
+            /** Format: double */
+            uomFactorToBaseSnapshot: number | string;
+            /** Format: double */
+            poOrderedBaseQuantitySnapshot: number | string;
+            /** Format: double */
+            physicallyDeliveredQuantity: number | string;
+            /** Format: double */
+            physicallyDeliveredBaseQuantity: number | string;
+            /** Format: double */
+            pendingCheckBaseQuantity: number | string;
+            /** Format: double */
+            dockHeldBaseQuantity: number | string;
+            /** Format: double */
+            dockReleasedBaseQuantity: number | string;
+            /** Format: double */
+            dockRejectedBaseQuantity: number | string;
+            /** Format: double */
+            valuedAcceptedBaseQuantity: number | string;
+            /** Format: double */
+            unresolvedCustodyBaseQuantity: number | string;
+            /** Format: double */
+            overdeliveryExcessBaseQuantity: number | string;
+            custodyStatus: string;
+            discrepancyReasonCode: string;
+            discrepancyNotes: null | string;
+            conditionEvidenceRef: null | string;
+            /** Format: double */
+            maxApprovedReleaseCapBaseQty: number | string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+        };
+        GoodsReceiptListResponse: {
+            items: components["schemas"]["GoodsReceiptSummaryDto"][];
+            /** Format: int32 */
+            totalReceipts: number | string;
+            /** Format: double */
+            sumDeliveredBaseQuantity: number | string;
+            /** Format: double */
+            sumHeldBaseQuantity: number | string;
+            /** Format: double */
+            sumReleasedBaseQuantity: number | string;
+            /** Format: double */
+            sumRejectedBaseQuantity: number | string;
+            /** Format: int32 */
+            totalLinkedGlJournals: number | string;
+        };
+        GoodsReceiptSummaryDto: {
+            /** Format: uuid */
+            goodsReceiptId: string;
+            receiptNumber: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            poNumberSnapshot: string;
+            /** Format: int32 */
+            poRevisionNumberSnapshot: number | string;
+            supplierCodeSnapshot: string;
+            supplierLegalNameSnapshot: string;
+            supplierDeliveryNoteNumber: string;
+            /** Format: date */
+            receivedDate: string;
+            receivingStation: string;
+            status: string;
+            /** Format: double */
+            totalDeliveredBaseQuantity: number | string;
+            /** Format: double */
+            totalRejectedBaseQuantity: number | string;
+            /** Format: double */
+            totalValuedAcceptedBaseQuantity: number | string;
+            /** Format: double */
+            totalUnresolvedCustodyBaseQuantity: number | string;
+            /** Format: double */
+            totalReleasedBaseQuantity: number | string;
+            /** Format: double */
+            totalHeldBaseQuantity: number | string;
+            hasFinancialPosting: boolean;
+            /** Format: date-time */
+            updatedAtUtc: string;
         };
         GrantPermissionRequest: {
             /** Format: uuid */
@@ -1938,6 +2263,33 @@ export interface components {
             downstreamReferenceCount: number | string;
             /** Format: date-time */
             updatedAtUtc: string;
+        };
+        RecordDockCheckRequest: {
+            idempotencyKey: string;
+            /** Format: double */
+            pendingCheckBaseQuantity: number | string;
+            /** Format: double */
+            dockHeldBaseQuantity: number | string;
+            /** Format: double */
+            dockReleasedBaseQuantity: number | string;
+            /** Format: double */
+            dockRejectedBaseQuantity: number | string;
+            discrepancyReasonCode: null | string;
+            inspectionNotes: null | string;
+            evidenceReference: null | string;
+        };
+        RecordGoodsReceiptRequest: {
+            /** Format: uuid */
+            purchaseOrderId: string;
+            supplierDeliveryNoteNumber: string;
+            idempotencyKey: string;
+            /** Format: date */
+            receivedDate: string;
+            receivingStation: string;
+            vehicleOrSealRef: null | string;
+            documentEvidenceRef: null | string;
+            notes: null | string;
+            lines: components["schemas"]["ArrivalLineRequest"][];
         };
         ReverseJournalRequest: {
             /** Format: date */
@@ -5288,6 +5640,298 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PurchaseOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListEligiblePurchaseOrdersForReceiving: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EligibleReceivingPosResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListGoodsReceipts: {
+        parameters: {
+            query?: {
+                status?: string;
+                purchaseOrderId?: string;
+                search?: string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceiptListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    RecordGoodsReceiptArrival: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecordGoodsReceiptRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceiptDetailDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceiptDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetGoodsReceiptDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                receiptId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceiptDetailDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    RecordGoodsReceiptDockCheck: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                receiptId: string;
+                lineId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RecordDockCheckRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoodsReceiptDetailDto"];
                 };
             };
             /** @description Bad Request */

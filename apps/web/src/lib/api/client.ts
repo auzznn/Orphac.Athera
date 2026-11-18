@@ -99,6 +99,19 @@ export type CreatePoAmendmentRequest = components["schemas"]["CreatePoAmendmentR
 export type SubmitPoRevisionRequest = components["schemas"]["SubmitPoRevisionRequest"];
 export type DecidePoRevisionRequest = components["schemas"]["DecidePoRevisionRequest"];
 export type CloseOrCancelPoRequest = components["schemas"]["CloseOrCancelPoRequest"];
+export type EligiblePoReceivingUomDto = components["schemas"]["EligiblePoReceivingUomDto"];
+export type EligiblePoReceivingLineDto = components["schemas"]["EligiblePoReceivingLineDto"];
+export type EligiblePurchaseOrderForReceivingDto =
+  components["schemas"]["EligiblePurchaseOrderForReceivingDto"];
+export type EligibleReceivingPosResponse = components["schemas"]["EligibleReceivingPosResponse"];
+export type GoodsReceiptSummaryDto = components["schemas"]["GoodsReceiptSummaryDto"];
+export type GoodsReceiptListResponse = components["schemas"]["GoodsReceiptListResponse"];
+export type GoodsReceiptLineDto = components["schemas"]["GoodsReceiptLineDto"];
+export type DockCheckHistoryDto = components["schemas"]["DockCheckHistoryDto"];
+export type GoodsReceiptDetailDto = components["schemas"]["GoodsReceiptDetailDto"];
+export type ArrivalLineRequest = components["schemas"]["ArrivalLineRequest"];
+export type RecordGoodsReceiptRequest = components["schemas"]["RecordGoodsReceiptRequest"];
+export type RecordDockCheckRequest = components["schemas"]["RecordDockCheckRequest"];
 
 export interface ApiProblemError {
   status: number;
@@ -1360,6 +1373,108 @@ export async function shortClosePurchaseOrder(
     "/api/workspaces/{tenantId}/entities/{entityId}/procurement/purchase-orders/{poId}/short-close",
     {
       params: { path: { tenantId, entityId, poId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchEligibleReceivingPos(
+  tenantId: string,
+  entityId: string,
+): Promise<EligibleReceivingPosResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/eligible-pos",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function fetchGoodsReceipts(
+  tenantId: string,
+  entityId: string,
+  filters?: { status?: string; purchaseOrderId?: string; search?: string },
+): Promise<GoodsReceiptListResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query: {
+          status: filters?.status || undefined,
+          purchaseOrderId: filters?.purchaseOrderId || undefined,
+          search: filters?.search || undefined,
+        },
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function fetchGoodsReceiptDetail(
+  tenantId: string,
+  entityId: string,
+  receiptId: string,
+): Promise<GoodsReceiptDetailDto> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts/{receiptId}",
+    {
+      params: { path: { tenantId, entityId, receiptId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) throw extractProblemError(error, (response as Response).status);
+  return data;
+}
+
+export async function recordGoodsReceiptArrival(
+  tenantId: string,
+  entityId: string,
+  payload: RecordGoodsReceiptRequest,
+): Promise<GoodsReceiptDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function recordGoodsReceiptDockCheck(
+  tenantId: string,
+  entityId: string,
+  receiptId: string,
+  lineId: string,
+  payload: RecordDockCheckRequest,
+): Promise<GoodsReceiptDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts/{receiptId}/lines/{lineId}/dock-checks",
+    {
+      params: { path: { tenantId, entityId, receiptId, lineId } },
       headers: { "X-CSRF-Token": csrf },
       body: payload,
       cache: "no-store",

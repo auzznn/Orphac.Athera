@@ -153,6 +153,7 @@ app.MapAdminAndApprovalEndpoints();
 app.MapMasterDataEndpoints();
 app.MapFinanceEndpoints();
 app.MapProcurementEndpoints();
+app.MapReceivingEndpoints();
 
 if (isMigrateMode)
 {

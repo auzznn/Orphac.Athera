@@ -18,6 +18,7 @@ import {
   LogOut,
   Menu,
   Package,
+  PackageCheck,
   Receipt,
   RefreshCw,
   ShieldCheck,
@@ -352,6 +353,21 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         permissionSet.has("procurement.manage") ||
         permissionSet.has("procurement.approve"),
       active: pathname.endsWith("/procurement"),
+    },
+    {
+      key: "receiving",
+      label: t.shell.navItems.receiving,
+      icon: PackageCheck,
+      href:
+        baseEntityPath &&
+        (permissionSet.has("receiving.read") ||
+          permissionSet.has("receiving.manage"))
+          ? `${baseEntityPath}/receiving`
+          : null,
+      permitted:
+        permissionSet.has("receiving.read") ||
+        permissionSet.has("receiving.manage"),
+      active: pathname.endsWith("/receiving"),
     },
     {
       key: "finance",

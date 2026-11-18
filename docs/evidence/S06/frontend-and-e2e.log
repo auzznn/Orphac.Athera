@@ -1,0 +1,98 @@
+
+> @orphac-athera/web@0.1.0 api:check
+> openapi-typescript ../../docs/contracts/openapi.v1.json -o .openapi.check.d.ts && diff -u src/lib/api/schema.d.ts .openapi.check.d.ts && rm -f .openapi.check.d.ts
+
+✨ openapi-typescript 7.13.0
+🚀 ../../docs/contracts/openapi.v1.json → .openapi.check.d.ts [126.8ms]
+
+> @orphac-athera/web@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @orphac-athera/web@0.1.0 lint
+> eslint .
+
+
+> @orphac-athera/web@0.1.0 test
+> vitest run
+
+
+ RUN  v5.1.0 /Users/macbook/Documents/orphac/Orphac.Athera/apps/web
+
+ ✓ src/__tests__/auth-ui.test.tsx (2 tests) 256ms
+ ✓ src/__tests__/workspace-ui.test.tsx (3 tests) 232ms
+ ✓ src/__tests__/s03-partners-catalog.test.tsx (2 tests) 311ms
+ ✓ src/__tests__/s02-admin-approvals.test.tsx (2 tests) 251ms
+ ✓ src/__tests__/s06-receiving-dock.test.tsx (3 tests) 258ms
+ ✓ src/__tests__/s05-procurement-po.test.tsx (2 tests) 371ms
+   ✓ S05 Procurement & PO UI (2)
+     ✓ computes exact BigInt UoM base & PPN 11/12 totals and renders revision diff with self-approval SoD lock 310ms
+ ✓ src/__tests__/s04-finance-gl.test.tsx (2 tests) 266ms
+
+ Test Files  7 passed (7)
+      Tests  16 passed (16)
+   Start at  07:36:10
+   Duration  1.51s (environment 40%, tests 21%, import 19%, transform 12%, setup 6%, worker 1%)
+
+
+> @orphac-athera/web@0.1.0 build
+> next build
+
+▲ Next.js 16.4.6 (Turbopack)
+✓ Running next.config.ts took 69ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 537ms
+  Running TypeScript ...
+  Finished TypeScript in 1507ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/3) ...
+✓ Generating static pages using 7 workers (3/3) in 79ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/[...path]
+├ ƒ /invitations
+├ ○ /login
+├ ƒ /w/[tenantId]/[entityId]
+├ ƒ /w/[tenantId]/[entityId]/admin
+├ ƒ /w/[tenantId]/[entityId]/approvals
+├ ƒ /w/[tenantId]/[entityId]/catalog
+├ ƒ /w/[tenantId]/[entityId]/finance
+├ ƒ /w/[tenantId]/[entityId]/partners
+├ ƒ /w/[tenantId]/[entityId]/procurement
+├ ƒ /w/[tenantId]/[entityId]/receiving
+└ ƒ /workspaces
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+> @orphac-athera/web@0.1.0 e2e
+> playwright test
+
+
+Running 14 tests using 1 worker
+
+  ✓   1 [chromium] › e2e/s00-auth.spec.ts:10:3 › S00 Authenticated Vertical Path › unauthenticated redirect, CSRF check, login failure/success, screenshots and sign out (2.1s)
+  ✓   2 [chromium] › e2e/s01-workspace.spec.ts:32:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-01 U1 sees only NUSA-JKT and hostile tenant/entity URLs fail safely with zero leak (891ms)
+  ✓   3 [chromium] › e2e/s01-workspace.spec.ts:68:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-02 U2 navigates multi-tenant directory, switches entities and tenants cleanly, and fits mobile (1.1s)
+  ✓   4 [chromium] › e2e/s01-workspace.spec.ts:126:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-03 U3 authenticated without workspaces sees accessible default-deny guidance (440ms)
+  ✓   5 [chromium] › e2e/s02-admin-approvals.spec.ts:34:3 › S02 Organization Administration, Approvals, Audit and Outbox › S02-E2E-01 U2 invites U3, U3 accepts token and gains NUSA-JKT, then U2 dispatches outbox and revokes U3 (2.5s)
+  ✓   6 [chromium] › e2e/s02-admin-approvals.spec.ts:99:3 › S02 Organization Administration, Approvals, Audit and Outbox › S02-E2E-02 U1 submits approval request, self-approval blocked in UI, and U2 approves independently (1.9s)
+  ✓   7 [chromium] › e2e/s03-partners-catalog.spec.ts:37:3 › S03 Partners, Catalogue and Unit of Measure › S03-E2E-01 U1 creates dual partner & stock item with exact UoM 3 BOX = 72 PCS and NUSA-JKT eligibility (2.4s)
+  ✓   8 [chromium] › e2e/s03-partners-catalog.spec.ts:131:3 › S03 Partners, Catalogue and Unit of Measure › S03-E2E-02 U2 on NUSA-SBY sees read-only restrictions and U1 is denied foreign SMDR master URL (1.1s)
+  ✓   9 [chromium] › e2e/s04-finance-gl.spec.ts:37:3 › S04 Financial Configuration and Immutable Posting Kernel › S04-E2E-01 U2 tries unbalanced/closed-period rejections, posts balanced journal, reverses it, and checks CoA & OD-07 tax (2.0s)
+  ✓  10 [chromium] › e2e/s04-finance-gl.spec.ts:129:3 › S04 Financial Configuration and Immutable Posting Kernel › S04-E2E-02 U2 on NUSA-SBY sees read-only GL, U1 gets 403 on NUSA-JKT finance and 404 on SMDR (978ms)
+  ✓  11 [chromium] › e2e/s05-procurement-po.spec.ts:52:3 › S05 Purchase Orders, Approved Revisions and Four-Eyes › S05-E2E-01 U1 drafts & submits multi-line PO, self-approval is blocked, U2 approves Rev 1, U1 amends Rev 2, U2 compares diff & approves, Rev 1 unchanged, U1 short-closes (4.5s)
+  ✓  12 [chromium] › e2e/s05-procurement-po.spec.ts:187:3 › S05 Purchase Orders, Approved Revisions and Four-Eyes › S05-E2E-02 U2 sees NUSA-SBY read-only PO with Hash Snapshot, gets 403 on SMDR-BDG, and U1 gets 404 on SMDR (1.0s)
+  ✓  13 [chromium] › e2e/s06-receiving-dock.spec.ts:66:3 › S06 Dock Custody & Receiving Gate One (Unvalued) › S06-E2E-01 Partial arrival, unvalued rejection split, OD-01 overdelivery hold & release block, and zero GL/GRNI proof (3.6s)
+  ✓  14 [chromium] › e2e/s06-receiving-dock.spec.ts:227:3 › S06 Dock Custody & Receiving Gate One (Unvalued) › S06-E2E-02 U2 views NUSA-SBY seeded SJ-SBY-DEMO-001 read-only, gets 403 on SMDR-BDG, and U1 gets 404 on SMDR (969ms)
+
+  14 passed (29.4s)
+found 0 vulnerabilities
+=== impeccable detect --json apps/web/src ===
+[]

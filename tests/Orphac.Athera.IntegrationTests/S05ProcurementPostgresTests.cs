@@ -161,7 +161,9 @@ public sealed class S05ProcurementPostgresTests
             await using var upCheck = conn.CreateCommand();
             upCheck.CommandText = """
                 SELECT count(*) FROM information_schema.tables
-                WHERE table_schema = 'procurement' OR (table_schema = 'approval' AND table_name = 'document_approvals');
+                WHERE (table_schema = 'procurement'
+                       AND table_name IN ('delivery_tolerance_policies', 'po_sequences', 'purchase_orders', 'purchase_order_revisions', 'purchase_order_lines'))
+                   OR (table_schema = 'approval' AND table_name = 'document_approvals');
                 """;
             Assert.Equal(6L, Convert.ToInt64(await upCheck.ExecuteScalarAsync()));
         }

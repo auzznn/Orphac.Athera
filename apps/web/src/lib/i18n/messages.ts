@@ -46,6 +46,7 @@ export interface Dictionary {
       catalog: string;
       approvals: string;
       procurement: string;
+      receiving: string;
       inventory: string;
       sales: string;
       finance: string;
@@ -730,6 +731,150 @@ export interface Dictionary {
     };
     errors: Record<string, string>;
   };
+  receiving: {
+    pageTitle: string;
+    backToOverview: string;
+    loadErrorTitle: string;
+    retryButton: string;
+    readOnlyBanner: string;
+    gateOneZeroValuationBanner: string;
+    od01PolicyBanner: string;
+    tabListLabel: string;
+    tabs: {
+      ledger: string;
+      arrival: string;
+    };
+    stats: {
+      totalReceipts: string;
+      deliveredBase: string;
+      heldBase: string;
+      releasedBase: string;
+      rejectedBase: string;
+      linkedGlJournals: string;
+    };
+    filterSearchLabel: string;
+    filterSearchPlaceholder: string;
+    filterStatusLabel: string;
+    allStatusesOption: string;
+    refreshButton: string;
+    registerCardTitle: string;
+    emptyLedgerTitle: string;
+    emptyLedgerBody: string;
+    colReceipt: string;
+    colPoAndSupplier: string;
+    colStationAndDate: string;
+    colQuantities: string;
+    colStatus: string;
+    colAction: string;
+    openDetailButton: string;
+    activeDetailButton: string;
+    arrivalCardTitle: string;
+    arrivalNoEligiblePosTitle: string;
+    arrivalNoEligiblePosBody: string;
+    arrivalOpenPoModuleHint: string;
+    poSelectorLabel: string;
+    poSelectorPlaceholder: string;
+    deliveryNoteLabel: string;
+    deliveryNotePlaceholder: string;
+    receivedDateLabel: string;
+    receivingStationLabel: string;
+    receivingStationPlaceholder: string;
+    vehicleRefLabel: string;
+    vehicleRefPlaceholder: string;
+    documentRefLabel: string;
+    documentRefPlaceholder: string;
+    arrivalNotesLabel: string;
+    arrivalNotesPlaceholder: string;
+    arrivalLinesHeading: string;
+    colPoLine: string;
+    colOrderedRemaining: string;
+    colDeliveredQty: string;
+    colArrivalFlags: string;
+    deliveredQtyPlaceholder: string;
+    uomSelectLabel: string;
+    flagForInspectionLabel: string;
+    discrepancyReasonLabel: string;
+    discrepancyNotesPlaceholder: string;
+    conditionEvidencePlaceholder: string;
+    arrivalConvertedBasePrefix: string;
+    arrivalOd01ExcessPreview: string;
+    submitArrivalButton: string;
+    submitArrivalBusy: string;
+    arrivalSuccessPrefix: string;
+    arrivalReplaySuffix: string;
+    detailCardTitle: string;
+    selectReceiptPromptTitle: string;
+    selectReceiptPromptBody: string;
+    fieldReceiptNumber: string;
+    fieldPoRef: string;
+    fieldSupplier: string;
+    fieldDeliveryNote: string;
+    fieldStation: string;
+    fieldVehicleRef: string;
+    fieldDocumentRef: string;
+    fieldFinancialPosting: string;
+    noGlPostingBadge: string;
+    fieldReceivedBy: string;
+    fieldLineCustody: string;
+    colCustodyLine: string;
+    colBaseSplit: string;
+    colValuedAccepted: string;
+    colOd01Excess: string;
+    dockCheckFormHeading: string;
+    dockCheckReadOnlyNote: string;
+    conservationFormulaLabel: string;
+    conservationBalancedTag: string;
+    conservationMismatchTag: string;
+    od01CapLabel: string;
+    od01CapExceededTag: string;
+    presetReleaseWithinCap: string;
+    presetHoldAll: string;
+    presetRejectAll: string;
+    pendingQtyLabel: string;
+    heldQtyLabel: string;
+    releasedQtyLabel: string;
+    rejectedQtyLabel: string;
+    inspectionNotesLabel: string;
+    inspectionNotesPlaceholder: string;
+    evidenceRefLabel: string;
+    evidenceRefPlaceholder: string;
+    submitDockCheckButton: string;
+    submitDockCheckBusy: string;
+    dockCheckSuccessBanner: string;
+    historyCardTitle: string;
+    emptyHistoryBody: string;
+    colCheckedAt: string;
+    colTransition: string;
+    colSplitSnapshot: string;
+    colReasonAndActor: string;
+    receiptStatusLabels: Record<string, string>;
+    custodyStatusLabels: Record<string, string>;
+    discrepancyReasonLabels: Record<string, string>;
+    defaultReceivingStation: string;
+    hashPrefix: string;
+    remainingCapPrefix: string;
+    capPrefix: string;
+    discrepancyNotesLabel: string;
+    conditionEvidenceLabel: string;
+    splitCodes: {
+      delivered: string;
+      pending: string;
+      held: string;
+      released: string;
+      rejected: string;
+    };
+    validation: {
+      poRequired: string;
+      deliveryNoteRequired: string;
+      receivedDateRequired: string;
+      stationRequired: string;
+      arrivalLinesRequired: string;
+      invalidQtyFormat: string;
+      conservationMismatch: string;
+      discrepancyReasonRequired: string;
+    };
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -791,6 +936,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         catalog: "Katalog & Satuan",
         approvals: "Persetujuan",
         procurement: "Pengadaan",
+        receiving: "Penerimaan Gudang",
         inventory: "Persediaan",
         sales: "Penjualan",
         finance: "Keuangan & GL",
@@ -899,7 +1045,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Modul Operasional",
       colPermission: "Kode Izin",
       colReadiness: "Status Kesiapan",
-      availableState: "Tersedia (S01–S05)",
+      availableState: "Tersedia (S01–S06)",
       permittedPlannedPrefix: "Diizinkan · Tahap",
       notGrantedState: "Tidak Diizinkan",
       loadingEntity: "Memuat ruang kerja entitas terisolasi...",
@@ -916,6 +1062,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         catalog: "Katalog Barang & Satuan UoM",
         approvals: "Kotak Masuk & Persetujuan Empat Mata",
         procurement: "Pengadaan (PO, GRN, Pemasok)",
+        receiving: "Penerimaan Dermaga & Gate 1 (Tanpa Valuasi)",
         inventory: "Persediaan & Buku Besar Stok",
         sales: "Penjualan & Penagihan",
         finance: "Keuangan, Pajak PPN/PPh & GL",
@@ -1678,6 +1825,205 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         insufficient_entity_permission: "Anda tidak memiliki izin pengadaan atau persetujuan yang diperlukan di entitas ini.",
       },
     },
+    receiving: {
+      pageTitle: "Penerimaan Dermaga & Gate 1 (Tanpa Valuasi)",
+      backToOverview: "Ringkasan Entitas",
+      loadErrorTitle: "Gagal memuat modul Penerimaan Dermaga",
+      retryButton: "Muat Ulang Data",
+      readOnlyBanner:
+        "Mode baca saja: Akun Anda dapat memantau dokumen kedatangan dan riwayat pemeriksaan dermaga tanpa izin pencatatan atau pelepasan.",
+      gateOneZeroValuationBanner:
+        "Batas Gate 1 Tanpa Valuasi: Kedatangan fisik, penahanan, penolakan, dan pelepasan dermaga tidak mencatat nilai persediaan maupun jurnal GL / GRNI.",
+      od01PolicyBanner:
+        "Kebijakan OD-01 Aktif: Toleransi lebih kirim terkunci 0%. Kuantitas melebihi komitmen PO yang disetujui ditahan di dermaga dan diblokir dari pelepasan sampai amandemen PO disetujui.",
+      tabListLabel: "Navigasi Penerimaan Dermaga",
+      tabs: {
+        ledger: "Buku Penerimaan Dermaga",
+        arrival: "Catat Kedatangan (Gate 1)",
+      },
+      stats: {
+        totalReceipts: "Total GRN",
+        deliveredBase: "Diterima Fisik (Dasar)",
+        heldBase: "Ditahan OD-01 / Cek",
+        releasedBase: "Dirilis ke Gate 2",
+        rejectedBase: "Ditolak Tanpa Nilai",
+        linkedGlJournals: "Jurnal GL / GRNI Terbentuk",
+      },
+      filterSearchLabel: "Cari GRN, PO, Surat Jalan, Pemasok",
+      filterSearchPlaceholder: "Cari GRN, PO, Surat Jalan...",
+      filterStatusLabel: "Filter Status GRN",
+      allStatusesOption: "Semua Status",
+      refreshButton: "Segarkan",
+      registerCardTitle: "Daftar Kedatangan & Kustodi Dermaga (Gate 1)",
+      emptyLedgerTitle: "Belum Ada Penerimaan Dermaga",
+      emptyLedgerBody:
+        "Belum ada dokumen penerimaan fisik pada entitas ini. Catat kedatangan PO yang telah disetujui pada tab Catat Kedatangan (Gate 1).",
+      colReceipt: "Nomor GRN & Surat Jalan",
+      colPoAndSupplier: "PO Disetujui & Pemasok",
+      colStationAndDate: "Dermaga & Tgl Tiba",
+      colQuantities: "Ringkasan Kuantitas (Dasar)",
+      colStatus: "Status Gate 1",
+      colAction: "Tindakan",
+      openDetailButton: "Inspeksi",
+      activeDetailButton: "Sedang Dibuka",
+      arrivalCardTitle: "Catat Kedatangan Fisik di Dermaga (Gate 1)",
+      arrivalNoEligiblePosTitle: "Tidak Ada PO Disetujui yang Layak Diterima",
+      arrivalNoEligiblePosBody:
+        "Penerimaan Gate 1 hanya terbuka bagi PO dengan revisi yang telah disetujui serta memiliki baris barang persediaan.",
+      arrivalOpenPoModuleHint: "Pastikan PO telah disetujui pada menu Pengadaan terlebih dahulu.",
+      poSelectorLabel: "Pilih PO Disetujui",
+      poSelectorPlaceholder: "Pilih PO yang dikirim pemasok...",
+      deliveryNoteLabel: "Nomor Surat Jalan Pemasok",
+      deliveryNotePlaceholder: "Contoh: SJ-2026-1118-01",
+      receivedDateLabel: "Tanggal Kedatangan",
+      receivingStationLabel: "Dermaga / Stasiun Penerimaan",
+      receivingStationPlaceholder: "Contoh: Dermaga Utama Jakarta · Pintu 2",
+      vehicleRefLabel: "Kendaraan / Nomor Segel (Opsional)",
+      vehicleRefPlaceholder: "Contoh: B 9104 UX · Segel A-09",
+      documentRefLabel: "Referensi Dokumen Surat Jalan (Opsional)",
+      documentRefPlaceholder: "Contoh: SCAN-SJ-001.pdf",
+      arrivalNotesLabel: "Catatan Kedatangan Dermaga (Opsional)",
+      arrivalNotesPlaceholder: "Contoh: Kedatangan parsial gelombang 1, segel baik",
+      arrivalLinesHeading: "Baris Barang PO & Kuantitas Tiba di Dermaga",
+      colPoLine: "Baris & Item Stok",
+      colOrderedRemaining: "Komitmen & Sisa PO",
+      colDeliveredQty: "Tiba Fisik & Satuan UoM",
+      colArrivalFlags: "Penanda Awal & Alasan",
+      deliveredQtyPlaceholder: "0",
+      uomSelectLabel: "Satuan UoM",
+      flagForInspectionLabel: "Tahan sementara untuk pemeriksaan fisik awal di dermaga",
+      discrepancyReasonLabel: "Kode Alasan Selisih / Kondisi",
+      discrepancyNotesPlaceholder: "Catatan selisih atau kerusakan kemasan...",
+      conditionEvidencePlaceholder: "Ref bukti foto / berita acara...",
+      arrivalConvertedBasePrefix: "Konversi satuan dasar",
+      arrivalOd01ExcessPreview:
+        "Peringatan OD-01: Total tiba melebihi sisa komitmen PO sebesar {excess} {uom}. Bagian berlebih harus ditahan di dermaga atau ditolak tanpa nilai saat pemeriksaan.",
+      submitArrivalButton: "Catat Kedatangan Gate 1 (Tanpa Valuasi)",
+      submitArrivalBusy: "Menyimpan kedatangan...",
+      arrivalSuccessPrefix: "Penerimaan dermaga berhasil dicatat:",
+      arrivalReplaySuffix: "(Pemutaran ulang idempoten aman — tidak ada duplikasi)",
+      detailCardTitle: "Rincian GRN & Pemeriksaan Kustodi Gate 1",
+      selectReceiptPromptTitle: "Pilih Dokumen GRN",
+      selectReceiptPromptBody:
+        "Pilih baris pada Daftar Kedatangan Dermaga untuk melihat komposisi kuantitas dasar, melakukan pemeriksaan fisik, dan mengaudit riwayat pelepasan ke Gate 2.",
+      fieldReceiptNumber: "Nomor Penerimaan (GRN)",
+      fieldPoRef: "Referensi PO Terkunci",
+      fieldSupplier: "Pemasok Snapshot",
+      fieldDeliveryNote: "Nomor Surat Jalan",
+      fieldStation: "Dermaga & Tanggal",
+      fieldVehicleRef: "Kendaraan / Segel",
+      fieldDocumentRef: "Dokumen Bukti",
+      fieldFinancialPosting: "Dampak Akuntansi Gate 1",
+      noGlPostingBadge: "Tanpa Posting GL / GRNI",
+      fieldReceivedBy: "Dicatat Oleh",
+      fieldLineCustody: "Kustodi & Konservasi Kuantitas per Baris Barang",
+      colCustodyLine: "Baris Barang & UoM",
+      colBaseSplit: "Tiba / Menunggu / Ditahan / Dirilis / Ditolak",
+      colValuedAccepted: "Diterima Bernilai (Gate 2)",
+      colOd01Excess: "Batas & Kelebihan OD-01",
+      dockCheckFormHeading: "Perbarui Pemeriksaan & Disposisi Dermaga",
+      dockCheckReadOnlyNote:
+        "Akun Anda berada dalam mode baca saja sehingga perubahan disposisi kustodi tidak tersedia.",
+      conservationFormulaLabel: "Hukum Konservasi (Pending + Held + Released + Rejected)",
+      conservationBalancedTag: "Seimbang dengan Fisik Tiba",
+      conservationMismatchTag: "Harus Sama dengan Total Tiba",
+      od01CapLabel: "Batas Maksimum Rilis PO (OD-01)",
+      od01CapExceededTag: "Melebihi batas PO — wajib ditahan atau amandemen PO terlebih dahulu",
+      presetReleaseWithinCap: "Lepas Sesuai Batas PO",
+      presetHoldAll: "Tahan Semua",
+      presetRejectAll: "Tolak Tanpa Nilai",
+      pendingQtyLabel: "Menunggu Cek (Pending)",
+      heldQtyLabel: "Ditahan Dermaga (Held)",
+      releasedQtyLabel: "Dirilis ke Gate 2 (Released)",
+      rejectedQtyLabel: "Ditolak Tanpa Nilai (Rejected)",
+      inspectionNotesLabel: "Catatan Pemeriksaan Dermaga",
+      inspectionNotesPlaceholder: "Contoh: 4 PCS kemasan penyok ditolak; 20 PCS lolos fisik",
+      evidenceRefLabel: "Referensi Bukti / Berita Acara (Opsional)",
+      evidenceRefPlaceholder: "Contoh: BA-QC-019",
+      submitDockCheckButton: "Simpan Hasil Pemeriksaan Gate 1",
+      submitDockCheckBusy: "Memperbarui kustodi...",
+      dockCheckSuccessBanner: "Status kustodi dermaga dan jejak audit berhasil diperbarui tanpa posting GL.",
+      historyCardTitle: "Riwayat Pemeriksaan Dermaga (Append-Only Audit)",
+      emptyHistoryBody: "Belum ada catatan pemeriksaan lanjutan setelah kedatangan awal.",
+      colCheckedAt: "Waktu Pemeriksaan (WIB)",
+      colTransition: "Transisi Status Kustodi",
+      colSplitSnapshot: "Snapshot Pembagian (Dasar)",
+      colReasonAndActor: "Alasan, Catatan & Pemeriksa",
+      receiptStatusLabels: {
+        ARRIVED: "Tiba di Dermaga",
+        IN_DOCK_INSPECTION: "Dalam Pemeriksaan Dermaga",
+        RELEASED_FOR_ACCEPTANCE: "Dirilis ke Gate 2",
+        FULLY_REJECTED_UNVALUED: "Ditolak Penuh (Tanpa Nilai)",
+      },
+      custodyStatusLabels: {
+        ARRIVED: "Tiba di Dermaga",
+        DOCK_CHECK_PENDING: "Menunggu Cek Fisik",
+        DOCK_HELD: "Ditahan di Dermaga",
+        DOCK_REJECTED: "Ditolak Tanpa Nilai",
+        DOCK_RELEASED: "Dirilis ke Gate 2",
+      },
+      discrepancyReasonLabels: {
+        NONE: "Sesuai / Tanpa Selisih",
+        DAMAGED_PACKAGING: "Kemasan Rusak / Penyok",
+        WET_OR_DEFECTIVE_GOODS: "Barang Basah / Cacat Fisik",
+        OVERDELIVERY_OD01_HOLD: "Kelebihan Kirim (Tahan OD-01)",
+        WRONG_ITEM_OR_SPEC: "Barang / Spesifikasi Tidak Sesuai",
+        MISSING_SUPPLIER_DOCS: "Dokumen Pemasok Tidak Lengkap",
+      },
+      defaultReceivingStation: "Dermaga Utama",
+      hashPrefix: "Hash:",
+      remainingCapPrefix: "Sisa batas",
+      capPrefix: "Batas",
+      discrepancyNotesLabel: "Catatan Selisih / Kemasan (Opsional)",
+      conditionEvidenceLabel: "Ref Bukti / Foto (Opsional)",
+      splitCodes: {
+        delivered: "Tiba",
+        pending: "Cek",
+        held: "Tahan",
+        released: "Rilis",
+        rejected: "Tolak",
+      },
+      validation: {
+        poRequired: "Pilih PO yang telah disetujui sebelum mencatat kedatangan.",
+        deliveryNoteRequired: "Masukkan nomor Surat Jalan pemasok.",
+        receivedDateRequired: "Pilih tanggal kedatangan barang.",
+        stationRequired: "Masukkan dermaga atau stasiun penerimaan.",
+        arrivalLinesRequired: "Masukkan kuantitas tiba lebih besar dari nol pada minimal satu baris PO.",
+        invalidQtyFormat: "Kuantitas harus berupa angka desimal valid (maksimal 6 angka di belakang koma).",
+        conservationMismatch:
+          "Jumlah Menunggu + Ditahan + Dirilis + Ditolak harus sama persis dengan kuantitas fisik tiba.",
+        discrepancyReasonRequired:
+          "Pilih kode alasan selisih atau tuliskan catatan bila terdapat penahanan atau penolakan.",
+      },
+      errors: {
+        idempotency_key_required: "Kunci idempotensi wajib tersedia; coba muat ulang formulir.",
+        gr_lines_required: "Pilih minimal satu baris barang PO dengan kuantitas lebih besar dari nol.",
+        duplicate_po_line_in_arrival: "Setiap baris PO hanya boleh muncul satu kali per kedatangan GRN.",
+        invalid_discrepancy_reason: "Kode alasan selisih tidak valid untuk pemeriksaan dermaga.",
+        duplicate_receipt_idempotency_conflict:
+          "Kunci idempotensi sudah pernah dipakai dengan isi kedatangan berbeda.",
+        duplicate_dock_check_idempotency_conflict:
+          "Kunci pemeriksaan sudah pernah dipakai dengan angka disposisi berbeda.",
+        foreign_or_missing_purchase_order: "PO tidak ditemukan pada entitas hukum ini.",
+        po_not_eligible_for_receiving: "PO tidak memenuhi syarat penerimaan (harus berstatus disetujui dan terbuka).",
+        duplicate_supplier_delivery_note:
+          "Nomor Surat Jalan tersebut sudah terdaftar untuk pemasok yang sama di entitas ini.",
+        po_line_not_in_current_approved_revision:
+          "Salah satu baris PO tidak ada pada revisi PO yang sedang disetujui.",
+        unsupported_uom_conversion: "Satuan pengiriman tidak memiliki konversi UoM aktif pada item ini.",
+        fractional_discrete_base_quantity:
+          "Item satuan diskrit tidak mengizinkan kuantitas dasar pecahan.",
+        od01_overdelivery_release_blocked:
+          "Kebijakan OD-01 memblokir pelepasan melebihi sisa komitmen PO yang disetujui. Tahan kelebihan di dermaga atau lakukan amandemen PO terlebih dahulu.",
+        dock_quantity_conservation_mismatch:
+          "Hukum konservasi gagal: Menunggu + Ditahan + Dirilis + Ditolak harus sama dengan fisik tiba.",
+        dock_release_below_valued_accepted:
+          "Kuantitas rilis tidak boleh lebih kecil dari jumlah yang sudah diterima di Gate 2.",
+        insufficient_entity_permission:
+          "Akun Anda tidak memiliki izin pencatatan atau pemeriksaan penerimaan pada entitas ini.",
+        concurrency_conflict: "Rekaman kustodi baru saja diubah pengguna lain; muat ulang sebelum menyimpan.",
+      },
+    },
   },
   "en-US": {
     appName: "Orphac Athera",
@@ -1737,6 +2083,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         catalog: "Catalogue & UoM",
         approvals: "Approvals",
         procurement: "Procurement",
+        receiving: "Dock Receiving",
         inventory: "Inventory",
         sales: "Sales",
         finance: "Finance & GL",
@@ -1845,7 +2192,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       colModule: "Operational Module",
       colPermission: "Permission Code",
       colReadiness: "Readiness State",
-      availableState: "Available (S01–S05)",
+      availableState: "Available (S01–S06)",
       permittedPlannedPrefix: "Permitted · Stage",
       notGrantedState: "Not Granted",
       loadingEntity: "Loading isolated entity workspace...",
@@ -1862,6 +2209,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         catalog: "Item Catalogue & UoM Conversions",
         approvals: "Four-Eyes Approval Inbox",
         procurement: "Procurement (PO, GRN, Vendors)",
+        receiving: "Dock Custody & Gate 1 Receiving",
         inventory: "Inventory & Stock Ledger",
         sales: "Sales & Invoicing",
         finance: "Finance, Indonesian Tax & GL",
@@ -2622,6 +2970,205 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         counterparty_npwp_required_for_rate: "Selected tax rule requires a valid supplier NPWP.",
         tax_code_not_effective_on_date: "Selected tax code is inactive on this PO order date.",
         insufficient_entity_permission: "Your active grants do not permit this procurement or approval operation.",
+      },
+    },
+    receiving: {
+      pageTitle: "Dock Custody & Gate 1 Receiving (Unvalued)",
+      backToOverview: "Entity Overview",
+      loadErrorTitle: "Failed to load Dock Receiving workspace",
+      retryButton: "Reload Data",
+      readOnlyBanner:
+        "Read-only mode: Your role can monitor dock arrivals and inspection history without recording receipts or releasing custody.",
+      gateOneZeroValuationBanner:
+        "Gate 1 Zero-Valuation Boundary: Physical arrivals, dock holds, unvalued rejections, and dock releases create zero inventory valuation or GL / GRNI postings.",
+      od01PolicyBanner:
+        "OD-01 Policy Enforced: Overdelivery tolerance is locked at 0%. Quantities exceeding approved PO commitments stay held at the dock and blocked from release until a PO amendment is approved.",
+      tabListLabel: "Dock Receiving Navigation",
+      tabs: {
+        ledger: "Dock Receipt Register",
+        arrival: "Record Dock Arrival (Gate 1)",
+      },
+      stats: {
+        totalReceipts: "Total GRNs",
+        deliveredBase: "Delivered Physical (Base)",
+        heldBase: "Held OD-01 / Pending",
+        releasedBase: "Released to Gate 2",
+        rejectedBase: "Rejected Unvalued",
+        linkedGlJournals: "GL / GRNI Journals Posted",
+      },
+      filterSearchLabel: "Search GRN, PO, Delivery Note, Supplier",
+      filterSearchPlaceholder: "Search GRN, PO, Delivery Note...",
+      filterStatusLabel: "Filter GRN Status",
+      allStatusesOption: "All Statuses",
+      refreshButton: "Refresh",
+      registerCardTitle: "Dock Arrivals & Gate 1 Custody Register",
+      emptyLedgerTitle: "No Dock Receipts Recorded",
+      emptyLedgerBody:
+        "No physical dock arrivals exist in this legal entity yet. Record a supplier delivery against an approved PO using Record Dock Arrival (Gate 1).",
+      colReceipt: "GRN & Delivery Note",
+      colPoAndSupplier: "Approved PO & Supplier",
+      colStationAndDate: "Station & Arrival Date",
+      colQuantities: "Quantity Split (Base)",
+      colStatus: "Gate 1 Status",
+      colAction: "Action",
+      openDetailButton: "Inspect",
+      activeDetailButton: "Inspecting",
+      arrivalCardTitle: "Record Physical Arrival at Receiving Dock (Gate 1)",
+      arrivalNoEligiblePosTitle: "No Approved POs Eligible for Receiving",
+      arrivalNoEligiblePosBody:
+        "Gate 1 receiving is open only for purchase orders with an approved open revision containing stocked goods.",
+      arrivalOpenPoModuleHint: "Approve the purchase order revision in Procurement before recording arrival.",
+      poSelectorLabel: "Select Approved Purchase Order",
+      poSelectorPlaceholder: "Choose delivered PO...",
+      deliveryNoteLabel: "Supplier Delivery Note (Surat Jalan)",
+      deliveryNotePlaceholder: "e.g. SJ-2026-1118-01",
+      receivedDateLabel: "Arrival Date",
+      receivingStationLabel: "Receiving Dock / Station",
+      receivingStationPlaceholder: "e.g. Jakarta Main Dock · Bay 2",
+      vehicleRefLabel: "Vehicle / Seal Ref (Optional)",
+      vehicleRefPlaceholder: "e.g. B 9104 UX · Seal A-09",
+      documentRefLabel: "Delivery Note Document Ref (Optional)",
+      documentRefPlaceholder: "e.g. SCAN-SJ-001.pdf",
+      arrivalNotesLabel: "Dock Arrival Notes (Optional)",
+      arrivalNotesPlaceholder: "e.g. Partial batch 1 delivery, carrier seal intact",
+      arrivalLinesHeading: "PO Lines & Physically Delivered Quantities",
+      colPoLine: "Line & Stock Item",
+      colOrderedRemaining: "Ordered & Remaining Cap",
+      colDeliveredQty: "Delivered Qty & UoM",
+      colArrivalFlags: "Initial Flag & Reason",
+      deliveredQtyPlaceholder: "0",
+      uomSelectLabel: "UoM",
+      flagForInspectionLabel: "Hold initially for dock inspection",
+      discrepancyReasonLabel: "Discrepancy / Condition Code",
+      discrepancyNotesPlaceholder: "Discrepancy or packaging damage notes...",
+      conditionEvidencePlaceholder: "Photo or inspection memo reference...",
+      arrivalConvertedBasePrefix: "Converted base quantity",
+      arrivalOd01ExcessPreview:
+        "OD-01 Warning: Delivered quantity exceeds remaining PO commitment by {excess} {uom}. Excess must remain held at dock or be rejected unvalued upon inspection.",
+      submitArrivalButton: "Record Gate 1 Arrival (Unvalued)",
+      submitArrivalBusy: "Recording arrival...",
+      arrivalSuccessPrefix: "Dock arrival recorded:",
+      arrivalReplaySuffix: "(Idempotent replay confirmed — zero duplicates created)",
+      detailCardTitle: "GRN Detail & Gate 1 Custody Inspection",
+      selectReceiptPromptTitle: "Select a Dock Receipt",
+      selectReceiptPromptBody:
+        "Select a row in the Dock Receipt Register to inspect base-quantity conservation, adjust custody splits, and audit append-only Gate 1 history.",
+      fieldReceiptNumber: "Receipt Number (GRN)",
+      fieldPoRef: "Frozen PO Reference",
+      fieldSupplier: "Supplier Snapshot",
+      fieldDeliveryNote: "Delivery Note (SJ)",
+      fieldStation: "Dock & Arrival Date",
+      fieldVehicleRef: "Vehicle / Seal",
+      fieldDocumentRef: "Document Evidence",
+      fieldFinancialPosting: "Gate 1 Accounting Impact",
+      noGlPostingBadge: "Zero GL / GRNI Postings",
+      fieldReceivedBy: "Recorded By",
+      fieldLineCustody: "Per-Line Custody & Base Quantity Conservation",
+      colCustodyLine: "Item Line & UoM",
+      colBaseSplit: "Delivered / Pending / Held / Released / Rejected",
+      colValuedAccepted: "Valued Accepted (Gate 2)",
+      colOd01Excess: "OD-01 Cap & Excess",
+      dockCheckFormHeading: "Record Dock Inspection & Custody Disposition",
+      dockCheckReadOnlyNote:
+        "Read-only mode active; custody disposition controls are disabled for your role.",
+      conservationFormulaLabel: "Conservation Law (Pending + Held + Released + Rejected)",
+      conservationBalancedTag: "Matches Physical Delivery",
+      conservationMismatchTag: "Must Equal Physically Delivered",
+      od01CapLabel: "Approved PO Release Cap (OD-01)",
+      od01CapExceededTag: "Exceeds approved PO cap — hold excess or amend PO first",
+      presetReleaseWithinCap: "Release Within PO Cap",
+      presetHoldAll: "Hold All",
+      presetRejectAll: "Reject Unvalued",
+      pendingQtyLabel: "Pending Check",
+      heldQtyLabel: "Dock Held",
+      releasedQtyLabel: "Released to Gate 2",
+      rejectedQtyLabel: "Rejected Unvalued",
+      inspectionNotesLabel: "Dock Inspection Notes",
+      inspectionNotesPlaceholder: "e.g. 4 PCS crushed box rejected; 20 PCS released to Gate 2",
+      evidenceRefLabel: "Inspection Evidence / Report Ref (Optional)",
+      evidenceRefPlaceholder: "e.g. QC-MEMO-019",
+      submitDockCheckButton: "Save Gate 1 Dock Inspection",
+      submitDockCheckBusy: "Saving custody split...",
+      dockCheckSuccessBanner: "Dock custody split and immutable audit trail updated with zero GL postings.",
+      historyCardTitle: "Dock Inspection Audit Trail (Append-Only)",
+      emptyHistoryBody: "No subsequent dock checks have been recorded after initial arrival.",
+      colCheckedAt: "Checked At (WIB)",
+      colTransition: "Custody Transition",
+      colSplitSnapshot: "Split Snapshot (Base)",
+      colReasonAndActor: "Reason, Notes & Inspector",
+      receiptStatusLabels: {
+        ARRIVED: "Arrived at Dock",
+        IN_DOCK_INSPECTION: "In Dock Inspection",
+        RELEASED_FOR_ACCEPTANCE: "Released to Gate 2",
+        FULLY_REJECTED_UNVALUED: "Fully Rejected (Unvalued)",
+      },
+      custodyStatusLabels: {
+        ARRIVED: "Arrived at Dock",
+        DOCK_CHECK_PENDING: "Pending Dock Check",
+        DOCK_HELD: "Held at Dock",
+        DOCK_REJECTED: "Rejected Unvalued",
+        DOCK_RELEASED: "Released to Gate 2",
+      },
+      discrepancyReasonLabels: {
+        NONE: "No Discrepancy / Intact",
+        DAMAGED_PACKAGING: "Damaged Packaging",
+        WET_OR_DEFECTIVE_GOODS: "Wet or Defective Goods",
+        OVERDELIVERY_OD01_HOLD: "Overdelivery Hold (OD-01)",
+        WRONG_ITEM_OR_SPEC: "Wrong Item or Specification",
+        MISSING_SUPPLIER_DOCS: "Missing Supplier Documents",
+      },
+      defaultReceivingStation: "Main Dock",
+      hashPrefix: "Snapshot:",
+      remainingCapPrefix: "Remaining cap",
+      capPrefix: "Cap",
+      discrepancyNotesLabel: "Discrepancy / Packaging Notes (Optional)",
+      conditionEvidenceLabel: "Condition Evidence Ref (Optional)",
+      splitCodes: {
+        delivered: "Deliv",
+        pending: "Pend",
+        held: "Hold",
+        released: "Rel",
+        rejected: "Rej",
+      },
+      validation: {
+        poRequired: "Select an approved purchase order before recording dock arrival.",
+        deliveryNoteRequired: "Enter the supplier delivery note (Surat Jalan) number.",
+        receivedDateRequired: "Select the physical arrival date.",
+        stationRequired: "Enter the receiving dock or station identifier.",
+        arrivalLinesRequired: "Enter a delivered quantity greater than zero on at least one PO line.",
+        invalidQtyFormat: "Quantities must be non-negative decimals with up to 6 fractional digits.",
+        conservationMismatch:
+          "Pending + Held + Released + Rejected must equal the physically delivered base quantity.",
+        discrepancyReasonRequired:
+          "Select a discrepancy reason or provide notes whenever holding or rejecting goods.",
+      },
+      errors: {
+        idempotency_key_required: "An idempotency key is required; reload the form and retry.",
+        gr_lines_required: "Provide at least one PO line with delivered quantity above zero.",
+        duplicate_po_line_in_arrival: "Each PO line can appear only once per dock arrival receipt.",
+        invalid_discrepancy_reason: "Invalid discrepancy reason code supplied.",
+        duplicate_receipt_idempotency_conflict:
+          "This arrival key was already submitted with different delivery quantities.",
+        duplicate_dock_check_idempotency_conflict:
+          "This dock-check key was already used with a different split payload.",
+        foreign_or_missing_purchase_order: "Purchase order was not found inside this legal entity.",
+        po_not_eligible_for_receiving: "Purchase order is not open with an approved revision for receiving.",
+        duplicate_supplier_delivery_note:
+          "This supplier delivery note (Surat Jalan) is already recorded in this entity.",
+        po_line_not_in_current_approved_revision:
+          "A submitted line does not belong to the PO's current approved revision.",
+        unsupported_uom_conversion: "No active UoM conversion exists between the received unit and base unit.",
+        fractional_discrete_base_quantity:
+          "Discrete base items cannot convert to a fractional base quantity.",
+        od01_overdelivery_release_blocked:
+          "OD-01 policy blocks releasing above approved PO quantity. Keep excess held at dock or approve a PO amendment first.",
+        dock_quantity_conservation_mismatch:
+          "Conservation mismatch: Pending + Held + Released + Rejected must equal Physically Delivered.",
+        dock_release_below_valued_accepted:
+          "Released quantity cannot drop below quantities already accepted at Gate 2.",
+        insufficient_entity_permission:
+          "Your active role grants do not permit recording arrivals or dock inspections.",
+        concurrency_conflict: "Another update modified this receipt concurrently; reload and retry.",
       },
     },
   },

@@ -119,6 +119,8 @@ public static class DemoDataSeeder
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.WorkspaceView, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ProcurementRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ProcurementManage, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ReceivingRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.ReceivingManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.PartnersRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u1Id, PermissionCodes.CatalogRead, nowUtc, ct);
@@ -145,11 +147,14 @@ public static class DemoDataSeeder
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ProcurementRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ProcurementManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ProcurementApprove, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ReceivingRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ReceivingManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.CatalogManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.FinanceConfigManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.FinanceJournalPost, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.ProcurementRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.ReceivingRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.InventoryRead, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.CatalogManage, nowUtc, ct);
@@ -274,6 +279,9 @@ public static class DemoDataSeeder
         await EnsureApprovedSeedPoAsync(db, smdrId, smdrBdgId, supSmdr.PartnerId, smdrItem.ItemId, smdrPcs.UomId, 50m, 120_000m, "Gudang Samudra Bandung", u2Id, u2Id, approve: false, nowUtc, ct);
 
         await db.SaveChangesAsync(ct);
+
+        // S06 Gate 1 dock custody seed on NUSA-SBY (read-only showcase without altering NUSA-JKT test baseline)
+        await EnsureSeedGoodsReceiptAsync(db, nusaId, nusaSbyId, nusaBox.UomId, u2Id, nowUtc, ct);
     }
 
     private static async Task<Guid> EnsureUserAsync(
@@ -981,6 +989,66 @@ public static class DemoDataSeeder
             {
                 throw new InvalidOperationException($"Failed seeding S05 PO approval: {decideOutcome.ErrorCode} {decideOutcome.ErrorDetail}");
             }
+        }
+
+        await tx.CommitAsync(ct);
+    }
+
+    private static async Task EnsureSeedGoodsReceiptAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        Guid entityId,
+        Guid boxUomId,
+        Guid actorUserId,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
+        var anyGrn = await db.GoodsReceipts.AnyAsync(r => r.TenantId == tenantId && r.LegalEntityId == entityId, ct);
+        if (anyGrn)
+        {
+            return;
+        }
+
+        var po = await db.PurchaseOrders.AsNoTracking()
+            .FirstOrDefaultAsync(p =>
+                p.TenantId == tenantId &&
+                p.LegalEntityId == entityId &&
+                p.Status == PurchaseOrderStatuses.Approved &&
+                p.CurrentApprovedRevisionId != null,
+                ct);
+        if (po?.CurrentApprovedRevisionId is not { } revId)
+        {
+            return;
+        }
+
+        var line = await db.PurchaseOrderLines.AsNoTracking()
+            .FirstOrDefaultAsync(l => l.TenantId == tenantId && l.LegalEntityId == entityId && l.RevisionId == revId, ct);
+        if (line is null)
+        {
+            return;
+        }
+
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        var arrivalOutcome = await GoodsReceiptWorkflowService.RecordArrivalAsync(
+            db,
+            new RecordGoodsReceiptCommand(
+                tenantId,
+                entityId,
+                po.PurchaseOrderId,
+                "SJ-SBY-DEMO-001",
+                "seed:sby-gate1-01",
+                new DateOnly(2026, 11, 2),
+                "Dermaga Barat Surabaya",
+                "L 9042 UB · Segel SBY-11",
+                "DO-SBY-20261102.pdf",
+                "Penerimaan parsial 1 BOX menunggu inspeksi fisik Gate 1 (tanpa GRNI)",
+                [new ArrivalLineInput(line.PoLineId, boxUomId, 1m, true, DiscrepancyReasonCodes.None, "Segel palet utama utuh, menunggu verifikasi QA", null)],
+                actorUserId,
+                nowUtc),
+            ct);
+        if (!arrivalOutcome.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed seeding S06 Gate 1 receipt: {arrivalOutcome.ErrorCode} {arrivalOutcome.ErrorDetail}");
         }
 
         await tx.CommitAsync(ct);

@@ -4856,6 +4856,453 @@
           }
         }
       }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/eligible-pos": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ListEligiblePurchaseOrdersForReceiving",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EligibleReceivingPosResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ListGoodsReceipts",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "purchaseOrderId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoodsReceiptListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "RecordGoodsReceiptArrival",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordGoodsReceiptRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoodsReceiptDetailDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoodsReceiptDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts/{receiptId}": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetGoodsReceiptDetail",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "receiptId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoodsReceiptDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/receiving/receipts/{receiptId}/lines/{lineId}/dock-checks": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "RecordGoodsReceiptDockCheck",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "receiptId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "lineId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordDockCheckRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GoodsReceiptDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -5188,6 +5635,57 @@
           },
           "isActive": {
             "type": "boolean"
+          }
+        }
+      },
+      "ArrivalLineRequest": {
+        "required": [
+          "poLineId",
+          "receivedUomId",
+          "physicallyDeliveredQuantity",
+          "flagForInspection",
+          "discrepancyReasonCode",
+          "discrepancyNotes",
+          "conditionEvidenceRef"
+        ],
+        "type": "object",
+        "properties": {
+          "poLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receivedUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "physicallyDeliveredQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "flagForInspection": {
+            "type": "boolean"
+          },
+          "discrepancyReasonCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "discrepancyNotes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "conditionEvidenceRef": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -6041,6 +6539,103 @@
           }
         }
       },
+      "DockCheckHistoryDto": {
+        "required": [
+          "dockCheckId",
+          "goodsReceiptLineId",
+          "payloadHash",
+          "previousCustodyStatus",
+          "resultingCustodyStatus",
+          "pendingCheckBaseQuantity",
+          "dockHeldBaseQuantity",
+          "dockReleasedBaseQuantity",
+          "dockRejectedBaseQuantity",
+          "discrepancyReasonCode",
+          "inspectionNotes",
+          "evidenceReference",
+          "checkedByUserId",
+          "checkedByEmail",
+          "checkedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "dockCheckId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "goodsReceiptLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "payloadHash": {
+            "type": "string"
+          },
+          "previousCustodyStatus": {
+            "type": "string"
+          },
+          "resultingCustodyStatus": {
+            "type": "string"
+          },
+          "pendingCheckBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dockHeldBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dockReleasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dockRejectedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "discrepancyReasonCode": {
+            "type": "string"
+          },
+          "inspectionNotes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "evidenceReference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "checkedByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "checkedByEmail": {
+            "type": "string"
+          },
+          "checkedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "DocumentApprovalDto": {
         "required": [
           "approvalId",
@@ -6107,6 +6702,272 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "EligiblePoReceivingLineDto": {
+        "required": [
+          "poLineId",
+          "lineNumber",
+          "lineageLineKey",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "itemKind",
+          "orderedUomId",
+          "orderedUomCode",
+          "baseUomId",
+          "baseUomCode",
+          "approvedOrderedBaseQuantity",
+          "deliveredBaseQuantity",
+          "pendingCheckBaseQuantity",
+          "heldBaseQuantity",
+          "releasedBaseQuantity",
+          "rejectedBaseQuantity",
+          "valuedAcceptedBaseQuantity",
+          "remainingEligibleBaseQuantity",
+          "allowedUoms"
+        ],
+        "type": "object",
+        "properties": {
+          "poLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lineageLineKey": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "itemKind": {
+            "type": "string"
+          },
+          "orderedUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orderedUomCode": {
+            "type": "string"
+          },
+          "baseUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "approvedOrderedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "deliveredBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pendingCheckBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "heldBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "releasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "rejectedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "valuedAcceptedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingEligibleBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "allowedUoms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EligiblePoReceivingUomDto"
+            }
+          }
+        }
+      },
+      "EligiblePoReceivingUomDto": {
+        "required": [
+          "uomId",
+          "uomCode",
+          "name",
+          "factorToBase",
+          "precisionScale"
+        ],
+        "type": "object",
+        "properties": {
+          "uomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "uomCode": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "factorToBase": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "precisionScale": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "EligiblePurchaseOrderForReceivingDto": {
+        "required": [
+          "purchaseOrderId",
+          "poNumber",
+          "approvedRevisionId",
+          "approvedRevisionNumber",
+          "snapshotHash",
+          "supplierPartnerId",
+          "supplierCode",
+          "supplierName",
+          "orderDate",
+          "expectedDeliveryDate",
+          "deliveryDestination",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poNumber": {
+            "type": "string"
+          },
+          "approvedRevisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "approvedRevisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "snapshotHash": {
+            "type": "string"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "supplierName": {
+            "type": "string"
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "expectedDeliveryDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "deliveryDestination": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EligiblePoReceivingLineDto"
+            }
+          }
+        }
+      },
+      "EligibleReceivingPosResponse": {
+        "required": [
+          "items",
+          "od01Notice"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EligiblePurchaseOrderForReceivingDto"
+            }
+          },
+          "od01Notice": {
+            "type": "string"
           }
         }
       },
@@ -6493,6 +7354,621 @@
             "items": {
               "$ref": "#/components/schemas/GlAccountDto"
             }
+          }
+        }
+      },
+      "GoodsReceiptDetailDto": {
+        "required": [
+          "goodsReceiptId",
+          "receiptNumber",
+          "purchaseOrderId",
+          "poRevisionId",
+          "poNumberSnapshot",
+          "poRevisionNumberSnapshot",
+          "poSnapshotHash",
+          "supplierPartnerId",
+          "supplierCodeSnapshot",
+          "supplierLegalNameSnapshot",
+          "supplierDeliveryNoteNumber",
+          "idempotencyKey",
+          "arrivalPayloadHash",
+          "receivedDate",
+          "receivingStation",
+          "vehicleOrSealRef",
+          "documentEvidenceRef",
+          "status",
+          "totalDeliveredBaseQuantity",
+          "totalRejectedBaseQuantity",
+          "totalValuedAcceptedBaseQuantity",
+          "totalUnresolvedCustodyBaseQuantity",
+          "totalReleasedBaseQuantity",
+          "totalHeldBaseQuantity",
+          "hasFinancialPosting",
+          "linkedGlJournalCount",
+          "notes",
+          "receivedByUserId",
+          "receivedByEmail",
+          "createdAtUtc",
+          "updatedAtUtc",
+          "version",
+          "wasIdempotentReplay",
+          "lines",
+          "dockChecks"
+        ],
+        "type": "object",
+        "properties": {
+          "goodsReceiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptNumber": {
+            "type": "string"
+          },
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poRevisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poNumberSnapshot": {
+            "type": "string"
+          },
+          "poRevisionNumberSnapshot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "poSnapshotHash": {
+            "type": "string"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierCodeSnapshot": {
+            "type": "string"
+          },
+          "supplierLegalNameSnapshot": {
+            "type": "string"
+          },
+          "supplierDeliveryNoteNumber": {
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          },
+          "arrivalPayloadHash": {
+            "type": "string"
+          },
+          "receivedDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "receivingStation": {
+            "type": "string"
+          },
+          "vehicleOrSealRef": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "documentEvidenceRef": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": "string"
+          },
+          "totalDeliveredBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalRejectedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalValuedAcceptedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalUnresolvedCustodyBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalReleasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalHeldBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "hasFinancialPosting": {
+            "type": "boolean"
+          },
+          "linkedGlJournalCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "receivedByUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receivedByEmail": {
+            "type": "string"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "version": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int64"
+          },
+          "wasIdempotentReplay": {
+            "type": "boolean"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoodsReceiptLineDto"
+            }
+          },
+          "dockChecks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DockCheckHistoryDto"
+            }
+          }
+        }
+      },
+      "GoodsReceiptLineDto": {
+        "required": [
+          "goodsReceiptLineId",
+          "lineNumber",
+          "purchaseOrderId",
+          "poRevisionId",
+          "poLineId",
+          "lineageLineKey",
+          "itemId",
+          "itemCodeSnapshot",
+          "itemNameSnapshot",
+          "itemKindSnapshot",
+          "receivedUomId",
+          "receivedUomCodeSnapshot",
+          "baseUomId",
+          "baseUomCodeSnapshot",
+          "uomFactorToBaseSnapshot",
+          "poOrderedBaseQuantitySnapshot",
+          "physicallyDeliveredQuantity",
+          "physicallyDeliveredBaseQuantity",
+          "pendingCheckBaseQuantity",
+          "dockHeldBaseQuantity",
+          "dockReleasedBaseQuantity",
+          "dockRejectedBaseQuantity",
+          "valuedAcceptedBaseQuantity",
+          "unresolvedCustodyBaseQuantity",
+          "overdeliveryExcessBaseQuantity",
+          "custodyStatus",
+          "discrepancyReasonCode",
+          "discrepancyNotes",
+          "conditionEvidenceRef",
+          "maxApprovedReleaseCapBaseQty",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "goodsReceiptLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poRevisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineageLineKey": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCodeSnapshot": {
+            "type": "string"
+          },
+          "itemNameSnapshot": {
+            "type": "string"
+          },
+          "itemKindSnapshot": {
+            "type": "string"
+          },
+          "receivedUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receivedUomCodeSnapshot": {
+            "type": "string"
+          },
+          "baseUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "baseUomCodeSnapshot": {
+            "type": "string"
+          },
+          "uomFactorToBaseSnapshot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "poOrderedBaseQuantitySnapshot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "physicallyDeliveredQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "physicallyDeliveredBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pendingCheckBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dockHeldBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dockReleasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dockRejectedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "valuedAcceptedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unresolvedCustodyBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "overdeliveryExcessBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "custodyStatus": {
+            "type": "string"
+          },
+          "discrepancyReasonCode": {
+            "type": "string"
+          },
+          "discrepancyNotes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "conditionEvidenceRef": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "maxApprovedReleaseCapBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "GoodsReceiptListResponse": {
+        "required": [
+          "items",
+          "totalReceipts",
+          "sumDeliveredBaseQuantity",
+          "sumHeldBaseQuantity",
+          "sumReleasedBaseQuantity",
+          "sumRejectedBaseQuantity",
+          "totalLinkedGlJournals"
+        ],
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GoodsReceiptSummaryDto"
+            }
+          },
+          "totalReceipts": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "sumDeliveredBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "sumHeldBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "sumReleasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "sumRejectedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalLinkedGlJournals": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
+      "GoodsReceiptSummaryDto": {
+        "required": [
+          "goodsReceiptId",
+          "receiptNumber",
+          "purchaseOrderId",
+          "poNumberSnapshot",
+          "poRevisionNumberSnapshot",
+          "supplierCodeSnapshot",
+          "supplierLegalNameSnapshot",
+          "supplierDeliveryNoteNumber",
+          "receivedDate",
+          "receivingStation",
+          "status",
+          "totalDeliveredBaseQuantity",
+          "totalRejectedBaseQuantity",
+          "totalValuedAcceptedBaseQuantity",
+          "totalUnresolvedCustodyBaseQuantity",
+          "totalReleasedBaseQuantity",
+          "totalHeldBaseQuantity",
+          "hasFinancialPosting",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "goodsReceiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptNumber": {
+            "type": "string"
+          },
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poNumberSnapshot": {
+            "type": "string"
+          },
+          "poRevisionNumberSnapshot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "supplierCodeSnapshot": {
+            "type": "string"
+          },
+          "supplierLegalNameSnapshot": {
+            "type": "string"
+          },
+          "supplierDeliveryNoteNumber": {
+            "type": "string"
+          },
+          "receivedDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "receivingStation": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "totalDeliveredBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalRejectedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalValuedAcceptedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalUnresolvedCustodyBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalReleasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalHeldBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "hasFinancialPosting": {
+            "type": "boolean"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -9371,6 +10847,131 @@
           "updatedAtUtc": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "RecordDockCheckRequest": {
+        "required": [
+          "idempotencyKey",
+          "pendingCheckBaseQuantity",
+          "dockHeldBaseQuantity",
+          "dockReleasedBaseQuantity",
+          "dockRejectedBaseQuantity",
+          "discrepancyReasonCode",
+          "inspectionNotes",
+          "evidenceReference"
+        ],
+        "type": "object",
+        "properties": {
+          "idempotencyKey": {
+            "type": "string"
+          },
+          "pendingCheckBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dockHeldBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dockReleasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dockRejectedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "discrepancyReasonCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "inspectionNotes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "evidenceReference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "RecordGoodsReceiptRequest": {
+        "required": [
+          "purchaseOrderId",
+          "supplierDeliveryNoteNumber",
+          "idempotencyKey",
+          "receivedDate",
+          "receivingStation",
+          "vehicleOrSealRef",
+          "documentEvidenceRef",
+          "notes",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierDeliveryNoteNumber": {
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          },
+          "receivedDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "receivingStation": {
+            "type": "string"
+          },
+          "vehicleOrSealRef": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "documentEvidenceRef": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ArrivalLineRequest"
+            }
           }
         }
       },
