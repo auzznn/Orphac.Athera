@@ -93,6 +93,17 @@ public static partial class DemoDataSeeder
             nowUtc,
             ct);
 
+        var u5Id = await EnsureUserAsync(
+            userManager,
+            db,
+            Guid.Parse("11111111-1111-1111-1111-111111111105"),
+            "dewi.lestari@demo.athera.local",
+            "Dewi Lestari (Sales Officer)",
+            SupportedLocales.Indonesian,
+            demoPassword,
+            nowUtc,
+            ct);
+
         var nusaId = await EnsureTenantAsync(db, TenantNusaId, "NUSA", "PT Nusantara Niaga Utama", nowUtc, ct);
         var smdrId = await EnsureTenantAsync(db, TenantSamudraId, "SMDR", "CV Samudra Teknik Mandiri", nowUtc, ct);
 
@@ -129,6 +140,7 @@ public static partial class DemoDataSeeder
         await EnsureMembershipAsync(db, nusaId, u1Id, nowUtc, ct);
         await EnsureMembershipAsync(db, nusaId, u2Id, nowUtc, ct);
         await EnsureMembershipAsync(db, nusaId, u4Id, nowUtc, ct);
+        await EnsureMembershipAsync(db, nusaId, u5Id, nowUtc, ct);
         await EnsureMembershipAsync(db, smdrId, u2Id, nowUtc, ct);
 
         // U1: NUSA-JKT only (NUSA-SBY and SMDR-BDG remain inaccessible; SoD: no approval, quality.inspect, or finance grants)
@@ -187,10 +199,17 @@ public static partial class DemoDataSeeder
         {
             await EnsureGrantAsync(db, nusaId, nusaJktId, u4Id, apClerkPerm, nowUtc, ct);
         }
+        foreach (var salesPerm in RoleTemplates.GetPermissions(RoleTemplates.SalesOfficer))
+        {
+            await EnsureGrantAsync(db, nusaId, nusaJktId, u5Id, salesPerm, nowUtc, ct);
+        }
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.SalesRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.SalesApprove, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.ProcurementRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.ReceivingRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.InventoryRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.ApRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.SalesRead, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.CatalogManage, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.FinanceConfigManage, nowUtc, ct);
@@ -199,6 +218,8 @@ public static partial class DemoDataSeeder
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.ApManage, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.ApApprove, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.ApPost, nowUtc, ct);
+        await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.SalesRead, nowUtc, ct);
+        await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.SalesApprove, nowUtc, ct);
 
         // S03 master data fixtures (NUSA)
         var nusaPcs = await EnsureUomAsync(db, nusaId, "PCS", "Pieces (Satuan Diskrit)", 0, nowUtc, ct);
@@ -403,6 +424,21 @@ public static partial class DemoDataSeeder
             u1Id,
             u2Id,
             u4Id,
+            nowUtc,
+            ct);
+
+        // S12 customers, sales orders, four-eyes commercial commitments & NUSA-SBY read-only SO
+        await EnsureS12SalesDemoDataAsync(
+            db,
+            nusaId,
+            nusaJktId,
+            nusaSbyId,
+            smdrId,
+            smdrBdgId,
+            nusaPcs.UomId,
+            nusaBox.UomId,
+            u5Id,
+            u2Id,
             nowUtc,
             ct);
     }

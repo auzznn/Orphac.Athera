@@ -18,29 +18,16 @@ import {
   submitSupplierPaymentForRelease,
   SupplierPaymentDetailResponse,
 } from "@/lib/api/client";
-import { formatIdr, formatJakartaDateTime } from "@/lib/i18n/messages";
+import { formatIdr, formatJakartaDateTime, todayJakartaDate } from "@/lib/i18n/messages";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
+
+export { todayJakartaDate };
 
 function makeIdempotencyKey(prefix: string): string {
   if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return `${prefix}-${crypto.randomUUID()}`;
   }
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-}
-
-export function todayJakartaDate(): string {
-  try {
-    const formatted = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "Asia/Jakarta",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    }).format(new Date());
-    if (/^\d{4}-\d{2}-\d{2}$/.test(formatted)) return formatted;
-  } catch {
-    // Fallback cleanly
-  }
-  return new Date().toISOString().slice(0, 10);
 }
 
 export function PaymentStatusBadge({ status, label }: { status: string; label: string }) {

@@ -122,6 +122,15 @@ public sealed record StockReservationOutcome(
         new(false, false, statusCode, errorCode, detail, null, null, null);
 }
 
+public sealed record ItemAvailabilitySummary(
+    Guid ItemId,
+    decimal UnrestrictedBaseQuantity,
+    decimal QualityInspectionBaseQuantity,
+    decimal BlockedBaseQuantity,
+    decimal ReservedBaseQuantity,
+    decimal TotalValuedOnHandBaseQuantity,
+    decimal AvailableBaseQuantity);
+
 public sealed record ItemReconciliationResult(
     bool IsReconciled,
     decimal PositionOnHandTotal,
@@ -144,6 +153,28 @@ public sealed record ItemReconciliationResult(
 /// </summary>
 public static class InventoryAvailabilityService
 {
+    public static async Task<IReadOnlyDictionary<Guid, ItemAvailabilitySummary>> GetItemAvailabilityMapAsync(
+        AtheraDbContext db,
+        Guid tenantId,
+        Guid legalEntityId,
+        CancellationToken ct)
+    {
+        var positions = await db.StockPositions.AsNoTracking()
+            .Where(p => p.TenantId == tenantId && p.LegalEntityId == legalEntityId)
+            .ToListAsync(ct);
+
+        return positions.ToDictionary(
+            p => p.ItemId,
+            p => new ItemAvailabilitySummary(
+                p.ItemId,
+                p.UnrestrictedBaseQuantity,
+                p.QualityInspectionBaseQuantity,
+                p.BlockedBaseQuantity,
+                p.ReservedBaseQuantity,
+                p.TotalValuedOnHandBaseQuantity,
+                p.AvailableBaseQuantity));
+    }
+
     public static string ResolveDefaultLocationCodeForStatus(string normalizedStatus) =>
         normalizedStatus switch
         {

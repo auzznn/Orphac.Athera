@@ -8079,6 +8079,567 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Sales.SalesOrder", b =>
+                {
+                    b.Property<Guid>("SalesOrderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("sales_order_id");
+
+                    b.Property<string>("CancellationReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("cancellation_reason");
+
+                    b.Property<DateTimeOffset?>("CancelledAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("cancelled_at_utc");
+
+                    b.Property<Guid?>("CancelledByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("cancelled_by_user_id");
+
+                    b.Property<DateTimeOffset?>("ClosedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("closed_at_utc");
+
+                    b.Property<Guid?>("ClosedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("closed_by_user_id");
+
+                    b.Property<string>("ClosureReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("closure_reason");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasColumnType("char(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<Guid?>("CurrentApprovedRevisionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("current_approved_revision_id");
+
+                    b.Property<int>("CurrentApprovedRevisionNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("current_approved_revision_number");
+
+                    b.Property<Guid>("CustomerPartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("customer_partner_id");
+
+                    b.Property<string>("CustomerReference")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("customer_reference");
+
+                    b.Property<string>("DeliveryAddressSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(240)
+                        .HasColumnType("character varying(240)")
+                        .HasColumnName("delivery_address_snapshot");
+
+                    b.Property<string>("DraftCode")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("draft_code");
+
+                    b.Property<int>("LatestRevisionNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("latest_revision_number");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<DateOnly>("OrderDate")
+                        .HasColumnType("date")
+                        .HasColumnName("order_date");
+
+                    b.Property<int>("PaymentTermsDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("payment_terms_days");
+
+                    b.Property<DateOnly?>("RequestedDeliveryDate")
+                        .HasColumnType("date")
+                        .HasColumnName("requested_delivery_date");
+
+                    b.Property<string>("SoNumber")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("so_number");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("TotalBilledBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("total_billed_base_quantity");
+
+                    b.Property<decimal>("TotalDispatchedBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("total_dispatched_base_quantity");
+
+                    b.Property<decimal>("TotalReservedBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("total_reserved_base_quantity");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("SalesOrderId");
+
+                    b.HasIndex("TenantId", "CreatedByUserId");
+
+                    b.HasIndex("TenantId", "CustomerPartnerId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "DraftCode")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SoNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_sales_orders_entity_so_number")
+                        .HasFilter("so_number IS NOT NULL");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "Status", "OrderDate");
+
+                    b.ToTable("sales_orders", "sales", t =>
+                        {
+                            t.HasCheckConstraint("ck_sales_orders_fulfillment_nonnegative", "total_reserved_base_quantity >= 0 AND total_dispatched_base_quantity >= 0 AND total_billed_base_quantity >= 0");
+
+                            t.HasCheckConstraint("ck_sales_orders_revisions_nonnegative", "latest_revision_number >= 1 AND current_approved_revision_number >= 0 AND current_approved_revision_number <= latest_revision_number");
+
+                            t.HasCheckConstraint("ck_sales_orders_status", "status IN ('DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'CLOSED', 'CANCELLED')");
+
+                            t.HasCheckConstraint("ck_sales_orders_terms", "payment_terms_days >= 0 AND payment_terms_days <= 365");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Sales.SalesOrderLine", b =>
+                {
+                    b.Property<Guid>("SoLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("so_line_id");
+
+                    b.Property<string>("BaseUomCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("base_uom_code_snapshot");
+
+                    b.Property<Guid>("BaseUomId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("base_uom_id");
+
+                    b.Property<decimal>("BilledBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("billed_base_quantity");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("discount_amount");
+
+                    b.Property<decimal>("DispatchedBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("dispatched_base_quantity");
+
+                    b.Property<string>("ItemCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("item_code_snapshot");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("item_id");
+
+                    b.Property<string>("ItemKindSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("item_kind_snapshot");
+
+                    b.Property<string>("ItemNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("item_name_snapshot");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("LineDescription")
+                        .HasMaxLength(240)
+                        .HasColumnType("character varying(240)")
+                        .HasColumnName("line_description");
+
+                    b.Property<int>("LineNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("line_number");
+
+                    b.Property<decimal>("LineSubtotalAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("line_subtotal_amount");
+
+                    b.Property<decimal>("LineTotalAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("line_total_amount");
+
+                    b.Property<string>("LineageLineKey")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)")
+                        .HasColumnName("lineage_line_key");
+
+                    b.Property<decimal>("OrderedBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("ordered_base_quantity");
+
+                    b.Property<decimal>("OrderedQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("ordered_quantity");
+
+                    b.Property<string>("OrderedUomCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("ordered_uom_code_snapshot");
+
+                    b.Property<Guid>("OrderedUomId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ordered_uom_id");
+
+                    b.Property<DateOnly?>("RequestedDeliveryDate")
+                        .HasColumnType("date")
+                        .HasColumnName("requested_delivery_date");
+
+                    b.Property<decimal>("ReservedBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("reserved_base_quantity");
+
+                    b.Property<Guid>("RevisionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("revision_id");
+
+                    b.Property<Guid>("SalesOrderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("sales_order_id");
+
+                    b.Property<decimal>("TaxAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("tax_amount");
+
+                    b.Property<Guid?>("TaxCodeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tax_code_id");
+
+                    b.Property<string>("TaxCodeSnapshot")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("tax_code_snapshot");
+
+                    b.Property<decimal?>("TaxRatePercentSnapshot")
+                        .HasColumnType("numeric(7,4)")
+                        .HasColumnName("tax_rate_percent_snapshot");
+
+                    b.Property<string>("TaxTreatmentClassSnapshot")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("tax_treatment_class_snapshot");
+
+                    b.Property<decimal>("TaxableBaseAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("taxable_base_amount");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("unit_price");
+
+                    b.Property<decimal>("UomFactorToBaseSnapshot")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("uom_factor_to_base_snapshot");
+
+                    b.HasKey("SoLineId");
+
+                    b.HasAlternateKey("TenantId", "LegalEntityId", "SoLineId");
+
+                    b.HasIndex("TenantId", "ItemId");
+
+                    b.HasIndex("TenantId", "OrderedUomId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "TaxCodeId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "RevisionId", "LineNumber")
+                        .IsUnique();
+
+                    b.HasIndex("TenantId", "LegalEntityId", "RevisionId", "LineageLineKey")
+                        .IsUnique()
+                        .HasDatabaseName("IX_sales_order_lines_tenant_id_legal_entity_id_revision_id_li~1");
+
+                    b.ToTable("sales_order_lines", "sales", t =>
+                        {
+                            t.HasCheckConstraint("ck_so_lines_fulfillment_nonnegative", "reserved_base_quantity >= 0 AND dispatched_base_quantity >= 0 AND billed_base_quantity >= 0");
+
+                            t.HasCheckConstraint("ck_so_lines_number", "line_number >= 1");
+
+                            t.HasCheckConstraint("ck_so_lines_od09_zero_discount", "discount_amount = 0");
+
+                            t.HasCheckConstraint("ck_so_lines_positive_qty_price", "ordered_quantity > 0 AND ordered_base_quantity > 0 AND uom_factor_to_base_snapshot > 0 AND unit_price > 0 AND line_subtotal_amount > 0 AND line_total_amount > 0");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Sales.SalesOrderRevision", b =>
+                {
+                    b.Property<Guid>("RevisionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("revision_id");
+
+                    b.Property<Guid?>("ApprovalRecordId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("approval_record_id");
+
+                    b.Property<string>("ChangeReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("change_reason");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasColumnType("char(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<string>("CustomerCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("customer_code_snapshot");
+
+                    b.Property<string>("CustomerLegalNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("customer_legal_name_snapshot");
+
+                    b.Property<string>("CustomerNpwpSnapshot")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("customer_npwp_snapshot");
+
+                    b.Property<Guid>("CustomerPartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("customer_partner_id");
+
+                    b.Property<string>("CustomerPkpStatusSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("customer_pkp_status_snapshot");
+
+                    b.Property<string>("CustomerReference")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("customer_reference");
+
+                    b.Property<DateTimeOffset?>("DecidedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("decided_at_utc");
+
+                    b.Property<Guid?>("DecidedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("decided_by_user_id");
+
+                    b.Property<string>("DecisionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("decision_reason");
+
+                    b.Property<string>("DeliveryAddressSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(240)
+                        .HasColumnType("character varying(240)")
+                        .HasColumnName("delivery_address_snapshot");
+
+                    b.Property<decimal>("GrandTotalAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("grand_total_amount");
+
+                    b.Property<bool>("IsFrozen")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_frozen");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("notes");
+
+                    b.Property<DateOnly>("OrderDate")
+                        .HasColumnType("date")
+                        .HasColumnName("order_date");
+
+                    b.Property<decimal>("OutputTaxTotalAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("output_tax_total_amount");
+
+                    b.Property<int>("PaymentTermsDays")
+                        .HasColumnType("integer")
+                        .HasColumnName("payment_terms_days");
+
+                    b.Property<DateOnly?>("RequestedDeliveryDate")
+                        .HasColumnType("date")
+                        .HasColumnName("requested_delivery_date");
+
+                    b.Property<int>("RevisionNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("revision_number");
+
+                    b.Property<Guid>("SalesOrderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("sales_order_id");
+
+                    b.Property<string>("SnapshotHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("snapshot_hash");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset?>("SubmittedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at_utc");
+
+                    b.Property<Guid?>("SubmittedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("submitted_by_user_id");
+
+                    b.Property<decimal>("SubtotalAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("subtotal_amount");
+
+                    b.Property<Guid?>("SupersedesRevisionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supersedes_revision_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("TotalOrderedBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("total_ordered_base_quantity");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("RevisionId");
+
+                    b.HasIndex("TenantId", "CustomerPartnerId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ApprovalRecordId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_so_revisions_approval_record")
+                        .HasFilter("approval_record_id IS NOT NULL");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupersedesRevisionId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SalesOrderId", "RevisionNumber")
+                        .IsUnique();
+
+                    b.ToTable("sales_order_revisions", "sales", t =>
+                        {
+                            t.HasCheckConstraint("ck_so_revisions_four_eyes", "decided_by_user_id IS NULL OR submitted_by_user_id IS NULL OR decided_by_user_id <> submitted_by_user_id");
+
+                            t.HasCheckConstraint("ck_so_revisions_number", "revision_number >= 1");
+
+                            t.HasCheckConstraint("ck_so_revisions_status", "status IN ('DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'REJECTED', 'SUPERSEDED', 'CANCELLED')");
+
+                            t.HasCheckConstraint("ck_so_revisions_terms", "payment_terms_days >= 0 AND payment_terms_days <= 365");
+
+                            t.HasCheckConstraint("ck_so_revisions_totals_nonnegative", "subtotal_amount >= 0 AND output_tax_total_amount >= 0 AND grand_total_amount >= 0 AND total_ordered_base_quantity >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Sales.SalesOrderSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "FiscalYear");
+
+                    b.ToTable("sales_order_sequences", "sales", t =>
+                        {
+                            t.HasCheckConstraint("ck_sales_order_sequences_nonnegative", "last_number >= 0");
+
+                            t.HasCheckConstraint("ck_sales_order_sequences_year", "fiscal_year >= 2000 AND fiscal_year <= 2100");
+                        });
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Tax.TaxCode", b =>
                 {
                     b.Property<Guid>("TaxCodeId")
@@ -10501,6 +11062,99 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("TenantId", "LegalEntityId", "ValuedAcceptanceLineId")
                         .HasPrincipalKey("TenantId", "LegalEntityId", "ValuedAcceptanceLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Sales.SalesOrder", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "CreatedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Partners.Partner", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "CustomerPartnerId")
+                        .HasPrincipalKey("TenantId", "PartnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Sales.SalesOrderLine", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Catalog.Item", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "ItemId")
+                        .HasPrincipalKey("TenantId", "ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Catalog.UnitOfMeasure", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "OrderedUomId")
+                        .HasPrincipalKey("TenantId", "UomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Sales.SalesOrderRevision", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "RevisionId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "RevisionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Tax.TaxCode", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "TaxCodeId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "TaxCodeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Sales.SalesOrderRevision", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Partners.Partner", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "CustomerPartnerId")
+                        .HasPrincipalKey("TenantId", "PartnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Approval.DocumentApproval", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ApprovalRecordId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ApprovalId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Orphac.Athera.Modules.Sales.SalesOrder", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SalesOrderId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SalesOrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Sales.SalesOrderRevision", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupersedesRevisionId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "RevisionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Sales.SalesOrderSequence", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

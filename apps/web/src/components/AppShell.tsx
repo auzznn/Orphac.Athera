@@ -453,6 +453,23 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       };
     })(),
     {
+      key: "sales",
+      label: t.shell.navItems.sales,
+      icon: Receipt,
+      href:
+        baseEntityPath &&
+        (permissionSet.has("sales.read") ||
+          permissionSet.has("sales.manage") ||
+          permissionSet.has("sales.approve"))
+          ? `${baseEntityPath}/sales-orders`
+          : null,
+      permitted:
+        permissionSet.has("sales.read") ||
+        permissionSet.has("sales.manage") ||
+        permissionSet.has("sales.approve"),
+      active: pathname.endsWith("/sales-orders") || pathname.includes("/sales-orders/"),
+    },
+    {
       key: "finance",
       label: t.shell.navItems.finance,
       icon: Landmark,
@@ -476,15 +493,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       href: baseEntityPath && (permissionSet.has("admin.read") || permissionSet.has("admin.manage")) ? `${baseEntityPath}/admin` : null,
       permitted: permissionSet.has("admin.read") || permissionSet.has("admin.manage"),
       active: pathname.endsWith("/admin"),
-    },
-  ];
-
-  const plannedModuleItems = [
-    {
-      key: "sales",
-      label: t.shell.navItems.sales,
-      icon: Receipt,
-      permitted: permissionSet.has("sales.read"),
     },
   ];
 
@@ -781,35 +789,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         </span>
                         <Lock className="h-3.5 w-3.5 shrink-0 opacity-75" strokeWidth={1.75} aria-hidden="true" />
                         <span className="sr-only"> — {t.shell.lockedSuffix}</span>
-                      </button>
-                    );
-                  })}
-
-                  {plannedModuleItems.map((item) => {
-                    const Icon = item.icon;
-                    const showPermitted = Boolean(activeScope && item.permitted);
-                    return (
-                      <button
-                        key={item.key}
-                        type="button"
-                        disabled
-                        className="flex min-h-10 w-full cursor-not-allowed items-center justify-between rounded-[var(--radius-sm)] px-2.5 py-2 text-left text-sm text-[var(--text-muted)]"
-                      >
-                        <span className="flex items-center gap-2.5">
-                          <Icon className="h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
-                          <span>{item.label}</span>
-                        </span>
-                        {showPermitted ? (
-                          <span className="rounded-[var(--radius-sm)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] px-1.5 py-0.5 text-[11px] font-medium text-[var(--text-secondary)]">
-                            {t.shell.modulePlannedHint}
-                          </span>
-                        ) : (
-                          <Lock className="h-3.5 w-3.5 shrink-0 opacity-75" strokeWidth={1.75} aria-hidden="true" />
-                        )}
-                        <span className="sr-only">
-                          {" "}
-                          — {showPermitted ? t.shell.permittedSuffix : t.shell.lockedSuffix}
-                        </span>
                       </button>
                     );
                   })}

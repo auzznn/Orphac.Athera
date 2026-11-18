@@ -1540,6 +1540,150 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/reference-data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSalesOrdersReferenceData"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListSalesOrders"];
+        put?: never;
+        post: operations["CreateSalesOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSalesOrderDetail"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteSalesOrderForbidden"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/revisions/{revisionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdateSalesOrderRevision"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/revisions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateSalesOrderAmendment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/revisions/{revisionId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SubmitSalesOrderRevision"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/revisions/{revisionId}/decide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DecideSalesOrderRevision"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CancelSalesOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CloseSalesOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1888,6 +2032,9 @@ export interface components {
         CloseOrCancelPoRequest: {
             reason: string;
         };
+        CloseOrCancelSoRequest: {
+            reason: string;
+        };
         ConvertQuantityPreviewRequest: {
             /** Format: uuid */
             sourceUomId: string;
@@ -2028,6 +2175,25 @@ export interface components {
             notes: null | string;
             lines: components["schemas"]["PoLineInputDto"][];
         };
+        CreateSalesOrderRequest: {
+            /** Format: uuid */
+            customerPartnerId: string;
+            currencyCode: null | string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            requestedDeliveryDate: null | string;
+            deliveryAddressSnapshot: string;
+            /** Format: int32 */
+            paymentTermsDays: number | string;
+            customerReference: null | string;
+            creditLimitOverrideRequested: boolean;
+            notes: null | string;
+            lines: components["schemas"]["SoLineInputDto"][];
+        };
+        CreateSoAmendmentRequest: {
+            changeReason: string;
+        };
         CreateStockReservationRequest: {
             /** Format: uuid */
             itemId: string;
@@ -2160,6 +2326,11 @@ export interface components {
         DecidePoRevisionRequest: {
             decision: string;
             reason: string;
+        };
+        DecideSoRevisionRequest: {
+            decision: string;
+            reason: string;
+            soNumberOverride?: null | string;
         };
         DecideSupplierBillRequest: {
             decision: string;
@@ -4276,8 +4447,358 @@ export interface components {
             reversalPostingDate: string;
             reason: string;
         };
+        SalesCustomerOptionDto: {
+            /** Format: uuid */
+            partnerId: string;
+            partnerCode: string;
+            legalName: string;
+            displayName: string;
+            taxRegistrationNpwp: null | string;
+            taxPkpStatus: string;
+            /** Format: int32 */
+            defaultPaymentTermsDays: number | string;
+            entityScopeMode: string;
+        };
+        SalesItemAvailabilityDto: {
+            /** Format: double */
+            unrestrictedBaseQuantity: number | string;
+            /** Format: double */
+            reservedBaseQuantity: number | string;
+            /** Format: double */
+            availableBaseQuantity: number | string;
+            /** Format: double */
+            totalValuedOnHandBaseQuantity: number | string;
+        };
+        SalesItemOptionDto: {
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            name: string;
+            itemKind: string;
+            /** Format: uuid */
+            baseUomId: string;
+            baseUomCode: string;
+            /** Format: uuid */
+            defaultSalesUomId: string;
+            allowedUoms: components["schemas"]["SalesItemUomOptionDto"][];
+            stockAvailability: components["schemas"]["SalesItemAvailabilityDto"];
+        };
+        SalesItemUomOptionDto: {
+            /** Format: uuid */
+            uomId: string;
+            uomCode: string;
+            name: string;
+            /** Format: double */
+            factorToBase: number | string;
+            /** Format: int32 */
+            precisionScale: number | string;
+        };
+        SalesOrderDetailDto: {
+            /** Format: uuid */
+            salesOrderId: string;
+            draftCode: string;
+            soNumber: null | string;
+            status: string;
+            fulfillmentProgress: string;
+            /** Format: uuid */
+            customerPartnerId: string;
+            customerCode: string;
+            customerName: string;
+            currencyCode: string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            requestedDeliveryDate: null | string;
+            deliveryAddressSnapshot: string;
+            /** Format: int32 */
+            paymentTermsDays: number | string;
+            customerReference: null | string;
+            /** Format: uuid */
+            currentApprovedRevisionId: null | string;
+            /** Format: int32 */
+            currentApprovedRevisionNumber: number | string;
+            /** Format: int32 */
+            latestRevisionNumber: number | string;
+            /** Format: double */
+            approvedOrderedBaseQuantity: number | string;
+            /** Format: double */
+            totalReservedBaseQuantity: number | string;
+            /** Format: double */
+            totalDispatchedBaseQuantity: number | string;
+            /** Format: double */
+            totalBilledBaseQuantity: number | string;
+            /** Format: uuid */
+            closedByUserId: null | string;
+            /** Format: date-time */
+            closedAtUtc: null | string;
+            closureReason: null | string;
+            /** Format: uuid */
+            cancelledByUserId: null | string;
+            /** Format: date-time */
+            cancelledAtUtc: null | string;
+            cancellationReason: null | string;
+            /** Format: uuid */
+            createdByUserId: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: int64 */
+            version: number | string;
+            revisions: components["schemas"]["SalesOrderRevisionDto"][];
+        };
+        SalesOrderLineDto: {
+            /** Format: uuid */
+            soLineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            lineageLineKey: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCodeSnapshot: string;
+            itemNameSnapshot: string;
+            itemKindSnapshot: string;
+            /** Format: uuid */
+            orderedUomId: string;
+            orderedUomCodeSnapshot: string;
+            /** Format: uuid */
+            baseUomId: string;
+            baseUomCodeSnapshot: string;
+            /** Format: double */
+            uomFactorToBaseSnapshot: number | string;
+            /** Format: double */
+            orderedQuantity: number | string;
+            /** Format: double */
+            orderedBaseQuantity: number | string;
+            /** Format: double */
+            reservedBaseQuantity: number | string;
+            /** Format: double */
+            dispatchedBaseQuantity: number | string;
+            /** Format: double */
+            billedBaseQuantity: number | string;
+            /** Format: double */
+            unitPrice: number | string;
+            /** Format: double */
+            discountAmount: number | string;
+            /** Format: double */
+            lineSubtotalAmount: number | string;
+            /** Format: uuid */
+            taxCodeId: null | string;
+            taxCodeSnapshot: null | string;
+            taxTreatmentClassSnapshot: null | string;
+            /** Format: double */
+            taxRatePercentSnapshot: null | number | string;
+            /** Format: double */
+            taxableBaseAmount: number | string;
+            /** Format: double */
+            taxAmount: number | string;
+            /** Format: double */
+            lineTotalAmount: number | string;
+            /** Format: date */
+            requestedDeliveryDate: null | string;
+            lineDescription: null | string;
+        };
+        SalesOrderListResponse: {
+            items: components["schemas"]["SalesOrderSummaryDto"][];
+        };
+        SalesOrderRevisionDto: {
+            /** Format: uuid */
+            revisionId: string;
+            /** Format: int32 */
+            revisionNumber: number | string;
+            /** Format: uuid */
+            supersedesRevisionId: null | string;
+            status: string;
+            isFrozen: boolean;
+            /** Format: uuid */
+            customerPartnerId: string;
+            customerCodeSnapshot: string;
+            customerLegalNameSnapshot: string;
+            customerNpwpSnapshot: null | string;
+            customerPkpStatusSnapshot: string;
+            currencyCode: string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            requestedDeliveryDate: null | string;
+            deliveryAddressSnapshot: string;
+            /** Format: int32 */
+            paymentTermsDays: number | string;
+            customerReference: null | string;
+            changeReason: null | string;
+            notes: null | string;
+            /** Format: double */
+            subtotalAmount: number | string;
+            /** Format: double */
+            outputTaxTotalAmount: number | string;
+            /** Format: double */
+            grandTotalAmount: number | string;
+            /** Format: double */
+            totalOrderedBaseQuantity: number | string;
+            snapshotHash: string;
+            /** Format: uuid */
+            createdByUserId: string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: uuid */
+            submittedByUserId: null | string;
+            /** Format: date-time */
+            submittedAtUtc: null | string;
+            /** Format: uuid */
+            decidedByUserId: null | string;
+            /** Format: date-time */
+            decidedAtUtc: null | string;
+            decisionReason: null | string;
+            /** Format: int64 */
+            version: number | string;
+            lines: components["schemas"]["SalesOrderLineDto"][];
+            approval: null | components["schemas"]["DocumentApprovalDto"];
+            diffFromBaseline: null | components["schemas"]["SoRevisionDiffReportDto"];
+        };
+        SalesOrdersReferenceDataResponse: {
+            customers: components["schemas"]["SalesCustomerOptionDto"][];
+            items: components["schemas"]["SalesItemOptionDto"][];
+            outputTaxCodes: components["schemas"]["SalesTaxOptionDto"][];
+            od09Notice: string;
+            od02Notice: string;
+        };
+        SalesOrderSummaryDto: {
+            /** Format: uuid */
+            salesOrderId: string;
+            draftCode: string;
+            soNumber: null | string;
+            status: string;
+            fulfillmentProgress: string;
+            /** Format: uuid */
+            customerPartnerId: string;
+            customerCode: string;
+            customerName: string;
+            currencyCode: string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            requestedDeliveryDate: null | string;
+            deliveryAddressSnapshot: string;
+            /** Format: int32 */
+            paymentTermsDays: number | string;
+            customerReference: null | string;
+            /** Format: int32 */
+            currentApprovedRevisionNumber: number | string;
+            /** Format: int32 */
+            latestRevisionNumber: number | string;
+            hasOpenRevision: boolean;
+            /** Format: uuid */
+            pendingApprovalRevisionId: null | string;
+            /** Format: uuid */
+            pendingApprovalSubmittedByUserId: null | string;
+            /** Format: double */
+            currentSubtotalAmount: number | string;
+            /** Format: double */
+            currentOutputTaxTotalAmount: number | string;
+            /** Format: double */
+            currentGrandTotalAmount: number | string;
+            /** Format: double */
+            currentOrderedBaseQuantity: number | string;
+            /** Format: double */
+            totalReservedBaseQuantity: number | string;
+            /** Format: double */
+            totalDispatchedBaseQuantity: number | string;
+            /** Format: double */
+            totalBilledBaseQuantity: number | string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            /** Format: double */
+            pendingGrandTotalAmount?: null | number | string;
+        };
+        SalesTaxOptionDto: {
+            /** Format: uuid */
+            taxCodeId: string;
+            code: string;
+            name: string;
+            taxFamily: string;
+            direction: string;
+            treatmentClass: string;
+            /** Format: double */
+            nominalRatePercent: number | string;
+            /** Format: int32 */
+            taxableBaseRatioNumerator: number | string;
+            /** Format: int32 */
+            taxableBaseRatioDenominator: number | string;
+            requiresCounterpartyNpwp: boolean;
+            /** Format: date */
+            effectiveFrom: string;
+            /** Format: date */
+            effectiveTo: null | string;
+            reviewStatus: string;
+        };
         SimulatePaymentInstructionRequest: {
             formatCode: null | string;
+        };
+        SoHeaderFieldDiffDto: {
+            fieldKey: string;
+            previousValue: null | string;
+            currentValue: null | string;
+        };
+        SoLineDiffItemDto: {
+            lineageLineKey: string;
+            changeKind: string;
+            previousItemCode: null | string;
+            currentItemCode: null | string;
+            /** Format: double */
+            previousQuantity: null | number | string;
+            /** Format: double */
+            currentQuantity: null | number | string;
+            previousUomCode: null | string;
+            currentUomCode: null | string;
+            /** Format: double */
+            previousUnitPrice: null | number | string;
+            /** Format: double */
+            currentUnitPrice: null | number | string;
+            /** Format: double */
+            previousSubtotal: null | number | string;
+            /** Format: double */
+            currentSubtotal: null | number | string;
+        };
+        SoLineInputDto: {
+            lineageLineKey: null | string;
+            /** Format: uuid */
+            itemId: string;
+            /** Format: uuid */
+            orderedUomId: string;
+            /** Format: double */
+            orderedQuantity: number | string;
+            /** Format: double */
+            unitPrice: number | string;
+            /**
+             * Format: double
+             * @default 0
+             */
+            discountAmount: number | string;
+            /** Format: uuid */
+            taxCodeId?: null | string;
+            /** Format: date */
+            requestedDeliveryDate?: null | string;
+            lineDescription?: null | string;
+        };
+        SoRevisionDiffReportDto: {
+            /** Format: int32 */
+            targetRevisionNumber: number | string;
+            /** Format: int32 */
+            baselineRevisionNumber: null | number | string;
+            headerChanges: components["schemas"]["SoHeaderFieldDiffDto"][];
+            lineChanges: components["schemas"]["SoLineDiffItemDto"][];
+            /** Format: double */
+            previousGrandTotal: null | number | string;
+            /** Format: double */
+            currentGrandTotal: number | string;
+            /** Format: double */
+            grandTotalDelta: number | string;
+            /** Format: double */
+            previousOrderedBaseQty: number | string;
+            /** Format: double */
+            currentOrderedBaseQty: number | string;
+            /** Format: double */
+            orderedBaseQtyDelta: number | string;
         };
         StockLocationBalanceDto: {
             /** Format: uuid */
@@ -5089,6 +5610,22 @@ export interface components {
             changeReason: null | string;
             notes: null | string;
             lines: components["schemas"]["PoLineInputDto"][];
+        };
+        UpdateSalesOrderRevisionRequest: {
+            /** Format: uuid */
+            customerPartnerId: string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            requestedDeliveryDate: null | string;
+            deliveryAddressSnapshot: string;
+            /** Format: int32 */
+            paymentTermsDays: number | string;
+            customerReference: null | string;
+            creditLimitOverrideRequested: boolean;
+            changeReason: null | string;
+            notes: null | string;
+            lines: components["schemas"]["SoLineInputDto"][];
         };
         UpdateSupplierBillRequest: {
             supplierInvoiceNumber: string;
@@ -11978,6 +12515,648 @@ export interface operations {
             };
             /** @description Unauthorized */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetSalesOrdersReferenceData: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesOrdersReferenceDataResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ListSalesOrders: {
+        parameters: {
+            query?: {
+                status?: string;
+                search?: string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesOrderListResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateSalesOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSalesOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetSalesOrderDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                salesOrderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesOrderDetailDto"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    DeleteSalesOrderForbidden: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                salesOrderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpdateSalesOrderRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                salesOrderId: string;
+                revisionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSalesOrderRevisionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateSalesOrderAmendment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                salesOrderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSoAmendmentRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    SubmitSalesOrderRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                salesOrderId: string;
+                revisionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesOrderDetailDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    DecideSalesOrderRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                salesOrderId: string;
+                revisionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideSoRevisionRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CancelSalesOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                salesOrderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CloseOrCancelSoRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CloseSalesOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                salesOrderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CloseOrCancelSoRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesOrderDetailDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
                 headers: {
                     [name: string]: unknown;
                 };

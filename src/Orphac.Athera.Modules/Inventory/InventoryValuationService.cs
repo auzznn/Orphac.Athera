@@ -644,6 +644,13 @@ public static class InventoryValuationService
                 DO UPDATE SET last_number = cash.match_sequences.last_number + 1
                 RETURNING last_number;
                 """,
+            "sales.sales_order_sequences" => """
+                INSERT INTO sales.sales_order_sequences (tenant_id, legal_entity_id, fiscal_year, last_number)
+                VALUES (@tid, @eid, @fy, 1)
+                ON CONFLICT (tenant_id, legal_entity_id, fiscal_year)
+                DO UPDATE SET last_number = sales.sales_order_sequences.last_number + 1
+                RETURNING last_number;
+                """,
             _ => throw new ArgumentException($"Unsupported sequence table '{qualifiedTableName}'.", nameof(qualifiedTableName))
         };
 

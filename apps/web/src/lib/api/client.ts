@@ -2609,3 +2609,250 @@ export async function reverseBankPaymentMatch(
   }
   return data;
 }
+
+// ---------- S12 Customer Sales Orders & Commercial Commitments ----------
+
+export type SalesCustomerOptionDto = components["schemas"]["SalesCustomerOptionDto"];
+export type SalesItemUomOptionDto = components["schemas"]["SalesItemUomOptionDto"];
+export type SalesItemAvailabilityDto = components["schemas"]["SalesItemAvailabilityDto"];
+export type SalesItemOptionDto = components["schemas"]["SalesItemOptionDto"];
+export type SalesTaxOptionDto = components["schemas"]["SalesTaxOptionDto"];
+export type SalesOrdersReferenceDataResponse = components["schemas"]["SalesOrdersReferenceDataResponse"];
+export type SalesOrderSummaryDto = components["schemas"]["SalesOrderSummaryDto"];
+export type SalesOrderListResponse = components["schemas"]["SalesOrderListResponse"];
+export type SalesOrderLineDto = components["schemas"]["SalesOrderLineDto"];
+export type SoHeaderFieldDiffDto = components["schemas"]["SoHeaderFieldDiffDto"];
+export type SoLineDiffItemDto = components["schemas"]["SoLineDiffItemDto"];
+export type SoRevisionDiffReportDto = components["schemas"]["SoRevisionDiffReportDto"];
+export type SalesOrderRevisionDto = components["schemas"]["SalesOrderRevisionDto"];
+export type SalesOrderDetailDto = components["schemas"]["SalesOrderDetailDto"];
+export type SoLineInputDto = components["schemas"]["SoLineInputDto"];
+export type CreateSalesOrderRequest = components["schemas"]["CreateSalesOrderRequest"];
+export type UpdateSalesOrderRevisionRequest = components["schemas"]["UpdateSalesOrderRevisionRequest"];
+export type CreateSoAmendmentRequest = components["schemas"]["CreateSoAmendmentRequest"];
+export type DecideSoRevisionRequest = components["schemas"]["DecideSoRevisionRequest"];
+export type CloseOrCancelSoRequest = components["schemas"]["CloseOrCancelSoRequest"];
+
+export async function fetchSalesOrdersReferenceData(
+  tenantId: string,
+  entityId: string,
+): Promise<SalesOrdersReferenceDataResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/reference-data",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function fetchSalesOrders(
+  tenantId: string,
+  entityId: string,
+  options?: { status?: string; search?: string },
+): Promise<SalesOrderListResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query: { status: options?.status || undefined, search: options?.search || undefined },
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function fetchSalesOrderDetail(
+  tenantId: string,
+  entityId: string,
+  salesOrderId: string,
+): Promise<SalesOrderDetailDto> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}",
+    {
+      params: { path: { tenantId, entityId, salesOrderId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function createSalesOrder(
+  tenantId: string,
+  entityId: string,
+  payload: CreateSalesOrderRequest,
+): Promise<SalesOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function updateSalesOrderRevision(
+  tenantId: string,
+  entityId: string,
+  salesOrderId: string,
+  revisionId: string,
+  payload: UpdateSalesOrderRevisionRequest,
+): Promise<SalesOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/revisions/{revisionId}",
+    {
+      params: { path: { tenantId, entityId, salesOrderId, revisionId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function createSalesOrderAmendment(
+  tenantId: string,
+  entityId: string,
+  salesOrderId: string,
+  payload: CreateSoAmendmentRequest,
+): Promise<SalesOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/revisions",
+    {
+      params: { path: { tenantId, entityId, salesOrderId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function submitSalesOrderRevision(
+  tenantId: string,
+  entityId: string,
+  salesOrderId: string,
+  revisionId: string,
+): Promise<SalesOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/revisions/{revisionId}/submit",
+    {
+      params: { path: { tenantId, entityId, salesOrderId, revisionId } },
+      headers: { "X-CSRF-Token": csrf },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function decideSalesOrderRevision(
+  tenantId: string,
+  entityId: string,
+  salesOrderId: string,
+  revisionId: string,
+  payload: DecideSoRevisionRequest,
+): Promise<SalesOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/revisions/{revisionId}/decide",
+    {
+      params: { path: { tenantId, entityId, salesOrderId, revisionId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function cancelSalesOrder(
+  tenantId: string,
+  entityId: string,
+  salesOrderId: string,
+  payload: CloseOrCancelSoRequest,
+): Promise<SalesOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/cancel",
+    {
+      params: { path: { tenantId, entityId, salesOrderId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function closeSalesOrder(
+  tenantId: string,
+  entityId: string,
+  salesOrderId: string,
+  payload: CloseOrCancelSoRequest,
+): Promise<SalesOrderDetailDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/sales-orders/{salesOrderId}/close",
+    {
+      params: { path: { tenantId, entityId, salesOrderId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}

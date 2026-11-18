@@ -1,0 +1,128 @@
+
+> @orphac-athera/web@0.1.0 api:check
+> openapi-typescript ../../docs/contracts/openapi.v1.json -o .openapi.check.d.ts && diff -u src/lib/api/schema.d.ts .openapi.check.d.ts && rm -f .openapi.check.d.ts
+
+✨ openapi-typescript 7.13.0
+🚀 ../../docs/contracts/openapi.v1.json → .openapi.check.d.ts [248.2ms]
+
+> @orphac-athera/web@0.1.0 typecheck
+> tsc --noEmit
+
+
+> @orphac-athera/web@0.1.0 lint
+> eslint .
+
+
+ RUN  v5.1.0 /Users/macbook/Documents/orphac/Orphac.Athera/apps/web
+
+ ✓ src/__tests__/s04-finance-gl.test.tsx (2 tests) 478ms
+   ✓ S04 Finance & GL UI (2)
+     ✓ tracks live balanced/unbalanced variance cleanly and supports CoA & Tax tabs 418ms
+ ✓ src/__tests__/s05-procurement-po.test.tsx (2 tests) 487ms
+   ✓ S05 Procurement & PO UI (2)
+     ✓ computes exact BigInt UoM base & PPN 11/12 totals and renders revision diff with self-approval SoD lock 366ms
+ ✓ src/__tests__/s08-stock-locations-quality.test.tsx (4 tests) 577ms
+ ✓ src/__tests__/s11-payments-bank-reconciliation.test.tsx (3 tests) 663ms
+   ✓ S11 Payments, Outbound Clearing & Bank Reconciliation UI (3)
+     ✓ renders clearing KPIs with 1120 reconciled proof and enforces OD-02 self-release SoD notice 388ms
+ ✓ src/__tests__/s10-supplier-returns-credits.test.tsx (3 tests) 690ms
+   ✓ S10 Supplier Returns, Replacements & Credits UI (3)
+     ✓ renders queued M1/M2/M3 sources, toggles OD-05/OD-07 matrix, previews M4 block, and creates credit return draft 428ms
+ ✓ src/__tests__/s07-valued-acceptance-inventory.test.tsx (2 tests) 834ms
+   ✓ S07 Gate 2 Valued Acceptance & Inventory Valuation UI (2)
+     ✓ enforces Gate 2 preview-before-confirm, closed-period blocking, and invalidation on edit 762ms
+ ✓ src/__tests__/s09-supplier-bills-ap.test.tsx (5 tests) 1138ms
+   ✓ S09 Supplier Invoice Three-Way Match, AP & Price Difference UI (5)
+     ✓ renders live 3-way match preview with DEC-P2P-013 stock-coverage split, taxes, and locale reactivity 430ms
+ ✓ src/__tests__/s03-partners-catalog.test.tsx (2 tests) 199ms
+ ✓ src/__tests__/auth-ui.test.tsx (2 tests) 133ms
+ ✓ src/__tests__/s06-receiving-dock.test.tsx (3 tests) 285ms
+ ✓ src/__tests__/s02-admin-approvals.test.tsx (2 tests) 155ms
+ ✓ src/__tests__/s12-sales-orders.test.tsx (3 tests) 384ms
+ ✓ src/__tests__/workspace-ui.test.tsx (3 tests) 110ms
+
+ Test Files  13 passed (13)
+      Tests  36 passed (36)
+   Start at  03:12:29
+   Duration  3.18s (environment 41%, tests 32%, import 19%, setup 5%, transform 3%)
+
+Environment  jsdom was created 13 times · 7.88s total, 41% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+
+> @orphac-athera/web@0.1.0 build
+> next build
+
+▲ Next.js 16.4.6 (Turbopack)
+✓ Running next.config.ts took 78ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 473ms
+  Running TypeScript ...
+  Finished TypeScript in 1382ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/3) ...
+✓ Generating static pages using 7 workers (3/3) in 83ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/[...path]
+├ ƒ /invitations
+├ ○ /login
+├ ƒ /w/[tenantId]/[entityId]
+├ ƒ /w/[tenantId]/[entityId]/admin
+├ ƒ /w/[tenantId]/[entityId]/approvals
+├ ƒ /w/[tenantId]/[entityId]/catalog
+├ ƒ /w/[tenantId]/[entityId]/finance
+├ ƒ /w/[tenantId]/[entityId]/inventory
+├ ƒ /w/[tenantId]/[entityId]/partners
+├ ƒ /w/[tenantId]/[entityId]/payables
+├ ƒ /w/[tenantId]/[entityId]/payments
+├ ƒ /w/[tenantId]/[entityId]/procurement
+├ ƒ /w/[tenantId]/[entityId]/receiving
+├ ƒ /w/[tenantId]/[entityId]/returns
+├ ƒ /w/[tenantId]/[entityId]/sales-orders
+└ ƒ /workspaces
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+[]
+
+> @orphac-athera/web@0.1.0 e2e
+> playwright test
+
+
+Running 25 tests using 1 worker
+
+  ✓   1 [chromium] › e2e/s00-auth.spec.ts:10:3 › S00 Authenticated Vertical Path › unauthenticated redirect, CSRF check, login failure/success, screenshots and sign out (2.3s)
+  ✓   2 [chromium] › e2e/s01-workspace.spec.ts:32:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-01 U1 sees only NUSA-JKT and hostile tenant/entity URLs fail safely with zero leak (1.3s)
+  ✓   3 [chromium] › e2e/s01-workspace.spec.ts:68:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-02 U2 navigates multi-tenant directory, switches entities and tenants cleanly, and fits mobile (1.4s)
+  ✓   4 [chromium] › e2e/s01-workspace.spec.ts:126:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-03 U3 authenticated without workspaces sees accessible default-deny guidance (566ms)
+  ✓   5 [chromium] › e2e/s02-admin-approvals.spec.ts:34:3 › S02 Organization Administration, Approvals, Audit and Outbox › S02-E2E-01 U2 invites U3, U3 accepts token and gains NUSA-JKT, then U2 dispatches outbox and revokes U3 (2.9s)
+  ✓   6 [chromium] › e2e/s02-admin-approvals.spec.ts:99:3 › S02 Organization Administration, Approvals, Audit and Outbox › S02-E2E-02 U1 submits approval request, self-approval blocked in UI, and U2 approves independently (1.6s)
+  ✓   7 [chromium] › e2e/s03-partners-catalog.spec.ts:37:3 › S03 Partners, Catalogue and Unit of Measure › S03-E2E-01 U1 creates dual partner & stock item with exact UoM 3 BOX = 72 PCS and NUSA-JKT eligibility (2.2s)
+  ✓   8 [chromium] › e2e/s03-partners-catalog.spec.ts:131:3 › S03 Partners, Catalogue and Unit of Measure › S03-E2E-02 U2 on NUSA-SBY sees read-only restrictions and U1 is denied foreign SMDR master URL (1.2s)
+  ✓   9 [chromium] › e2e/s04-finance-gl.spec.ts:37:3 › S04 Financial Configuration and Immutable Posting Kernel › S04-E2E-01 U2 tries unbalanced/closed-period rejections, posts balanced journal, reverses it, and checks CoA & OD-07 tax (2.3s)
+  ✓  10 [chromium] › e2e/s04-finance-gl.spec.ts:129:3 › S04 Financial Configuration and Immutable Posting Kernel › S04-E2E-02 U2 on NUSA-SBY sees read-only GL, U1 gets 403 on NUSA-JKT finance and 404 on SMDR (1.2s)
+  ✓  11 [chromium] › e2e/s05-procurement-po.spec.ts:52:3 › S05 Purchase Orders, Approved Revisions and Four-Eyes › S05-E2E-01 U1 drafts & submits multi-line PO, self-approval is blocked, U2 approves Rev 1, U1 amends Rev 2, U2 compares diff & approves, Rev 1 unchanged, U1 short-closes (4.9s)
+  ✓  12 [chromium] › e2e/s05-procurement-po.spec.ts:187:3 › S05 Purchase Orders, Approved Revisions and Four-Eyes › S05-E2E-02 U2 sees NUSA-SBY read-only PO with Hash Snapshot, gets 403 on SMDR-BDG, and U1 gets 404 on SMDR (1.1s)
+  ✓  13 [chromium] › e2e/s06-receiving-dock.spec.ts:66:3 › S06 Dock Custody & Receiving Gate One (Unvalued) › S06-E2E-01 Partial arrival, unvalued rejection split, OD-01 overdelivery hold & release block, and zero GL/GRNI proof (3.7s)
+  ✓  14 [chromium] › e2e/s06-receiving-dock.spec.ts:227:3 › S06 Dock Custody & Receiving Gate One (Unvalued) › S06-E2E-02 U2 views NUSA-SBY seeded SJ-SBY-DEMO-001 read-only, gets 403 on SMDR-BDG, and U1 gets 404 on SMDR (1.2s)
+  ✓  15 [chromium] › e2e/s07-valued-acceptance-inventory.spec.ts:80:3 › S07 Valued Acceptance, Moving-Average Inventory & Open GRNI › S07-E2E-01 Gate 2 closed-period block, preview-before-confirm moving-average recalculation, GRNI & inventory ledger (3.8s)
+  ✓  16 [chromium] › e2e/s08-stock-locations-quality.spec.ts:80:3 › S08 Stock Availability, Warehouses, Lots & Quality Restrictions › S08-E2E-01 Catalog lot policy, Gate 2 quarantine receipt, U1/U2 SoD, partial disposition, putaway transfer & OD-10 reservations (6.7s)
+  ✓  17 [chromium] › e2e/s08-stock-locations-quality.spec.ts:381:3 › S08 Stock Availability, Warehouses, Lots & Quality Restrictions › S08-E2E-02 NUSA-SBY empty-state isolation and U1 hostile cross-tenant SMDR inventory denial (1.2s)
+  ✓  18 [chromium] › e2e/s09-supplier-bills-ap.spec.ts:47:3 › S09 Supplier Invoice Three-Way Match, AP & Price Difference › S09-E2E-01 U4 drafts & submits variance bill, U2 approves/posts DEC-P2P-013 split, releases hold & verifies Inventory (5.2s)
+  ✓  19 [chromium] › e2e/s09-supplier-bills-ap.spec.ts:169:3 › S09 Supplier Invoice Three-Way Match, AP & Price Difference › S09-E2E-02 Enforces AP access denial for U1 and read-only enforcement on NUSA-SBY for U2 (1.0s)
+  ✓  20 [chromium] › e2e/s10-supplier-returns-credits.spec.ts:47:3 › S10 Supplier Returns, Replacements & Financial Corrections › S10-E2E-01 M1 unvalued dock rejection executes with zero GL, issues RPA, receives replacement & Gate 2 values it (4.0s)
+  ✓  21 [chromium] › e2e/s10-supplier-returns-credits.spec.ts:165:3 › S10 Supplier Returns, Replacements & Financial Corrections › S10-E2E-02 M2 valued unbilled return posts compensating GRNI/Inventory reversal and outbound movement (2.7s)
+  ✓  22 [chromium] › e2e/s10-supplier-returns-credits.spec.ts:233:3 › S10 Supplier Returns, Replacements & Financial Corrections › S10-E2E-03 M4 blocks replacement on billed item, OD-07 enforces Nota Retur, M3 creates SCN & reduces Payable (3.2s)
+  ✓  23 [chromium] › e2e/s10-supplier-returns-credits.spec.ts:326:3 › S10 Supplier Returns, Replacements & Financial Corrections › S10-E2E-04 Enforces NUSA-SBY read-only boundary and 390x844 mobile id-ID layout without clipping (989ms)
+  ✓  24 [chromium] › e2e/s11-payments-bank-reconciliation.spec.ts:55:3 › S11 Supplier Settlement, Outbound Clearing & Bank Reconciliation › S11-E2E-01 Proposal & simulated file (0 GL), four-eyes release (Dr 2100/Cr 1120), CSV statement import & bank match (Dr 1120/Cr 1110), and read-only entity + mobile (3.3s)
+  ✓  25 [chromium] › e2e/s12-sales-orders.spec.ts:70:3 › S12 Customer Sales Orders and Commercial Commitments › S12-E2E-01 Live availability + Output VAT draft/submit (U5), four-eyes commitment approve (U2), Rev 2 amendment diff, read-only NUSA-SBY & mobile (3.9s)
+
+  25 passed (1.2m)

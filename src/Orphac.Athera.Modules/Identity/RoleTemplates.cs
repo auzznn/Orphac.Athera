@@ -17,12 +17,12 @@ public static class RoleTemplates
     private static readonly Dictionary<string, IReadOnlyList<string>> Bundles = new(StringComparer.Ordinal)
     {
         [ProcurementOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.ProcurementManage, PermissionCodes.ReceivingRead, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.CatalogManage, PermissionCodes.ApprovalRequest],
-        [SalesOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.SalesRead, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
+        [SalesOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.SalesRead, PermissionCodes.SalesManage, PermissionCodes.InventoryRead, PermissionCodes.PartnersRead, PermissionCodes.PartnersManage, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
         [InventoryClerk] = [PermissionCodes.WorkspaceView, PermissionCodes.ReceivingRead, PermissionCodes.ReceivingManage, PermissionCodes.ReceivingAccept, PermissionCodes.InventoryRead, PermissionCodes.InventoryManage, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
         [QualityInspector] = [PermissionCodes.WorkspaceView, PermissionCodes.ReceivingRead, PermissionCodes.InventoryRead, PermissionCodes.QualityInspect, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
         [ApClerk] = [PermissionCodes.WorkspaceView, PermissionCodes.ApRead, PermissionCodes.ApManage, PermissionCodes.ProcurementRead, PermissionCodes.ReceivingRead, PermissionCodes.InventoryRead, PermissionCodes.PartnersRead, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
         [FinanceOfficer] = [PermissionCodes.WorkspaceView, PermissionCodes.FinanceRead, PermissionCodes.FinanceConfigManage, PermissionCodes.FinanceJournalPost, PermissionCodes.ApRead, PermissionCodes.ApManage, PermissionCodes.ApPost, PermissionCodes.ProcurementRead, PermissionCodes.ReceivingRead, PermissionCodes.InventoryRead, PermissionCodes.PartnersRead, PermissionCodes.CatalogRead, PermissionCodes.ApprovalRequest],
-        [EntityApprover] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.ProcurementApprove, PermissionCodes.ApRead, PermissionCodes.ApApprove, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide],
+        [EntityApprover] = [PermissionCodes.WorkspaceView, PermissionCodes.ProcurementRead, PermissionCodes.ProcurementApprove, PermissionCodes.SalesRead, PermissionCodes.SalesApprove, PermissionCodes.ApRead, PermissionCodes.ApApprove, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide],
         [EntityAdmin] = [PermissionCodes.WorkspaceView, PermissionCodes.AdminRead, PermissionCodes.AdminManage, PermissionCodes.ApprovalRequest, PermissionCodes.ApprovalDecide]
     };
 

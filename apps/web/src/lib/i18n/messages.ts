@@ -1694,6 +1694,155 @@ export interface Dictionary {
     methodLabels: Record<string, string>;
     errors: Record<string, string>;
   };
+  salesOrders: {
+    pageTitle: string;
+    lead: string;
+    backToOverview: string;
+    refreshButton: string;
+    readOnlyBanner: string;
+    od09PolicyBanner: string;
+    policyToggleShow: string;
+    policyToggleHide: string;
+    statsAriaLabel: string;
+    policyCards: {
+      rule1Title: string;
+      rule1Body: string;
+      rule2Title: string;
+      rule2Body: string;
+      rule3Title: string;
+      rule3Body: string;
+      rule4Title: string;
+      rule4Body: string;
+    };
+    stats: {
+      approvedTotalValue: string;
+      pendingApprovalCount: string;
+      approvedCount: string;
+      totalOrderedBaseQty: string;
+    };
+    tabListLabel: string;
+    tabs: {
+      orders: string;
+      editor: string;
+      queue: string;
+    };
+    composer: {
+      newDraftCta: string;
+      titleCreate: string;
+      titleEditDraft: string;
+      titleEditAmendment: string;
+      customerLabel: string;
+      orderDateLabel: string;
+      requestedDateLabel: string;
+      termsDaysLabel: string;
+      customerRefLabel: string;
+      customerRefPlaceholder: string;
+      deliveryAddressLabel: string;
+      deliveryAddressPlaceholder: string;
+      changeReasonLabel: string;
+      changeReasonPlaceholder: string;
+      notesLabel: string;
+      notesPlaceholder: string;
+      od09BannerNote: string;
+      linesTitle: string;
+      addLineBtn: string;
+      removeLineBtn: string;
+      colItem: string;
+      colUom: string;
+      colQty: string;
+      colPrice: string;
+      colTax: string;
+      colTotal: string;
+      colStockAvail: string;
+      stockAvailBadge: string;
+      stockOnHandPrefix: string;
+      stockAvailablePrefix: string;
+      noTaxOption: string;
+      subtotalLabel: string;
+      taxTotalLabel: string;
+      grandTotalLabel: string;
+      totalBaseQtyLabel: string;
+      saveDraftCta: string;
+      saving: string;
+      resetEditorBtn: string;
+      noEligibleMaster: string;
+    };
+    tables: {
+      ordersTitle: string;
+      emptyOrders: string;
+      searchPlaceholder: string;
+      statusFilterAll: string;
+      colOrderDoc: string;
+      colCustomerRef: string;
+      colDatesTerms: string;
+      colRevisionAmount: string;
+      colStatus: string;
+      colAction: string;
+      detailCta: string;
+      queueTitle: string;
+      emptyQueue: string;
+      submittedByPrefix: string;
+      revPrefix: string;
+      baseQtyShort: string;
+      taxPrefix: string;
+      openRevTag: string;
+    };
+    detail: {
+      titlePrefix: string;
+      closeLabel: string;
+      headerCustomer: string;
+      headerScheduleTerms: string;
+      headerAmounts: string;
+      refPrefix: string;
+      termsSuffix: string;
+      requestedPrefix: string;
+      subtotalPrefix: string;
+      taxPrefix: string;
+      hashLabel: string;
+      linesTitle: string;
+      colLineItem: string;
+      colLineQtyBase: string;
+      colLinePriceTax: string;
+      colLineTotal: string;
+      diffTitle: string;
+      diffHeaderTitle: string;
+      diffNoHeaderChanges: string;
+      diffGrandTotalDelta: string;
+      diffBaseQtyDelta: string;
+      approvalBannerDraft: string;
+      approvalBannerPending: string;
+      sodHint: string;
+      noApprovePermHint: string;
+      decisionReasonLabel: string;
+      decisionReasonPlaceholder: string;
+      approveCta: string;
+      rejectCta: string;
+      deciding: string;
+      submitCta: string;
+      submitting: string;
+      editDraftCta: string;
+      amendTitle: string;
+      amendReasonLabel: string;
+      amendReasonPlaceholder: string;
+      amendCta: string;
+      amending: string;
+      closeOrCancelTitle: string;
+      closeOrCancelReasonLabel: string;
+      closeOrCancelReasonPlaceholder: string;
+      closeCta: string;
+      cancelCta: string;
+      processingAction: string;
+      revisionHistoryTitle: string;
+      selectRevLabel: string;
+      approvedByPrefix: string;
+      diffFieldNames: Record<string, string>;
+      diffChangeLabels: Record<string, string>;
+    };
+    statusLabels: Record<string, string>;
+    revisionStatusLabels: Record<string, string>;
+    fulfillmentLabels: Record<string, string>;
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -3993,6 +4142,215 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Izin entitas aktif Anda tidak mencukupi untuk tindakan pembayaran atau rekonsiliasi ini.",
       },
     },
+    salesOrders: {
+      pageTitle: "Pesanan Penjualan & Komitmen Komersial",
+      lead: "Kelola penawaran draf hingga komitmen SO resmi dengan validasi stok tersedia, pajak keluaran efektif (OD-07), persetujuan empat mata (OD-02), serta riwayat revisi terkunci (OD-09).",
+      backToOverview: "Kembali ke Ringkasan",
+      refreshButton: "Segarkan",
+      readOnlyBanner:
+        "Mode hanya-baca: akun Anda berwenang melihat komitmen penjualan pada entitas ini, namun mutasi draf atau persetujuan memerlukan izin kelola/setujui penjualan aktif.",
+      od09PolicyBanner:
+        "Kebijakan Aman OD-09 & OD-02 Aktif (ATH-CR-009): Harga & kuantitas wajib positif dengan diskon 0 tanpa pengecualian batas kredit otomatis; pengesahan SO memicu nomor resmi hanya setelah otorisasi empat mata independen.",
+      policyToggleShow: "Lihat Aturan OD-09",
+      policyToggleHide: "Sembunyikan Aturan",
+      statsAriaLabel: "Metrik ringkasan pesanan penjualan dan komitmen",
+      policyCards: {
+        rule1Title: "1. Kelayakan Pelanggan & Barang",
+        rule1Body: "Pelanggan berstatus AKTIF dengan hak jual entitas; barang harus aktif & diizinkan untuk penjualan beserta konversi satuan pasti.",
+        rule2Title: "2. Aturan Harga Aman OD-09",
+        rule2Body: "Kuantitas & harga satuan wajib > 0; diskon baris (discount > 0) serta penimpaan batas kredit otomatis diblokir hingga kebijakan PO disahkan.",
+        rule3Title: "3. Ketersediaan Stok & Pajak Keluaran",
+        rule3Body: "Menampilkan saldo stok tersedia secara read-only dari Persediaan tanpa memotong/mengunci stok, disertai PPN Keluaran bertanggal efektif (OD-07).",
+        rule4Title: "4. Revisi Terkunci & Kontrol Pemenuhan",
+        rule4Body: "Setiap persetujuan membekukan hash snapshot revisi; amandemen atau pembatalan tidak dapat mengurangi kuantitas yang sudah dipesan/dikirim (S13+).",
+      },
+      stats: {
+        approvedTotalValue: "Komitmen Disetujui Aktif",
+        pendingApprovalCount: "Antrean Empat Mata",
+        approvedCount: "Pesanan Penjualan Sah",
+        totalOrderedBaseQty: "Total Unit Basis Dipesan",
+      },
+      tabListLabel: "Navigasi panel pesanan penjualan",
+      tabs: {
+        orders: "Daftar & Rincian SO",
+        editor: "Editor SO & Revisi",
+        queue: "Antrean Persetujuan Empat Mata",
+      },
+      composer: {
+        newDraftCta: "Buat Pesanan Penjualan Baru",
+        titleCreate: "Buat Draf Pesanan Penjualan Baru (Revisi 1)",
+        titleEditDraft: "Ubah Draf Pesanan Penjualan",
+        titleEditAmendment: "Ubah Draf Revisi Amandemen",
+        customerLabel: "Pelanggan (Entitas Aktif)",
+        orderDateLabel: "Tanggal Pesanan",
+        requestedDateLabel: "Target Tanggal Kirim",
+        termsDaysLabel: "Termin Pembayaran (Hari)",
+        customerRefLabel: "Referensi PO Pelanggan",
+        customerRefPlaceholder: "PO-CUST-2026-001",
+        deliveryAddressLabel: "Alamat Pengiriman Pelanggan",
+        deliveryAddressPlaceholder: "Jl. Raya Industri Jababeka Blok C-12, Bekasi",
+        changeReasonLabel: "Alasan Perubahan Revisi",
+        changeReasonPlaceholder: "Contoh: Penyesuaian jadwal kirim dan volume baris 1",
+        notesLabel: "Catatan Komersial",
+        notesPlaceholder: "Syarat pengiriman atau instruksi khusus pelanggan",
+        od09BannerNote: "Mode aman OD-09 aktif: diskon dibekukan pada Rp 0; batas kredit dihitung tanpa penimpaan otomatis.",
+        linesTitle: "Rincian Barang, Ketersediaan Stok & Pajak Keluaran",
+        addLineBtn: "Tambah Baris Barang",
+        removeLineBtn: "Hapus",
+        colItem: "Barang Jual",
+        colUom: "Satuan",
+        colQty: "Kuantitas",
+        colPrice: "Harga Satuan (Rp)",
+        colTax: "Pajak Keluaran (OD-07)",
+        colTotal: "Subtotal + Pajak",
+        colStockAvail: "Info Stok (Basis)",
+        stockAvailBadge: "Tersedia",
+        stockOnHandPrefix: "Fisik:",
+        stockAvailablePrefix: "Bebas:",
+        noTaxOption: "Tanpa Pajak (0%)",
+        subtotalLabel: "Subtotal DPP",
+        taxTotalLabel: "Total PPN Keluaran",
+        grandTotalLabel: "Total Komitmen SO",
+        totalBaseQtyLabel: "Total Kuantitas Basis",
+        saveDraftCta: "Simpan Draf SO",
+        saving: "Menyimpan...",
+        resetEditorBtn: "Batal / Reset Editor",
+        noEligibleMaster: "Pelanggan aktif atau barang layak jual belum tersedia pada entitas ini.",
+      },
+      tables: {
+        ordersTitle: "Buku Besar Pesanan Penjualan Entitas",
+        emptyOrders: "Belum ada pesanan penjualan pada filter ini.",
+        searchPlaceholder: "Cari nomor SO, draf, referensi, atau pelanggan...",
+        statusFilterAll: "Semua Status",
+        colOrderDoc: "Nomor SO / Draf & Tanggal",
+        colCustomerRef: "Pelanggan & Pengiriman",
+        colDatesTerms: "Kirim & Termin",
+        colRevisionAmount: "Revisi & Nilai Total",
+        colStatus: "Status & Pemenuhan",
+        colAction: "Tindakan",
+        detailCta: "Detail & Revisi",
+        queueTitle: "Antrean Persetujuan Empat Mata (OD-02)",
+        emptyQueue: "Tidak ada revisi pesanan penjualan yang menunggu persetujuan saat ini.",
+        submittedByPrefix: "Diajukan:",
+        revPrefix: "Rev",
+        baseQtyShort: "Basis:",
+        taxPrefix: "PPN:",
+        openRevTag: "Revisi Terbuka",
+      },
+      detail: {
+        titlePrefix: "Rincian Pesanan Penjualan",
+        closeLabel: "Tutup panel rincian",
+        headerCustomer: "Pelanggan & Alamat Kirim",
+        headerScheduleTerms: "Jadwal, Referensi & Termin",
+        headerAmounts: "Ringkasan Nilai & Hash Snapshot",
+        refPrefix: "Ref PO:",
+        termsSuffix: "hari",
+        requestedPrefix: "Target Kirim:",
+        subtotalPrefix: "DPP:",
+        taxPrefix: "PPN Keluaran:",
+        hashLabel: "SHA-256 Snapshot",
+        linesTitle: "Daftar Barang & Pajak Revisi",
+        colLineItem: "Barang & Keterangan",
+        colLineQtyBase: "Qty & Konversi Basis",
+        colLinePriceTax: "Harga Satuan & Pajak",
+        colLineTotal: "Jumlah Baris",
+        diffTitle: "Perbandingan Perubahan dari Revisi Sebelumnya",
+        diffHeaderTitle: "Perubahan Header Komersial",
+        diffNoHeaderChanges: "Tidak ada perubahan kolom header komersial.",
+        diffGrandTotalDelta: "Selisih Nilai Total",
+        diffBaseQtyDelta: "Selisih Kuantitas Basis",
+        approvalBannerDraft: "Status Draf: belum dibekukan dan belum memiliki nomor SO resmi; dapat diedit atau diajukan untuk persetujuan.",
+        approvalBannerPending: "Status Menunggu Persetujuan (OD-02): snapshot telah dibekukan (immutable) tanpa mengunci stok hingga disetujui.",
+        sodHint: "Aturan Empat Mata (OD-02): Pembuat/pengaju revisi tidak dapat menyetujui atau menolak pengajuannya sendiri.",
+        noApprovePermHint: "Anda memerlukan izin sales.approve dari penyetuju independen untuk memutuskan revisi ini.",
+        decisionReasonLabel: "Alasan Keputusan Persetujuan / Penolakan",
+        decisionReasonPlaceholder: "Catat alasan keputusan komersial atau koreksi yang diminta",
+        approveCta: "Setujui & Terbitkan SO",
+        rejectCta: "Tolak Revisi",
+        deciding: "Memproses Keputusan...",
+        submitCta: "Ajukan Persetujuan Empat Mata",
+        submitting: "Mengajukan...",
+        editDraftCta: "Edit Draf Revisi Ini",
+        amendTitle: "Ajukan Revisi Amandemen Baru (Rev +1)",
+        amendReasonLabel: "Alasan Amandemen Komersial",
+        amendReasonPlaceholder: "Contoh: Perubahan alamat gudang atau penambahan kuantitas",
+        amendCta: "Buat Draf Amandemen",
+        amending: "Membuat Amandemen...",
+        closeOrCancelTitle: "Tutup Singkat atau Batalkan Pesanan",
+        closeOrCancelReasonLabel: "Alasan Penutupan / Pembatalan Resmi",
+        closeOrCancelReasonPlaceholder: "Alasan resmi pengakhiran atau pembatalan pesanan",
+        closeCta: "Tutup Pesanan (Short-Close)",
+        cancelCta: "Batalkan Pesanan",
+        processingAction: "Memproses...",
+        revisionHistoryTitle: "Pilih Revisi Terkunci / Aktif",
+        selectRevLabel: "Revisi ditampilkan",
+        approvedByPrefix: "Diputus:",
+        diffFieldNames: {
+          customer: "Pelanggan",
+          orderDate: "Tanggal SO",
+          requestedDeliveryDate: "Target Kirim",
+          deliveryAddress: "Alamat Kirim",
+          paymentTermsDays: "Termin (Hari)",
+          customerReference: "Ref PO Pelanggan",
+        },
+        diffChangeLabels: {
+          ADDED: "Ditambahkan",
+          REMOVED: "Dihapus",
+          MODIFIED: "Diubah",
+          UNCHANGED: "Tetap",
+        },
+      },
+      statusLabels: {
+        DRAFT: "Draf",
+        PENDING_APPROVAL: "Menunggu Persetujuan",
+        APPROVED: "Disetujui (Komitmen)",
+        CLOSED: "Ditutup",
+        CANCELLED: "Dibatalkan",
+      },
+      revisionStatusLabels: {
+        DRAFT: "Draf",
+        PENDING_APPROVAL: "Menunggu Persetujuan",
+        APPROVED: "Disetujui",
+        REJECTED: "Ditolak",
+        SUPERSEDED: "Digantikan",
+        CANCELLED: "Dibatalkan",
+      },
+      fulfillmentLabels: {
+        NOT_APPLICABLE: "Belum Aktif",
+        NOT_FULFILLED: "Belum Direservasi",
+        PARTIALLY_RESERVED: "Sebagian Direservasi",
+        FULLY_RESERVED: "Semua Direservasi",
+        PARTIALLY_DISPATCHED: "Sebagian Dikirim",
+        FULLY_DISPATCHED: "Terkirim Penuh",
+        SHORT_CLOSED: "Ditutup Singkat",
+      },
+      errors: {
+        four_eyes_self_approval_forbidden:
+          "Kontrol Empat Mata (OD-02): Pengaju revisi pesanan penjualan tidak boleh menyetujui pengajuannya sendiri.",
+        od09_sales_discount_policy_unresolved:
+          "Kebijakan Aman OD-09 (ATH-CR-009): Diskon komersial (> 0) belum diaktifkan hingga aturan resmi ditandatangani Pemilik Produk.",
+        od09_credit_limit_policy_unresolved:
+          "Kebijakan Aman OD-09 (ATH-CR-009): Penimpaan batas kredit otomatis diblokir sebelum kebijakan kredit disahkan.",
+        so_has_downstream_fulfillment:
+          "Pesanan tidak dapat dibatalkan atau dikurangi di bawah kuantitas stok yang sudah direservasi/dikirim.",
+        customer_not_eligible:
+          "Pelanggan yang dipilih berstatus nonaktif atau tidak memiliki hak jual pada entitas hukum ini.",
+        item_not_sales_eligible:
+          "Barang yang dipilih berstatus nonaktif atau dibatasi agar tidak dijual pada entitas hukum ini.",
+        tax_code_direction_not_output:
+          "Pesanan penjualan hanya dapat menggunakan kode pajak PPN Keluaran (OUTPUT).",
+        tax_code_not_effective_on_date:
+          "Kode pajak keluaran yang dipilih tidak aktif/efektif pada tanggal pesanan.",
+        invalid_quantity_or_price:
+          "Kuantitas dan harga satuan pada setiap baris wajib bernilai positif (> 0).",
+        so_revision_frozen_immutable:
+          "Revisi ini telah dibekukan secara kriptografis dan tidak dapat diubah lagi.",
+        duplicate_so_number:
+          "Nomor SO tersebut sudah digunakan pada entitas ini.",
+        insufficient_entity_permission:
+          "Izin entitas aktif Anda tidak mencukupi untuk tindakan penjualan ini.",
+      },
+    },
   },
   "en-US": {
     appName: "Orphac Athera",
@@ -6290,6 +6648,215 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Your active role grants do not permit performing this payment or bank reconciliation action.",
       },
     },
+    salesOrders: {
+      pageTitle: "Customer Sales Orders & Commercial Commitments",
+      lead: "Create and approve customer orders with live Inventory availability checks, effective-dated Output VAT (OD-07), independent four-eyes authorization (OD-02), and immutable revision snapshots (OD-09).",
+      backToOverview: "Back to Overview",
+      refreshButton: "Refresh",
+      readOnlyBanner:
+        "Read-only mode: your account can inspect sales commitments in this legal entity, while drafting or approving requires active sales permissions.",
+      od09PolicyBanner:
+        "OD-09 & OD-02 Safe Policy Active (ATH-CR-009): Positive unit prices and quantities with zero discounts enforced; no automated credit-limit overrides; SO numbering commits strictly after four-eyes approval.",
+      policyToggleShow: "Show OD-09 Rules",
+      policyToggleHide: "Hide Rules",
+      statsAriaLabel: "Sales order commitment and queue summary metrics",
+      policyCards: {
+        rule1Title: "1. Customer & Item Eligibility",
+        rule1Body: "Requires ACTIVE customer eligibility on entity plus sales-allowed catalogue items and exact decimal UoM conversion.",
+        rule2Title: "2. OD-09 Safe Commercial Defaults",
+        rule2Body: "Quantities and unit prices must be positive (> 0); unapproved line discounts and credit-limit overrides remain blocked pending Owner sign-off.",
+        rule3Title: "3. Stock Visibility & Output Tax",
+        rule3Body: "Reads live Inventory availability (without reserving stock in S12) and evaluates effective-dated OUTPUT tax rules (OD-07).",
+        rule4Title: "4. Locked Revisions & Fulfillment Guard",
+        rule4Body: "Approval freezes revision snapshot hashes permanently; later amendments or cancellations cannot reduce reserved/dispatched quantities (S13+).",
+      },
+      stats: {
+        approvedTotalValue: "Approved Commitments",
+        pendingApprovalCount: "Four-Eyes Queue",
+        approvedCount: "Committed Sales Orders",
+        totalOrderedBaseQty: "Total Ordered Base Units",
+      },
+      tabListLabel: "Sales orders panel navigation",
+      tabs: {
+        orders: "Sales Orders Ledger",
+        editor: "Order & Revision Editor",
+        queue: "Four-Eyes Approval Queue",
+      },
+      composer: {
+        newDraftCta: "New Sales Order",
+        titleCreate: "Create New Sales Order Draft (Rev 1)",
+        titleEditDraft: "Edit Draft Sales Order",
+        titleEditAmendment: "Edit Amendment Revision Draft",
+        customerLabel: "Customer (Active Entity)",
+        orderDateLabel: "Order Date",
+        requestedDateLabel: "Requested Delivery Date",
+        termsDaysLabel: "Payment Terms (Days)",
+        customerRefLabel: "Customer PO Reference",
+        customerRefPlaceholder: "PO-CUST-2026-001",
+        deliveryAddressLabel: "Customer Delivery Address",
+        deliveryAddressPlaceholder: "Jl. Raya Industri Jababeka Block C-12, Bekasi",
+        changeReasonLabel: "Revision Change Reason",
+        changeReasonPlaceholder: "e.g., Adjusted requested delivery schedule and line 1 quantity",
+        notesLabel: "Commercial Notes",
+        notesPlaceholder: "Delivery instructions or commercial notes",
+        od09BannerNote: "OD-09 safe mode active: discounts locked at Rp 0; automated credit-limit overrides disabled.",
+        linesTitle: "Order Lines, Stock Availability & Output Tax",
+        addLineBtn: "Add Line Item",
+        removeLineBtn: "Remove",
+        colItem: "Sales Item",
+        colUom: "UoM",
+        colQty: "Quantity",
+        colPrice: "Unit Price (IDR)",
+        colTax: "Output Tax (OD-07)",
+        colTotal: "Subtotal + Tax",
+        colStockAvail: "Stock (Base)",
+        stockAvailBadge: "Avail",
+        stockOnHandPrefix: "On-Hand:",
+        stockAvailablePrefix: "Avail:",
+        noTaxOption: "Tax Exempt / 0%",
+        subtotalLabel: "Taxable Subtotal",
+        taxTotalLabel: "Total Output VAT",
+        grandTotalLabel: "Order Commitment Total",
+        totalBaseQtyLabel: "Total Base Quantity",
+        saveDraftCta: "Save Order Draft",
+        saving: "Saving...",
+        resetEditorBtn: "Cancel / Reset Editor",
+        noEligibleMaster: "No eligible active customers or sales items configured on this entity.",
+      },
+      tables: {
+        ordersTitle: "Entity Sales Orders Ledger",
+        emptyOrders: "No sales orders match the current filter.",
+        searchPlaceholder: "Search SO number, draft, reference, or customer...",
+        statusFilterAll: "All Statuses",
+        colOrderDoc: "SO / Draft Number & Date",
+        colCustomerRef: "Customer & Delivery Address",
+        colDatesTerms: "Delivery & Terms",
+        colRevisionAmount: "Revision & Total Value",
+        colStatus: "Status & Fulfillment",
+        colAction: "Action",
+        detailCta: "Details & Revisions",
+        queueTitle: "Four-Eyes Approval Queue (OD-02)",
+        emptyQueue: "No sales order revisions are currently awaiting approval.",
+        submittedByPrefix: "Submitted:",
+        revPrefix: "Rev",
+        baseQtyShort: "Base:",
+        taxPrefix: "VAT:",
+        openRevTag: "Open Revision",
+      },
+      detail: {
+        titlePrefix: "Sales Order Detail",
+        closeLabel: "Close detail panel",
+        headerCustomer: "Customer & Delivery Address",
+        headerScheduleTerms: "Schedule, Reference & Terms",
+        headerAmounts: "Value Summary & Snapshot Hash",
+        refPrefix: "Cust PO:",
+        termsSuffix: "days",
+        requestedPrefix: "Requested:",
+        subtotalPrefix: "Subtotal:",
+        taxPrefix: "Output VAT:",
+        hashLabel: "Snapshot SHA-256",
+        linesTitle: "Revision Items & Output Tax",
+        colLineItem: "Item & Description",
+        colLineQtyBase: "Qty & Base Conversion",
+        colLinePriceTax: "Unit Price & Tax",
+        colLineTotal: "Line Total",
+        diffTitle: "Revision Diff vs Baseline",
+        diffHeaderTitle: "Commercial Header Changes",
+        diffNoHeaderChanges: "No commercial header field changes.",
+        diffGrandTotalDelta: "Grand Total Delta",
+        diffBaseQtyDelta: "Base Qty Delta",
+        approvalBannerDraft: "Draft revision: mutable and without committed SO number; edit or submit for four-eyes approval.",
+        approvalBannerPending: "Pending Four-Eyes Approval (OD-02): commercial snapshot is cryptographically frozen pending independent sign-off.",
+        sodHint: "Four-Eyes Rule (OD-02): The revision creator or submitter cannot approve or reject their own submission.",
+        noApprovePermHint: "Requires independent sales.approve permission to decide this revision.",
+        decisionReasonLabel: "Approval / Rejection Decision Reason",
+        decisionReasonPlaceholder: "Record commercial verification notes or requested corrections",
+        approveCta: "Approve & Commit SO",
+        rejectCta: "Reject Revision",
+        deciding: "Recording Decision...",
+        submitCta: "Submit for Four-Eyes Approval",
+        submitting: "Submitting...",
+        editDraftCta: "Edit This Draft Revision",
+        amendTitle: "Create New Amendment Revision (Rev +1)",
+        amendReasonLabel: "Commercial Amendment Reason",
+        amendReasonPlaceholder: "e.g., Delivery address change or quantity increase",
+        amendCta: "Create Amendment Draft",
+        amending: "Creating Amendment...",
+        closeOrCancelTitle: "Short-Close or Cancel Order",
+        closeOrCancelReasonLabel: "Official Close / Cancellation Reason",
+        closeOrCancelReasonPlaceholder: "Record reason for short-closing or cancelling order",
+        closeCta: "Short-Close Order",
+        cancelCta: "Cancel Order",
+        processingAction: "Processing...",
+        revisionHistoryTitle: "Inspect Frozen / Active Revision",
+        selectRevLabel: "Displayed revision",
+        approvedByPrefix: "Decided:",
+        diffFieldNames: {
+          customer: "Customer",
+          orderDate: "Order Date",
+          requestedDeliveryDate: "Requested Delivery",
+          deliveryAddress: "Delivery Address",
+          paymentTermsDays: "Terms (Days)",
+          customerReference: "Customer Ref",
+        },
+        diffChangeLabels: {
+          ADDED: "Added",
+          REMOVED: "Removed",
+          MODIFIED: "Modified",
+          UNCHANGED: "Unchanged",
+        },
+      },
+      statusLabels: {
+        DRAFT: "Draft",
+        PENDING_APPROVAL: "Pending Approval",
+        APPROVED: "Approved (Committed)",
+        CLOSED: "Closed",
+        CANCELLED: "Cancelled",
+      },
+      revisionStatusLabels: {
+        DRAFT: "Draft",
+        PENDING_APPROVAL: "Pending Approval",
+        APPROVED: "Approved",
+        REJECTED: "Rejected",
+        SUPERSEDED: "Superseded",
+        CANCELLED: "Cancelled",
+      },
+      fulfillmentLabels: {
+        NOT_APPLICABLE: "Not Active",
+        NOT_FULFILLED: "Unfulfilled",
+        PARTIALLY_RESERVED: "Partially Reserved",
+        FULLY_RESERVED: "Fully Reserved",
+        PARTIALLY_DISPATCHED: "Partially Dispatched",
+        FULLY_DISPATCHED: "Fully Dispatched",
+        SHORT_CLOSED: "Short-Closed",
+      },
+      errors: {
+        four_eyes_self_approval_forbidden:
+          "Four-Eyes Control (OD-02): The revision submitter cannot approve or reject their own sales order.",
+        od09_sales_discount_policy_unresolved:
+          "OD-09 Safe Default (ATH-CR-009): Sales discounts (> 0) remain disabled pending Product Owner policy sign-off.",
+        od09_credit_limit_policy_unresolved:
+          "OD-09 Safe Default (ATH-CR-009): Automated credit-limit overrides remain disabled pending Product Owner sign-off.",
+        so_has_downstream_fulfillment:
+          "Cannot cancel or reduce quantities below already reserved, dispatched, or billed stock quantities.",
+        customer_not_eligible:
+          "Selected customer is inactive or not sales-eligible on this legal entity.",
+        item_not_sales_eligible:
+          "Selected item is inactive or restricted from sales on this legal entity.",
+        tax_code_direction_not_output:
+          "Sales orders require an Output VAT (OUTPUT) tax code.",
+        tax_code_not_effective_on_date:
+          "Selected output tax code is not active/effective on the sales order date.",
+        invalid_quantity_or_price:
+          "Line quantities and unit prices must be strictly positive (> 0).",
+        so_revision_frozen_immutable:
+          "This revision snapshot is cryptographically frozen and immutable.",
+        duplicate_so_number:
+          "This sales order number is already assigned in this legal entity.",
+        insufficient_entity_permission:
+          "Your active role grants do not permit performing this sales order action.",
+      },
+    },
   },
 };
 
@@ -6321,4 +6888,13 @@ export function formatUnitCostIdr(amount: number | string): string {
     minimumFractionDigits: 0,
     maximumFractionDigits: 6,
   }).format(Number.isFinite(numeric) ? numeric : 0);
+}
+
+export function todayJakartaDate(): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
 }

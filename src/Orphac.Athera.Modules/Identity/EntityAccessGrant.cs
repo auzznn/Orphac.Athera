@@ -25,6 +25,8 @@ public static class PermissionCodes
     public const string InventoryManage = "inventory.manage";
     public const string QualityInspect = "quality.inspect";
     public const string SalesRead = "sales.read";
+    public const string SalesManage = "sales.manage";
+    public const string SalesApprove = "sales.approve";
     public const string FinanceRead = "finance.read";
     public const string FinanceConfigManage = "finance.config.manage";
     public const string FinanceJournalPost = "finance.journal.post";
@@ -54,6 +56,8 @@ public static class PermissionCodes
         InventoryManage,
         QualityInspect,
         SalesRead,
+        SalesManage,
+        SalesApprove,
         FinanceRead,
         FinanceConfigManage,
         FinanceJournalPost,
