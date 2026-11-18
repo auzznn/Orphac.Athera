@@ -154,6 +154,32 @@ export type CreateStockReservationRequest = components["schemas"]["CreateStockRe
 export type ReleaseStockReservationRequest = components["schemas"]["ReleaseStockReservationRequest"];
 export type StockReservationOutcomeDto = components["schemas"]["StockReservationOutcomeDto"];
 export type InventoryMovementResultDto = components["schemas"]["InventoryMovementResultDto"];
+export type CreateOperationalIssueRequest = components["schemas"]["CreateOperationalIssueRequest"];
+export type OperationalIssueOutcomeDto = components["schemas"]["OperationalIssueOutcomeDto"];
+
+export type BillLineInputRequest = components["schemas"]["BillLineInputRequest"];
+export type PreviewSupplierBillRequest = components["schemas"]["PreviewSupplierBillRequest"];
+export type CreateSupplierBillRequest = components["schemas"]["CreateSupplierBillRequest"];
+export type UpdateSupplierBillRequest = components["schemas"]["UpdateSupplierBillRequest"];
+export type DecideSupplierBillRequest = components["schemas"]["DecideSupplierBillRequest"];
+export type PostSupplierBillRequest = components["schemas"]["PostSupplierBillRequest"];
+export type UpdateBillPaymentBlockRequest = components["schemas"]["UpdateBillPaymentBlockRequest"];
+export type UpdateInvoiceMatchPolicyRequest = components["schemas"]["UpdateInvoiceMatchPolicyRequest"];
+export type InvoiceMatchPolicyDto = components["schemas"]["InvoiceMatchPolicyDto"];
+export type PayableTaxCodeDto = components["schemas"]["PayableTaxCodeDto"];
+export type EligibleAccrualLineDto = components["schemas"]["EligibleAccrualLineDto"];
+export type MatchedLineComparisonDto = components["schemas"]["MatchedLineComparisonDto"];
+export type BillJournalSuggestionDto = components["schemas"]["BillJournalSuggestionDto"];
+export type SupplierBillPreviewResponse = components["schemas"]["SupplierBillPreviewResponse"];
+export type SupplierBillSummaryDto = components["schemas"]["SupplierBillSummaryDto"];
+export type SupplierBillLineDto = components["schemas"]["SupplierBillLineDto"];
+export type InvoiceMatchEvaluationDto = components["schemas"]["InvoiceMatchEvaluationDto"];
+export type SupplierBillReceiptMatchDto = components["schemas"]["SupplierBillReceiptMatchDto"];
+export type InvoicePriceAdjustmentDto = components["schemas"]["InvoicePriceAdjustmentDto"];
+export type TaxDeterminationDto = components["schemas"]["TaxDeterminationDto"];
+export type PayableItemDto = components["schemas"]["PayableItemDto"];
+export type SupplierBillDetailResponse = components["schemas"]["SupplierBillDetailResponse"];
+export type PayablesOverviewResponse = components["schemas"]["PayablesOverviewResponse"];
 
 export interface ApiProblemError {
   status: number;
@@ -1817,6 +1843,253 @@ export async function releaseStockReservation(
     "/api/workspaces/{tenantId}/entities/{entityId}/inventory/reservations/{reservationId}/release",
     {
       params: { path: { tenantId, entityId, reservationId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function postInventoryIssue(
+  tenantId: string,
+  entityId: string,
+  payload: CreateOperationalIssueRequest,
+): Promise<OperationalIssueOutcomeDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/issues",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchPayablesOverview(
+  tenantId: string,
+  entityId: string,
+): Promise<PayablesOverviewResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/overview",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchSupplierBillDetail(
+  tenantId: string,
+  entityId: string,
+  billId: string,
+): Promise<SupplierBillDetailResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}",
+    {
+      params: { path: { tenantId, entityId, billId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function previewSupplierBill(
+  tenantId: string,
+  entityId: string,
+  payload: PreviewSupplierBillRequest,
+): Promise<SupplierBillPreviewResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/preview",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function createSupplierBill(
+  tenantId: string,
+  entityId: string,
+  payload: CreateSupplierBillRequest,
+): Promise<SupplierBillDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function updateSupplierBill(
+  tenantId: string,
+  entityId: string,
+  billId: string,
+  payload: UpdateSupplierBillRequest,
+): Promise<SupplierBillDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}",
+    {
+      params: { path: { tenantId, entityId, billId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function submitSupplierBill(
+  tenantId: string,
+  entityId: string,
+  billId: string,
+): Promise<SupplierBillDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/submit",
+    {
+      params: { path: { tenantId, entityId, billId } },
+      headers: { "X-CSRF-Token": csrf },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function decideSupplierBill(
+  tenantId: string,
+  entityId: string,
+  billId: string,
+  payload: DecideSupplierBillRequest,
+): Promise<SupplierBillDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/decision",
+    {
+      params: { path: { tenantId, entityId, billId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function postSupplierBill(
+  tenantId: string,
+  entityId: string,
+  billId: string,
+  payload: PostSupplierBillRequest,
+): Promise<SupplierBillDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/post",
+    {
+      params: { path: { tenantId, entityId, billId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function updateSupplierBillPaymentBlock(
+  tenantId: string,
+  entityId: string,
+  billId: string,
+  payload: UpdateBillPaymentBlockRequest,
+): Promise<SupplierBillDetailResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/payment-block",
+    {
+      params: { path: { tenantId, entityId, billId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function updateInvoiceMatchPolicy(
+  tenantId: string,
+  entityId: string,
+  payload: UpdateInvoiceMatchPolicyRequest,
+): Promise<InvoiceMatchPolicyDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.PUT(
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/match-policy",
+    {
+      params: { path: { tenantId, entityId } },
       headers: { "X-CSRF-Token": csrf },
       body: payload,
       cache: "no-store",

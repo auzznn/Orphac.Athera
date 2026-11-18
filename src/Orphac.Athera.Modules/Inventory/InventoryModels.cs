@@ -31,8 +31,9 @@ public static class StockMovementTypes
     public const string PurchaseReceiptAcceptance = "PURCHASE_RECEIPT_ACCEPTANCE";
     public const string LocationTransfer = "LOCATION_TRANSFER";
     public const string QualityStatusChange = "QUALITY_STATUS_CHANGE";
+    public const string OperationalIssue = "OPERATIONAL_ISSUE";
 
-    public static readonly IReadOnlyList<string> All = [PurchaseReceiptAcceptance, LocationTransfer, QualityStatusChange];
+    public static readonly IReadOnlyList<string> All = [PurchaseReceiptAcceptance, LocationTransfer, QualityStatusChange, OperationalIssue];
 }
 
 public static class LocationZoneTypes
@@ -107,8 +108,10 @@ public static class ValuationPoolStatuses
 public static class ValuationEntryTypes
 {
     public const string ReceiptAcceptance = "RECEIPT_ACCEPTANCE";
+    public const string OperationalIssue = "OPERATIONAL_ISSUE";
+    public const string InvoicePriceAdjustment = "INVOICE_PRICE_ADJUSTMENT";
 
-    public static readonly IReadOnlyList<string> All = [ReceiptAcceptance];
+    public static readonly IReadOnlyList<string> All = [ReceiptAcceptance, OperationalIssue, InvoicePriceAdjustment];
 }
 
 public static class InventoryValuationDefaults
@@ -199,6 +202,24 @@ public sealed class StockPosition
 
         var normalizedStatus = StockStatuses.Normalize(stockStatus);
         AdjustStatusBucket(normalizedStatus, qty);
+        RecalculateTotalsAndValidate(nowUtc);
+    }
+
+    public void ApplyOutboundIssue(decimal issueBaseQuantity, DateTimeOffset nowUtc)
+    {
+        var qty = decimal.Round(issueBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        if (qty <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(issueBaseQuantity), "issue_qty_must_be_positive: Outbound issue quantity must be strictly positive.");
+        }
+
+        if (qty > AvailableBaseQuantity)
+        {
+            throw new InvalidOperationException(
+                $"od10_insufficient_available_stock: Issue quantity {qty:0.######} exceeds unreserved available stock ({AvailableBaseQuantity:0.######}).");
+        }
+
+        UnrestrictedBaseQuantity = decimal.Round(UnrestrictedBaseQuantity - qty, 6, MidpointRounding.AwayFromZero);
         RecalculateTotalsAndValidate(nowUtc);
     }
 
@@ -323,6 +344,21 @@ public readonly record struct ValuationStepResult(
     decimal NewCarryingValue,
     decimal NewMovingAverageCost,
     long EntrySequence);
+
+public readonly record struct OperationalIssueStepResult(
+    decimal IssuedBaseQuantity,
+    decimal IssuedCarryingAmount,
+    decimal AppliedUnitCost,
+    ValuationStepResult ValuationStep);
+
+public readonly record struct InvoicePriceAdjustmentStepResult(
+    decimal BilledBaseQuantity,
+    decimal CoveredBaseQuantity,
+    decimal UncoveredBaseQuantity,
+    decimal TotalPriceDifferenceAmount,
+    decimal InventoryAdjustmentAmount,
+    decimal PnlVarianceAmount,
+    ValuationStepResult ValuationStep);
 
 /// <summary>
 /// Authoritative perpetual moving-average cost pool in `inventory.valuation_pools`.
@@ -453,6 +489,205 @@ public sealed class ValuationPool
         LastEntrySequence = result.EntrySequence;
         UpdatedAtUtc = nowUtc;
         Version++;
+
+        return result;
+    }
+
+    public static OperationalIssueStepResult SimulateOperationalIssue(
+        string poolStatus,
+        decimal previousQty,
+        decimal previousCarryingValue,
+        decimal previousUnitCost,
+        long currentSequence,
+        decimal issueBaseQuantity)
+    {
+        if (poolStatus != ValuationPoolStatuses.Active)
+        {
+            throw new InvalidOperationException("od04_anomalous_valuation_pool_blocked: Valuation pool is blocked and requires Product Owner resolution (ATH-CR-004).");
+        }
+
+        var prevQty = decimal.Round(previousQty, 6, MidpointRounding.AwayFromZero);
+        var prevCarrying = decimal.Round(previousCarryingValue, 4, MidpointRounding.AwayFromZero);
+        var prevCost = decimal.Round(previousUnitCost, 6, MidpointRounding.AwayFromZero);
+        var qty = decimal.Round(issueBaseQuantity, 6, MidpointRounding.AwayFromZero);
+
+        if (prevQty < 0m || prevCarrying < 0m || (prevQty == 0m && prevCarrying != 0m))
+        {
+            throw new InvalidOperationException(
+                $"od04_anomalous_valuation_pool_blocked: Pool has anomalous state (Qty={prevQty:F6}, CarryingValue={prevCarrying:F4}) blocked by OD-04 (ATH-CR-004).");
+        }
+
+        if (qty <= 0m)
+        {
+            throw new InvalidOperationException("issue_qty_must_be_positive: Issue base quantity must be positive.");
+        }
+
+        if (qty > prevQty)
+        {
+            throw new InvalidOperationException(
+                $"od10_negative_stock_forbidden: Issue quantity {qty:0.######} exceeds valued pool quantity {prevQty:0.######}.");
+        }
+
+        decimal issueAmount;
+        decimal newQty;
+        decimal newCarrying;
+        decimal newCost;
+        if (qty == prevQty)
+        {
+            issueAmount = prevCarrying;
+            newQty = 0m;
+            newCarrying = 0m;
+            newCost = 0m;
+        }
+        else
+        {
+            issueAmount = decimal.Round(qty * prevCost, 4, MidpointRounding.AwayFromZero);
+            if (issueAmount <= 0m) issueAmount = 0.0001m;
+            if (issueAmount >= prevCarrying) issueAmount = decimal.Round(prevCarrying - 0.0001m, 4, MidpointRounding.AwayFromZero);
+            newQty = decimal.Round(prevQty - qty, 6, MidpointRounding.AwayFromZero);
+            newCarrying = decimal.Round(prevCarrying - issueAmount, 4, MidpointRounding.AwayFromZero);
+            newCost = decimal.Round(newCarrying / newQty, 6, MidpointRounding.AwayFromZero);
+        }
+
+        var appliedUnitCost = prevCost > 0m
+            ? prevCost
+            : decimal.Round(issueAmount / qty, 6, MidpointRounding.AwayFromZero);
+
+        return new OperationalIssueStepResult(
+            qty,
+            issueAmount,
+            appliedUnitCost,
+            new ValuationStepResult(
+                prevQty,
+                prevCarrying,
+                prevCost,
+                newQty,
+                newCarrying,
+                newCost,
+                currentSequence + 1L));
+    }
+
+    public OperationalIssueStepResult ApplyOperationalIssue(decimal issueBaseQuantity, DateTimeOffset nowUtc)
+    {
+        var result = SimulateOperationalIssue(
+            Status,
+            ValuedBaseQuantity,
+            CarryingValueAmount,
+            MovingAverageUnitCost,
+            LastEntrySequence,
+            issueBaseQuantity);
+
+        ValuedBaseQuantity = result.ValuationStep.NewBaseQuantity;
+        CarryingValueAmount = result.ValuationStep.NewCarryingValue;
+        MovingAverageUnitCost = result.ValuationStep.NewMovingAverageCost;
+        LastEntrySequence = result.ValuationStep.EntrySequence;
+        UpdatedAtUtc = nowUtc;
+        Version++;
+
+        return result;
+    }
+
+    public static InvoicePriceAdjustmentStepResult SimulateInvoicePriceAdjustment(
+        string poolStatus,
+        decimal previousQty,
+        decimal previousCarryingValue,
+        decimal previousUnitCost,
+        long currentSequence,
+        decimal billedBaseQuantity,
+        decimal totalPriceDifferenceAmount)
+    {
+        if (poolStatus != ValuationPoolStatuses.Active)
+        {
+            throw new InvalidOperationException("od04_anomalous_valuation_pool_blocked: Valuation pool is blocked and requires Product Owner resolution (ATH-CR-004).");
+        }
+
+        var prevQty = decimal.Round(previousQty, 6, MidpointRounding.AwayFromZero);
+        var prevCarrying = decimal.Round(previousCarryingValue, 4, MidpointRounding.AwayFromZero);
+        var prevCost = decimal.Round(previousUnitCost, 6, MidpointRounding.AwayFromZero);
+        var billedQty = decimal.Round(billedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        var priceDiff = decimal.Round(totalPriceDifferenceAmount, 4, MidpointRounding.AwayFromZero);
+
+        if (prevQty < 0m || prevCarrying < 0m || (prevQty == 0m && prevCarrying != 0m))
+        {
+            throw new InvalidOperationException(
+                $"od04_anomalous_valuation_pool_blocked: Pool has anomalous state (Qty={prevQty:F6}, CarryingValue={prevCarrying:F4}) blocked by OD-04 (ATH-CR-004).");
+        }
+
+        if (billedQty <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(billedBaseQuantity), "Billed base quantity must be positive.");
+        }
+
+        var coveredQty = Math.Min(prevQty, billedQty);
+        var uncoveredQty = decimal.Round(billedQty - coveredQty, 6, MidpointRounding.AwayFromZero);
+
+        decimal inventoryDelta;
+        if (priceDiff == 0m || coveredQty == 0m)
+        {
+            inventoryDelta = 0m;
+        }
+        else if (coveredQty == billedQty)
+        {
+            inventoryDelta = priceDiff;
+        }
+        else
+        {
+            inventoryDelta = decimal.Round(priceDiff * coveredQty / billedQty, 4, MidpointRounding.AwayFromZero);
+        }
+
+        var pnlDelta = decimal.Round(priceDiff - inventoryDelta, 4, MidpointRounding.AwayFromZero);
+        var newCarrying = decimal.Round(prevCarrying + inventoryDelta, 4, MidpointRounding.AwayFromZero);
+
+        if (inventoryDelta != 0m && prevQty > 0m && newCarrying <= 0m)
+        {
+            throw new InvalidOperationException(
+                $"od04_valuation_floor_breached: Invoice negative price adjustment ({inventoryDelta:F4}) would reduce carrying value ({prevCarrying:F4}) on {prevQty:0.######} units to zero or negative; blocked under OD-04.");
+        }
+
+        var newCost = prevQty > 0m && inventoryDelta != 0m
+            ? decimal.Round(newCarrying / prevQty, 6, MidpointRounding.AwayFromZero)
+            : prevCost;
+        var nextSeq = inventoryDelta != 0m ? currentSequence + 1L : currentSequence;
+
+        return new InvoicePriceAdjustmentStepResult(
+            billedQty,
+            coveredQty,
+            uncoveredQty,
+            priceDiff,
+            inventoryDelta,
+            pnlDelta,
+            new ValuationStepResult(
+                prevQty,
+                prevCarrying,
+                prevCost,
+                prevQty,
+                newCarrying,
+                newCost,
+                nextSeq));
+    }
+
+    public InvoicePriceAdjustmentStepResult ApplyInvoicePriceAdjustment(
+        decimal billedBaseQuantity,
+        decimal totalPriceDifferenceAmount,
+        DateTimeOffset nowUtc)
+    {
+        var result = SimulateInvoicePriceAdjustment(
+            Status,
+            ValuedBaseQuantity,
+            CarryingValueAmount,
+            MovingAverageUnitCost,
+            LastEntrySequence,
+            billedBaseQuantity,
+            totalPriceDifferenceAmount);
+
+        if (result.InventoryAdjustmentAmount != 0m)
+        {
+            CarryingValueAmount = result.ValuationStep.NewCarryingValue;
+            MovingAverageUnitCost = result.ValuationStep.NewMovingAverageCost;
+            LastEntrySequence = result.ValuationStep.EntrySequence;
+            UpdatedAtUtc = nowUtc;
+            Version++;
+        }
 
         return result;
     }
@@ -648,6 +883,56 @@ public sealed class MovementLine
         };
     }
 
+    public static MovementLine CreateOutboundIssue(
+        Guid movementLineId,
+        Guid tenantId,
+        Guid legalEntityId,
+        Guid stockMovementId,
+        int lineNumber,
+        Guid stockPositionId,
+        Guid itemId,
+        Guid baseUomId,
+        Guid sourceLineId,
+        decimal issuedPositiveBaseQty,
+        decimal unitValuationCost,
+        decimal issuedPositiveAmount,
+        Guid warehouseId,
+        Guid locationId,
+        Guid? stockLotId)
+    {
+        ValidateCoreIds(movementLineId, tenantId, legalEntityId, stockMovementId, lineNumber, stockPositionId, itemId, baseUomId, sourceLineId);
+        GuardValidation.RequireNonEmptyGuid(warehouseId, nameof(warehouseId));
+        GuardValidation.RequireNonEmptyGuid(locationId, nameof(locationId));
+
+        var qty = decimal.Round(issuedPositiveBaseQty, 6, MidpointRounding.AwayFromZero);
+        var cost = decimal.Round(unitValuationCost, 6, MidpointRounding.AwayFromZero);
+        var amount = decimal.Round(issuedPositiveAmount, 4, MidpointRounding.AwayFromZero);
+        if (qty <= 0m || cost <= 0m || amount <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(issuedPositiveBaseQty), "Outbound issue movement line requires positive quantity, unit cost and amount.");
+        }
+
+        return new MovementLine
+        {
+            MovementLineId = movementLineId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            StockMovementId = stockMovementId,
+            LineNumber = lineNumber,
+            StockPositionId = stockPositionId,
+            ItemId = itemId,
+            BaseUomId = baseUomId,
+            SourceLineId = sourceLineId,
+            WarehouseId = warehouseId,
+            LocationId = locationId,
+            StockLotId = stockLotId,
+            ResultingStockStatus = StockStatuses.Unrestricted,
+            BaseQuantityDelta = -qty,
+            UnitValuationCost = cost,
+            LineValuationAmount = -amount
+        };
+    }
+
     private static void ValidateCoreIds(
         Guid movementLineId,
         Guid tenantId,
@@ -689,8 +974,8 @@ public sealed class ValuationEntry
     public string EntryType { get; private set; } = ValuationEntryTypes.ReceiptAcceptance;
     public DateOnly PostingDate { get; private set; }
     public string CurrencyCode { get; private set; } = "IDR";
-    public Guid StockMovementId { get; private set; }
-    public Guid MovementLineId { get; private set; }
+    public Guid? StockMovementId { get; private set; }
+    public Guid? MovementLineId { get; private set; }
     public string SourceDocumentType { get; private set; } = "VALUED_ACCEPTANCE";
     public Guid SourceDocumentId { get; private set; }
     public string SourceDocumentNumber { get; private set; } = string.Empty;
@@ -781,6 +1066,158 @@ public sealed class ValuationEntry
     {
         GuardValidation.RequireNonEmptyGuid(journalId, nameof(journalId));
         GlJournalId = journalId;
+    }
+
+    public static ValuationEntry RecordPriceAdjustment(
+        Guid valuationEntryId,
+        Guid tenantId,
+        Guid legalEntityId,
+        Guid valuationPoolId,
+        Guid itemId,
+        DateOnly postingDate,
+        string currencyCode,
+        Guid supplierBillId,
+        string billNumber,
+        decimal valueDelta,
+        ValuationStepResult step,
+        Guid glJournalId,
+        Guid createdByUserId,
+        DateTimeOffset nowUtc)
+    {
+        GuardValidation.RequireNonEmptyGuid(valuationEntryId, nameof(valuationEntryId));
+        GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
+        GuardValidation.RequireNonEmptyGuid(legalEntityId, nameof(legalEntityId));
+        GuardValidation.RequireNonEmptyGuid(valuationPoolId, nameof(valuationPoolId));
+        GuardValidation.RequireNonEmptyGuid(itemId, nameof(itemId));
+        GuardValidation.RequireNonEmptyGuid(supplierBillId, nameof(supplierBillId));
+        GuardValidation.RequireNonEmptyGuid(glJournalId, nameof(glJournalId));
+        GuardValidation.RequireNonEmptyGuid(createdByUserId, nameof(createdByUserId));
+
+        var roundedDelta = decimal.Round(valueDelta, 4, MidpointRounding.AwayFromZero);
+        if (roundedDelta == 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(valueDelta), "Price adjustment valuation entry requires non-zero value delta.");
+        }
+
+        return new ValuationEntry
+        {
+            ValuationEntryId = valuationEntryId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            ValuationPoolId = valuationPoolId,
+            ItemId = itemId,
+            PoolSequenceNumber = step.EntrySequence,
+            EntryType = ValuationEntryTypes.InvoicePriceAdjustment,
+            PostingDate = postingDate,
+            CurrencyCode = GuardValidation.RequireExactIsoCode(currencyCode, "IDR", 3, nameof(currencyCode)),
+            StockMovementId = null,
+            MovementLineId = null,
+            SourceDocumentType = "SUPPLIER_BILL",
+            SourceDocumentId = supplierBillId,
+            SourceDocumentNumber = GuardValidation.RequireCode(billNumber, nameof(billNumber), 40),
+            QuantityDelta = 0m,
+            ValueDelta = roundedDelta,
+            UnitCostApplied = step.NewMovingAverageCost,
+            PreviousPoolBaseQuantity = step.PreviousBaseQuantity,
+            PreviousPoolCarryingValue = step.PreviousCarryingValue,
+            PreviousMovingAverageCost = step.PreviousMovingAverageCost,
+            NewPoolBaseQuantity = step.NewBaseQuantity,
+            NewPoolCarryingValue = step.NewCarryingValue,
+            NewMovingAverageCost = step.NewMovingAverageCost,
+            GlJournalId = glJournalId,
+            CreatedByUserId = createdByUserId,
+            CreatedAtUtc = nowUtc
+        };
+    }
+}
+
+/// <summary>
+/// Strictly append-only DEC-P2P-013 record capturing how matched supplier invoice price differences
+/// apportioned between remaining stock coverage (`inventory_adjustment_amount`) and P&L (`pnl_variance_amount`).
+/// </summary>
+public sealed class InvoicePriceAdjustment
+{
+    public Guid AdjustmentId { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public Guid SupplierBillId { get; private set; }
+    public Guid SupplierBillLineId { get; private set; }
+    public string BillNumber { get; private set; } = string.Empty;
+    public Guid ItemId { get; private set; }
+    public Guid ValuationPoolId { get; private set; }
+    public Guid GlJournalId { get; private set; }
+    public Guid? ValuationEntryId { get; private set; }
+    public DateOnly PostingDate { get; private set; }
+    public string CurrencyCode { get; private set; } = "IDR";
+    public decimal BilledBaseQuantity { get; private set; }
+    public decimal PoolOnHandBeforeQty { get; private set; }
+    public decimal CoveredBaseQuantity { get; private set; }
+    public decimal UncoveredBaseQuantity { get; private set; }
+    public decimal TotalPriceDiffAmount { get; private set; }
+    public decimal InventoryAdjustmentAmount { get; private set; }
+    public decimal PnlVarianceAmount { get; private set; }
+    public decimal PreviousMovingAverageCost { get; private set; }
+    public decimal NewMovingAverageCost { get; private set; }
+    public Guid CreatedByUserId { get; private set; }
+    public DateTimeOffset CreatedAtUtc { get; private set; }
+
+    private InvoicePriceAdjustment()
+    {
+    }
+
+    public static InvoicePriceAdjustment Record(
+        Guid adjustmentId,
+        Guid tenantId,
+        Guid legalEntityId,
+        Guid supplierBillId,
+        Guid supplierBillLineId,
+        string billNumber,
+        Guid itemId,
+        Guid valuationPoolId,
+        Guid glJournalId,
+        Guid? valuationEntryId,
+        DateOnly postingDate,
+        string currencyCode,
+        InvoicePriceAdjustmentStepResult step,
+        Guid createdByUserId,
+        DateTimeOffset nowUtc)
+    {
+        GuardValidation.RequireNonEmptyGuid(adjustmentId, nameof(adjustmentId));
+        GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
+        GuardValidation.RequireNonEmptyGuid(legalEntityId, nameof(legalEntityId));
+        GuardValidation.RequireNonEmptyGuid(supplierBillId, nameof(supplierBillId));
+        GuardValidation.RequireNonEmptyGuid(supplierBillLineId, nameof(supplierBillLineId));
+        GuardValidation.RequireNonEmptyGuid(itemId, nameof(itemId));
+        GuardValidation.RequireNonEmptyGuid(valuationPoolId, nameof(valuationPoolId));
+        GuardValidation.RequireNonEmptyGuid(glJournalId, nameof(glJournalId));
+        GuardValidation.RequireNonEmptyGuid(createdByUserId, nameof(createdByUserId));
+
+        return new InvoicePriceAdjustment
+        {
+            AdjustmentId = adjustmentId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            SupplierBillId = supplierBillId,
+            SupplierBillLineId = supplierBillLineId,
+            BillNumber = GuardValidation.RequireCode(billNumber, nameof(billNumber), 40),
+            ItemId = itemId,
+            ValuationPoolId = valuationPoolId,
+            GlJournalId = glJournalId,
+            ValuationEntryId = valuationEntryId,
+            PostingDate = postingDate,
+            CurrencyCode = GuardValidation.RequireExactIsoCode(currencyCode, "IDR", 3, nameof(currencyCode)),
+            BilledBaseQuantity = step.BilledBaseQuantity,
+            PoolOnHandBeforeQty = step.ValuationStep.PreviousBaseQuantity,
+            CoveredBaseQuantity = step.CoveredBaseQuantity,
+            UncoveredBaseQuantity = step.UncoveredBaseQuantity,
+            TotalPriceDiffAmount = step.TotalPriceDifferenceAmount,
+            InventoryAdjustmentAmount = step.InventoryAdjustmentAmount,
+            PnlVarianceAmount = step.PnlVarianceAmount,
+            PreviousMovingAverageCost = step.ValuationStep.PreviousMovingAverageCost,
+            NewMovingAverageCost = step.ValuationStep.NewMovingAverageCost,
+            CreatedByUserId = createdByUserId,
+            CreatedAtUtc = nowUtc
+        };
     }
 }
 

@@ -299,3 +299,113 @@ public static class TaxDeterminationEvaluator
             Od07Disclaimer);
     }
 }
+
+public static class TaxDeterminationRoles
+{
+    public const string PpnInput = "PPN_INPUT";
+    public const string PphWithholding = "PPH_WITHHOLDING";
+
+    public static readonly IReadOnlyList<string> All = [PpnInput, PphWithholding];
+}
+
+/// <summary>
+/// Strictly append-only versioned tax calculation evidence recorded when posting transactional documents (`OD-07`).
+/// </summary>
+public sealed class TaxDetermination
+{
+    public Guid DeterminationId { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public string SourceModule { get; private set; } = string.Empty;
+    public string SourceDocumentType { get; private set; } = string.Empty;
+    public Guid SourceDocumentId { get; private set; }
+    public Guid SourceDocumentLineId { get; private set; }
+    public string TaxRole { get; private set; } = TaxDeterminationRoles.PpnInput;
+    public Guid TaxCodeId { get; private set; }
+    public string TaxCodeSnapshot { get; private set; } = string.Empty;
+    public string TaxFamily { get; private set; } = TaxFamilies.Ppn;
+    public string Direction { get; private set; } = TaxDirections.Input;
+    public string TreatmentClass { get; private set; } = TaxTreatmentClasses.StandardTaxable;
+    public decimal GrossAmount { get; private set; }
+    public decimal TaxableBaseAmount { get; private set; }
+    public decimal NominalRatePercent { get; private set; }
+    public decimal EffectiveRatePercent { get; private set; }
+    public decimal TaxAmount { get; private set; }
+    public string ReviewStatus { get; private set; } = TaxReviewStatuses.UnreviewedConfigurable;
+    public string EvidenceStatus { get; private set; } = TaxEvidenceStatuses.NotRequired;
+    public string? DocumentaryEvidenceRef { get; private set; }
+    public string? CounterpartyNpwpSnapshot { get; private set; }
+    public DateOnly TransactionDate { get; private set; }
+    public Guid CreatedByUserId { get; private set; }
+    public DateTimeOffset CreatedAtUtc { get; private set; }
+
+    private TaxDetermination()
+    {
+    }
+
+    public static TaxDetermination FromEnvelope(
+        Guid determinationId,
+        Guid tenantId,
+        Guid legalEntityId,
+        string sourceModule,
+        string sourceDocumentType,
+        Guid sourceDocumentId,
+        Guid sourceDocumentLineId,
+        string taxRole,
+        TaxDeterminationEnvelope envelope,
+        string? documentaryEvidenceRef,
+        string? counterpartyNpwpSnapshot,
+        DateOnly transactionDate,
+        Guid createdByUserId,
+        DateTimeOffset nowUtc)
+    {
+        GuardValidation.RequireNonEmptyGuid(determinationId, nameof(determinationId));
+        GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
+        GuardValidation.RequireNonEmptyGuid(legalEntityId, nameof(legalEntityId));
+        GuardValidation.RequireNonEmptyGuid(sourceDocumentId, nameof(sourceDocumentId));
+        GuardValidation.RequireNonEmptyGuid(sourceDocumentLineId, nameof(sourceDocumentLineId));
+        GuardValidation.RequireNonEmptyGuid(createdByUserId, nameof(createdByUserId));
+        ArgumentNullException.ThrowIfNull(envelope);
+
+        var normalizedRole = taxRole?.Trim().ToUpperInvariant() ?? string.Empty;
+        if (!TaxDeterminationRoles.All.Contains(normalizedRole, StringComparer.Ordinal))
+        {
+            throw new ArgumentException($"Unsupported tax determination role '{taxRole}'.", nameof(taxRole));
+        }
+
+        if (envelope.IsBlocked)
+        {
+            throw new InvalidOperationException(
+                envelope.BlockedReason ?? "tax_determination_blocked: Blocked tax determination cannot be posted.");
+        }
+
+        return new TaxDetermination
+        {
+            DeterminationId = determinationId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            SourceModule = GuardValidation.RequireMasterCode(sourceModule, nameof(sourceModule), 2, 32),
+            SourceDocumentType = GuardValidation.RequireMasterCode(sourceDocumentType, nameof(sourceDocumentType), 2, 48),
+            SourceDocumentId = sourceDocumentId,
+            SourceDocumentLineId = sourceDocumentLineId,
+            TaxRole = normalizedRole,
+            TaxCodeId = envelope.TaxCodeId,
+            TaxCodeSnapshot = GuardValidation.RequireMasterCode(envelope.Code, nameof(envelope.Code), 2, 32),
+            TaxFamily = envelope.TaxFamily,
+            Direction = envelope.Direction,
+            TreatmentClass = envelope.TreatmentClass,
+            GrossAmount = envelope.GrossAmount,
+            TaxableBaseAmount = envelope.TaxableBaseAmount,
+            NominalRatePercent = envelope.NominalRatePercent,
+            EffectiveRatePercent = envelope.EffectiveRatePercent,
+            TaxAmount = envelope.TaxAmount,
+            ReviewStatus = envelope.ReviewStatus,
+            EvidenceStatus = envelope.EvidenceStatus,
+            DocumentaryEvidenceRef = GuardValidation.NormalizeOptional(documentaryEvidenceRef, 120, nameof(documentaryEvidenceRef)),
+            CounterpartyNpwpSnapshot = GuardValidation.NormalizeOptional(counterpartyNpwpSnapshot, 64, nameof(counterpartyNpwpSnapshot)),
+            TransactionDate = transactionDate,
+            CreatedByUserId = createdByUserId,
+            CreatedAtUtc = nowUtc
+        };
+    }
+}

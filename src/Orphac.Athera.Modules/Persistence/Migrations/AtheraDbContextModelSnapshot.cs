@@ -125,6 +125,966 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                     b.ToTable("asp_net_user_tokens", "identity");
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.BillSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "FiscalYear");
+
+                    b.ToTable("bill_sequences", "ap");
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.InvoiceMatchEvaluation", b =>
+                {
+                    b.Property<Guid>("EvaluationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("evaluation_id");
+
+                    b.Property<string>("BdOutcome")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("bd_outcome");
+
+                    b.Property<string>("BlockingReasonsJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("blocking_reasons_json");
+
+                    b.Property<string>("ComparisonJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("comparison_json");
+
+                    b.Property<string>("DqOutcome")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("dq_outcome");
+
+                    b.Property<DateTimeOffset>("EvaluatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("evaluated_at_utc");
+
+                    b.Property<Guid>("EvaluatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("evaluated_by_user_id");
+
+                    b.Property<string>("EvaluationStage")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("evaluation_stage");
+
+                    b.Property<bool>("IsPostingBlocked")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_posting_blocked");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("OverallMatchStatus")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("overall_match_status");
+
+                    b.Property<Guid>("PolicyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("policy_id");
+
+                    b.Property<string>("PpOutcome")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("pp_outcome");
+
+                    b.Property<bool>("RequiresApproval")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_approval");
+
+                    b.Property<bool>("RequiresPaymentBlock")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_payment_block");
+
+                    b.Property<Guid>("SupplierBillId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("EvaluationId");
+
+                    b.HasIndex("TenantId", "EvaluatedByUserId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PolicyId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierBillId", "EvaluatedAtUtc")
+                        .HasDatabaseName("ix_inv_match_eval_bill_time");
+
+                    b.ToTable("invoice_match_evaluations", "ap", t =>
+                        {
+                            t.HasCheckConstraint("ck_inv_match_eval_outcomes", "dq_outcome IN ('MATCHED', 'WITHIN_TOLERANCE', 'VARIANCE_APPROVAL_REQUIRED', 'BLOCKED') AND pp_outcome IN ('MATCHED', 'WITHIN_TOLERANCE', 'VARIANCE_APPROVAL_REQUIRED', 'BLOCKED') AND bd_outcome IN ('MATCHED', 'WITHIN_TOLERANCE', 'VARIANCE_APPROVAL_REQUIRED', 'BLOCKED') AND overall_match_status IN ('MATCHED', 'WITHIN_TOLERANCE', 'APPROVAL_REQUIRED', 'POSTING_BLOCKED')");
+
+                            t.HasCheckConstraint("ck_inv_match_eval_stage", "evaluation_stage IN ('DRAFT_PREVIEW', 'SUBMIT', 'POST_COMMIT')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.InvoiceMatchPolicy", b =>
+                {
+                    b.Property<Guid>("PolicyId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("policy_id");
+
+                    b.Property<Guid?>("BdWriteOffAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bd_write_off_account_id");
+
+                    b.Property<decimal>("BdWriteOffLimitAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("bd_write_off_limit_amount");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)")
+                        .HasColumnName("code");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<decimal>("DqToleranceBaseQty")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("dq_tolerance_base_qty");
+
+                    b.Property<decimal>("DqTolerancePercent")
+                        .HasColumnType("numeric(9,4)")
+                        .HasColumnName("dq_tolerance_percent");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_default");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("name");
+
+                    b.Property<decimal>("PpToleranceAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("pp_tolerance_amount");
+
+                    b.Property<decimal>("PpTolerancePercent")
+                        .HasColumnType("numeric(9,4)")
+                        .HasColumnName("pp_tolerance_percent");
+
+                    b.Property<string>("ReviewStatus")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("review_status");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.HasKey("PolicyId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "BdWriteOffAccountId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "Code")
+                        .IsUnique()
+                        .HasDatabaseName("ux_invoice_match_policies_code");
+
+                    b.ToTable("invoice_match_policies", "ap", t =>
+                        {
+                            t.HasCheckConstraint("ck_inv_match_policies_limits", "pp_tolerance_percent >= 0 AND pp_tolerance_amount >= 0 AND dq_tolerance_percent >= 0 AND dq_tolerance_base_qty >= 0 AND bd_write_off_limit_amount >= 0");
+
+                            t.HasCheckConstraint("ck_inv_match_policies_review", "review_status IN ('UNREVIEWED_SAFE_DEFAULT', 'REVIEWED_INTERNAL')");
+
+                            t.HasCheckConstraint("ck_inv_match_policies_status", "status IN ('ACTIVE', 'INACTIVE')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.PayableItem", b =>
+                {
+                    b.Property<Guid>("PayableItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("payable_item_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<DateOnly>("DueDate")
+                        .HasColumnType("date")
+                        .HasColumnName("due_date");
+
+                    b.Property<Guid>("GlJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("gl_journal_id");
+
+                    b.Property<decimal>("GrossBillAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("gross_bill_amount");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<decimal>("NetPayableAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("net_payable_amount");
+
+                    b.Property<decimal>("PaidAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("paid_amount");
+
+                    b.Property<string>("PayableNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("payable_number");
+
+                    b.Property<string>("PaymentBlockReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("payment_block_reason");
+
+                    b.Property<string>("PaymentBlockStatus")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("payment_block_status");
+
+                    b.Property<DateOnly>("PostingDate")
+                        .HasColumnType("date")
+                        .HasColumnName("posting_date");
+
+                    b.Property<decimal>("RemainingOpenAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("remaining_open_amount");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("SupplierBillId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_id");
+
+                    b.Property<string>("SupplierCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)")
+                        .HasColumnName("supplier_code_snapshot");
+
+                    b.Property<string>("SupplierInvoiceNumber")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("supplier_invoice_number");
+
+                    b.Property<string>("SupplierLegalNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("supplier_legal_name_snapshot");
+
+                    b.Property<Guid>("SupplierPartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_partner_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.Property<decimal>("WithholdingTaxAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("withholding_tax_amount");
+
+                    b.HasKey("PayableItemId");
+
+                    b.HasAlternateKey("TenantId", "LegalEntityId", "PayableItemId");
+
+                    b.HasIndex("TenantId", "SupplierPartnerId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "GlJournalId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PayableNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_payable_items_number");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierBillId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_payable_items_bill");
+
+                    b.ToTable("payable_items", "ap", t =>
+                        {
+                            t.HasCheckConstraint("ck_payable_items_amounts", "gross_bill_amount > 0 AND withholding_tax_amount >= 0 AND net_payable_amount > 0 AND paid_amount >= 0 AND remaining_open_amount >= 0 AND net_payable_amount = paid_amount + remaining_open_amount");
+
+                            t.HasCheckConstraint("ck_payable_items_currency", "currency_code = 'IDR'");
+
+                            t.HasCheckConstraint("ck_payable_items_pay_block", "payment_block_status IN ('NONE', 'PAYMENT_BLOCKED', 'RELEASED')");
+
+                            t.HasCheckConstraint("ck_payable_items_status", "status IN ('OPEN', 'PARTIALLY_PAID', 'PAID', 'REVERSED')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.PayableSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "FiscalYear");
+
+                    b.ToTable("payable_sequences", "ap");
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.SupplierBill", b =>
+                {
+                    b.Property<Guid>("SupplierBillId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_id");
+
+                    b.Property<string>("ApprovalPolicyCode")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("approval_policy_code");
+
+                    b.Property<DateTimeOffset?>("ApprovedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("approved_at_utc");
+
+                    b.Property<Guid?>("ApprovedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("approved_by_user_id");
+
+                    b.Property<string>("BillNumber")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("bill_number");
+
+                    b.Property<string>("BillType")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("bill_type");
+
+                    b.Property<decimal>("ComputedGrossTotal")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("computed_gross_total");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<decimal>("DeclaredGrossAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("declared_gross_amount");
+
+                    b.Property<string>("DraftCode")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("draft_code");
+
+                    b.Property<DateOnly>("DueDate")
+                        .HasColumnType("date")
+                        .HasColumnName("due_date");
+
+                    b.Property<DateOnly>("InvoiceDate")
+                        .HasColumnType("date")
+                        .HasColumnName("invoice_date");
+
+                    b.Property<string>("LastApprovalDecision")
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("last_approval_decision");
+
+                    b.Property<string>("LastRejectionReason")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("last_rejection_reason");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<decimal>("LinesNetSubtotal")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("lines_net_subtotal");
+
+                    b.Property<string>("MatchStatus")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("match_status");
+
+                    b.Property<decimal>("NetPayableAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("net_payable_amount");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("notes");
+
+                    b.Property<string>("PaymentBlockReason")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("payment_block_reason");
+
+                    b.Property<string>("PaymentBlockStatus")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("payment_block_status");
+
+                    b.Property<string>("PoNumberSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("po_number_snapshot");
+
+                    b.Property<string>("PostIdempotencyKey")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("post_idempotency_key");
+
+                    b.Property<DateTimeOffset?>("PostedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("posted_at_utc");
+
+                    b.Property<Guid?>("PostedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("posted_by_user_id");
+
+                    b.Property<Guid?>("PostedJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("posted_journal_id");
+
+                    b.Property<decimal>("PpnTaxTotal")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("ppn_tax_total");
+
+                    b.Property<Guid>("PurchaseOrderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("purchase_order_id");
+
+                    b.Property<Guid>("PurchaseOrderRevisionId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("purchase_order_revision_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset?>("SubmittedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at_utc");
+
+                    b.Property<Guid?>("SubmittedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("submitted_by_user_id");
+
+                    b.Property<string>("SupplierCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)")
+                        .HasColumnName("supplier_code_snapshot");
+
+                    b.Property<string>("SupplierInvoiceNumber")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("supplier_invoice_number");
+
+                    b.Property<string>("SupplierLegalNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("supplier_legal_name_snapshot");
+
+                    b.Property<string>("SupplierNpwpSnapshot")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("supplier_npwp_snapshot");
+
+                    b.Property<Guid>("SupplierPartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_partner_id");
+
+                    b.Property<string>("TaxInvoiceNumber")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("tax_invoice_number");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("TotalBdWriteOffAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_bd_write_off_amount");
+
+                    b.Property<decimal>("TotalGrniClearAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_grni_clear_amount");
+
+                    b.Property<decimal>("TotalInventoryAdjAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_inventory_adj_amount");
+
+                    b.Property<decimal>("TotalPnlVarianceAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_pnl_variance_amount");
+
+                    b.Property<decimal>("TotalPriceVarianceAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_price_variance_amount");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<bool>("VarianceApproved")
+                        .HasColumnType("boolean")
+                        .HasColumnName("variance_approved");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasDefaultValue(1L)
+                        .HasColumnName("version");
+
+                    b.Property<string>("WithholdingSlipReference")
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("withholding_slip_reference");
+
+                    b.Property<decimal>("WithholdingTaxTotal")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("withholding_tax_total");
+
+                    b.HasKey("SupplierBillId");
+
+                    b.HasIndex("TenantId", "CreatedByUserId");
+
+                    b.HasIndex("TenantId", "SupplierPartnerId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "BillNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_supplier_bills_bill_number")
+                        .HasFilter("bill_number IS NOT NULL");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "DraftCode")
+                        .IsUnique()
+                        .HasDatabaseName("ux_supplier_bills_draft_code");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PostedJournalId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PurchaseOrderId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PurchaseOrderRevisionId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "Status", "InvoiceDate")
+                        .HasDatabaseName("ix_supplier_bills_status_date");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierPartnerId", "SupplierInvoiceNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_supplier_bills_vendor_invoice")
+                        .HasFilter("status <> 'CANCELLED'");
+
+                    b.ToTable("supplier_bills", "ap", t =>
+                        {
+                            t.HasCheckConstraint("ck_supplier_bills_amounts", "declared_gross_amount > 0 AND lines_net_subtotal >= 0 AND total_grni_clear_amount >= 0 AND ppn_tax_total >= 0 AND withholding_tax_total >= 0 AND computed_gross_total >= 0 AND net_payable_amount >= 0 AND due_date >= invoice_date");
+
+                            t.HasCheckConstraint("ck_supplier_bills_currency", "currency_code = 'IDR'");
+
+                            t.HasCheckConstraint("ck_supplier_bills_match_status", "match_status IN ('MATCHED', 'WITHIN_TOLERANCE', 'APPROVAL_REQUIRED', 'POSTING_BLOCKED')");
+
+                            t.HasCheckConstraint("ck_supplier_bills_pay_block", "payment_block_status IN ('NONE', 'PAYMENT_BLOCKED', 'RELEASED')");
+
+                            t.HasCheckConstraint("ck_supplier_bills_status", "status IN ('DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'POSTED', 'CANCELLED')");
+
+                            t.HasCheckConstraint("ck_supplier_bills_type", "bill_type IN ('PO_THREE_WAY_MATCH')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.SupplierBillLine", b =>
+                {
+                    b.Property<Guid>("SupplierBillLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_line_id");
+
+                    b.Property<decimal>("AcceptedUnbilledQtySnapshot")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("accepted_unbilled_qty_snapshot");
+
+                    b.Property<string>("BaseUomCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("base_uom_code_snapshot");
+
+                    b.Property<Guid>("BaseUomId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("base_uom_id");
+
+                    b.Property<decimal>("BilledBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("billed_base_quantity");
+
+                    b.Property<string>("DqOutcome")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("dq_outcome");
+
+                    b.Property<Guid>("GoodsReceiptLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("goods_receipt_line_id");
+
+                    b.Property<decimal>("GrniClearAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("grni_clear_amount");
+
+                    b.Property<decimal>("InvoiceUnitPriceBase")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("invoice_unit_price_base");
+
+                    b.Property<string>("ItemCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)")
+                        .HasColumnName("item_code_snapshot");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("item_id");
+
+                    b.Property<string>("ItemNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("item_name_snapshot");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<decimal>("LineNetAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("line_net_amount");
+
+                    b.Property<string>("LineNotes")
+                        .HasMaxLength(240)
+                        .HasColumnType("character varying(240)")
+                        .HasColumnName("line_notes");
+
+                    b.Property<int>("LineNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("line_number");
+
+                    b.Property<decimal>("OrderedBaseQtySnapshot")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("ordered_base_qty_snapshot");
+
+                    b.Property<Guid>("PoLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("po_line_id");
+
+                    b.Property<decimal>("PoUnitPriceFunctional")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("po_unit_price_functional");
+
+                    b.Property<string>("PpOutcome")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("pp_outcome");
+
+                    b.Property<decimal>("PpnTaxAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("ppn_tax_amount");
+
+                    b.Property<Guid>("PpnTaxCodeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ppn_tax_code_id");
+
+                    b.Property<string>("PpnTaxCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("ppn_tax_code_snapshot");
+
+                    b.Property<decimal>("PriceVarianceAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("price_variance_amount");
+
+                    b.Property<Guid>("ReceiptAccrualLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("receipt_accrual_line_id");
+
+                    b.Property<Guid>("SupplierBillId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("ValuedAcceptanceLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("valued_acceptance_line_id");
+
+                    b.Property<decimal>("WithholdingTaxAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("withholding_tax_amount");
+
+                    b.Property<Guid?>("WithholdingTaxCodeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("withholding_tax_code_id");
+
+                    b.Property<string>("WithholdingTaxCodeSnapshot")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("withholding_tax_code_snapshot");
+
+                    b.HasKey("SupplierBillLineId");
+
+                    b.HasIndex("TenantId", "BaseUomId");
+
+                    b.HasIndex("TenantId", "ItemId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "GoodsReceiptLineId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PoLineId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PpnTaxCodeId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReceiptAccrualLineId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ValuedAcceptanceLineId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "WithholdingTaxCodeId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierBillId", "LineNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_supplier_bill_lines_num");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierBillId", "ReceiptAccrualLineId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_supplier_bill_lines_accrual");
+
+                    b.ToTable("supplier_bill_lines", "ap", t =>
+                        {
+                            t.HasCheckConstraint("ck_supplier_bill_lines_num", "line_number >= 1");
+
+                            t.HasCheckConstraint("ck_supplier_bill_lines_outcomes", "dq_outcome IN ('MATCHED', 'WITHIN_TOLERANCE', 'VARIANCE_APPROVAL_REQUIRED', 'BLOCKED') AND pp_outcome IN ('MATCHED', 'WITHIN_TOLERANCE', 'VARIANCE_APPROVAL_REQUIRED', 'BLOCKED')");
+
+                            t.HasCheckConstraint("ck_supplier_bill_lines_values", "billed_base_quantity > 0 AND invoice_unit_price_base > 0 AND line_net_amount > 0 AND grni_clear_amount >= 0 AND ppn_tax_amount >= 0 AND withholding_tax_amount >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.SupplierBillReceiptMatch", b =>
+                {
+                    b.Property<Guid>("MatchId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("match_id");
+
+                    b.Property<decimal>("CoveredBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("covered_base_quantity");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<decimal>("GrniClearedAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("grni_cleared_amount");
+
+                    b.Property<decimal>("InventoryAdjustmentAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("inventory_adjustment_amount");
+
+                    b.Property<decimal>("InvoiceUnitPriceBase")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("invoice_unit_price_base");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("item_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<decimal>("MatchedBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("matched_base_quantity");
+
+                    b.Property<decimal>("PnlVarianceAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("pnl_variance_amount");
+
+                    b.Property<Guid>("PoLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("po_line_id");
+
+                    b.Property<decimal>("PriceVarianceAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("price_variance_amount");
+
+                    b.Property<Guid>("PurchaseOrderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("purchase_order_id");
+
+                    b.Property<Guid>("ReceiptAccrualId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("receipt_accrual_id");
+
+                    b.Property<Guid>("ReceiptAccrualLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("receipt_accrual_line_id");
+
+                    b.Property<decimal>("ReceiptUnitCostBase")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("receipt_unit_cost_base");
+
+                    b.Property<Guid>("SupplierBillId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_id");
+
+                    b.Property<Guid>("SupplierBillLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_line_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("ValuedAcceptanceLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("valued_acceptance_line_id");
+
+                    b.HasKey("MatchId");
+
+                    b.HasIndex("TenantId", "ItemId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReceiptAccrualId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReceiptAccrualLineId")
+                        .HasDatabaseName("IX_supplier_bill_receipt_matches_tenant_id_legal_entity_id_re~1");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierBillId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierBillLineId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_bill_receipt_match_bill_line");
+
+                    b.ToTable("supplier_bill_receipt_matches", "ap", t =>
+                        {
+                            t.HasCheckConstraint("ck_bill_receipt_match_qty", "matched_base_quantity > 0 AND grni_cleared_amount > 0 AND covered_base_quantity >= 0");
+                        });
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Approval.ApprovalCase", b =>
                 {
                     b.Property<Guid>("CaseId")
@@ -1378,6 +2338,81 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.ReceiptAccrualClearing", b =>
+                {
+                    b.Property<Guid>("ClearingId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("clearing_id");
+
+                    b.Property<decimal>("ClearedAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("cleared_amount");
+
+                    b.Property<decimal>("ClearedBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("cleared_base_quantity");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<Guid>("GlJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("gl_journal_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<DateOnly>("PostingDate")
+                        .HasColumnType("date")
+                        .HasColumnName("posting_date");
+
+                    b.Property<Guid>("ReceiptAccrualId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("receipt_accrual_id");
+
+                    b.Property<Guid>("ReceiptAccrualLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("receipt_accrual_line_id");
+
+                    b.Property<Guid>("SupplierBillId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_id");
+
+                    b.Property<Guid>("SupplierBillLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_line_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("ClearingId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "GlJournalId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReceiptAccrualId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReceiptAccrualLineId")
+                        .HasDatabaseName("IX_receipt_accrual_clearings_tenant_id_legal_entity_id_receip~1");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierBillId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierBillLineId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_receipt_accrual_clearings_bill_line");
+
+                    b.ToTable("receipt_accrual_clearings", "gl", t =>
+                        {
+                            t.HasCheckConstraint("ck_receipt_accrual_clearings_pos", "cleared_base_quantity > 0 AND cleared_amount > 0");
+                        });
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.ReceiptAccrualLine", b =>
                 {
                     b.Property<Guid>("ReceiptAccrualLineId")
@@ -1445,8 +2480,6 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .HasColumnName("valued_acceptance_line_id");
 
                     b.HasKey("ReceiptAccrualLineId");
-
-                    b.HasAlternateKey("TenantId", "LegalEntityId", "ReceiptAccrualLineId");
 
                     b.HasIndex("TenantId", "ItemId");
 
@@ -1996,6 +3029,129 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Inventory.InvoicePriceAdjustment", b =>
+                {
+                    b.Property<Guid>("AdjustmentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("adjustment_id");
+
+                    b.Property<string>("BillNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("bill_number");
+
+                    b.Property<decimal>("BilledBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("billed_base_quantity");
+
+                    b.Property<decimal>("CoveredBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("covered_base_quantity");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<Guid>("GlJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("gl_journal_id");
+
+                    b.Property<decimal>("InventoryAdjustmentAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("inventory_adjustment_amount");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("item_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<decimal>("NewMovingAverageCost")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("new_moving_average_cost");
+
+                    b.Property<decimal>("PnlVarianceAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("pnl_variance_amount");
+
+                    b.Property<decimal>("PoolOnHandBeforeQty")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("pool_on_hand_before_qty");
+
+                    b.Property<DateOnly>("PostingDate")
+                        .HasColumnType("date")
+                        .HasColumnName("posting_date");
+
+                    b.Property<decimal>("PreviousMovingAverageCost")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("previous_moving_average_cost");
+
+                    b.Property<Guid>("SupplierBillId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_id");
+
+                    b.Property<Guid>("SupplierBillLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("supplier_bill_line_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("TotalPriceDiffAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("total_price_diff_amount");
+
+                    b.Property<decimal>("UncoveredBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("uncovered_base_quantity");
+
+                    b.Property<Guid?>("ValuationEntryId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("valuation_entry_id");
+
+                    b.Property<Guid>("ValuationPoolId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("valuation_pool_id");
+
+                    b.HasKey("AdjustmentId");
+
+                    b.HasIndex("TenantId", "ItemId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "GlJournalId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierBillId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SupplierBillLineId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_invoice_price_adj_bill_line");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ValuationEntryId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ValuationPoolId")
+                        .HasDatabaseName("IX_invoice_price_adjustments_tenant_id_legal_entity_id_valuat~1");
+
+                    b.ToTable("invoice_price_adjustments", "inventory", t =>
+                        {
+                            t.HasCheckConstraint("ck_inv_price_adj_currency", "currency_code = 'IDR'");
+
+                            t.HasCheckConstraint("ck_inv_price_adj_qty", "billed_base_quantity > 0 AND pool_on_hand_before_qty >= 0 AND covered_base_quantity >= 0 AND uncovered_base_quantity >= 0 AND billed_base_quantity = covered_base_quantity + uncovered_base_quantity AND total_price_diff_amount = inventory_adjustment_amount + pnl_variance_amount");
+                        });
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Inventory.MovementLine", b =>
                 {
                     b.Property<Guid>("MovementLineId")
@@ -2086,7 +3242,7 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         {
                             t.HasCheckConstraint("ck_movement_lines_number", "line_number >= 1");
 
-                            t.HasCheckConstraint("ck_movement_lines_positive", "base_quantity_delta <> 0 AND unit_valuation_cost >= 0 AND line_valuation_amount >= 0");
+                            t.HasCheckConstraint("ck_movement_lines_positive", "base_quantity_delta <> 0 AND unit_valuation_cost >= 0 AND ((base_quantity_delta > 0 AND line_valuation_amount >= 0) OR (base_quantity_delta < 0 AND line_valuation_amount <= 0))");
 
                             t.HasCheckConstraint("ck_movement_lines_status", "resulting_stock_status IN ('UNRESTRICTED', 'QUALITY_INSPECTION', 'BLOCKED')");
                         });
@@ -2413,7 +3569,7 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
 
                     b.ToTable("stock_movements", "inventory", t =>
                         {
-                            t.HasCheckConstraint("ck_stock_movements_type", "movement_type IN ('PURCHASE_RECEIPT_ACCEPTANCE', 'LOCATION_TRANSFER', 'QUALITY_STATUS_CHANGE')");
+                            t.HasCheckConstraint("ck_stock_movements_type", "movement_type IN ('PURCHASE_RECEIPT_ACCEPTANCE', 'LOCATION_TRANSFER', 'QUALITY_STATUS_CHANGE', 'OPERATIONAL_ISSUE')");
                         });
                 });
 
@@ -2705,7 +3861,7 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("legal_entity_id");
 
-                    b.Property<Guid>("MovementLineId")
+                    b.Property<Guid?>("MovementLineId")
                         .HasColumnType("uuid")
                         .HasColumnName("movement_line_id");
 
@@ -2761,7 +3917,7 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .HasColumnType("character varying(40)")
                         .HasColumnName("source_document_type");
 
-                    b.Property<Guid>("StockMovementId")
+                    b.Property<Guid?>("StockMovementId")
                         .HasColumnType("uuid")
                         .HasColumnName("stock_movement_id");
 
@@ -2806,9 +3962,9 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
 
                             t.HasCheckConstraint("ck_valuation_entries_seq", "pool_sequence_number >= 1");
 
-                            t.HasCheckConstraint("ck_valuation_entries_type", "entry_type IN ('RECEIPT_ACCEPTANCE')");
+                            t.HasCheckConstraint("ck_valuation_entries_type", "entry_type IN ('RECEIPT_ACCEPTANCE', 'OPERATIONAL_ISSUE', 'INVOICE_PRICE_ADJUSTMENT')");
 
-                            t.HasCheckConstraint("ck_valuation_entries_values", "quantity_delta > 0 AND value_delta > 0 AND unit_cost_applied > 0 AND previous_pool_base_quantity >= 0 AND previous_pool_carrying_value >= 0 AND previous_moving_average_cost >= 0 AND new_pool_base_quantity > 0 AND new_pool_carrying_value > 0 AND new_moving_average_cost > 0 AND gl_journal_id IS NOT NULL");
+                            t.HasCheckConstraint("ck_valuation_entries_values", "previous_pool_base_quantity >= 0 AND previous_pool_carrying_value >= 0 AND previous_moving_average_cost >= 0 AND new_pool_base_quantity >= 0 AND new_pool_carrying_value >= 0 AND new_moving_average_cost >= 0 AND ((entry_type = 'RECEIPT_ACCEPTANCE' AND quantity_delta > 0 AND value_delta > 0 AND unit_cost_applied > 0 AND new_pool_base_quantity > 0 AND new_pool_carrying_value > 0 AND new_moving_average_cost > 0 AND stock_movement_id IS NOT NULL AND movement_line_id IS NOT NULL AND gl_journal_id IS NOT NULL) OR (entry_type = 'OPERATIONAL_ISSUE' AND quantity_delta < 0 AND value_delta < 0 AND unit_cost_applied > 0 AND stock_movement_id IS NOT NULL AND movement_line_id IS NOT NULL AND gl_journal_id IS NOT NULL) OR (entry_type = 'INVOICE_PRICE_ADJUSTMENT' AND quantity_delta = 0 AND value_delta <> 0 AND new_pool_base_quantity > 0 AND new_pool_carrying_value > 0 AND new_moving_average_cost > 0 AND gl_journal_id IS NOT NULL))");
                         });
                 });
 
@@ -5163,6 +6319,146 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Tax.TaxDetermination", b =>
+                {
+                    b.Property<Guid>("DeterminationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("determination_id");
+
+                    b.Property<string>("CounterpartyNpwpSnapshot")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("counterparty_npwp_snapshot");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("Direction")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("direction");
+
+                    b.Property<string>("DocumentaryEvidenceRef")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("documentary_evidence_ref");
+
+                    b.Property<decimal>("EffectiveRatePercent")
+                        .HasColumnType("numeric(7,4)")
+                        .HasColumnName("effective_rate_percent");
+
+                    b.Property<string>("EvidenceStatus")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("evidence_status");
+
+                    b.Property<decimal>("GrossAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("gross_amount");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<decimal>("NominalRatePercent")
+                        .HasColumnType("numeric(7,4)")
+                        .HasColumnName("nominal_rate_percent");
+
+                    b.Property<string>("ReviewStatus")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("review_status");
+
+                    b.Property<Guid>("SourceDocumentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("source_document_id");
+
+                    b.Property<Guid>("SourceDocumentLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("source_document_line_id");
+
+                    b.Property<string>("SourceDocumentType")
+                        .IsRequired()
+                        .HasMaxLength(48)
+                        .HasColumnType("character varying(48)")
+                        .HasColumnName("source_document_type");
+
+                    b.Property<string>("SourceModule")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("source_module");
+
+                    b.Property<decimal>("TaxAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("tax_amount");
+
+                    b.Property<Guid>("TaxCodeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tax_code_id");
+
+                    b.Property<string>("TaxCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("tax_code_snapshot");
+
+                    b.Property<string>("TaxFamily")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("tax_family");
+
+                    b.Property<string>("TaxRole")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("tax_role");
+
+                    b.Property<decimal>("TaxableBaseAmount")
+                        .HasColumnType("numeric(18,4)")
+                        .HasColumnName("taxable_base_amount");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateOnly>("TransactionDate")
+                        .HasColumnType("date")
+                        .HasColumnName("transaction_date");
+
+                    b.Property<string>("TreatmentClass")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("treatment_class");
+
+                    b.HasKey("DeterminationId");
+
+                    b.HasIndex("TenantId", "CreatedByUserId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "TaxCodeId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SourceDocumentId", "SourceDocumentLineId", "TaxRole")
+                        .IsUnique()
+                        .HasDatabaseName("ux_tax_determinations_doc_line_role");
+
+                    b.ToTable("tax_determinations", "tax", t =>
+                        {
+                            t.HasCheckConstraint("ck_tax_determinations_amounts", "gross_amount > 0 AND taxable_base_amount >= 0 AND nominal_rate_percent >= 0 AND effective_rate_percent >= 0 AND tax_amount >= 0");
+
+                            t.HasCheckConstraint("ck_tax_determinations_role", "tax_role IN ('PPN_INPUT', 'PPH_WITHHOLDING')");
+                        });
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("Orphac.Athera.Modules.Identity.ApplicationRole", null)
@@ -5211,6 +6507,237 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.BillSequence", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.InvoiceMatchEvaluation", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "EvaluatedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.InvoiceMatchPolicy", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "PolicyId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "PolicyId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.SupplierBill", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.InvoiceMatchPolicy", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.GlAccount", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "BdWriteOffAccountId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.PayableItem", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Partners.Partner", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "SupplierPartnerId")
+                        .HasPrincipalKey("TenantId", "PartnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.JournalEntry", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "GlJournalId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "JournalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.SupplierBill", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.PayableSequence", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.SupplierBill", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "CreatedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Partners.Partner", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "SupplierPartnerId")
+                        .HasPrincipalKey("TenantId", "PartnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.JournalEntry", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "PostedJournalId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "JournalId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Orphac.Athera.Modules.Procurement.PurchaseOrder", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "PurchaseOrderId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "PurchaseOrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Procurement.PurchaseOrderRevision", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "PurchaseOrderRevisionId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "RevisionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.SupplierBillLine", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Catalog.UnitOfMeasure", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "BaseUomId")
+                        .HasPrincipalKey("TenantId", "UomId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Catalog.Item", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "ItemId")
+                        .HasPrincipalKey("TenantId", "ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Procurement.GoodsReceiptLine", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "GoodsReceiptLineId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "GoodsReceiptLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Procurement.PurchaseOrderLine", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "PoLineId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "PoLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Tax.TaxCode", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "PpnTaxCodeId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "TaxCodeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.ReceiptAccrualLine", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ReceiptAccrualLineId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ReceiptAccrualLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.SupplierBill", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Procurement.ValuedAcceptanceLine", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ValuedAcceptanceLineId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ValuedAcceptanceLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Tax.TaxCode", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "WithholdingTaxCodeId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "TaxCodeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.AccountsPayable.SupplierBillReceiptMatch", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Catalog.Item", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "ItemId")
+                        .HasPrincipalKey("TenantId", "ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.ReceiptAccrual", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ReceiptAccrualId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ReceiptAccrualId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.ReceiptAccrualLine", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ReceiptAccrualLineId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ReceiptAccrualLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.SupplierBill", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.SupplierBillLine", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupplierBillLineId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SupplierBillLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
@@ -5542,6 +7069,37 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.ReceiptAccrualClearing", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.JournalEntry", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "GlJournalId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "JournalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.ReceiptAccrual", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ReceiptAccrualId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ReceiptAccrualId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.ReceiptAccrualLine", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ReceiptAccrualLineId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ReceiptAccrualLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.SupplierBill", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.ReceiptAccrualLine", b =>
                 {
                     b.HasOne("Orphac.Athera.Modules.Catalog.Item", null)
@@ -5664,6 +7222,43 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("TenantId", "LegalEntityId")
                         .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Inventory.InvoicePriceAdjustment", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Catalog.Item", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "ItemId")
+                        .HasPrincipalKey("TenantId", "ItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.GeneralLedger.JournalEntry", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "GlJournalId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "JournalId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.AccountsPayable.SupplierBill", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "SupplierBillId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Inventory.ValuationEntry", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ValuationEntryId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ValuationEntryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Orphac.Athera.Modules.Inventory.ValuationPool", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ValuationPoolId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ValuationPoolId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
@@ -5915,15 +7510,13 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("TenantId", "LegalEntityId", "MovementLineId")
                         .HasPrincipalKey("TenantId", "LegalEntityId", "MovementLineId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Orphac.Athera.Modules.Inventory.StockMovement", null)
                         .WithMany()
                         .HasForeignKey("TenantId", "LegalEntityId", "StockMovementId")
                         .HasPrincipalKey("TenantId", "LegalEntityId", "StockMovementId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Orphac.Athera.Modules.Inventory.ValuationPool", null)
                         .WithMany()
@@ -6427,6 +8020,30 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .HasForeignKey("TenantId", "LegalEntityId", "TaxAccountId")
                         .HasPrincipalKey("TenantId", "LegalEntityId", "AccountId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Tax.TaxDetermination", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Identity.TenantMembership", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "CreatedByUserId")
+                        .HasPrincipalKey("TenantId", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Platform.LegalEntity", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Tax.TaxCode", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "TaxCodeId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "TaxCodeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

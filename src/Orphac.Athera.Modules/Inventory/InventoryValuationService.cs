@@ -1,9 +1,14 @@
 using System.Data;
 using System.Globalization;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Orphac.Athera.Modules.Audit;
 using Orphac.Athera.Modules.Catalog;
+using Orphac.Athera.Modules.GeneralLedger;
+using Orphac.Athera.Modules.Integration;
 using Orphac.Athera.Modules.Persistence;
+using Orphac.Athera.Modules.Platform;
 
 namespace Orphac.Athera.Modules.Inventory;
 
@@ -74,6 +79,39 @@ public sealed record PostStockAcceptanceResult(
 {
     public static PostStockAcceptanceResult Fail(int statusCode, string errorCode, string detail) =>
         new(false, statusCode, errorCode, detail, null, Array.Empty<MovementLine>(), Array.Empty<ValuationEntry>(), Array.Empty<StockPosition>(), Array.Empty<ValuationPool>(), Array.Empty<ResolvedAcceptedStockTarget>());
+}
+
+public sealed record PostOperationalIssueCommand(
+    Guid TenantId,
+    Guid LegalEntityId,
+    string ExpectedFunctionalCurrencyCode,
+    Guid ItemId,
+    Guid? LocationId,
+    Guid? StockLotId,
+    decimal Quantity,
+    DateOnly PostingDate,
+    string SourceReference,
+    string IdempotencyKey,
+    string? Notes,
+    Guid ActorUserId,
+    DateTimeOffset NowUtc);
+
+public sealed record PostOperationalIssueResult(
+    bool Succeeded,
+    bool IdempotentReplay,
+    int FailureHttpStatus,
+    string? ErrorCode,
+    string? ErrorDetail,
+    StockMovement? Movement,
+    MovementLine? MovementLine,
+    ValuationEntry? ValuationEntry,
+    StockPosition? UpdatedPosition,
+    ValuationPool? UpdatedPool,
+    JournalEntry? GlJournal,
+    IReadOnlyList<JournalLine> GlJournalLines)
+{
+    public static PostOperationalIssueResult Fail(int statusCode, string errorCode, string detail) =>
+        new(false, false, statusCode, errorCode, detail, null, null, null, null, null, null, Array.Empty<JournalLine>());
 }
 
 /// <summary>
@@ -587,5 +625,272 @@ public static class InventoryValuationService
 
         var result = await cmd.ExecuteScalarAsync(ct);
         return Convert.ToInt64(result, CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Atomically issues unrestricted inventory (e.g. sales/consumption), reducing on-hand & carrying value
+    /// at current moving-average cost and posting Dr COGS / Cr Inventory Asset so later S09 invoices apply DEC-P2P-013.
+    /// </summary>
+    public static async Task<PostOperationalIssueResult> PostOperationalIssueAsync(
+        AtheraDbContext db,
+        PostOperationalIssueCommand cmd,
+        CancellationToken ct)
+    {
+        try
+        {
+            var currency = GuardValidation.RequireExactIsoCode(cmd.ExpectedFunctionalCurrencyCode, "IDR", 3, nameof(cmd.ExpectedFunctionalCurrencyCode));
+            var qty = decimal.Round(cmd.Quantity, 6, MidpointRounding.AwayFromZero);
+            if (qty <= 0m)
+            {
+                return PostOperationalIssueResult.Fail(400, "issue_qty_must_be_positive", "Issue quantity must be strictly positive.");
+            }
+
+            var idempKey = GuardValidation.RequireName(cmd.IdempotencyKey, nameof(cmd.IdempotencyKey), 80);
+            var sourceRef = string.IsNullOrWhiteSpace(cmd.SourceReference) ? "ISS-OPS" : GuardValidation.RequireName(cmd.SourceReference, nameof(cmd.SourceReference), 40);
+
+            var existingMovement = await db.StockMovements.AsNoTracking()
+                .SingleOrDefaultAsync(m =>
+                    m.TenantId == cmd.TenantId &&
+                    m.LegalEntityId == cmd.LegalEntityId &&
+                    m.SourceDocumentType == StockMovementTypes.OperationalIssue &&
+                    m.SourceDocumentId == cmd.ItemId &&
+                    m.IdempotencyKey == idempKey,
+                    ct);
+            if (existingMovement is not null)
+            {
+                var existingLine = await db.MovementLines.AsNoTracking()
+                    .SingleOrDefaultAsync(l => l.TenantId == cmd.TenantId && l.LegalEntityId == cmd.LegalEntityId && l.StockMovementId == existingMovement.StockMovementId, ct);
+                var existingVal = await db.ValuationEntries.AsNoTracking()
+                    .SingleOrDefaultAsync(v => v.TenantId == cmd.TenantId && v.LegalEntityId == cmd.LegalEntityId && v.StockMovementId == existingMovement.StockMovementId, ct);
+                var currentPos = await db.StockPositions.AsNoTracking()
+                    .SingleOrDefaultAsync(p => p.TenantId == cmd.TenantId && p.LegalEntityId == cmd.LegalEntityId && p.ItemId == cmd.ItemId && p.ValuationGroupCode == InventoryValuationDefaults.DefaultValuationGroupCode, ct);
+                var currentPool = await db.ValuationPools.AsNoTracking()
+                    .SingleOrDefaultAsync(p => p.TenantId == cmd.TenantId && p.LegalEntityId == cmd.LegalEntityId && p.ItemId == cmd.ItemId && p.CurrencyCode == currency && p.ValuationGroupCode == InventoryValuationDefaults.DefaultValuationGroupCode, ct);
+                var existingJournal = existingVal?.GlJournalId is { } jid
+                    ? await db.JournalEntries.AsNoTracking().SingleOrDefaultAsync(j => j.TenantId == cmd.TenantId && j.LegalEntityId == cmd.LegalEntityId && j.JournalId == jid, ct)
+                    : null;
+                var existingJournalLines = existingJournal is not null
+                    ? await db.JournalLines.AsNoTracking().Where(l => l.TenantId == cmd.TenantId && l.LegalEntityId == cmd.LegalEntityId && l.JournalId == existingJournal.JournalId).OrderBy(l => l.LineNumber).ToListAsync(ct)
+                    : new List<JournalLine>();
+                return new PostOperationalIssueResult(true, true, 200, null, null, existingMovement, existingLine, existingVal, currentPos, currentPool, existingJournal, existingJournalLines);
+            }
+
+            var item = await db.Items.AsNoTracking()
+                .SingleOrDefaultAsync(i => i.TenantId == cmd.TenantId && i.ItemId == cmd.ItemId, ct);
+            if (item is null)
+            {
+                return PostOperationalIssueResult.Fail(404, "item_not_found", "Catalog item was not found in this tenant.");
+            }
+
+            if (item.LotTrackingPolicy == LotTrackingPolicies.Required && !cmd.StockLotId.HasValue)
+            {
+                return PostOperationalIssueResult.Fail(409, "lot_required_by_item_policy", $"Item '{item.ItemCode}' requires a stock lot reference for operational issues.");
+            }
+
+            if (item.LotTrackingPolicy == LotTrackingPolicies.None && cmd.StockLotId.HasValue)
+            {
+                return PostOperationalIssueResult.Fail(409, "lot_not_enabled_for_item", $"Item '{item.ItemCode}' does not track stock lots.");
+            }
+
+            var layout = await InventoryAvailabilityService.EnsureDefaultWarehouseAndLocationsAsync(db, cmd.TenantId, cmd.LegalEntityId, cmd.NowUtc, ct);
+            var sourceLocation = layout.ResolveForStatus(StockStatuses.Unrestricted, cmd.LocationId);
+
+            var locked = await EnsureAndLockItemTargetsAsync(
+                db, cmd.TenantId, cmd.LegalEntityId, currency, [(item.ItemId, item.BaseUomId)], cmd.NowUtc, ct);
+            var pos = locked.PositionsByItem[item.ItemId];
+            var pool = locked.PoolsByItem[item.ItemId];
+
+            var locBalance = await InventoryAvailabilityService.EnsureAndLockLocationBalanceAsync(
+                db, cmd.TenantId, cmd.LegalEntityId, pos.StockPositionId, item.ItemId, item.BaseUomId,
+                sourceLocation.WarehouseId, sourceLocation.LocationId, cmd.StockLotId, StockStatuses.Unrestricted, cmd.NowUtc, ct);
+
+            if (locBalance.AvailableBaseQuantity < qty)
+            {
+                return PostOperationalIssueResult.Fail(
+                    409,
+                    "od10_insufficient_available_stock",
+                    $"Location '{sourceLocation.LocationCode}' has only {locBalance.AvailableBaseQuantity:0.######} unreserved unrestricted units available to issue.");
+            }
+
+            var mappings = await db.AccountMappings.AsNoTracking()
+                .Where(m =>
+                    m.TenantId == cmd.TenantId &&
+                    m.LegalEntityId == cmd.LegalEntityId &&
+                    (m.PurposeCode == GlMappingPurposes.CogsDefault || m.PurposeCode == GlMappingPurposes.InventoryAsset))
+                .ToDictionaryAsync(m => m.PurposeCode, ct);
+            if (!mappings.TryGetValue(GlMappingPurposes.CogsDefault, out var cogsMap) ||
+                !mappings.TryGetValue(GlMappingPurposes.InventoryAsset, out var invMap))
+            {
+                return PostOperationalIssueResult.Fail(
+                    409,
+                    "missing_inventory_or_cogs_mapping",
+                    "COGS_DEFAULT and INVENTORY_ASSET GL account mappings are required to post valued stock issues.");
+            }
+
+            var issueStep = pool.ApplyOperationalIssue(qty, cmd.NowUtc);
+            pos.ApplyOutboundIssue(qty, cmd.NowUtc);
+            locBalance.AdjustOnHand(-qty, cmd.NowUtc);
+
+            var seq = await IncrementEntityYearSequenceAsync(db, "inventory.movement_sequences", cmd.TenantId, cmd.LegalEntityId, cmd.PostingDate.Year, ct);
+            var movementNumber = $"MOV-{cmd.PostingDate.Year}-{seq.ToString("D5", CultureInfo.InvariantCulture)}";
+            var movementId = Guid.NewGuid();
+            var movementLineId = Guid.NewGuid();
+
+            var journalKey = idempKey.Length <= 64
+                ? $"iss:{cmd.ItemId:N}:{idempKey}"
+                : $"iss:{cmd.ItemId:N}:{movementNumber}";
+            if (journalKey.Length > 80) journalKey = journalKey[..80];
+
+            var journalOutcome = await GlPostingKernel.PostJournalAsync(
+                db,
+                new GlPostJournalCommand(
+                    cmd.TenantId,
+                    cmd.LegalEntityId,
+                    currency,
+                    cmd.PostingDate,
+                    currency,
+                    $"Operational Stock Issue {movementNumber} · {item.ItemCode} (-{qty:0.######})",
+                    "INVENTORY",
+                    StockMovementTypes.OperationalIssue,
+                    movementNumber,
+                    journalKey,
+                    [
+                        new(cogsMap.AccountId, $"Dr COGS {item.ItemCode} (-{qty:0.######}) · {movementNumber}", DebitAmount: issueStep.IssuedCarryingAmount, CreditAmount: 0m, ItemId: item.ItemId),
+                        new(invMap.AccountId, $"Cr Inventory Asset {item.ItemCode} · {movementNumber}", DebitAmount: 0m, CreditAmount: issueStep.IssuedCarryingAmount, ItemId: item.ItemId)
+                    ],
+                    cmd.ActorUserId,
+                    cmd.NowUtc),
+                ct);
+
+            if (!journalOutcome.Succeeded || journalOutcome.Journal is null)
+            {
+                return PostOperationalIssueResult.Fail(
+                    journalOutcome.FailureHttpStatus,
+                    journalOutcome.ErrorCode ?? "gl_posting_failed",
+                    journalOutcome.ErrorDetail ?? "Failed posting COGS / Inventory journal.");
+            }
+
+            var movement = StockMovement.Create(
+                movementId,
+                cmd.TenantId,
+                cmd.LegalEntityId,
+                movementNumber,
+                StockMovementTypes.OperationalIssue,
+                cmd.PostingDate,
+                "INVENTORY",
+                StockMovementTypes.OperationalIssue,
+                cmd.ItemId,
+                sourceRef,
+                idempKey,
+                cmd.Notes,
+                cmd.ActorUserId,
+                cmd.NowUtc);
+
+            var movLine = MovementLine.CreateOutboundIssue(
+                movementLineId,
+                cmd.TenantId,
+                cmd.LegalEntityId,
+                movementId,
+                1,
+                pos.StockPositionId,
+                item.ItemId,
+                item.BaseUomId,
+                cmd.ItemId,
+                qty,
+                issueStep.AppliedUnitCost,
+                issueStep.IssuedCarryingAmount,
+                sourceLocation.WarehouseId,
+                sourceLocation.LocationId,
+                cmd.StockLotId);
+
+            var valEntry = ValuationEntry.Record(
+                Guid.NewGuid(),
+                cmd.TenantId,
+                cmd.LegalEntityId,
+                pool.ValuationPoolId,
+                item.ItemId,
+                ValuationEntryTypes.OperationalIssue,
+                cmd.PostingDate,
+                currency,
+                movementId,
+                movementLineId,
+                StockMovementTypes.OperationalIssue,
+                movementId,
+                movementNumber,
+                -qty,
+                -issueStep.IssuedCarryingAmount,
+                issueStep.AppliedUnitCost,
+                issueStep.ValuationStep,
+                journalOutcome.Journal.JournalId,
+                cmd.ActorUserId,
+                cmd.NowUtc);
+
+            db.StockMovements.Add(movement);
+            db.MovementLines.Add(movLine);
+            db.ValuationEntries.Add(valEntry);
+
+            var payloadJson = JsonSerializer.Serialize(new
+            {
+                movement.StockMovementId,
+                movement.MovementNumber,
+                item.ItemId,
+                item.ItemCode,
+                sourceLocation.LocationCode,
+                cmd.StockLotId,
+                IssuedQty = qty,
+                IssuedAmount = issueStep.IssuedCarryingAmount,
+                UnitCost = issueStep.AppliedUnitCost,
+                journalOutcome.Journal.JournalId,
+                journalOutcome.Journal.JournalNumber
+            });
+
+            db.AuditEvents.Add(AuditEvent.Append(
+                Guid.NewGuid(),
+                cmd.TenantId,
+                cmd.LegalEntityId,
+                cmd.ActorUserId,
+                "INVENTORY_OPERATIONAL_ISSUED",
+                "STOCK_MOVEMENT",
+                movementId.ToString("D"),
+                $"Issued {qty:0.######} {item.ItemCode} from {sourceLocation.LocationCode} (COGS {issueStep.IssuedCarryingAmount:N0} IDR)",
+                payloadJson,
+                cmd.NowUtc));
+
+            db.OutboxMessages.Add(OutboxMessage.Create(
+                Guid.NewGuid(),
+                cmd.TenantId,
+                cmd.LegalEntityId,
+                "inventory.stock.issued.v1",
+                $"inventory:issue:{movementId:D}",
+                payloadJson,
+                cmd.NowUtc));
+
+            await db.SaveChangesAsync(ct);
+
+            return new PostOperationalIssueResult(
+                true,
+                false,
+                201,
+                null,
+                null,
+                movement,
+                movLine,
+                valEntry,
+                pos,
+                pool,
+                journalOutcome.Journal,
+                journalOutcome.Lines);
+        }
+        catch (ArgumentException ex)
+        {
+            return PostOperationalIssueResult.Fail(400, "inventory_validation_failed", ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            var idx = ex.Message.IndexOf(':', StringComparison.Ordinal);
+            var code = idx > 0 ? ex.Message[..idx].Trim() : "inventory_domain_error";
+            var detail = idx > 0 ? ex.Message[(idx + 1)..].Trim() : ex.Message;
+            return PostOperationalIssueResult.Fail(409, code, detail);
+        }
     }
 }

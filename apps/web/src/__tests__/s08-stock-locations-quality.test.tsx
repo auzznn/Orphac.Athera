@@ -404,6 +404,7 @@ vi.mock("@/lib/api/client", () => ({
   releaseStockReservation: vi.fn(),
   createWarehouse: vi.fn(),
   createWarehouseLocation: vi.fn(),
+  postInventoryIssue: vi.fn(),
   fetchUnitsOfMeasure: async (): Promise<UomListResponse> => ({
     items: [
       {

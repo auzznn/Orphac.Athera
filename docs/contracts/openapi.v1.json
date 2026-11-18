@@ -6755,6 +6755,1088 @@
           }
         }
       }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/issues": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CreateOperationalInventoryIssue",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOperationalIssueRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationalIssueOutcomeDto"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationalIssueOutcomeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/overview": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetPayablesOverview",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayablesOverviewResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetSupplierBillDetail",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "billId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierBillDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "UpdateSupplierBillDraft",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "billId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSupplierBillRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierBillDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/preview": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "PreviewSupplierBillMatch",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewSupplierBillRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierBillPreviewResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CreateSupplierBillDraft",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSupplierBillRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierBillDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/submit": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "SubmitSupplierBill",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "billId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierBillDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/decision": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "DecideSupplierBill",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "billId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecideSupplierBillRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierBillDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/post": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "PostSupplierBill",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "billId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostSupplierBillRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierBillDetailResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierBillDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/payment-block": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "UpdateSupplierBillPaymentBlock",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "billId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBillPaymentBlockRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupplierBillDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/match-policy": {
+      "put": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "UpdateInvoiceMatchPolicy",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInvoiceMatchPolicyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceMatchPolicyDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -7536,6 +8618,88 @@
           }
         }
       },
+      "BillJournalSuggestionDto": {
+        "required": [
+          "side",
+          "accountCode",
+          "accountName",
+          "amount",
+          "description"
+        ],
+        "type": "object",
+        "properties": {
+          "side": {
+            "type": "string"
+          },
+          "accountCode": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "BillLineInputRequest": {
+        "required": [
+          "receiptAccrualLineId",
+          "billedBaseQuantity",
+          "invoiceUnitPriceBase",
+          "ppnTaxCodeId",
+          "withholdingTaxCodeId",
+          "lineNotes"
+        ],
+        "type": "object",
+        "properties": {
+          "receiptAccrualLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "billedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "invoiceUnitPriceBase": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "ppnTaxCodeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "withholdingTaxCodeId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "lineNotes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "CloseFinancialPeriodRequest": {
         "required": [
           "note",
@@ -7889,6 +9053,63 @@
           }
         }
       },
+      "CreateOperationalIssueRequest": {
+        "required": [
+          "itemId",
+          "locationId",
+          "stockLotId",
+          "quantity",
+          "postingDate",
+          "sourceReference",
+          "idempotencyKey",
+          "notes"
+        ],
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "quantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "sourceReference": {
+            "type": "string"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "CreatePartnerContactRequest": {
         "required": [
           "contactName",
@@ -8116,6 +9337,83 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "CreateSupplierBillRequest": {
+        "required": [
+          "billType",
+          "purchaseOrderId",
+          "supplierInvoiceNumber",
+          "taxInvoiceNumber",
+          "withholdingSlipReference",
+          "invoiceDate",
+          "dueDate",
+          "currencyCode",
+          "declaredGrossAmount",
+          "notes",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "billType": {
+            "type": "string"
+          },
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierInvoiceNumber": {
+            "type": "string"
+          },
+          "taxInvoiceNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "withholdingSlipReference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "invoiceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "currencyCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "declaredGrossAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillLineInputRequest"
+            }
           }
         }
       },
@@ -8365,6 +9663,36 @@
           }
         }
       },
+      "DecideSupplierBillRequest": {
+        "required": [
+          "decision",
+          "reason",
+          "approvePriceVariance",
+          "applyPaymentBlock",
+          "paymentBlockReason"
+        ],
+        "type": "object",
+        "properties": {
+          "decision": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "approvePriceVariance": {
+            "type": "boolean"
+          },
+          "applyPaymentBlock": {
+            "type": "boolean"
+          },
+          "paymentBlockReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "DeliveryTolerancePolicyDto": {
         "required": [
           "policyId",
@@ -8582,6 +9910,237 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "EligibleAccrualLineDto": {
+        "required": [
+          "receiptAccrualLineId",
+          "receiptAccrualId",
+          "accrualNumber",
+          "purchaseOrderId",
+          "poNumber",
+          "poRevisionId",
+          "supplierPartnerId",
+          "supplierCode",
+          "supplierName",
+          "supplierNpwp",
+          "defaultPaymentTermsDays",
+          "goodsReceiptId",
+          "receiptNumber",
+          "receiptPostingDate",
+          "valuedAcceptanceLineId",
+          "goodsReceiptLineId",
+          "poLineId",
+          "lineNumber",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomId",
+          "baseUomCode",
+          "orderedBaseQty",
+          "acceptedBaseQty",
+          "billedBaseQty",
+          "remainingUnbilledBaseQty",
+          "unitCostBase",
+          "poUnitPriceFunctional",
+          "accruedLineAmount",
+          "remainingOpenLineAmount",
+          "currentPoolOnHandQty",
+          "currentPoolCarryingValue",
+          "currentPoolMovingAverageCost",
+          "linePpnTaxCodeId"
+        ],
+        "type": "object",
+        "properties": {
+          "receiptAccrualLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptAccrualId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accrualNumber": {
+            "type": "string"
+          },
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poNumber": {
+            "type": "string"
+          },
+          "poRevisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "supplierName": {
+            "type": "string"
+          },
+          "supplierNpwp": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "defaultPaymentTermsDays": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "goodsReceiptId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptNumber": {
+            "type": "string"
+          },
+          "receiptPostingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "valuedAcceptanceLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "goodsReceiptLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "orderedBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "acceptedBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "billedBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingUnbilledBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unitCostBase": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "poUnitPriceFunctional": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "accruedLineAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingOpenLineAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentPoolOnHandQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentPoolCarryingValue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentPoolMovingAverageCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "linePpnTaxCodeId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           }
         }
       },
@@ -10297,6 +11856,287 @@
           }
         }
       },
+      "InvoiceMatchEvaluationDto": {
+        "required": [
+          "evaluationId",
+          "evaluationStage",
+          "dqOutcome",
+          "ppOutcome",
+          "bdOutcome",
+          "overallMatchStatus",
+          "isPostingBlocked",
+          "requiresApproval",
+          "requiresPaymentBlock",
+          "blockingReasons",
+          "evaluatedByEmail",
+          "evaluatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "evaluationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "evaluationStage": {
+            "type": "string"
+          },
+          "dqOutcome": {
+            "type": "string"
+          },
+          "ppOutcome": {
+            "type": "string"
+          },
+          "bdOutcome": {
+            "type": "string"
+          },
+          "overallMatchStatus": {
+            "type": "string"
+          },
+          "isPostingBlocked": {
+            "type": "boolean"
+          },
+          "requiresApproval": {
+            "type": "boolean"
+          },
+          "requiresPaymentBlock": {
+            "type": "boolean"
+          },
+          "blockingReasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evaluatedByEmail": {
+            "type": "string"
+          },
+          "evaluatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "InvoiceMatchPolicyDto": {
+        "required": [
+          "policyId",
+          "code",
+          "name",
+          "reviewStatus",
+          "ppTolerancePercent",
+          "ppToleranceAmount",
+          "dqTolerancePercent",
+          "dqToleranceBaseQty",
+          "bdWriteOffLimitAmount",
+          "bdWriteOffAccountId"
+        ],
+        "type": "object",
+        "properties": {
+          "policyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "reviewStatus": {
+            "type": "string"
+          },
+          "ppTolerancePercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "ppToleranceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dqTolerancePercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dqToleranceBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "bdWriteOffLimitAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "bdWriteOffAccountId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          }
+        }
+      },
+      "InvoicePriceAdjustmentDto": {
+        "required": [
+          "adjustmentId",
+          "supplierBillId",
+          "supplierBillLineId",
+          "billNumber",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "valuationPoolId",
+          "glJournalId",
+          "glJournalNumber",
+          "postingDate",
+          "billedBaseQuantity",
+          "poolOnHandBeforeQty",
+          "coveredBaseQuantity",
+          "uncoveredBaseQuantity",
+          "totalPriceDiffAmount",
+          "inventoryAdjustmentAmount",
+          "pnlVarianceAmount",
+          "previousMovingAverageCost",
+          "newMovingAverageCost",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "adjustmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierBillId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierBillLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "billNumber": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "valuationPoolId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "glJournalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "glJournalNumber": {
+            "type": "string"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "billedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "poolOnHandBeforeQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "coveredBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "uncoveredBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalPriceDiffAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "inventoryAdjustmentAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pnlVarianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "previousMovingAverageCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "newMovingAverageCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "ItemDetailDto": {
         "required": [
           "itemId",
@@ -11543,6 +13383,259 @@
           }
         }
       },
+      "MatchedLineComparisonDto": {
+        "required": [
+          "lineNumber",
+          "receiptAccrualLineId",
+          "poLineId",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomCode",
+          "orderedBaseQty",
+          "remainingUnbilledBaseQty",
+          "billedBaseQuantity",
+          "poUnitPriceFunctional",
+          "receiptUnitCostBase",
+          "invoiceUnitPriceBase",
+          "lineNetAmount",
+          "grniClearAmount",
+          "priceVarianceAmount",
+          "currentPoolOnHandQty",
+          "currentPoolCarryingValue",
+          "currentPoolMovingAvgCost",
+          "coveredBaseQuantity",
+          "uncoveredBaseQuantity",
+          "inventoryAdjustmentAmount",
+          "pnlVarianceAmount",
+          "projectedMovingAvgCost",
+          "ppnTaxCodeId",
+          "ppnTaxCodeSnapshot",
+          "ppnTaxAmount",
+          "withholdingTaxCodeId",
+          "withholdingTaxCodeSnapshot",
+          "withholdingTaxAmount",
+          "dqOutcome",
+          "ppOutcome",
+          "blockingReason"
+        ],
+        "type": "object",
+        "properties": {
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "receiptAccrualLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "orderedBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingUnbilledBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "billedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "poUnitPriceFunctional": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "receiptUnitCostBase": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "invoiceUnitPriceBase": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lineNetAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "grniClearAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "priceVarianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentPoolOnHandQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentPoolCarryingValue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentPoolMovingAvgCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "coveredBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "uncoveredBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "inventoryAdjustmentAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pnlVarianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "projectedMovingAvgCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "ppnTaxCodeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ppnTaxCodeSnapshot": {
+            "type": "string"
+          },
+          "ppnTaxAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "withholdingTaxCodeId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "withholdingTaxCodeSnapshot": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "withholdingTaxAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dqOutcome": {
+            "type": "string"
+          },
+          "ppOutcome": {
+            "type": "string"
+          },
+          "blockingReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "MfaSetupResponse": {
         "required": [
           "sharedKey",
@@ -11603,6 +13696,73 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "OperationalIssueOutcomeDto": {
+        "required": [
+          "stockMovementId",
+          "movementNumber",
+          "postingDate",
+          "issuedBaseQuantity",
+          "issuedCarryingAmount",
+          "appliedUnitCost",
+          "glJournalId",
+          "glJournalNumber",
+          "wasIdempotentReplay"
+        ],
+        "type": "object",
+        "properties": {
+          "stockMovementId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "movementNumber": {
+            "type": "string"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "issuedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "issuedCarryingAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "appliedUnitCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "glJournalId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "glJournalNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "wasIdempotentReplay": {
+            "type": "boolean"
           }
         }
       },
@@ -12075,6 +14235,296 @@
           }
         }
       },
+      "PayableItemDto": {
+        "required": [
+          "payableItemId",
+          "payableNumber",
+          "supplierBillId",
+          "billNumber",
+          "supplierCode",
+          "supplierLegalName",
+          "supplierInvoiceNumber",
+          "glJournalId",
+          "glJournalNumber",
+          "postingDate",
+          "dueDate",
+          "currencyCode",
+          "grossBillAmount",
+          "withholdingTaxAmount",
+          "netPayableAmount",
+          "paidAmount",
+          "remainingOpenAmount",
+          "status",
+          "paymentBlockStatus",
+          "paymentBlockReason"
+        ],
+        "type": "object",
+        "properties": {
+          "payableItemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "payableNumber": {
+            "type": "string"
+          },
+          "supplierBillId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "billNumber": {
+            "type": "string"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "supplierLegalName": {
+            "type": "string"
+          },
+          "supplierInvoiceNumber": {
+            "type": "string"
+          },
+          "glJournalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "glJournalNumber": {
+            "type": "string"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "grossBillAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "withholdingTaxAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "netPayableAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "paidAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingOpenAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "status": {
+            "type": "string"
+          },
+          "paymentBlockStatus": {
+            "type": "string"
+          },
+          "paymentBlockReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "PayablesOverviewResponse": {
+        "required": [
+          "bills",
+          "payables",
+          "eligibleAccrualLines",
+          "taxCodes",
+          "activeMatchPolicy",
+          "recentPriceAdjustments",
+          "openGrniBalanceIdr",
+          "openPayableTotalIdr",
+          "blockedPayableCount",
+          "pendingApprovalBillCount",
+          "od03Notice",
+          "od08Notice"
+        ],
+        "type": "object",
+        "properties": {
+          "bills": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplierBillSummaryDto"
+            }
+          },
+          "payables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayableItemDto"
+            }
+          },
+          "eligibleAccrualLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EligibleAccrualLineDto"
+            }
+          },
+          "taxCodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayableTaxCodeDto"
+            }
+          },
+          "activeMatchPolicy": {
+            "$ref": "#/components/schemas/InvoiceMatchPolicyDto"
+          },
+          "recentPriceAdjustments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoicePriceAdjustmentDto"
+            }
+          },
+          "openGrniBalanceIdr": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "openPayableTotalIdr": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "blockedPayableCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pendingApprovalBillCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "od03Notice": {
+            "type": "string"
+          },
+          "od08Notice": {
+            "type": "string"
+          }
+        }
+      },
+      "PayableTaxCodeDto": {
+        "required": [
+          "taxCodeId",
+          "code",
+          "name",
+          "taxFamily",
+          "direction",
+          "treatmentClass",
+          "nominalRatePercent",
+          "taxableBaseRatioNumerator",
+          "taxableBaseRatioDenominator",
+          "requiresCounterpartyNpwp",
+          "effectiveFrom",
+          "effectiveTo",
+          "reviewStatus"
+        ],
+        "type": "object",
+        "properties": {
+          "taxCodeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "code": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "taxFamily": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string"
+          },
+          "treatmentClass": {
+            "type": "string"
+          },
+          "nominalRatePercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxableBaseRatioNumerator": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "taxableBaseRatioDenominator": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "requiresCounterpartyNpwp": {
+            "type": "boolean"
+          },
+          "effectiveFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "effectiveTo": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "reviewStatus": {
+            "type": "string"
+          }
+        }
+      },
       "PoHeaderFieldDiffDto": {
         "required": [
           "fieldKey",
@@ -12419,6 +14869,22 @@
           }
         }
       },
+      "PostSupplierBillRequest": {
+        "required": [
+          "postingDate",
+          "idempotencyKey"
+        ],
+        "type": "object",
+        "properties": {
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          }
+        }
+      },
       "PreviewJournalSuggestionDto": {
         "required": [
           "side",
@@ -12470,6 +14936,58 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AcceptReceiptLineRequest"
+            }
+          }
+        }
+      },
+      "PreviewSupplierBillRequest": {
+        "required": [
+          "billType",
+          "purchaseOrderId",
+          "currencyCode",
+          "invoiceDate",
+          "postingDate",
+          "declaredGrossAmount",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "billType": {
+            "type": "string"
+          },
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "currencyCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "invoiceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "postingDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "declaredGrossAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillLineInputRequest"
             }
           }
         }
@@ -14697,6 +17215,756 @@
           }
         }
       },
+      "SupplierBillDetailResponse": {
+        "required": [
+          "bill",
+          "lines",
+          "evaluations",
+          "receiptMatches",
+          "priceAdjustments",
+          "taxDeterminations",
+          "payableItem",
+          "liveComparison",
+          "wasIdempotentReplay"
+        ],
+        "type": "object",
+        "properties": {
+          "bill": {
+            "$ref": "#/components/schemas/SupplierBillSummaryDto"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplierBillLineDto"
+            }
+          },
+          "evaluations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceMatchEvaluationDto"
+            }
+          },
+          "receiptMatches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SupplierBillReceiptMatchDto"
+            }
+          },
+          "priceAdjustments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoicePriceAdjustmentDto"
+            }
+          },
+          "taxDeterminations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaxDeterminationDto"
+            }
+          },
+          "payableItem": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/PayableItemDto"
+              }
+            ]
+          },
+          "liveComparison": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/SupplierBillPreviewResponse"
+              }
+            ]
+          },
+          "wasIdempotentReplay": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SupplierBillLineDto": {
+        "required": [
+          "supplierBillLineId",
+          "lineNumber",
+          "receiptAccrualLineId",
+          "valuedAcceptanceLineId",
+          "goodsReceiptLineId",
+          "poLineId",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomCode",
+          "orderedBaseQty",
+          "acceptedUnbilledQtySnapshot",
+          "billedBaseQuantity",
+          "poUnitPriceFunctional",
+          "invoiceUnitPriceBase",
+          "lineNetAmount",
+          "grniClearAmount",
+          "priceVarianceAmount",
+          "ppnTaxCodeId",
+          "ppnTaxCodeSnapshot",
+          "ppnTaxAmount",
+          "withholdingTaxCodeId",
+          "withholdingTaxCodeSnapshot",
+          "withholdingTaxAmount",
+          "dqOutcome",
+          "ppOutcome",
+          "lineNotes"
+        ],
+        "type": "object",
+        "properties": {
+          "supplierBillLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "receiptAccrualLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "valuedAcceptanceLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "goodsReceiptLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "orderedBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "acceptedUnbilledQtySnapshot": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "billedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "poUnitPriceFunctional": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "invoiceUnitPriceBase": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lineNetAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "grniClearAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "priceVarianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "ppnTaxCodeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ppnTaxCodeSnapshot": {
+            "type": "string"
+          },
+          "ppnTaxAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "withholdingTaxCodeId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "withholdingTaxCodeSnapshot": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "withholdingTaxAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dqOutcome": {
+            "type": "string"
+          },
+          "ppOutcome": {
+            "type": "string"
+          },
+          "lineNotes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "SupplierBillPreviewResponse": {
+        "required": [
+          "purchaseOrderId",
+          "poNumber",
+          "supplierPartnerId",
+          "supplierCode",
+          "supplierLegalName",
+          "currencyCode",
+          "invoiceDate",
+          "dqOutcome",
+          "ppOutcome",
+          "bdOutcome",
+          "overallMatchStatus",
+          "isPostingBlocked",
+          "requiresApproval",
+          "linesNetSubtotal",
+          "totalGrniClearAmount",
+          "totalPriceVarianceAmount",
+          "totalInventoryAdjAmount",
+          "totalPnlVarianceAmount",
+          "declaredGrossAmount",
+          "computedGrossTotal",
+          "bdWriteOffAmount",
+          "ppnTaxTotal",
+          "withholdingTaxTotal",
+          "netPayableAmount",
+          "lines",
+          "journalPreview",
+          "blockingReasons",
+          "od03Notice"
+        ],
+        "type": "object",
+        "properties": {
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poNumber": {
+            "type": "string"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "supplierLegalName": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "invoiceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dqOutcome": {
+            "type": "string"
+          },
+          "ppOutcome": {
+            "type": "string"
+          },
+          "bdOutcome": {
+            "type": "string"
+          },
+          "overallMatchStatus": {
+            "type": "string"
+          },
+          "isPostingBlocked": {
+            "type": "boolean"
+          },
+          "requiresApproval": {
+            "type": "boolean"
+          },
+          "linesNetSubtotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalGrniClearAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalPriceVarianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalInventoryAdjAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalPnlVarianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "declaredGrossAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "computedGrossTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "bdWriteOffAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "ppnTaxTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "withholdingTaxTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "netPayableAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MatchedLineComparisonDto"
+            }
+          },
+          "journalPreview": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillJournalSuggestionDto"
+            }
+          },
+          "blockingReasons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "od03Notice": {
+            "type": "string"
+          }
+        }
+      },
+      "SupplierBillReceiptMatchDto": {
+        "required": [
+          "matchId",
+          "supplierBillLineId",
+          "receiptAccrualId",
+          "receiptAccrualLineId",
+          "itemId",
+          "matchedBaseQuantity",
+          "receiptUnitCostBase",
+          "invoiceUnitPriceBase",
+          "grniClearedAmount",
+          "priceVarianceAmount",
+          "coveredBaseQuantity",
+          "inventoryAdjustmentAmount",
+          "pnlVarianceAmount"
+        ],
+        "type": "object",
+        "properties": {
+          "matchId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierBillLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptAccrualId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "receiptAccrualLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "matchedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "receiptUnitCostBase": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "invoiceUnitPriceBase": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "grniClearedAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "priceVarianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "coveredBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "inventoryAdjustmentAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pnlVarianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "SupplierBillSummaryDto": {
+        "required": [
+          "supplierBillId",
+          "draftCode",
+          "billNumber",
+          "billType",
+          "purchaseOrderId",
+          "poNumber",
+          "supplierPartnerId",
+          "supplierCode",
+          "supplierLegalName",
+          "supplierInvoiceNumber",
+          "taxInvoiceNumber",
+          "invoiceDate",
+          "dueDate",
+          "currencyCode",
+          "declaredGrossAmount",
+          "totalGrniClearAmount",
+          "totalPriceVarianceAmount",
+          "totalInventoryAdjAmount",
+          "totalPnlVarianceAmount",
+          "ppnTaxTotal",
+          "withholdingTaxTotal",
+          "netPayableAmount",
+          "status",
+          "matchStatus",
+          "paymentBlockStatus",
+          "varianceApproved",
+          "postedJournalId",
+          "postedJournalNumber",
+          "submittedByEmail",
+          "approvedByEmail",
+          "createdAtUtc",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "supplierBillId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "draftCode": {
+            "type": "string"
+          },
+          "billNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "billType": {
+            "type": "string"
+          },
+          "purchaseOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "poNumber": {
+            "type": "string"
+          },
+          "supplierPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "supplierCode": {
+            "type": "string"
+          },
+          "supplierLegalName": {
+            "type": "string"
+          },
+          "supplierInvoiceNumber": {
+            "type": "string"
+          },
+          "taxInvoiceNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "invoiceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "declaredGrossAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalGrniClearAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalPriceVarianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalInventoryAdjAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalPnlVarianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "ppnTaxTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "withholdingTaxTotal": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "netPayableAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "status": {
+            "type": "string"
+          },
+          "matchStatus": {
+            "type": "string"
+          },
+          "paymentBlockStatus": {
+            "type": "string"
+          },
+          "varianceApproved": {
+            "type": "boolean"
+          },
+          "postedJournalId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "postedJournalNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "submittedByEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "approvedByEmail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "TaxCodeDto": {
         "required": [
           "taxCodeId",
@@ -14829,6 +18097,115 @@
           },
           "governanceNotice": {
             "type": "string"
+          }
+        }
+      },
+      "TaxDeterminationDto": {
+        "required": [
+          "determinationId",
+          "sourceDocumentLineId",
+          "taxRole",
+          "taxCodeSnapshot",
+          "taxFamily",
+          "direction",
+          "treatmentClass",
+          "grossAmount",
+          "taxableBaseAmount",
+          "nominalRatePercent",
+          "effectiveRatePercent",
+          "taxAmount",
+          "reviewStatus",
+          "evidenceStatus",
+          "documentaryEvidenceRef",
+          "counterpartyNpwpSnapshot",
+          "transactionDate"
+        ],
+        "type": "object",
+        "properties": {
+          "determinationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sourceDocumentLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "taxRole": {
+            "type": "string"
+          },
+          "taxCodeSnapshot": {
+            "type": "string"
+          },
+          "taxFamily": {
+            "type": "string"
+          },
+          "direction": {
+            "type": "string"
+          },
+          "treatmentClass": {
+            "type": "string"
+          },
+          "grossAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxableBaseAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "nominalRatePercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "effectiveRatePercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "taxAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reviewStatus": {
+            "type": "string"
+          },
+          "evidenceStatus": {
+            "type": "string"
+          },
+          "documentaryEvidenceRef": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "counterpartyNpwpSnapshot": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "transactionDate": {
+            "type": "string",
+            "format": "date"
           }
         }
       },
@@ -14999,6 +18376,21 @@
           }
         }
       },
+      "UpdateBillPaymentBlockRequest": {
+        "required": [
+          "targetBlockStatus",
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "targetBlockStatus": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
       "UpdateGlAccountRequest": {
         "required": [
           "name",
@@ -15043,6 +18435,66 @@
               "string"
             ],
             "format": "int64"
+          }
+        }
+      },
+      "UpdateInvoiceMatchPolicyRequest": {
+        "required": [
+          "ppTolerancePercent",
+          "ppToleranceAmount",
+          "dqTolerancePercent",
+          "dqToleranceBaseQty",
+          "bdWriteOffLimitAmount",
+          "bdWriteOffAccountId"
+        ],
+        "type": "object",
+        "properties": {
+          "ppTolerancePercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "ppToleranceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dqTolerancePercent": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dqToleranceBaseQty": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "bdWriteOffLimitAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "bdWriteOffAccountId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
           }
         }
       },
@@ -15214,6 +18666,67 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PoLineInputDto"
+            }
+          }
+        }
+      },
+      "UpdateSupplierBillRequest": {
+        "required": [
+          "supplierInvoiceNumber",
+          "taxInvoiceNumber",
+          "withholdingSlipReference",
+          "invoiceDate",
+          "dueDate",
+          "declaredGrossAmount",
+          "notes",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "supplierInvoiceNumber": {
+            "type": "string"
+          },
+          "taxInvoiceNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "withholdingSlipReference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "invoiceDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "declaredGrossAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillLineInputRequest"
             }
           }
         }

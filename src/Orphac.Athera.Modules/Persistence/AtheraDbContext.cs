@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Orphac.Athera.Modules.AccountsPayable;
 using Orphac.Athera.Modules.Approval;
 using Orphac.Athera.Modules.Audit;
 using Orphac.Athera.Modules.Catalog;
@@ -79,6 +80,17 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
     public DbSet<InspectionDisposition> InspectionDispositions => Set<InspectionDisposition>();
     public DbSet<ReceiptAccrual> ReceiptAccruals => Set<ReceiptAccrual>();
     public DbSet<ReceiptAccrualLine> ReceiptAccrualLines => Set<ReceiptAccrualLine>();
+    public DbSet<ReceiptAccrualClearing> ReceiptAccrualClearings => Set<ReceiptAccrualClearing>();
+    public DbSet<InvoicePriceAdjustment> InvoicePriceAdjustments => Set<InvoicePriceAdjustment>();
+    public DbSet<TaxDetermination> TaxDeterminations => Set<TaxDetermination>();
+    public DbSet<BillSequence> BillSequences => Set<BillSequence>();
+    public DbSet<PayableSequence> PayableSequences => Set<PayableSequence>();
+    public DbSet<InvoiceMatchPolicy> InvoiceMatchPolicies => Set<InvoiceMatchPolicy>();
+    public DbSet<SupplierBill> SupplierBills => Set<SupplierBill>();
+    public DbSet<SupplierBillLine> SupplierBillLines => Set<SupplierBillLine>();
+    public DbSet<InvoiceMatchEvaluation> InvoiceMatchEvaluations => Set<InvoiceMatchEvaluation>();
+    public DbSet<SupplierBillReceiptMatch> SupplierBillReceiptMatches => Set<SupplierBillReceiptMatch>();
+    public DbSet<PayableItem> PayableItems => Set<PayableItem>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -1929,7 +1941,7 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
         {
             entity.ToTable("stock_movements", "inventory", t =>
             {
-                t.HasCheckConstraint("ck_stock_movements_type", "movement_type IN ('PURCHASE_RECEIPT_ACCEPTANCE', 'LOCATION_TRANSFER', 'QUALITY_STATUS_CHANGE')");
+                t.HasCheckConstraint("ck_stock_movements_type", "movement_type IN ('PURCHASE_RECEIPT_ACCEPTANCE', 'LOCATION_TRANSFER', 'QUALITY_STATUS_CHANGE', 'OPERATIONAL_ISSUE')");
             });
 
             entity.HasKey(x => x.StockMovementId);
@@ -1978,7 +1990,7 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
             {
                 t.HasCheckConstraint("ck_movement_lines_number", "line_number >= 1");
                 t.HasCheckConstraint("ck_movement_lines_status", "resulting_stock_status IN ('UNRESTRICTED', 'QUALITY_INSPECTION', 'BLOCKED')");
-                t.HasCheckConstraint("ck_movement_lines_positive", "base_quantity_delta <> 0 AND unit_valuation_cost >= 0 AND line_valuation_amount >= 0");
+                t.HasCheckConstraint("ck_movement_lines_positive", "base_quantity_delta <> 0 AND unit_valuation_cost >= 0 AND ((base_quantity_delta > 0 AND line_valuation_amount >= 0) OR (base_quantity_delta < 0 AND line_valuation_amount <= 0))");
             });
 
             entity.HasKey(x => x.MovementLineId);
@@ -2052,13 +2064,14 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
         {
             entity.ToTable("valuation_entries", "inventory", t =>
             {
-                t.HasCheckConstraint("ck_valuation_entries_type", "entry_type IN ('RECEIPT_ACCEPTANCE')");
+                t.HasCheckConstraint("ck_valuation_entries_type", "entry_type IN ('RECEIPT_ACCEPTANCE', 'OPERATIONAL_ISSUE', 'INVOICE_PRICE_ADJUSTMENT')");
                 t.HasCheckConstraint("ck_valuation_entries_currency", "currency_code = 'IDR'");
                 t.HasCheckConstraint("ck_valuation_entries_seq", "pool_sequence_number >= 1");
-                t.HasCheckConstraint("ck_valuation_entries_values", "quantity_delta > 0 AND value_delta > 0 AND unit_cost_applied > 0 AND previous_pool_base_quantity >= 0 AND previous_pool_carrying_value >= 0 AND previous_moving_average_cost >= 0 AND new_pool_base_quantity > 0 AND new_pool_carrying_value > 0 AND new_moving_average_cost > 0 AND gl_journal_id IS NOT NULL");
+                t.HasCheckConstraint("ck_valuation_entries_values", "previous_pool_base_quantity >= 0 AND previous_pool_carrying_value >= 0 AND previous_moving_average_cost >= 0 AND new_pool_base_quantity >= 0 AND new_pool_carrying_value >= 0 AND new_moving_average_cost >= 0 AND ((entry_type = 'RECEIPT_ACCEPTANCE' AND quantity_delta > 0 AND value_delta > 0 AND unit_cost_applied > 0 AND new_pool_base_quantity > 0 AND new_pool_carrying_value > 0 AND new_moving_average_cost > 0 AND stock_movement_id IS NOT NULL AND movement_line_id IS NOT NULL AND gl_journal_id IS NOT NULL) OR (entry_type = 'OPERATIONAL_ISSUE' AND quantity_delta < 0 AND value_delta < 0 AND unit_cost_applied > 0 AND stock_movement_id IS NOT NULL AND movement_line_id IS NOT NULL AND gl_journal_id IS NOT NULL) OR (entry_type = 'INVOICE_PRICE_ADJUSTMENT' AND quantity_delta = 0 AND value_delta <> 0 AND new_pool_base_quantity > 0 AND new_pool_carrying_value > 0 AND new_moving_average_cost > 0 AND gl_journal_id IS NOT NULL))");
             });
 
             entity.HasKey(x => x.ValuationEntryId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.ValuationEntryId });
             entity.Property(x => x.ValuationEntryId).HasColumnName("valuation_entry_id").ValueGeneratedNever();
             entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
             entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
@@ -2068,8 +2081,8 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
             entity.Property(x => x.EntryType).HasColumnName("entry_type").HasMaxLength(36).IsRequired();
             entity.Property(x => x.PostingDate).HasColumnName("posting_date").IsRequired();
             entity.Property(x => x.CurrencyCode).HasColumnName("currency_code").HasMaxLength(3).IsRequired();
-            entity.Property(x => x.StockMovementId).HasColumnName("stock_movement_id").IsRequired();
-            entity.Property(x => x.MovementLineId).HasColumnName("movement_line_id").IsRequired();
+            entity.Property(x => x.StockMovementId).HasColumnName("stock_movement_id");
+            entity.Property(x => x.MovementLineId).HasColumnName("movement_line_id");
             entity.Property(x => x.SourceDocumentType).HasColumnName("source_document_type").HasMaxLength(40).IsRequired();
             entity.Property(x => x.SourceDocumentId).HasColumnName("source_document_id").IsRequired();
             entity.Property(x => x.SourceDocumentNumber).HasColumnName("source_document_number").HasMaxLength(40).IsRequired();
@@ -2108,12 +2121,14 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
                 .WithMany()
                 .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.StockMovementId })
                 .HasPrincipalKey(m => new { m.TenantId, m.LegalEntityId, m.StockMovementId })
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne<MovementLine>()
                 .WithMany()
                 .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.MovementLineId })
                 .HasPrincipalKey(ml => new { ml.TenantId, ml.LegalEntityId, ml.MovementLineId })
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasOne<JournalEntry>()
@@ -2740,6 +2755,425 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
                 .HasForeignKey(x => new { x.TenantId, x.DecidedByUserId })
                 .HasPrincipalKey(m => new { m.TenantId, m.UserId })
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<BillSequence>(entity =>
+        {
+            entity.ToTable("bill_sequences", "ap");
+            entity.HasKey(x => new { x.TenantId, x.LegalEntityId, x.FiscalYear });
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.FiscalYear).HasColumnName("fiscal_year").IsRequired();
+            entity.Property(x => x.LastNumber).HasColumnName("last_number").IsRequired();
+            entity.HasOne<LegalEntity>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId }).HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId }).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PayableSequence>(entity =>
+        {
+            entity.ToTable("payable_sequences", "ap");
+            entity.HasKey(x => new { x.TenantId, x.LegalEntityId, x.FiscalYear });
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.FiscalYear).HasColumnName("fiscal_year").IsRequired();
+            entity.Property(x => x.LastNumber).HasColumnName("last_number").IsRequired();
+            entity.HasOne<LegalEntity>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId }).HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId }).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<InvoiceMatchPolicy>(entity =>
+        {
+            entity.ToTable("invoice_match_policies", "ap", t =>
+            {
+                t.HasCheckConstraint("ck_inv_match_policies_review", "review_status IN ('UNREVIEWED_SAFE_DEFAULT', 'REVIEWED_INTERNAL')");
+                t.HasCheckConstraint("ck_inv_match_policies_limits", "pp_tolerance_percent >= 0 AND pp_tolerance_amount >= 0 AND dq_tolerance_percent >= 0 AND dq_tolerance_base_qty >= 0 AND bd_write_off_limit_amount >= 0");
+                t.HasCheckConstraint("ck_inv_match_policies_status", "status IN ('ACTIVE', 'INACTIVE')");
+            });
+
+            entity.HasKey(x => x.PolicyId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.PolicyId });
+            entity.Property(x => x.PolicyId).HasColumnName("policy_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.Code).HasColumnName("code").HasMaxLength(48).IsRequired();
+            entity.Property(x => x.Name).HasColumnName("name").HasMaxLength(160).IsRequired();
+            entity.Property(x => x.ReviewStatus).HasColumnName("review_status").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.PpTolerancePercent).HasColumnName("pp_tolerance_percent").HasColumnType("numeric(9,4)").IsRequired();
+            entity.Property(x => x.PpToleranceAmount).HasColumnName("pp_tolerance_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.DqTolerancePercent).HasColumnName("dq_tolerance_percent").HasColumnType("numeric(9,4)").IsRequired();
+            entity.Property(x => x.DqToleranceBaseQty).HasColumnName("dq_tolerance_base_qty").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.BdWriteOffLimitAmount).HasColumnName("bd_write_off_limit_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.BdWriteOffAccountId).HasColumnName("bd_write_off_account_id");
+            entity.Property(x => x.IsDefault).HasColumnName("is_default").IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(16).IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.Code }).IsUnique().HasDatabaseName("ux_invoice_match_policies_code");
+            entity.HasOne<LegalEntity>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId }).HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<GlAccount>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.BdWriteOffAccountId }).HasPrincipalKey(a => new { a.TenantId, a.LegalEntityId, a.AccountId }).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<SupplierBill>(entity =>
+        {
+            entity.ToTable("supplier_bills", "ap", t =>
+            {
+                t.HasCheckConstraint("ck_supplier_bills_type", "bill_type IN ('PO_THREE_WAY_MATCH')");
+                t.HasCheckConstraint("ck_supplier_bills_status", "status IN ('DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'POSTED', 'CANCELLED')");
+                t.HasCheckConstraint("ck_supplier_bills_match_status", "match_status IN ('MATCHED', 'WITHIN_TOLERANCE', 'APPROVAL_REQUIRED', 'POSTING_BLOCKED')");
+                t.HasCheckConstraint("ck_supplier_bills_pay_block", "payment_block_status IN ('NONE', 'PAYMENT_BLOCKED', 'RELEASED')");
+                t.HasCheckConstraint("ck_supplier_bills_currency", "currency_code = 'IDR'");
+                t.HasCheckConstraint("ck_supplier_bills_amounts", "declared_gross_amount > 0 AND lines_net_subtotal >= 0 AND total_grni_clear_amount >= 0 AND ppn_tax_total >= 0 AND withholding_tax_total >= 0 AND computed_gross_total >= 0 AND net_payable_amount >= 0 AND due_date >= invoice_date");
+            });
+
+            entity.HasKey(x => x.SupplierBillId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillId });
+            entity.Property(x => x.SupplierBillId).HasColumnName("supplier_bill_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.DraftCode).HasColumnName("draft_code").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.BillNumber).HasColumnName("bill_number").HasMaxLength(40);
+            entity.Property(x => x.BillType).HasColumnName("bill_type").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.PurchaseOrderId).HasColumnName("purchase_order_id").IsRequired();
+            entity.Property(x => x.PurchaseOrderRevisionId).HasColumnName("purchase_order_revision_id").IsRequired();
+            entity.Property(x => x.PoNumberSnapshot).HasColumnName("po_number_snapshot").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.SupplierPartnerId).HasColumnName("supplier_partner_id").IsRequired();
+            entity.Property(x => x.SupplierCodeSnapshot).HasColumnName("supplier_code_snapshot").HasMaxLength(48).IsRequired();
+            entity.Property(x => x.SupplierLegalNameSnapshot).HasColumnName("supplier_legal_name_snapshot").HasMaxLength(200).IsRequired();
+            entity.Property(x => x.SupplierNpwpSnapshot).HasColumnName("supplier_npwp_snapshot").HasMaxLength(64);
+            entity.Property(x => x.SupplierInvoiceNumber).HasColumnName("supplier_invoice_number").HasMaxLength(64).IsRequired();
+            entity.Property(x => x.TaxInvoiceNumber).HasColumnName("tax_invoice_number").HasMaxLength(80);
+            entity.Property(x => x.WithholdingSlipReference).HasColumnName("withholding_slip_reference").HasMaxLength(80);
+            entity.Property(x => x.InvoiceDate).HasColumnName("invoice_date").IsRequired();
+            entity.Property(x => x.DueDate).HasColumnName("due_date").IsRequired();
+            entity.Property(x => x.CurrencyCode).HasColumnName("currency_code").HasMaxLength(3).IsRequired();
+            entity.Property(x => x.DeclaredGrossAmount).HasColumnName("declared_gross_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.LinesNetSubtotal).HasColumnName("lines_net_subtotal").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.TotalGrniClearAmount).HasColumnName("total_grni_clear_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.TotalPriceVarianceAmount).HasColumnName("total_price_variance_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.TotalInventoryAdjAmount).HasColumnName("total_inventory_adj_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.TotalPnlVarianceAmount).HasColumnName("total_pnl_variance_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.TotalBdWriteOffAmount).HasColumnName("total_bd_write_off_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.PpnTaxTotal).HasColumnName("ppn_tax_total").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.WithholdingTaxTotal).HasColumnName("withholding_tax_total").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.ComputedGrossTotal).HasColumnName("computed_gross_total").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.NetPayableAmount).HasColumnName("net_payable_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.MatchStatus).HasColumnName("match_status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.PaymentBlockStatus).HasColumnName("payment_block_status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.PaymentBlockReason).HasColumnName("payment_block_reason").HasMaxLength(300);
+            entity.Property(x => x.ApprovalPolicyCode).HasColumnName("approval_policy_code").HasMaxLength(64).IsRequired();
+            entity.Property(x => x.LastApprovalDecision).HasColumnName("last_approval_decision").HasMaxLength(16);
+            entity.Property(x => x.LastRejectionReason).HasColumnName("last_rejection_reason").HasMaxLength(500);
+            entity.Property(x => x.SubmittedByUserId).HasColumnName("submitted_by_user_id");
+            entity.Property(x => x.SubmittedAtUtc).HasColumnName("submitted_at_utc");
+            entity.Property(x => x.ApprovedByUserId).HasColumnName("approved_by_user_id");
+            entity.Property(x => x.ApprovedAtUtc).HasColumnName("approved_at_utc");
+            entity.Property(x => x.VarianceApproved).HasColumnName("variance_approved").IsRequired();
+            entity.Property(x => x.PostedByUserId).HasColumnName("posted_by_user_id");
+            entity.Property(x => x.PostedAtUtc).HasColumnName("posted_at_utc");
+            entity.Property(x => x.PostedJournalId).HasColumnName("posted_journal_id");
+            entity.Property(x => x.PostIdempotencyKey).HasColumnName("post_idempotency_key").HasMaxLength(80);
+            entity.Property(x => x.Notes).HasColumnName("notes").HasMaxLength(300);
+            entity.Property(x => x.CreatedByUserId).HasColumnName("created_by_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.DraftCode }).IsUnique().HasDatabaseName("ux_supplier_bills_draft_code");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.BillNumber }).IsUnique().HasFilter("bill_number IS NOT NULL").HasDatabaseName("ux_supplier_bills_bill_number");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SupplierPartnerId, x.SupplierInvoiceNumber }).IsUnique().HasFilter("status <> 'CANCELLED'").HasDatabaseName("ux_supplier_bills_vendor_invoice");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.Status, x.InvoiceDate }).HasDatabaseName("ix_supplier_bills_status_date");
+
+            entity.HasOne<LegalEntity>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId }).HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<PurchaseOrder>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PurchaseOrderId }).HasPrincipalKey(po => new { po.TenantId, po.LegalEntityId, po.PurchaseOrderId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<PurchaseOrderRevision>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PurchaseOrderRevisionId }).HasPrincipalKey(r => new { r.TenantId, r.LegalEntityId, r.RevisionId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<Partner>().WithMany().HasForeignKey(x => new { x.TenantId, x.SupplierPartnerId }).HasPrincipalKey(p => new { p.TenantId, p.PartnerId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<JournalEntry>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PostedJournalId }).HasPrincipalKey(j => new { j.TenantId, j.LegalEntityId, j.JournalId }).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<TenantMembership>().WithMany().HasForeignKey(x => new { x.TenantId, x.CreatedByUserId }).HasPrincipalKey(m => new { m.TenantId, m.UserId }).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<SupplierBillLine>(entity =>
+        {
+            entity.ToTable("supplier_bill_lines", "ap", t =>
+            {
+                t.HasCheckConstraint("ck_supplier_bill_lines_num", "line_number >= 1");
+                t.HasCheckConstraint("ck_supplier_bill_lines_values", "billed_base_quantity > 0 AND invoice_unit_price_base > 0 AND line_net_amount > 0 AND grni_clear_amount >= 0 AND ppn_tax_amount >= 0 AND withholding_tax_amount >= 0");
+                t.HasCheckConstraint("ck_supplier_bill_lines_outcomes", "dq_outcome IN ('MATCHED', 'WITHIN_TOLERANCE', 'VARIANCE_APPROVAL_REQUIRED', 'BLOCKED') AND pp_outcome IN ('MATCHED', 'WITHIN_TOLERANCE', 'VARIANCE_APPROVAL_REQUIRED', 'BLOCKED')");
+            });
+
+            entity.HasKey(x => x.SupplierBillLineId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillLineId });
+            entity.Property(x => x.SupplierBillLineId).HasColumnName("supplier_bill_line_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.SupplierBillId).HasColumnName("supplier_bill_id").IsRequired();
+            entity.Property(x => x.LineNumber).HasColumnName("line_number").IsRequired();
+            entity.Property(x => x.ReceiptAccrualLineId).HasColumnName("receipt_accrual_line_id").IsRequired();
+            entity.Property(x => x.ValuedAcceptanceLineId).HasColumnName("valued_acceptance_line_id").IsRequired();
+            entity.Property(x => x.GoodsReceiptLineId).HasColumnName("goods_receipt_line_id").IsRequired();
+            entity.Property(x => x.PoLineId).HasColumnName("po_line_id").IsRequired();
+            entity.Property(x => x.ItemId).HasColumnName("item_id").IsRequired();
+            entity.Property(x => x.ItemCodeSnapshot).HasColumnName("item_code_snapshot").HasMaxLength(48).IsRequired();
+            entity.Property(x => x.ItemNameSnapshot).HasColumnName("item_name_snapshot").HasMaxLength(200).IsRequired();
+            entity.Property(x => x.BaseUomId).HasColumnName("base_uom_id").IsRequired();
+            entity.Property(x => x.BaseUomCodeSnapshot).HasColumnName("base_uom_code_snapshot").HasMaxLength(20).IsRequired();
+            entity.Property(x => x.OrderedBaseQtySnapshot).HasColumnName("ordered_base_qty_snapshot").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.AcceptedUnbilledQtySnapshot).HasColumnName("accepted_unbilled_qty_snapshot").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.BilledBaseQuantity).HasColumnName("billed_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.PoUnitPriceFunctional).HasColumnName("po_unit_price_functional").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.InvoiceUnitPriceBase).HasColumnName("invoice_unit_price_base").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.LineNetAmount).HasColumnName("line_net_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.GrniClearAmount).HasColumnName("grni_clear_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.PriceVarianceAmount).HasColumnName("price_variance_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.PpnTaxCodeId).HasColumnName("ppn_tax_code_id").IsRequired();
+            entity.Property(x => x.PpnTaxCodeSnapshot).HasColumnName("ppn_tax_code_snapshot").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.PpnTaxAmount).HasColumnName("ppn_tax_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.WithholdingTaxCodeId).HasColumnName("withholding_tax_code_id");
+            entity.Property(x => x.WithholdingTaxCodeSnapshot).HasColumnName("withholding_tax_code_snapshot").HasMaxLength(32);
+            entity.Property(x => x.WithholdingTaxAmount).HasColumnName("withholding_tax_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.DqOutcome).HasColumnName("dq_outcome").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.PpOutcome).HasColumnName("pp_outcome").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.LineNotes).HasColumnName("line_notes").HasMaxLength(240);
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillId, x.LineNumber }).IsUnique().HasDatabaseName("ux_supplier_bill_lines_num");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillId, x.ReceiptAccrualLineId }).IsUnique().HasDatabaseName("ux_supplier_bill_lines_accrual");
+
+            entity.HasOne<SupplierBill>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillId }).HasPrincipalKey(b => new { b.TenantId, b.LegalEntityId, b.SupplierBillId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<ReceiptAccrualLine>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ReceiptAccrualLineId }).HasPrincipalKey(rl => new { rl.TenantId, rl.LegalEntityId, rl.ReceiptAccrualLineId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<ValuedAcceptanceLine>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ValuedAcceptanceLineId }).HasPrincipalKey(vl => new { vl.TenantId, vl.LegalEntityId, vl.ValuedAcceptanceLineId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<GoodsReceiptLine>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.GoodsReceiptLineId }).HasPrincipalKey(gl => new { gl.TenantId, gl.LegalEntityId, gl.GoodsReceiptLineId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<PurchaseOrderLine>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PoLineId }).HasPrincipalKey(pl => new { pl.TenantId, pl.LegalEntityId, pl.PoLineId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<Item>().WithMany().HasForeignKey(x => new { x.TenantId, x.ItemId }).HasPrincipalKey(i => new { i.TenantId, i.ItemId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<UnitOfMeasure>().WithMany().HasForeignKey(x => new { x.TenantId, x.BaseUomId }).HasPrincipalKey(u => new { u.TenantId, u.UomId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<TaxCode>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PpnTaxCodeId }).HasPrincipalKey(tc => new { tc.TenantId, tc.LegalEntityId, tc.TaxCodeId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<TaxCode>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.WithholdingTaxCodeId }).HasPrincipalKey(tc => new { tc.TenantId, tc.LegalEntityId, tc.TaxCodeId }).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<InvoiceMatchEvaluation>(entity =>
+        {
+            entity.ToTable("invoice_match_evaluations", "ap", t =>
+            {
+                t.HasCheckConstraint("ck_inv_match_eval_stage", "evaluation_stage IN ('DRAFT_PREVIEW', 'SUBMIT', 'POST_COMMIT')");
+                t.HasCheckConstraint("ck_inv_match_eval_outcomes", "dq_outcome IN ('MATCHED', 'WITHIN_TOLERANCE', 'VARIANCE_APPROVAL_REQUIRED', 'BLOCKED') AND pp_outcome IN ('MATCHED', 'WITHIN_TOLERANCE', 'VARIANCE_APPROVAL_REQUIRED', 'BLOCKED') AND bd_outcome IN ('MATCHED', 'WITHIN_TOLERANCE', 'VARIANCE_APPROVAL_REQUIRED', 'BLOCKED') AND overall_match_status IN ('MATCHED', 'WITHIN_TOLERANCE', 'APPROVAL_REQUIRED', 'POSTING_BLOCKED')");
+            });
+
+            entity.HasKey(x => x.EvaluationId);
+            entity.Property(x => x.EvaluationId).HasColumnName("evaluation_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.SupplierBillId).HasColumnName("supplier_bill_id").IsRequired();
+            entity.Property(x => x.PolicyId).HasColumnName("policy_id").IsRequired();
+            entity.Property(x => x.EvaluationStage).HasColumnName("evaluation_stage").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.DqOutcome).HasColumnName("dq_outcome").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.PpOutcome).HasColumnName("pp_outcome").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.BdOutcome).HasColumnName("bd_outcome").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.OverallMatchStatus).HasColumnName("overall_match_status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.IsPostingBlocked).HasColumnName("is_posting_blocked").IsRequired();
+            entity.Property(x => x.RequiresApproval).HasColumnName("requires_approval").IsRequired();
+            entity.Property(x => x.RequiresPaymentBlock).HasColumnName("requires_payment_block").IsRequired();
+            entity.Property(x => x.BlockingReasonsJson).HasColumnName("blocking_reasons_json").HasColumnType("jsonb").IsRequired();
+            entity.Property(x => x.ComparisonJson).HasColumnName("comparison_json").HasColumnType("jsonb").IsRequired();
+            entity.Property(x => x.EvaluatedByUserId).HasColumnName("evaluated_by_user_id").IsRequired();
+            entity.Property(x => x.EvaluatedAtUtc).HasColumnName("evaluated_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillId, x.EvaluatedAtUtc }).HasDatabaseName("ix_inv_match_eval_bill_time");
+            entity.HasOne<SupplierBill>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillId }).HasPrincipalKey(b => new { b.TenantId, b.LegalEntityId, b.SupplierBillId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<InvoiceMatchPolicy>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PolicyId }).HasPrincipalKey(p => new { p.TenantId, p.LegalEntityId, p.PolicyId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<TenantMembership>().WithMany().HasForeignKey(x => new { x.TenantId, x.EvaluatedByUserId }).HasPrincipalKey(m => new { m.TenantId, m.UserId }).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<SupplierBillReceiptMatch>(entity =>
+        {
+            entity.ToTable("supplier_bill_receipt_matches", "ap", t =>
+            {
+                t.HasCheckConstraint("ck_bill_receipt_match_qty", "matched_base_quantity > 0 AND grni_cleared_amount > 0 AND covered_base_quantity >= 0");
+            });
+
+            entity.HasKey(x => x.MatchId);
+            entity.Property(x => x.MatchId).HasColumnName("match_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.SupplierBillId).HasColumnName("supplier_bill_id").IsRequired();
+            entity.Property(x => x.SupplierBillLineId).HasColumnName("supplier_bill_line_id").IsRequired();
+            entity.Property(x => x.ReceiptAccrualId).HasColumnName("receipt_accrual_id").IsRequired();
+            entity.Property(x => x.ReceiptAccrualLineId).HasColumnName("receipt_accrual_line_id").IsRequired();
+            entity.Property(x => x.ValuedAcceptanceLineId).HasColumnName("valued_acceptance_line_id").IsRequired();
+            entity.Property(x => x.PurchaseOrderId).HasColumnName("purchase_order_id").IsRequired();
+            entity.Property(x => x.PoLineId).HasColumnName("po_line_id").IsRequired();
+            entity.Property(x => x.ItemId).HasColumnName("item_id").IsRequired();
+            entity.Property(x => x.MatchedBaseQuantity).HasColumnName("matched_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.ReceiptUnitCostBase).HasColumnName("receipt_unit_cost_base").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.InvoiceUnitPriceBase).HasColumnName("invoice_unit_price_base").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.GrniClearedAmount).HasColumnName("grni_cleared_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.PriceVarianceAmount).HasColumnName("price_variance_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.CoveredBaseQuantity).HasColumnName("covered_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.InventoryAdjustmentAmount).HasColumnName("inventory_adjustment_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.PnlVarianceAmount).HasColumnName("pnl_variance_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.CreatedByUserId).HasColumnName("created_by_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillLineId }).IsUnique().HasDatabaseName("ux_bill_receipt_match_bill_line");
+            entity.HasOne<SupplierBill>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillId }).HasPrincipalKey(b => new { b.TenantId, b.LegalEntityId, b.SupplierBillId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<SupplierBillLine>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillLineId }).HasPrincipalKey(l => new { l.TenantId, l.LegalEntityId, l.SupplierBillLineId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<ReceiptAccrual>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ReceiptAccrualId }).HasPrincipalKey(a => new { a.TenantId, a.LegalEntityId, a.ReceiptAccrualId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<ReceiptAccrualLine>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ReceiptAccrualLineId }).HasPrincipalKey(al => new { al.TenantId, al.LegalEntityId, al.ReceiptAccrualLineId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<Item>().WithMany().HasForeignKey(x => new { x.TenantId, x.ItemId }).HasPrincipalKey(i => new { i.TenantId, i.ItemId }).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PayableItem>(entity =>
+        {
+            entity.ToTable("payable_items", "ap", t =>
+            {
+                t.HasCheckConstraint("ck_payable_items_currency", "currency_code = 'IDR'");
+                t.HasCheckConstraint("ck_payable_items_status", "status IN ('OPEN', 'PARTIALLY_PAID', 'PAID', 'REVERSED')");
+                t.HasCheckConstraint("ck_payable_items_pay_block", "payment_block_status IN ('NONE', 'PAYMENT_BLOCKED', 'RELEASED')");
+                t.HasCheckConstraint("ck_payable_items_amounts", "gross_bill_amount > 0 AND withholding_tax_amount >= 0 AND net_payable_amount > 0 AND paid_amount >= 0 AND remaining_open_amount >= 0 AND net_payable_amount = paid_amount + remaining_open_amount");
+            });
+
+            entity.HasKey(x => x.PayableItemId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.PayableItemId });
+            entity.Property(x => x.PayableItemId).HasColumnName("payable_item_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.PayableNumber).HasColumnName("payable_number").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.SupplierBillId).HasColumnName("supplier_bill_id").IsRequired();
+            entity.Property(x => x.SupplierPartnerId).HasColumnName("supplier_partner_id").IsRequired();
+            entity.Property(x => x.SupplierCodeSnapshot).HasColumnName("supplier_code_snapshot").HasMaxLength(48).IsRequired();
+            entity.Property(x => x.SupplierLegalNameSnapshot).HasColumnName("supplier_legal_name_snapshot").HasMaxLength(200).IsRequired();
+            entity.Property(x => x.SupplierInvoiceNumber).HasColumnName("supplier_invoice_number").HasMaxLength(64).IsRequired();
+            entity.Property(x => x.GlJournalId).HasColumnName("gl_journal_id").IsRequired();
+            entity.Property(x => x.CurrencyCode).HasColumnName("currency_code").HasMaxLength(3).IsRequired();
+            entity.Property(x => x.PostingDate).HasColumnName("posting_date").IsRequired();
+            entity.Property(x => x.DueDate).HasColumnName("due_date").IsRequired();
+            entity.Property(x => x.GrossBillAmount).HasColumnName("gross_bill_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.WithholdingTaxAmount).HasColumnName("withholding_tax_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.NetPayableAmount).HasColumnName("net_payable_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.PaidAmount).HasColumnName("paid_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.RemainingOpenAmount).HasColumnName("remaining_open_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.PaymentBlockStatus).HasColumnName("payment_block_status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.PaymentBlockReason).HasColumnName("payment_block_reason").HasMaxLength(300);
+            entity.Property(x => x.CreatedByUserId).HasColumnName("created_by_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.PayableNumber }).IsUnique().HasDatabaseName("ux_payable_items_number");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillId }).IsUnique().HasDatabaseName("ux_payable_items_bill");
+            entity.HasOne<SupplierBill>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillId }).HasPrincipalKey(b => new { b.TenantId, b.LegalEntityId, b.SupplierBillId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<Partner>().WithMany().HasForeignKey(x => new { x.TenantId, x.SupplierPartnerId }).HasPrincipalKey(p => new { p.TenantId, p.PartnerId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<JournalEntry>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.GlJournalId }).HasPrincipalKey(j => new { j.TenantId, j.LegalEntityId, j.JournalId }).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<ReceiptAccrualClearing>(entity =>
+        {
+            entity.ToTable("receipt_accrual_clearings", "gl", t =>
+            {
+                t.HasCheckConstraint("ck_receipt_accrual_clearings_pos", "cleared_base_quantity > 0 AND cleared_amount > 0");
+            });
+
+            entity.HasKey(x => x.ClearingId);
+            entity.Property(x => x.ClearingId).HasColumnName("clearing_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.ReceiptAccrualId).HasColumnName("receipt_accrual_id").IsRequired();
+            entity.Property(x => x.ReceiptAccrualLineId).HasColumnName("receipt_accrual_line_id").IsRequired();
+            entity.Property(x => x.SupplierBillId).HasColumnName("supplier_bill_id").IsRequired();
+            entity.Property(x => x.SupplierBillLineId).HasColumnName("supplier_bill_line_id").IsRequired();
+            entity.Property(x => x.GlJournalId).HasColumnName("gl_journal_id").IsRequired();
+            entity.Property(x => x.ClearedBaseQuantity).HasColumnName("cleared_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.ClearedAmount).HasColumnName("cleared_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.PostingDate).HasColumnName("posting_date").IsRequired();
+            entity.Property(x => x.CreatedByUserId).HasColumnName("created_by_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillLineId }).IsUnique().HasDatabaseName("ux_receipt_accrual_clearings_bill_line");
+            entity.HasOne<ReceiptAccrual>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ReceiptAccrualId }).HasPrincipalKey(a => new { a.TenantId, a.LegalEntityId, a.ReceiptAccrualId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<ReceiptAccrualLine>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ReceiptAccrualLineId }).HasPrincipalKey(al => new { al.TenantId, al.LegalEntityId, al.ReceiptAccrualLineId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<SupplierBill>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillId }).HasPrincipalKey(b => new { b.TenantId, b.LegalEntityId, b.SupplierBillId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<JournalEntry>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.GlJournalId }).HasPrincipalKey(j => new { j.TenantId, j.LegalEntityId, j.JournalId }).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<InvoicePriceAdjustment>(entity =>
+        {
+            entity.ToTable("invoice_price_adjustments", "inventory", t =>
+            {
+                t.HasCheckConstraint("ck_inv_price_adj_currency", "currency_code = 'IDR'");
+                t.HasCheckConstraint("ck_inv_price_adj_qty", "billed_base_quantity > 0 AND pool_on_hand_before_qty >= 0 AND covered_base_quantity >= 0 AND uncovered_base_quantity >= 0 AND billed_base_quantity = covered_base_quantity + uncovered_base_quantity AND total_price_diff_amount = inventory_adjustment_amount + pnl_variance_amount");
+            });
+
+            entity.HasKey(x => x.AdjustmentId);
+            entity.Property(x => x.AdjustmentId).HasColumnName("adjustment_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.SupplierBillId).HasColumnName("supplier_bill_id").IsRequired();
+            entity.Property(x => x.SupplierBillLineId).HasColumnName("supplier_bill_line_id").IsRequired();
+            entity.Property(x => x.BillNumber).HasColumnName("bill_number").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.ItemId).HasColumnName("item_id").IsRequired();
+            entity.Property(x => x.ValuationPoolId).HasColumnName("valuation_pool_id").IsRequired();
+            entity.Property(x => x.GlJournalId).HasColumnName("gl_journal_id").IsRequired();
+            entity.Property(x => x.ValuationEntryId).HasColumnName("valuation_entry_id");
+            entity.Property(x => x.PostingDate).HasColumnName("posting_date").IsRequired();
+            entity.Property(x => x.CurrencyCode).HasColumnName("currency_code").HasMaxLength(3).IsRequired();
+            entity.Property(x => x.BilledBaseQuantity).HasColumnName("billed_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.PoolOnHandBeforeQty).HasColumnName("pool_on_hand_before_qty").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.CoveredBaseQuantity).HasColumnName("covered_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.UncoveredBaseQuantity).HasColumnName("uncovered_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.TotalPriceDiffAmount).HasColumnName("total_price_diff_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.InventoryAdjustmentAmount).HasColumnName("inventory_adjustment_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.PnlVarianceAmount).HasColumnName("pnl_variance_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.PreviousMovingAverageCost).HasColumnName("previous_moving_average_cost").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.NewMovingAverageCost).HasColumnName("new_moving_average_cost").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.CreatedByUserId).HasColumnName("created_by_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillLineId }).IsUnique().HasDatabaseName("ux_invoice_price_adj_bill_line");
+            entity.HasOne<SupplierBill>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.SupplierBillId }).HasPrincipalKey(b => new { b.TenantId, b.LegalEntityId, b.SupplierBillId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<Item>().WithMany().HasForeignKey(x => new { x.TenantId, x.ItemId }).HasPrincipalKey(i => new { i.TenantId, i.ItemId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<ValuationPool>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ValuationPoolId }).HasPrincipalKey(vp => new { vp.TenantId, vp.LegalEntityId, vp.ValuationPoolId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<ValuationEntry>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ValuationEntryId }).HasPrincipalKey(ve => new { ve.TenantId, ve.LegalEntityId, ve.ValuationEntryId }).IsRequired(false).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<JournalEntry>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.GlJournalId }).HasPrincipalKey(j => new { j.TenantId, j.LegalEntityId, j.JournalId }).OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<TaxDetermination>(entity =>
+        {
+            entity.ToTable("tax_determinations", "tax", t =>
+            {
+                t.HasCheckConstraint("ck_tax_determinations_role", "tax_role IN ('PPN_INPUT', 'PPH_WITHHOLDING')");
+                t.HasCheckConstraint("ck_tax_determinations_amounts", "gross_amount > 0 AND taxable_base_amount >= 0 AND nominal_rate_percent >= 0 AND effective_rate_percent >= 0 AND tax_amount >= 0");
+            });
+
+            entity.HasKey(x => x.DeterminationId);
+            entity.Property(x => x.DeterminationId).HasColumnName("determination_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.SourceModule).HasColumnName("source_module").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.SourceDocumentType).HasColumnName("source_document_type").HasMaxLength(48).IsRequired();
+            entity.Property(x => x.SourceDocumentId).HasColumnName("source_document_id").IsRequired();
+            entity.Property(x => x.SourceDocumentLineId).HasColumnName("source_document_line_id").IsRequired();
+            entity.Property(x => x.TaxRole).HasColumnName("tax_role").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.TaxCodeId).HasColumnName("tax_code_id").IsRequired();
+            entity.Property(x => x.TaxCodeSnapshot).HasColumnName("tax_code_snapshot").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.TaxFamily).HasColumnName("tax_family").HasMaxLength(16).IsRequired();
+            entity.Property(x => x.Direction).HasColumnName("direction").HasMaxLength(16).IsRequired();
+            entity.Property(x => x.TreatmentClass).HasColumnName("treatment_class").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.GrossAmount).HasColumnName("gross_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.TaxableBaseAmount).HasColumnName("taxable_base_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.NominalRatePercent).HasColumnName("nominal_rate_percent").HasColumnType("numeric(7,4)").IsRequired();
+            entity.Property(x => x.EffectiveRatePercent).HasColumnName("effective_rate_percent").HasColumnType("numeric(7,4)").IsRequired();
+            entity.Property(x => x.TaxAmount).HasColumnName("tax_amount").HasColumnType("numeric(18,4)").IsRequired();
+            entity.Property(x => x.ReviewStatus).HasColumnName("review_status").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.EvidenceStatus).HasColumnName("evidence_status").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.DocumentaryEvidenceRef).HasColumnName("documentary_evidence_ref").HasMaxLength(120);
+            entity.Property(x => x.CounterpartyNpwpSnapshot).HasColumnName("counterparty_npwp_snapshot").HasMaxLength(64);
+            entity.Property(x => x.TransactionDate).HasColumnName("transaction_date").IsRequired();
+            entity.Property(x => x.CreatedByUserId).HasColumnName("created_by_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SourceDocumentId, x.SourceDocumentLineId, x.TaxRole }).IsUnique().HasDatabaseName("ux_tax_determinations_doc_line_role");
+            entity.HasOne<LegalEntity>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId }).HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<TaxCode>().WithMany().HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.TaxCodeId }).HasPrincipalKey(tc => new { tc.TenantId, tc.LegalEntityId, tc.TaxCodeId }).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<TenantMembership>().WithMany().HasForeignKey(x => new { x.TenantId, x.CreatedByUserId }).HasPrincipalKey(m => new { m.TenantId, m.UserId }).OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

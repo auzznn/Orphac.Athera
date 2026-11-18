@@ -28,6 +28,10 @@ public static class PermissionCodes
     public const string FinanceRead = "finance.read";
     public const string FinanceConfigManage = "finance.config.manage";
     public const string FinanceJournalPost = "finance.journal.post";
+    public const string ApRead = "ap.read";
+    public const string ApManage = "ap.manage";
+    public const string ApApprove = "ap.approve";
+    public const string ApPost = "ap.post";
     public const string AdminRead = "admin.read";
     public const string AdminManage = "admin.manage";
     public const string ApprovalRequest = "approval.request";
@@ -53,6 +57,10 @@ public static class PermissionCodes
         FinanceRead,
         FinanceConfigManage,
         FinanceJournalPost,
+        ApRead,
+        ApManage,
+        ApApprove,
+        ApPost,
         AdminRead,
         AdminManage,
         ApprovalRequest,

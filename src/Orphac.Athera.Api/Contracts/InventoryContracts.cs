@@ -495,3 +495,24 @@ public sealed record ItemValuationLedgerResponse(
     decimal BlockedBaseQuantity,
     decimal AvailableBaseQuantity,
     IReadOnlyList<ValuationEntryLedgerDto> Entries);
+
+public sealed record CreateOperationalIssueRequest(
+    Guid ItemId,
+    Guid? LocationId,
+    Guid? StockLotId,
+    decimal Quantity,
+    DateOnly PostingDate,
+    string SourceReference,
+    string IdempotencyKey,
+    string? Notes);
+
+public sealed record OperationalIssueOutcomeDto(
+    Guid StockMovementId,
+    string MovementNumber,
+    DateOnly PostingDate,
+    decimal IssuedBaseQuantity,
+    decimal IssuedCarryingAmount,
+    decimal AppliedUnitCost,
+    Guid? GlJournalId,
+    string? GlJournalNumber,
+    bool WasIdempotentReplay);

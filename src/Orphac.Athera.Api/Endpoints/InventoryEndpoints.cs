@@ -712,7 +712,7 @@ internal static class InventoryEndpoints
                         .OrderBy(e => e.PoolSequenceNumber)
                         .ToListAsync(innerCt);
 
-                    var movIds = entries.Select(e => e.StockMovementId).Distinct().ToList();
+                    var movIds = entries.Where(e => e.StockMovementId.HasValue).Select(e => e.StockMovementId!.Value).Distinct().ToList();
                     var jrnIds = entries.Where(e => e.GlJournalId.HasValue).Select(e => e.GlJournalId!.Value).Distinct().ToList();
                     var userIds = entries.Select(e => e.CreatedByUserId).Distinct().ToList();
 
@@ -734,7 +734,7 @@ internal static class InventoryEndpoints
                         e.SourceDocumentType,
                         e.SourceDocumentId,
                         e.SourceDocumentNumber,
-                        movNums.GetValueOrDefault(e.StockMovementId, "-"),
+                        e.StockMovementId is { } mid ? movNums.GetValueOrDefault(mid, "-") : "-",
                         e.GlJournalId,
                         e.GlJournalId is { } jid && jrnNums.TryGetValue(jid, out var jn) ? jn : null,
                         e.QuantityDelta,
@@ -1424,6 +1424,78 @@ internal static class InventoryEndpoints
         .RequireAuthorization()
         .WithName("ReleaseStockReservation")
         .Produces<StockReservationOutcomeDto>(StatusCodes.Status200OK)
+        .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+        .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+        .Produces<ProblemDetails>(StatusCodes.Status403Forbidden)
+        .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+        .Produces<ProblemDetails>(StatusCodes.Status409Conflict);
+
+        app.MapPost("/api/workspaces/{tenantId:guid}/entities/{entityId:guid}/inventory/issues", async (
+            Guid tenantId,
+            Guid entityId,
+            CreateOperationalIssueRequest request,
+            UserManager<ApplicationUser> userManager,
+            TenantScopeExecutor scopeExecutor,
+            ITenantOutboxSignal outboxSignal,
+            AtheraDbContext db,
+            HttpContext httpContext,
+            CancellationToken ct) =>
+        {
+            return await ExecuteMutatingInventoryScopeAsync(
+                tenantId,
+                entityId,
+                [PermissionCodes.InventoryManage],
+                "Your active grants for this legal entity do not permit recording operational inventory issues.",
+                userManager,
+                scopeExecutor,
+                outboxSignal,
+                httpContext,
+                async (scope, actorUserId, innerCt) =>
+                {
+                    var outcome = await InventoryValuationService.PostOperationalIssueAsync(
+                        db,
+                        new PostOperationalIssueCommand(
+                            tenantId,
+                            entityId,
+                            scope.Entity.FunctionalCurrencyCode,
+                            request.ItemId,
+                            request.LocationId,
+                            request.StockLotId,
+                            request.Quantity,
+                            request.PostingDate,
+                            request.SourceReference,
+                            request.IdempotencyKey,
+                            request.Notes,
+                            actorUserId,
+                            DateTimeOffset.UtcNow),
+                        innerCt);
+
+                    if (!outcome.Succeeded || outcome.Movement is null || outcome.ValuationEntry is null)
+                    {
+                        throw new AbortedDomainOperationException(
+                            outcome.FailureHttpStatus,
+                            outcome.ErrorCode ?? "operational_issue_failed",
+                            outcome.ErrorDetail ?? "Operational stock issue failed.");
+                    }
+
+                    var dto = new OperationalIssueOutcomeDto(
+                        outcome.Movement.StockMovementId,
+                        outcome.Movement.MovementNumber,
+                        outcome.Movement.PostingDate,
+                        Math.Abs(outcome.ValuationEntry.QuantityDelta),
+                        Math.Abs(outcome.ValuationEntry.ValueDelta),
+                        outcome.ValuationEntry.UnitCostApplied,
+                        outcome.GlJournal?.JournalId,
+                        outcome.GlJournal?.JournalNumber,
+                        outcome.IdempotentReplay);
+                    return (outcome.IdempotentReplay ? Results.Ok(dto) : Results.Created(string.Empty, dto), !outcome.IdempotentReplay);
+                },
+                ct);
+        })
+        .RequireAuthorization()
+        .WithName("CreateOperationalInventoryIssue")
+        .Produces<OperationalIssueOutcomeDto>(StatusCodes.Status201Created)
+        .Produces<OperationalIssueOutcomeDto>(StatusCodes.Status200OK)
         .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
         .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
         .Produces<ProblemDetails>(StatusCodes.Status403Forbidden)

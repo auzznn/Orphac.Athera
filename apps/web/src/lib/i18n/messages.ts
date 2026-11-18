@@ -48,6 +48,7 @@ export interface Dictionary {
       procurement: string;
       receiving: string;
       inventory: string;
+      payables: string;
       sales: string;
       finance: string;
       admin: string;
@@ -1050,6 +1051,7 @@ export interface Dictionary {
       submitDispositionButton: string;
       dispositionSuccessPrefix: string;
       invalidDispositionQtyError: string;
+      invalidPositiveQtyError: string;
       noPendingInspections: string;
       transferCardTitle: string;
       sourceBalanceLabel: string;
@@ -1110,7 +1112,188 @@ export interface Dictionary {
       colTimelineLocationLot: string;
       colTimelineDelta: string;
       colTimelineCost: string;
+      issueCardTitle: string;
+      issueHint: string;
+      issueSourceLabel: string;
+      issueLocationLabel: string;
+      issueQtyLabel: string;
+      issueNotesLabel: string;
+      issueSubmitButton: string;
+      issueSubmitBusy: string;
+      issueSuccessPrefix: string;
+      issueLotSelectLabel: string;
+      noLotOption: string;
+      emptyIssueBalanceOption: string;
     };
+    errors: Record<string, string>;
+  };
+  payables: {
+    pageTitle: string;
+    backToOverview: string;
+    loadErrorTitle: string;
+    retryButton: string;
+    accessDeniedTitle: string;
+    accessDeniedBody: string;
+    readOnlyBanner: string;
+    od03GovernanceTitle: string;
+    od03GovernanceBody: string;
+    od08GovernanceBody: string;
+    od07TaxDisclaimer: string;
+    tabListLabel: string;
+    tabs: {
+      bills: string;
+      grniQueue: string;
+      subledger: string;
+      policyTax: string;
+    };
+    stats: {
+      openPayableLiability: string;
+      openGrniPool: string;
+      pendingApprovalBills: string;
+      blockedPayables: string;
+    };
+    refreshButton: string;
+    newBillButton: string;
+    filterSearchLabel: string;
+    filterSearchPlaceholder: string;
+    billsCardTitle: string;
+    emptyBillsTitle: string;
+    emptyBillsBody: string;
+    grniQueueCardTitle: string;
+    emptyGrniTitle: string;
+    emptyGrniBody: string;
+    subledgerCardTitle: string;
+    emptyPayablesTitle: string;
+    emptyPayablesBody: string;
+    priceAdjustmentsTitle: string;
+    emptyPriceAdjustments: string;
+    policySectionTitle: string;
+    taxTableTitle: string;
+    createBillAction: string;
+    composer: {
+      titleNew: string;
+      titleEditPrefix: string;
+      cancelButton: string;
+      poSelectLabel: string;
+      emptyPoOption: string;
+      accrualLineSelectLabel: string;
+      emptyAccrualOption: string;
+      billTypeLabel: string;
+      vendorInvoiceLabel: string;
+      taxInvoiceLabel: string;
+      withholdingSlipLabel: string;
+      invoiceDateLabel: string;
+      dueDateLabel: string;
+      postingDateLabel: string;
+      declaredGrossLabel: string;
+      syncComputedGrossButton: string;
+      billedQtyLabel: string;
+      invoiceUnitPriceLabel: string;
+      ppnCodeLabel: string;
+      pphCodeLabel: string;
+      noneOption: string;
+      selectOptionPlaceholder: string;
+      notesLabel: string;
+      previewButton: string;
+      previewBusy: string;
+      saveDraftButton: string;
+      updateDraftButton: string;
+      saveBusy: string;
+      previewTitle: string;
+      comparisonTitle: string;
+      colOrderedAcceptedOpen: string;
+      colBilledPrice: string;
+      colVarianceSplit: string;
+      colTaxes: string;
+      journalPreviewTitle: string;
+      colJournalSide: string;
+      colJournalAccount: string;
+      colJournalAmount: string;
+      sideDebit: string;
+      sideCredit: string;
+      coveredStockLabel: string;
+      uncoveredPpvLabel: string;
+      projectedCostLabel: string;
+      bdDiffLabel: string;
+      netApLabel: string;
+      stalePreviewNotice: string;
+    };
+    detail: {
+      sectionTitle: string;
+      closeButton: string;
+      headerRef: string;
+      headerVendor: string;
+      headerDates: string;
+      headerMatchStatus: string;
+      headerPaymentBlock: string;
+      headerTotals: string;
+      colAction: string;
+      openDetailButton: string;
+      activeDetailButton: string;
+      colLineVarianceOutcome: string;
+      editDraftButton: string;
+      blockingReasonsTitle: string;
+      linesTitle: string;
+      adjustmentsTitle: string;
+      taxesTitle: string;
+      evaluationsTitle: string;
+      submitButton: string;
+      submitBusy: string;
+      approveButton: string;
+      rejectButton: string;
+      decideBusy: string;
+      approveVarianceCheckbox: string;
+      applyBlockCheckbox: string;
+      decisionReasonLabel: string;
+      decisionReasonPlaceholder: string;
+      blockReasonLabel: string;
+      sodSelfApprovalNotice: string;
+      postSectionTitle: string;
+      postingDateLabel: string;
+      postButton: string;
+      postBusy: string;
+      blockControlTitle: string;
+      holdPaymentButton: string;
+      releasePaymentButton: string;
+      blockBusy: string;
+      blockActionReasonLabel: string;
+      noPermSubmitHint: string;
+      noPermApproveHint: string;
+      noPermPostHint: string;
+      defaultApproveReason: string;
+      defaultRejectReason: string;
+      defaultManualHoldReason: string;
+      defaultBlockHoldReason: string;
+      defaultReleaseReason: string;
+    };
+    micro: {
+      unbilledGrniShort: string;
+      poolOnHandShort: string;
+      onHandBeforeBillShort: string;
+      coveredShort: string;
+      uncoveredShort: string;
+      inv1300Short: string;
+      ppv5200Short: string;
+      openShort: string;
+      dueShort: string;
+      invShort: string;
+      whtShort: string;
+      varShort: string;
+      netShort: string;
+      macShort: string;
+      ppToleranceShort: string;
+      dqToleranceShort: string;
+      bdLimitShort: string;
+      effectiveShort: string;
+    };
+    evaluationStageLabels: Record<string, string>;
+    billStatusLabels: Record<string, string>;
+    matchStatusLabels: Record<string, string>;
+    dimensionOutcomeLabels: Record<string, string>;
+    paymentBlockLabels: Record<string, string>;
+    payableStatusLabels: Record<string, string>;
+    taxRoleLabels: Record<string, string>;
+    taxFamilyLabels: Record<string, string>;
     errors: Record<string, string>;
   };
 }
@@ -1176,6 +1359,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         procurement: "Pengadaan",
         receiving: "Penerimaan Gudang",
         inventory: "Persediaan",
+        payables: "Hutang Usaha (AP)",
         sales: "Penjualan",
         finance: "Keuangan & GL",
         admin: "Administrasi",
@@ -1302,6 +1486,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         procurement: "Pengadaan (PO, GRN, Pemasok)",
         receiving: "Penerimaan Dermaga & Gate 1 (Tanpa Valuasi)",
         inventory: "Persediaan & Buku Besar Stok",
+        payables: "Hutang Usaha (AP), Match 3-Arah & Selisih Harga",
         sales: "Penjualan & Penagihan",
         finance: "Keuangan, Pajak PPN/PPh & GL",
         admin: "Administrasi Organisasi, Undangan & Audit",
@@ -2423,9 +2608,12 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         PURCHASE_RECEIPT_ACCEPTANCE: "Penerimaan Pembelian (Gate 2)",
         LOCATION_TRANSFER: "Pemindahan Lokasi Gudang",
         QUALITY_STATUS_CHANGE: "Perubahan Status Mutu / Pembatasan",
+        OPERATIONAL_ISSUE: "Pemakaian / Pengeluaran Stok Operasional",
       },
       entryTypeLabels: {
         RECEIPT_ACCEPTANCE: "Penerimaan Bernilai",
+        OPERATIONAL_ISSUE: "Pengeluaran Stok Operasional",
+        INVOICE_PRICE_ADJUSTMENT: "Penyesuaian Harga Faktur (S09)",
       },
       accrualsCardTitle: "Sub-Buku Besar Akrual GRNI (Menunggu Pencocokan 3-Arah S09)",
       emptyAccrualsTitle: "Belum Ada Akrual GRNI Terbuka",
@@ -2449,7 +2637,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       emptyLedgerEntries: "Belum terdapat entri buku besar valuasi untuk barang ini.",
       colLedgerSeq: "Urutan",
       colLedgerSource: "Tanggal, Sumber & Jurnal GL",
-      colLedgerDelta: "Tambah Qty · Biaya Satuan · Nilai",
+      colLedgerDelta: "Delta Qty · Biaya Satuan · Nilai",
       colLedgerBeforeAfterCost: "HPP Sebelum → Sesudah",
       colLedgerCarrying: "Qty Akhir & Nilai Buku",
       openReceivingLink: "Buka Penerimaan Gudang",
@@ -2540,6 +2728,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         submitDispositionButton: "Catat Disposisi Mutu",
         dispositionSuccessPrefix: "Disposisi mutu tercatat permanen melalui mutasi",
         invalidDispositionQtyError: "Masukkan kuantitas rilis dan/atau blokir bernilai positif (total > 0).",
+        invalidPositiveQtyError: "Masukkan kuantitas bernilai positif (> 0).",
         noPendingInspections: "Tidak ada inspeksi karantina yang menunggu keputusan pada item ini.",
         transferCardTitle: "Pemindahan Lokasi Dalam Gudang (Tanpa Mengubah Nilai Buku)",
         sourceBalanceLabel: "Saldo & Lokasi Asal",
@@ -2600,6 +2789,19 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         colTimelineLocationLot: "Lokasi, Zona & Lot",
         colTimelineDelta: "Status & Delta Kuantitas",
         colTimelineCost: "HPP Satuan · Nilai Buku Delta",
+        issueCardTitle: "Pengeluaran Stok Operasional (Dr 5100 HPP / Cr 1300 Persediaan)",
+        issueHint:
+          "Keluarkan stok berstatus Bebas Pakai dan tidak tereservasi pada HPP rata-rata bergerak saat ini.",
+        issueSourceLabel: "Referensi Pemakaian",
+        issueLocationLabel: "Saldo Lokasi & Lot",
+        issueQtyLabel: "Kuantitas Keluar",
+        issueNotesLabel: "Catatan Pemakaian",
+        issueSubmitButton: "Posting Pengeluaran Stok",
+        issueSubmitBusy: "Memposting pengeluaran...",
+        issueSuccessPrefix: "Pengeluaran stok tercatat:",
+        issueLotSelectLabel: "Lot",
+        noLotOption: "Tanpa Lot",
+        emptyIssueBalanceOption: "Tidak ada saldo Bebas Pakai tersedia untuk dikeluarkan.",
       },
       errors: {
         od10_insufficient_available_stock:
@@ -2626,6 +2828,243 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Peran aktif Anda tidak memiliki izin untuk menjalankan tindakan tersebut pada entitas ini.",
         period_closed:
           "Periode fiskal pada tanggal posting berstatus ditutup.",
+      },
+    },
+    payables: {
+      pageTitle: "Hutang Usaha (AP), Pencocokan 3-Arah & Selisih Harga",
+      backToOverview: "Ringkasan Entitas",
+      loadErrorTitle: "Gagal memuat modul Hutang Usaha entitas",
+      retryButton: "Muat Ulang Data AP",
+      accessDeniedTitle: "Akses Modul Hutang Usaha Ditolak",
+      accessDeniedBody:
+        "Izin entitas aktif Anda tidak mencakup pembacaan atau pengelolaan faktur pemasok (ap.read).",
+      readOnlyBanner:
+        "Mode baca saja: Anda memiliki izin baca AP tanpa izin ubah, persetujuan selisih harga, atau posting jurnal.",
+      od03GovernanceTitle: "Tata Kelola OD-03 & OD-08 Aktif (ATH-CR-006)",
+      od03GovernanceBody:
+        "Toleransi otomatis PP/DQ/BD = 0 (Match Ketat). Kelebihan tagih kuantitas (DQ) dan selisih pembulatan (BD) memblokir posting; selisih harga (PP) wajib persetujuan empat mata serta aporsionasi cakupan stok DEC-P2P-013 (1300 Persediaan vs 5200 PPV).",
+      od08GovernanceBody:
+        "OD-08: Hanya tagihan PO Three-Way Match yang diaktifkan. Pengeluaran Non-PO dan Uang Muka Pemasok ditolak menunggu persetujuan Owner.",
+      od07TaxDisclaimer:
+        "OD-07: Kode pajak PPN Masukan & PPh 23 berstatus dapat dikonfigurasi; pastikan Faktur Pajak & NPWP lawan transaksi terverifikasi sebelum pelaporan.",
+      tabListLabel: "Tampilan modul Hutang Usaha",
+      tabs: {
+        bills: "Faktur Pemasok",
+        grniQueue: "Antrean GRNI Terbuka",
+        subledger: "Sub-Buku Besar AP & Jurnal",
+        policyTax: "Kebijakan Match & Pajak",
+      },
+      stats: {
+        openPayableLiability: "Saldo Hutang Usaha Terbuka",
+        openGrniPool: "Akrual GRNI Menunggu Tagihan",
+        pendingApprovalBills: "Menunggu Persetujuan 4-Mata",
+        blockedPayables: "Hutang Ditahan Pembayaran",
+      },
+      refreshButton: "Segarkan",
+      newBillButton: "Buat Faktur Pemasok Baru",
+      filterSearchLabel: "Cari nomor faktur, PO, atau pemasok",
+      filterSearchPlaceholder: "Cari BILL / INV / PO / Pemasok...",
+      billsCardTitle: "Daftar Faktur Pemasok & Status Pencocokan 3-Arah",
+      emptyBillsTitle: "Belum Ada Faktur Pemasok",
+      emptyBillsBody:
+        "Buat draf faktur pemasok dari tab Antrean GRNI Terbuka untuk mencocokkan PO, penerimaan Gate 2, dan faktur vendor.",
+      grniQueueCardTitle: "Baris Akrual GRNI Terbuka Siap Ditagih (PO Three-Way Match)",
+      emptyGrniTitle: "Semua GRNI Telah Ditagih",
+      emptyGrniBody:
+        "Belum terdapat baris akrual GRNI dengan sisa kuantitas terbuka untuk entitas hukum ini.",
+      subledgerCardTitle: "Sub-Buku Besar Hutang Usaha & Revaluasi Harga S09",
+      emptyPayablesTitle: "Belum Ada Saldo AP Terbuka",
+      emptyPayablesBody: "Item Hutang Usaha muncul secara atomik ketika faktur pemasok yang telah disetujui diposting ke GL.",
+      priceAdjustmentsTitle: "Riwayat Penyesuaian Valuasi & Selisih Harga (DEC-P2P-013)",
+      emptyPriceAdjustments: "Belum ada pencatatan selisih harga faktur pada entitas ini.",
+      policySectionTitle: "Kebijakan Pencocokan 3-Arah Aktif (OD-03 Safe Default)",
+      taxTableTitle: "Kode Pajak Aktif untuk Tagihan Pemasok (OD-07)",
+      createBillAction: "Tagih Baris Ini",
+      composer: {
+        titleNew: "Buat & Pratinjau Faktur Pemasok (Match 3-Arah)",
+        titleEditPrefix: "Ubah Draf Faktur",
+        cancelButton: "Tutup Formulir",
+        poSelectLabel: "Pesanan Pembelian (PO) & Pemasok",
+        emptyPoOption: "Pilih PO dengan GRNI terbuka...",
+        accrualLineSelectLabel: "Baris Akrual Penerimaan (GRNI)",
+        emptyAccrualOption: "Pilih baris GRNI...",
+        billTypeLabel: "Jenis Tagihan (OD-08)",
+        vendorInvoiceLabel: "Nomor Faktur Vendor",
+        taxInvoiceLabel: "Nomor Seri Faktur Pajak (Opsional)",
+        withholdingSlipLabel: "Ref. Bukti Potong PPh (Opsional)",
+        invoiceDateLabel: "Tanggal Faktur",
+        dueDateLabel: "Tanggal Jatuh Tempo",
+        postingDateLabel: "Tanggal Pratinjau Posting GL",
+        declaredGrossLabel: "Total Bruto Faktur Vendor (IDR)",
+        syncComputedGrossButton: "Samakan dengan Hitungan",
+        billedQtyLabel: "Qty Ditagih (Base)",
+        invoiceUnitPriceLabel: "Harga Satuan Faktur (IDR)",
+        ppnCodeLabel: "Pajak Masukan (PPN)",
+        pphCodeLabel: "Pemotongan (PPh 23)",
+        noneOption: "Tanpa Pemotongan PPh",
+        selectOptionPlaceholder: "Pilih kode pajak...",
+        notesLabel: "Catatan Faktur",
+        previewButton: "Pratinjau Match 3-Arah & Dampak GL",
+        previewBusy: "Menghitung...",
+        saveDraftButton: "Simpan Draf Faktur",
+        updateDraftButton: "Simpan Perubahan Draf",
+        saveBusy: "Menyimpan...",
+        previewTitle: "Hasil Pratinjau Pencocokan 3-Arah & Split DEC-P2P-013",
+        comparisonTitle: "Perbandingan Baris: PO · GRNI Terbuka · Faktur",
+        colOrderedAcceptedOpen: "PO · Sisa GRNI · Stok Pool",
+        colBilledPrice: "Qty & Harga Faktur",
+        colVarianceSplit: "Selisih & Split 1300/5200",
+        colTaxes: "Pajak PPN / PPh",
+        journalPreviewTitle: "Pratinjau Jurnal GL Atomik TX-BILL",
+        colJournalSide: "Posisi",
+        colJournalAccount: "Akun GL",
+        colJournalAmount: "Nominal (IDR)",
+        sideDebit: "Debit",
+        sideCredit: "Kredit",
+        coveredStockLabel: "Porsi Stok Ada (Ke Persediaan 1300)",
+        uncoveredPpvLabel: "Porsi Sudah Terpakai (Ke PPV 5200)",
+        projectedCostLabel: "Proyeksi HPP Baru",
+        bdDiffLabel: "Selisih Bruto (BD)",
+        netApLabel: "Net AP Dibayar (2100)",
+        stalePreviewNotice: "Nilai masukan berubah. Klik Pratinjau ulang sebelum menyimpan atau memposting.",
+      },
+      detail: {
+        sectionTitle: "Detail Faktur Pemasok, Jejak Audit & Kontrol AP",
+        closeButton: "Tutup Detail",
+        headerRef: "Nomor & Jenis",
+        headerVendor: "Pemasok & Jadwal",
+        headerDates: "Faktur / Jatuh Tempo",
+        headerMatchStatus: "Status Match 3-Arah",
+        headerPaymentBlock: "Status Blokir Pembayaran",
+        headerTotals: "Ringkasan Nilai (IDR)",
+        colAction: "Aksi",
+        openDetailButton: "Buka Detail",
+        activeDetailButton: "Detail Terbuka",
+        colLineVarianceOutcome: "Selisih & Outcome Match",
+        editDraftButton: "Ubah Draf Faktur",
+        blockingReasonsTitle: "Alasan Pemblokiran Pencocokan 3-Arah",
+        linesTitle: "Rincian Baris Faktur & Outcome Match",
+        adjustmentsTitle: "Catatan Aporsionasi Stok DEC-P2P-013 & Revaluasi",
+        taxesTitle: "Determinasi Pajak Faktur (OD-07 Append-Only)",
+        evaluationsTitle: "Riwayat Evaluasi Pencocokan (Audit)",
+        submitButton: "Ajukan Persetujuan 4-Mata",
+        submitBusy: "Mengajukan...",
+        approveButton: "Setujui Faktur",
+        rejectButton: "Tolak ke Draf",
+        decideBusy: "Memproses keputusan...",
+        approveVarianceCheckbox: "Konfirmasi persetujuan selisih harga satuan (PP) terhadap biaya penerimaan GRNI",
+        applyBlockCheckbox: "Tahan pembayaran saat diposting (PAYMENT_BLOCKED)",
+        decisionReasonLabel: "Alasan Keputusan Persetujuan",
+        decisionReasonPlaceholder: "Mis. Selisih harga disetujui sesuai adendum supplier",
+        blockReasonLabel: "Alasan Penahanan Pembayaran",
+        sodSelfApprovalNotice:
+          "Pemisahan Tugas Empat Mata (OD-02): Pengaju faktur tidak boleh menyetujui atau menolak faktur yang diajukannya sendiri.",
+        postSectionTitle: "Posting Atomik ke AP, Persediaan & Buku Besar (GL)",
+        postingDateLabel: "Tanggal Posting GL",
+        postButton: "Posting Faktur ke AP & GL",
+        postBusy: "Memposting...",
+        blockControlTitle: "Kontrol Blokir / Rilis Pembayaran Hutang Usaha",
+        holdPaymentButton: "Tahan Pembayaran",
+        releasePaymentButton: "Rilis Blokir Pembayaran",
+        blockBusy: "Memperbarui...",
+        blockActionReasonLabel: "Alasan Blokir / Rilis",
+        noPermSubmitHint: "Membutuhkan izin ap.manage untuk mengajukan faktur.",
+        noPermApproveHint: "Membutuhkan izin ap.approve (empat mata) untuk memutuskan persetujuan.",
+        noPermPostHint: "Membutuhkan izin ap.post untuk memposting faktur ke AP & GL.",
+        defaultApproveReason: "Disetujui setelah verifikasi pencocokan 3-arah",
+        defaultRejectReason: "Dikembalikan ke draf untuk perbaikan",
+        defaultManualHoldReason: "Ditahan manual saat persetujuan",
+        defaultBlockHoldReason: "Pembayaran ditahan menunggu verifikasi dokumen",
+        defaultReleaseReason: "Verifikasi selesai; blokir pembayaran dirilis",
+      },
+      micro: {
+        unbilledGrniShort: "Sisa GRNI",
+        poolOnHandShort: "Stok Pool",
+        onHandBeforeBillShort: "Stok sebelum tagihan",
+        coveredShort: "Tertutup",
+        uncoveredShort: "Tak tertutup",
+        inv1300Short: "1300 Persediaan",
+        ppv5200Short: "5200 PPV",
+        openShort: "Terbuka",
+        dueShort: "Jt Tempo",
+        invShort: "Faktur",
+        whtShort: "PPh",
+        varShort: "Selisih",
+        netShort: "Netto",
+        macShort: "HPP Rata-Rata",
+        ppToleranceShort: "Toleransi PP",
+        dqToleranceShort: "Toleransi DQ",
+        bdLimitShort: "Batas BD",
+        effectiveShort: "Berlaku",
+      },
+      evaluationStageLabels: {
+        DRAFT_PREVIEW: "Pratinjau Draf",
+        SUBMIT: "Pengajuan",
+        POST_COMMIT: "Posting Atomik GL",
+      },
+      billStatusLabels: {
+        DRAFT: "Draf",
+        PENDING_APPROVAL: "Menunggu Persetujuan",
+        APPROVED: "Disetujui (Siap Post)",
+        POSTED: "Sudah Diposting",
+        CANCELLED: "Dibatalkan",
+      },
+      matchStatusLabels: {
+        MATCHED: "Cocok Tepat (Exact Match)",
+        WITHIN_TOLERANCE: "Dalam Toleransi",
+        APPROVAL_REQUIRED: "Wajib Persetujuan Selisih",
+        POSTING_BLOCKED: "Diblokir Sebelum Post",
+      },
+      dimensionOutcomeLabels: {
+        MATCHED: "Cocok",
+        WITHIN_TOLERANCE: "Dalam Toleransi",
+        VARIANCE_APPROVAL_REQUIRED: "Perlu Persetujuan",
+        BLOCKED: "Diblokir",
+      },
+      paymentBlockLabels: {
+        NONE: "Siap Dibayar",
+        PAYMENT_BLOCKED: "Pembayaran Ditahan",
+        RELEASED: "Blokir Dirilis",
+      },
+      payableStatusLabels: {
+        OPEN: "Terbuka",
+        PARTIALLY_PAID: "Dibayar Sebagian",
+        PAID: "Lunas",
+        REVERSED: "Dibalik",
+      },
+      taxRoleLabels: {
+        PPN_INPUT: "PPN Masukan",
+        PPH_WITHHOLDING: "Pemotongan PPh",
+      },
+      taxFamilyLabels: {
+        PPN: "PPN",
+        PPH: "PPh",
+      },
+      errors: {
+        od03_unreviewed_tolerance_policy_blocked:
+          "Kebijakan OD-03 memblokir perubahan toleransi otomatis PP/DQ/BD sebelum ditinjau Product Owner (ATH-CR-006).",
+        od08_non_po_bill_not_supported:
+          "Kebijakan OD-08 menolak tagihan Non-PO maupun Uang Muka sebelum kebijakan disetujui Owner.",
+        self_approval_forbidden:
+          "Pemisahan tugas empat mata (OD-02) melarang pengaju menyetujui pengajuannya sendiri.",
+        variance_approval_acknowledgement_required:
+          "Centang konfirmasi persetujuan selisih harga sebelum menyetujui/memposting faktur dengan PP variance.",
+        bill_must_be_approved_before_post:
+          "Faktur pemasok wajib disetujui secara independen sebelum dapat diposting ke AP & GL.",
+        three_way_match_blocked:
+          "Pencocokan 3-arah memblokir posting (periksa DQ kuantitas, selisih bruto BD, NPWP pajak, atau lantai valuasi OD-04).",
+        overbilling_blocked:
+          "Kuantitas ditagih melebihi sisa kapasitas GRNI yang belum ditagih (DQ = 0).",
+        posting_blocked:
+          "Faktur ditandai Diblokir (POSTING_BLOCKED) dan tidak dapat diposting.",
+        od04_valuation_floor_breached:
+          "Kebijakan OD-04 menolak penyesuaian harga negatif karena akan membuat nilai buku persediaan menjadi nol atau negatif.",
+        duplicate_supplier_invoice_number:
+          "Nomor faktur vendor sudah terdaftar untuk pemasok yang sama pada entitas ini.",
+        period_closed:
+          "Periode akuntansi pada tanggal posting berstatus ditutup.",
+        insufficient_entity_permission:
+          "Izin entitas aktif Anda tidak mencukupi untuk menjalankan tindakan AP ini.",
       },
     },
   },
@@ -2689,6 +3128,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         procurement: "Procurement",
         receiving: "Dock Receiving",
         inventory: "Inventory",
+        payables: "Accounts Payable",
         sales: "Sales",
         finance: "Finance & GL",
         admin: "Administration",
@@ -2815,6 +3255,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         procurement: "Procurement (PO, GRN, Vendors)",
         receiving: "Dock Custody & Gate 1 Receiving",
         inventory: "Inventory & Stock Ledger",
+        payables: "Accounts Payable, 3-Way Match & Price Diff",
         sales: "Sales & Invoicing",
         finance: "Finance, Indonesian Tax & GL",
         admin: "Organization Administration & Audit",
@@ -3936,9 +4377,12 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         PURCHASE_RECEIPT_ACCEPTANCE: "Purchase Receipt Acceptance (Gate 2)",
         LOCATION_TRANSFER: "Warehouse Location Transfer",
         QUALITY_STATUS_CHANGE: "Quality Status / Hold Transition",
+        OPERATIONAL_ISSUE: "Operational Stock Issue",
       },
       entryTypeLabels: {
         RECEIPT_ACCEPTANCE: "Valued Acceptance",
+        OPERATIONAL_ISSUE: "Operational Stock Issue",
+        INVOICE_PRICE_ADJUSTMENT: "Invoice Price Adjustment (S09)",
       },
       accrualsCardTitle: "GRNI Accrual Subledger (Pending S09 Three-Way Match)",
       emptyAccrualsTitle: "No GRNI Accruals Yet",
@@ -4053,6 +4497,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         submitDispositionButton: "Record Quality Disposition",
         dispositionSuccessPrefix: "Quality disposition recorded via movement",
         invalidDispositionQtyError: "Enter a non-negative release and/or block quantity greater than zero.",
+        invalidPositiveQtyError: "Enter a positive quantity greater than zero.",
         noPendingInspections: "No pending quarantine inspections exist on this item.",
         transferCardTitle: "Intra-Warehouse Location Transfer (Carrying Value Preserved)",
         sourceBalanceLabel: "Source Location Balance",
@@ -4113,6 +4558,19 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         colTimelineLocationLot: "Location, Zone & Lot",
         colTimelineDelta: "Status & Quantity Delta",
         colTimelineCost: "Unit Cost · Valuation Delta",
+        issueCardTitle: "Operational Stock Issue (Dr 5100 COGS / Cr 1300 Inventory)",
+        issueHint:
+          "Issue unreserved unrestricted stock at current entity moving-average unit cost.",
+        issueSourceLabel: "Issue Reference",
+        issueLocationLabel: "Location & Lot Balance",
+        issueQtyLabel: "Issue Quantity",
+        issueNotesLabel: "Issue Notes",
+        issueSubmitButton: "Post Operational Issue",
+        issueSubmitBusy: "Posting issue...",
+        issueSuccessPrefix: "Operational issue posted:",
+        issueLotSelectLabel: "Lot",
+        noLotOption: "No Lot",
+        emptyIssueBalanceOption: "No unreserved unrestricted stock balance available to issue.",
       },
       errors: {
         od10_insufficient_available_stock:
@@ -4139,6 +4597,243 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Your active role grants do not permit performing this action in this legal entity.",
         period_closed:
           "The fiscal period for this posting date is CLOSED.",
+      },
+    },
+    payables: {
+      pageTitle: "Accounts Payable, Three-Way Match & Price Difference",
+      backToOverview: "Entity Overview",
+      loadErrorTitle: "Unable to load entity Accounts Payable workspace",
+      retryButton: "Reload AP Data",
+      accessDeniedTitle: "Accounts Payable Access Denied",
+      accessDeniedBody:
+        "Your active legal-entity grants do not include permission to read or manage supplier bills (ap.read).",
+      readOnlyBanner:
+        "Read-only mode: your role holds ap.read without edit, four-eyes variance approval, or GL posting rights.",
+      od03GovernanceTitle: "Active OD-03 & OD-08 Governance (ATH-CR-006)",
+      od03GovernanceBody:
+        "Automatic PP/DQ/BD tolerances = 0 (Exact Match Default). Quantity overbilling (DQ) and header balance differences (BD) block posting; price variances (PP) require four-eyes approval and DEC-P2P-013 stock-coverage apportionment (1300 Inventory vs 5200 PPV).",
+      od08GovernanceBody:
+        "OD-08: Only PO Three-Way Match supplier bills are active. Non-PO expense and supplier advance bills are blocked pending Product Owner approval.",
+      od07TaxDisclaimer:
+        "OD-07: Indonesian PPN Input & PPh 23 tax rules are configurable; ensure Faktur Pajak and counterparty NPWP are verified before filing.",
+      tabListLabel: "Accounts Payable views",
+      tabs: {
+        bills: "Supplier Bills",
+        grniQueue: "Open GRNI Queue",
+        subledger: "AP Subledger & Journals",
+        policyTax: "Match & Tax Policy",
+      },
+      stats: {
+        openPayableLiability: "Open AP Liability",
+        openGrniPool: "Unbilled GRNI Pool",
+        pendingApprovalBills: "Pending 4-Eyes Approval",
+        blockedPayables: "Payment-Blocked Items",
+      },
+      refreshButton: "Refresh",
+      newBillButton: "New Supplier Bill",
+      filterSearchLabel: "Search bill, vendor invoice, PO, or supplier",
+      filterSearchPlaceholder: "Search BILL / INV / PO / Supplier...",
+      billsCardTitle: "Supplier Bills & Three-Way Match Register",
+      emptyBillsTitle: "No Supplier Bills Recorded",
+      emptyBillsBody:
+        "Create a supplier bill draft from the Open GRNI Queue tab to match PO commitment, Gate 2 receipt, and vendor invoice.",
+      grniQueueCardTitle: "Open GRNI Accrual Lines Eligible for Billing (PO Three-Way Match)",
+      emptyGrniTitle: "All GRNI Accruals Billed",
+      emptyGrniBody:
+        "No unbilled accepted GRNI accrual lines remain in this legal entity.",
+      subledgerCardTitle: "Accounts Payable Subledger & S09 Valuation Revaluations",
+      emptyPayablesTitle: "No Open Payable Items Yet",
+      emptyPayablesBody: "AP subledger liabilities appear atomically when an approved supplier bill is posted.",
+      priceAdjustmentsTitle: "Invoice Price Adjustments & Stock-Coverage Apportionment (DEC-P2P-013)",
+      emptyPriceAdjustments: "No invoice price adjustments have posted in this entity yet.",
+      policySectionTitle: "Active Three-Way Match Policy (OD-03 Safe Default)",
+      taxTableTitle: "Active Supplier Tax Codes (OD-07 Configurable)",
+      createBillAction: "Bill This Receipt",
+      composer: {
+        titleNew: "Draft & Preview Supplier Bill (Three-Way Match)",
+        titleEditPrefix: "Edit Supplier Bill Draft",
+        cancelButton: "Close Composer",
+        poSelectLabel: "Purchase Order (PO) & Supplier",
+        emptyPoOption: "Select PO with open GRNI...",
+        accrualLineSelectLabel: "GRNI Acceptance Line",
+        emptyAccrualOption: "Select open GRNI line...",
+        billTypeLabel: "Bill Scope (OD-08)",
+        vendorInvoiceLabel: "Vendor Invoice Number",
+        taxInvoiceLabel: "Tax Invoice / Faktur Pajak (Optional)",
+        withholdingSlipLabel: "Bukti Potong PPh Ref (Optional)",
+        invoiceDateLabel: "Invoice Date",
+        dueDateLabel: "Due Date",
+        postingDateLabel: "GL Preview Posting Date",
+        declaredGrossLabel: "Vendor Declared Gross Amount (IDR)",
+        syncComputedGrossButton: "Sync Computed Gross",
+        billedQtyLabel: "Billed Qty (Base)",
+        invoiceUnitPriceLabel: "Invoice Unit Price (IDR)",
+        ppnCodeLabel: "Input VAT (PPN)",
+        pphCodeLabel: "Withholding (PPh 23)",
+        noneOption: "No Withholding",
+        selectOptionPlaceholder: "Select tax code...",
+        notesLabel: "Bill Notes",
+        previewButton: "Run Live 3-Way Match Preview",
+        previewBusy: "Computing match...",
+        saveDraftButton: "Save Supplier Bill Draft",
+        updateDraftButton: "Update Supplier Bill Draft",
+        saveBusy: "Saving...",
+        previewTitle: "Three-Way Match Preview & DEC-P2P-013 Coverage Split",
+        comparisonTitle: "Line Comparison: PO · Open GRNI · Vendor Invoice",
+        colOrderedAcceptedOpen: "PO · Open GRNI · Pool Stock",
+        colBilledPrice: "Billed Qty & Price",
+        colVarianceSplit: "Variance & 1300/5200 Split",
+        colTaxes: "PPN / PPh 23 Taxes",
+        journalPreviewTitle: "Atomic GL Posting Preview (TX-BILL)",
+        colJournalSide: "Side",
+        colJournalAccount: "GL Account",
+        colJournalAmount: "Amount (IDR)",
+        sideDebit: "Debit",
+        sideCredit: "Credit",
+        coveredStockLabel: "Covered Stock Share (To Inventory 1300)",
+        uncoveredPpvLabel: "Uncovered Issued Share (To PPV 5200)",
+        projectedCostLabel: "Projected New Moving Avg",
+        bdDiffLabel: "Balance Diff (BD)",
+        netApLabel: "Net AP Payable (2100)",
+        stalePreviewNotice: "Inputs changed. Run preview again before saving or posting.",
+      },
+      detail: {
+        sectionTitle: "Supplier Bill Detail, Audit Evaluations & AP Controls",
+        closeButton: "Close Detail",
+        headerRef: "Bill & Type",
+        headerVendor: "Supplier & Schedule",
+        headerDates: "Invoice / Due Date",
+        headerMatchStatus: "3-Way Match Status",
+        headerPaymentBlock: "Payment Block Status",
+        headerTotals: "Financial Totals (IDR)",
+        colAction: "Action",
+        openDetailButton: "Open Detail",
+        activeDetailButton: "Detail Open",
+        colLineVarianceOutcome: "Price Diff & Match Outcomes",
+        editDraftButton: "Edit Draft",
+        blockingReasonsTitle: "Three-Way Match Blocking Reasons",
+        linesTitle: "Billed Lines & Match Dimension Outcomes",
+        adjustmentsTitle: "DEC-P2P-013 Stock Coverage Split & Pool Revaluations",
+        taxesTitle: "Tax Determinations (OD-07 Append-Only)",
+        evaluationsTitle: "Three-Way Match Evaluation Audit Trail",
+        submitButton: "Submit for 4-Eyes Approval",
+        submitBusy: "Submitting...",
+        approveButton: "Approve Bill",
+        rejectButton: "Reject to Draft",
+        decideBusy: "Recording decision...",
+        approveVarianceCheckbox: "Confirm four-eyes approval of unit price variance (PP) against GRNI acceptance cost",
+        applyBlockCheckbox: "Place payment hold on posting (PAYMENT_BLOCKED)",
+        decisionReasonLabel: "Approval Decision Reason",
+        decisionReasonPlaceholder: "e.g. Price increase verified against supplier addendum",
+        blockReasonLabel: "Payment Block Reason",
+        sodSelfApprovalNotice:
+          "Four-Eyes Segregation (OD-02): The bill submitter cannot approve or reject their own submission.",
+        postSectionTitle: "Atomic AP, Inventory & GL Posting (TX-BILL)",
+        postingDateLabel: "GL Posting Date",
+        postButton: "Post Bill to AP & GL",
+        postBusy: "Posting...",
+        blockControlTitle: "Payable Payment Hold / Release Control",
+        holdPaymentButton: "Hold Payment",
+        releasePaymentButton: "Release Payment Block",
+        blockBusy: "Updating...",
+        blockActionReasonLabel: "Hold / Release Reason",
+        noPermSubmitHint: "Requires ap.manage to submit supplier bill drafts.",
+        noPermApproveHint: "Requires independent ap.approve (four-eyes) to approve or reject.",
+        noPermPostHint: "Requires ap.post to post supplier bills into AP & GL.",
+        defaultApproveReason: "Approved after 3-way match verification",
+        defaultRejectReason: "Returned to draft for revision",
+        defaultManualHoldReason: "Manual hold upon approval",
+        defaultBlockHoldReason: "Payment placed on hold pending verification",
+        defaultReleaseReason: "Verification completed; payment hold released",
+      },
+      micro: {
+        unbilledGrniShort: "Unbilled GRNI",
+        poolOnHandShort: "Pool On-Hand",
+        onHandBeforeBillShort: "On-hand before bill",
+        coveredShort: "Covered",
+        uncoveredShort: "Uncovered",
+        inv1300Short: "1300 Inv",
+        ppv5200Short: "5200 PPV",
+        openShort: "Open",
+        dueShort: "Due",
+        invShort: "Inv",
+        whtShort: "WHT",
+        varShort: "Var",
+        netShort: "Net",
+        macShort: "MAC",
+        ppToleranceShort: "PP Tolerance",
+        dqToleranceShort: "DQ Tolerance",
+        bdLimitShort: "BD Limit",
+        effectiveShort: "Eff.",
+      },
+      evaluationStageLabels: {
+        DRAFT_PREVIEW: "Draft Preview",
+        SUBMIT: "Submit",
+        POST_COMMIT: "Atomic GL Post",
+      },
+      billStatusLabels: {
+        DRAFT: "Draft",
+        PENDING_APPROVAL: "Pending Approval",
+        APPROVED: "Approved (Ready to Post)",
+        POSTED: "Posted",
+        CANCELLED: "Cancelled",
+      },
+      matchStatusLabels: {
+        MATCHED: "Exact Match",
+        WITHIN_TOLERANCE: "Within Tolerance",
+        APPROVAL_REQUIRED: "Approval Required",
+        POSTING_BLOCKED: "Posting Blocked",
+      },
+      dimensionOutcomeLabels: {
+        MATCHED: "Matched",
+        WITHIN_TOLERANCE: "Within Tolerance",
+        VARIANCE_APPROVAL_REQUIRED: "Approval Required",
+        BLOCKED: "Blocked",
+      },
+      paymentBlockLabels: {
+        NONE: "Payable / Clear",
+        PAYMENT_BLOCKED: "Payment Blocked",
+        RELEASED: "Released",
+      },
+      payableStatusLabels: {
+        OPEN: "Open",
+        PARTIALLY_PAID: "Partially Paid",
+        PAID: "Paid",
+        REVERSED: "Reversed",
+      },
+      taxRoleLabels: {
+        PPN_INPUT: "PPN Input",
+        PPH_WITHHOLDING: "PPh Withholding",
+      },
+      taxFamilyLabels: {
+        PPN: "PPN",
+        PPH: "PPh",
+      },
+      errors: {
+        od03_unreviewed_tolerance_policy_blocked:
+          "OD-03 blocks non-zero PP/DQ/BD automatic tolerances pending Product Owner policy approval (ATH-CR-006).",
+        od08_non_po_bill_not_supported:
+          "OD-08 rejects Non-PO and supplier advance bills pending Owner approval.",
+        self_approval_forbidden:
+          "Four-eyes Segregation of Duties (OD-02) forbids approving your own submission.",
+        variance_approval_acknowledgement_required:
+          "Confirm the price variance approval acknowledgement checkbox before approving or posting.",
+        bill_must_be_approved_before_post:
+          "Supplier bill must be independently approved before posting into AP & GL.",
+        three_way_match_blocked:
+          "Three-way match blocked posting (check DQ quantity, BD balance difference, tax NPWP, or OD-04 floor).",
+        overbilling_blocked:
+          "Billed quantity exceeds remaining unbilled accepted GRNI capacity (DQ = 0).",
+        posting_blocked:
+          "Bill match status is POSTING_BLOCKED and cannot be posted.",
+        od04_valuation_floor_breached:
+          "OD-04 blocks negative price variance adjustment that would drive inventory carrying value to zero or negative.",
+        duplicate_supplier_invoice_number:
+          "This supplier invoice number already exists for the selected supplier in this legal entity.",
+        period_closed:
+          "The fiscal period on the selected posting date is CLOSED.",
+        insufficient_entity_permission:
+          "Your active role grants do not permit performing this AP action in this legal entity.",
       },
     },
   },

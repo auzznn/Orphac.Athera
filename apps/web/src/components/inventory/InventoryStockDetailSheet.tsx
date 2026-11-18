@@ -16,6 +16,7 @@ import {
   ApiProblemError,
   createStockReservation,
   ItemStockDetailResponse,
+  postInventoryIssue,
   recordInspectionDisposition,
   releaseStockReservation,
   transferInventoryLocation,
@@ -38,11 +39,12 @@ const RESERVATION_SOURCE_TYPES = ["SALES_ORDER", "MANUAL_HOLD", "FULFILLMENT"] a
 const STOCK_STATUSES = ["UNRESTRICTED", "QUALITY_INSPECTION", "BLOCKED"] as const;
 
 type OpSuccessState =
-  | { kind: "disposition" | "transfer" | "status" | "reserve"; ref: string }
+  | { kind: "disposition" | "transfer" | "status" | "reserve" | "issue"; ref: string }
   | { kind: "release"; ref: string; status: string };
 
 type OpErrorState =
   | { kind: "invalid_disposition_qty" }
+  | { kind: "invalid_positive_qty" }
   | { kind: "api"; errorCode?: string; fallback?: string };
 
 function makeKey(prefix: string): string {
@@ -196,6 +198,12 @@ export function InventoryStockDetailSheet({
   const [rsvQty, setRsvQty] = useState("");
   const [rsvNotes, setRsvNotes] = useState("");
   const [rsvBusy, setRsvBusy] = useState(false);
+  const [issBalanceId, setIssBalanceId] = useState("");
+  const [issSourceRef, setIssSourceRef] = useState("");
+  const [issQty, setIssQty] = useState("");
+  const [issPostingDate, setIssPostingDate] = useState(() => todayJakartaDate());
+  const [issNotes, setIssNotes] = useState("");
+  const [issBusy, setIssBusy] = useState(false);
   const [releaseInputs, setReleaseInputs] = useState<Record<string, string>>({});
   const [releasingId, setReleasingId] = useState<string | null>(null);
 
@@ -254,6 +262,14 @@ export function InventoryStockDetailSheet({
     unrestrictedBalances.find((b) => b.stockLocationBalanceId === rsvBalanceId) ?? unrestrictedBalances[0] ?? null;
   const effectiveRsvBalanceId = chosenRsvBalance?.stockLocationBalanceId ?? "";
 
+  const issuableBalances = useMemo(
+    () => unrestrictedBalances.filter((b) => Number(b.availableBaseQuantity) > 0),
+    [unrestrictedBalances],
+  );
+  const chosenIssBalance =
+    issuableBalances.find((b) => b.stockLocationBalanceId === issBalanceId) ?? issuableBalances[0] ?? null;
+  const effectiveIssBalanceId = chosenIssBalance?.stockLocationBalanceId ?? "";
+
   const toErrorState = (err: unknown): OpErrorState | null => {
     const apiErr = err as ApiProblemError;
     if (apiErr?.status === 401) {
@@ -309,7 +325,10 @@ export function InventoryStockDetailSheet({
     e.preventDefault();
     if (!detail || !selectedXferBalance || !effectiveXferToLocId) return;
     const qty = Number(xferQty.trim() || "0");
-    if (Number.isNaN(qty) || qty <= 0) return;
+    if (Number.isNaN(qty) || qty <= 0) {
+      setOpError({ kind: "invalid_positive_qty" });
+      return;
+    }
 
     setXferBusy(true);
     setOpError(null);
@@ -342,7 +361,10 @@ export function InventoryStockDetailSheet({
     e.preventDefault();
     if (!detail || !effectiveStFromLocId) return;
     const qty = Number(stQty.trim() || "0");
-    if (Number.isNaN(qty) || qty <= 0) return;
+    if (Number.isNaN(qty) || qty <= 0) {
+      setOpError({ kind: "invalid_positive_qty" });
+      return;
+    }
 
     const matchingBal = movableBalances.find(
       (b) => b.locationId === effectiveStFromLocId && b.stockStatus === stFromStatus,
@@ -383,7 +405,10 @@ export function InventoryStockDetailSheet({
     const chosenBal = chosenRsvBalance;
     if (!chosenBal) return;
     const qty = Number(rsvQty.trim() || "0");
-    if (Number.isNaN(qty) || qty <= 0) return;
+    if (Number.isNaN(qty) || qty <= 0) {
+      setOpError({ kind: "invalid_positive_qty" });
+      return;
+    }
 
     setRsvBusy(true);
     setOpError(null);
@@ -418,7 +443,10 @@ export function InventoryStockDetailSheet({
   const handleReleaseReservation = async (reservationId: string, full: boolean) => {
     const rawQty = (releaseInputs[reservationId] ?? "").trim();
     const qty = full || !rawQty ? null : Number(rawQty);
-    if (qty !== null && (Number.isNaN(qty) || qty <= 0)) return;
+    if (qty !== null && (Number.isNaN(qty) || qty <= 0)) {
+      setOpError({ kind: "invalid_positive_qty" });
+      return;
+    }
 
     setReleasingId(reservationId);
     setOpError(null);
@@ -442,13 +470,51 @@ export function InventoryStockDetailSheet({
     }
   };
 
+  const handleSubmitOperationalIssue = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!detail || !chosenIssBalance) return;
+    const qty = Number(issQty.trim() || "0");
+    if (Number.isNaN(qty) || qty <= 0) {
+      setOpError({ kind: "invalid_positive_qty" });
+      return;
+    }
+
+    setIssBusy(true);
+    setOpError(null);
+    setOpSuccess(null);
+    try {
+      const outcome = await postInventoryIssue(tenantId, entityId, {
+        itemId: detail.itemId,
+        locationId: chosenIssBalance.locationId,
+        stockLotId: chosenIssBalance.stockLotId ?? null,
+        quantity: qty,
+        postingDate: issPostingDate,
+        sourceReference: issSourceRef.trim() || `ISS-OPS-${Date.now().toString().slice(-5)}`,
+        idempotencyKey: makeKey("iss"),
+        notes: issNotes.trim() || null,
+      });
+      setIssQty("");
+      setIssSourceRef("");
+      setIssNotes("");
+      setOpSuccess({ kind: "issue", ref: outcome.movementNumber });
+      await onOperationCompleted();
+    } catch (err) {
+      const errState = toErrorState(err);
+      if (errState) setOpError(errState);
+    } finally {
+      setIssBusy(false);
+    }
+  };
+
   const opErrorText = !opError
     ? null
     : opError.kind === "invalid_disposition_qty"
       ? ds.invalidDispositionQtyError
-      : (opError.errorCode && t.inventory.errors[opError.errorCode]) ||
-        opError.fallback ||
-        t.inventory.loadErrorTitle;
+      : opError.kind === "invalid_positive_qty"
+        ? ds.invalidPositiveQtyError
+        : (opError.errorCode && t.inventory.errors[opError.errorCode]) ||
+          opError.fallback ||
+          t.inventory.loadErrorTitle;
 
   const opSuccessText = !opSuccess
     ? null
@@ -460,7 +526,9 @@ export function InventoryStockDetailSheet({
           ? `${ds.transferSuccessPrefix} ${opSuccess.ref}`
           : opSuccess.kind === "status"
             ? `${ds.statusSuccessPrefix} ${opSuccess.ref}`
-            : `${ds.reserveSuccessPrefix} ${opSuccess.ref}`;
+            : opSuccess.kind === "issue"
+              ? `${ds.issueSuccessPrefix} ${opSuccess.ref}`
+              : `${ds.reserveSuccessPrefix} ${opSuccess.ref}`;
 
   return (
     <section
@@ -1123,6 +1191,111 @@ export function InventoryStockDetailSheet({
                     </form>
                   </div>
                 )}
+
+                {canManageInventory ? (
+                  <form
+                    onSubmit={handleSubmitOperationalIssue}
+                    data-testid="inv-operational-issue-form"
+                    className="space-y-3 border-t border-[var(--border-hairline)] pt-4"
+                  >
+                    <div>
+                      <h3 className="text-xs font-semibold text-[var(--text-primary)]">{ds.issueCardTitle}</h3>
+                      <p className="mt-0.5 text-[11px] text-[var(--text-secondary)]">{ds.issueHint}</p>
+                    </div>
+                    <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+                      <label className="block space-y-1 sm:col-span-2">
+                        <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                          {ds.issueLocationLabel}
+                        </span>
+                        <select
+                          id="inv-iss-balance"
+                          value={effectiveIssBalanceId}
+                          disabled={issuableBalances.length === 0}
+                          onChange={(e) => setIssBalanceId(e.target.value)}
+                          className="min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)] disabled:bg-[var(--bg-subtle)] disabled:text-[var(--text-secondary)]"
+                        >
+                          {issuableBalances.length === 0 ? (
+                            <option value="">{ds.emptyIssueBalanceOption}</option>
+                          ) : (
+                            issuableBalances.map((b) => (
+                              <option key={b.stockLocationBalanceId} value={b.stockLocationBalanceId}>
+                                {b.locationCode}
+                                {b.lotNumber ? ` · ${b.lotNumber}` : ""} — {ds.metricAvailable}:{" "}
+                                {formatQuantityValue(b.availableBaseQuantity, locale)} {detail.baseUomCode}
+                              </option>
+                            ))
+                          )}
+                        </select>
+                      </label>
+
+                      <label className="block space-y-1">
+                        <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                          {ds.postingDateLabel}
+                        </span>
+                        <input
+                          id="inv-iss-date"
+                          type="date"
+                          value={issPostingDate}
+                          onChange={(e) => setIssPostingDate(e.target.value)}
+                          className="font-code min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs tabular-nums text-[var(--text-primary)]"
+                        />
+                      </label>
+
+                      <label className="block space-y-1">
+                        <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                          {ds.issueQtyLabel}
+                        </span>
+                        <input
+                          id="inv-iss-qty"
+                          type="text"
+                          inputMode="decimal"
+                          placeholder="0"
+                          value={issQty}
+                          onChange={(e) => setIssQty(e.target.value)}
+                          className="font-code min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs tabular-nums text-[var(--text-primary)]"
+                        />
+                      </label>
+
+                      <label className="block space-y-1">
+                        <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                          {ds.issueSourceLabel}
+                        </span>
+                        <input
+                          id="inv-iss-source"
+                          type="text"
+                          placeholder="ISS-OPS-2026-01"
+                          value={issSourceRef}
+                          onChange={(e) => setIssSourceRef(e.target.value)}
+                          className="font-code min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)]"
+                        />
+                      </label>
+
+                      <label className="block space-y-1 sm:col-span-2">
+                        <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
+                          {ds.issueNotesLabel}
+                        </span>
+                        <input
+                          id="inv-iss-notes"
+                          type="text"
+                          value={issNotes}
+                          onChange={(e) => setIssNotes(e.target.value)}
+                          className="min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs text-[var(--text-primary)]"
+                        />
+                      </label>
+
+                      <div className="flex items-end">
+                        <button
+                          type="submit"
+                          id="inv-iss-submit"
+                          disabled={issBusy || issuableBalances.length === 0}
+                          className="inline-flex min-h-9 w-full items-center justify-center rounded-[var(--radius-sm)] bg-[var(--accent-primary)] px-3 text-xs font-semibold text-[var(--accent-primary-ink)] hover:bg-[var(--accent-primary-hover)] disabled:opacity-60"
+                        >
+                          {issBusy ? ds.issueSubmitBusy : ds.issueSubmitButton}
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                ) : null}
 
                 {/* Active Reservations & Release History */}
                 <div className="border-t border-[var(--border-hairline)] pt-4">

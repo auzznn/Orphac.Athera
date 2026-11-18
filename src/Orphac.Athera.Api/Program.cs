@@ -155,6 +155,7 @@ app.MapFinanceEndpoints();
 app.MapProcurementEndpoints();
 app.MapReceivingEndpoints();
 app.MapInventoryEndpoints();
+app.MapPayablesEndpoints();
 
 if (isMigrateMode)
 {

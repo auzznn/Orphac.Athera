@@ -1076,6 +1076,166 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/inventory/issues": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateOperationalInventoryIssue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetPayablesOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSupplierBillDetail"];
+        put: operations["UpdateSupplierBillDraft"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PreviewSupplierBillMatch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateSupplierBillDraft"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SubmitSupplierBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DecideSupplierBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostSupplierBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/bills/{billId}/payment-block": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateSupplierBillPaymentBlock"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/payables/match-policy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdateInvoiceMatchPolicy"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1273,6 +1433,27 @@ export interface components {
             user: components["schemas"]["CurrentUserResponse"];
             csrfToken: string;
         };
+        BillJournalSuggestionDto: {
+            side: string;
+            accountCode: string;
+            accountName: string;
+            /** Format: double */
+            amount: number | string;
+            description: string;
+        };
+        BillLineInputRequest: {
+            /** Format: uuid */
+            receiptAccrualLineId: string;
+            /** Format: double */
+            billedBaseQuantity: number | string;
+            /** Format: double */
+            invoiceUnitPriceBase: number | string;
+            /** Format: uuid */
+            ppnTaxCodeId: string;
+            /** Format: uuid */
+            withholdingTaxCodeId: null | string;
+            lineNotes: null | string;
+        };
         CloseFinancialPeriodRequest: {
             note: null | string;
             hardLock: boolean;
@@ -1369,6 +1550,21 @@ export interface components {
             entityScopeMode: string;
             lotTrackingPolicy?: null | string;
         };
+        CreateOperationalIssueRequest: {
+            /** Format: uuid */
+            itemId: string;
+            /** Format: uuid */
+            locationId: null | string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            /** Format: double */
+            quantity: number | string;
+            /** Format: date */
+            postingDate: string;
+            sourceReference: string;
+            idempotencyKey: string;
+            notes: null | string;
+        };
         CreatePartnerContactRequest: {
             contactName: string;
             contactRole: string;
@@ -1424,6 +1620,23 @@ export interface components {
             expiresAtUtc: null | string;
             idempotencyKey: string;
             notes: null | string;
+        };
+        CreateSupplierBillRequest: {
+            billType: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            supplierInvoiceNumber: string;
+            taxInvoiceNumber: null | string;
+            withholdingSlipReference: null | string;
+            /** Format: date */
+            invoiceDate: string;
+            /** Format: date */
+            dueDate: null | string;
+            currencyCode: null | string;
+            /** Format: double */
+            declaredGrossAmount: number | string;
+            notes: null | string;
+            lines: components["schemas"]["BillLineInputRequest"][];
         };
         CreateTaxCodeRequest: {
             code: string;
@@ -1488,6 +1701,13 @@ export interface components {
             decision: string;
             reason: string;
         };
+        DecideSupplierBillRequest: {
+            decision: string;
+            reason: string;
+            approvePriceVariance: boolean;
+            applyPaymentBlock: boolean;
+            paymentBlockReason: null | string;
+        };
         DeliveryTolerancePolicyDto: {
             /** Format: uuid */
             policyId: string;
@@ -1545,6 +1765,69 @@ export interface components {
             /** Format: date-time */
             decidedAtUtc: null | string;
             decisionReason: null | string;
+        };
+        EligibleAccrualLineDto: {
+            /** Format: uuid */
+            receiptAccrualLineId: string;
+            /** Format: uuid */
+            receiptAccrualId: string;
+            accrualNumber: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            poNumber: string;
+            /** Format: uuid */
+            poRevisionId: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCode: string;
+            supplierName: string;
+            supplierNpwp: null | string;
+            /** Format: int32 */
+            defaultPaymentTermsDays: number | string;
+            /** Format: uuid */
+            goodsReceiptId: string;
+            receiptNumber: string;
+            /** Format: date */
+            receiptPostingDate: string;
+            /** Format: uuid */
+            valuedAcceptanceLineId: string;
+            /** Format: uuid */
+            goodsReceiptLineId: string;
+            /** Format: uuid */
+            poLineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            /** Format: uuid */
+            baseUomId: string;
+            baseUomCode: string;
+            /** Format: double */
+            orderedBaseQty: number | string;
+            /** Format: double */
+            acceptedBaseQty: number | string;
+            /** Format: double */
+            billedBaseQty: number | string;
+            /** Format: double */
+            remainingUnbilledBaseQty: number | string;
+            /** Format: double */
+            unitCostBase: number | string;
+            /** Format: double */
+            poUnitPriceFunctional: number | string;
+            /** Format: double */
+            accruedLineAmount: number | string;
+            /** Format: double */
+            remainingOpenLineAmount: number | string;
+            /** Format: double */
+            currentPoolOnHandQty: number | string;
+            /** Format: double */
+            currentPoolCarryingValue: number | string;
+            /** Format: double */
+            currentPoolMovingAverageCost: number | string;
+            /** Format: uuid */
+            linePpnTaxCodeId: null | string;
         };
         EligiblePoReceivingLineDto: {
             /** Format: uuid */
@@ -1981,6 +2264,81 @@ export interface components {
             /** Format: date-time */
             revokedAtUtc: null | string;
         };
+        InvoiceMatchEvaluationDto: {
+            /** Format: uuid */
+            evaluationId: string;
+            evaluationStage: string;
+            dqOutcome: string;
+            ppOutcome: string;
+            bdOutcome: string;
+            overallMatchStatus: string;
+            isPostingBlocked: boolean;
+            requiresApproval: boolean;
+            requiresPaymentBlock: boolean;
+            blockingReasons: string[];
+            evaluatedByEmail: string;
+            /** Format: date-time */
+            evaluatedAtUtc: string;
+        };
+        InvoiceMatchPolicyDto: {
+            /** Format: uuid */
+            policyId: string;
+            code: string;
+            name: string;
+            reviewStatus: string;
+            /** Format: double */
+            ppTolerancePercent: number | string;
+            /** Format: double */
+            ppToleranceAmount: number | string;
+            /** Format: double */
+            dqTolerancePercent: number | string;
+            /** Format: double */
+            dqToleranceBaseQty: number | string;
+            /** Format: double */
+            bdWriteOffLimitAmount: number | string;
+            /** Format: uuid */
+            bdWriteOffAccountId: null | string;
+        };
+        InvoicePriceAdjustmentDto: {
+            /** Format: uuid */
+            adjustmentId: string;
+            /** Format: uuid */
+            supplierBillId: string;
+            /** Format: uuid */
+            supplierBillLineId: string;
+            billNumber: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            /** Format: uuid */
+            valuationPoolId: string;
+            /** Format: uuid */
+            glJournalId: string;
+            glJournalNumber: string;
+            /** Format: date */
+            postingDate: string;
+            /** Format: double */
+            billedBaseQuantity: number | string;
+            /** Format: double */
+            poolOnHandBeforeQty: number | string;
+            /** Format: double */
+            coveredBaseQuantity: number | string;
+            /** Format: double */
+            uncoveredBaseQuantity: number | string;
+            /** Format: double */
+            totalPriceDiffAmount: number | string;
+            /** Format: double */
+            inventoryAdjustmentAmount: number | string;
+            /** Format: double */
+            pnlVarianceAmount: number | string;
+            /** Format: double */
+            previousMovingAverageCost: number | string;
+            /** Format: double */
+            newMovingAverageCost: number | string;
+            /** Format: date-time */
+            createdAtUtc: string;
+        };
         ItemDetailDto: {
             /** Format: uuid */
             itemId: string;
@@ -2299,6 +2657,66 @@ export interface components {
             signedOut: boolean;
             csrfToken: string;
         };
+        MatchedLineComparisonDto: {
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: uuid */
+            receiptAccrualLineId: string;
+            /** Format: uuid */
+            poLineId: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: double */
+            orderedBaseQty: number | string;
+            /** Format: double */
+            remainingUnbilledBaseQty: number | string;
+            /** Format: double */
+            billedBaseQuantity: number | string;
+            /** Format: double */
+            poUnitPriceFunctional: number | string;
+            /** Format: double */
+            receiptUnitCostBase: number | string;
+            /** Format: double */
+            invoiceUnitPriceBase: number | string;
+            /** Format: double */
+            lineNetAmount: number | string;
+            /** Format: double */
+            grniClearAmount: number | string;
+            /** Format: double */
+            priceVarianceAmount: number | string;
+            /** Format: double */
+            currentPoolOnHandQty: number | string;
+            /** Format: double */
+            currentPoolCarryingValue: number | string;
+            /** Format: double */
+            currentPoolMovingAvgCost: number | string;
+            /** Format: double */
+            coveredBaseQuantity: number | string;
+            /** Format: double */
+            uncoveredBaseQuantity: number | string;
+            /** Format: double */
+            inventoryAdjustmentAmount: number | string;
+            /** Format: double */
+            pnlVarianceAmount: number | string;
+            /** Format: double */
+            projectedMovingAvgCost: number | string;
+            /** Format: uuid */
+            ppnTaxCodeId: string;
+            ppnTaxCodeSnapshot: string;
+            /** Format: double */
+            ppnTaxAmount: number | string;
+            /** Format: uuid */
+            withholdingTaxCodeId: null | string;
+            withholdingTaxCodeSnapshot: null | string;
+            /** Format: double */
+            withholdingTaxAmount: number | string;
+            dqOutcome: string;
+            ppOutcome: string;
+            blockingReason: null | string;
+        };
         MfaSetupResponse: {
             sharedKey: string;
             otpauthUri: string;
@@ -2314,6 +2732,23 @@ export interface components {
             status: string;
             permitted: boolean;
             requiredPermission: null | string;
+        };
+        OperationalIssueOutcomeDto: {
+            /** Format: uuid */
+            stockMovementId: string;
+            movementNumber: string;
+            /** Format: date */
+            postingDate: string;
+            /** Format: double */
+            issuedBaseQuantity: number | string;
+            /** Format: double */
+            issuedCarryingAmount: number | string;
+            /** Format: double */
+            appliedUnitCost: number | string;
+            /** Format: uuid */
+            glJournalId: null | string;
+            glJournalNumber: null | string;
+            wasIdempotentReplay: boolean;
         };
         OutboxDispatchResponse: {
             /** Format: int32 */
@@ -2428,6 +2863,77 @@ export interface components {
             /** Format: int64 */
             version: number | string;
         };
+        PayableItemDto: {
+            /** Format: uuid */
+            payableItemId: string;
+            payableNumber: string;
+            /** Format: uuid */
+            supplierBillId: string;
+            billNumber: string;
+            supplierCode: string;
+            supplierLegalName: string;
+            supplierInvoiceNumber: string;
+            /** Format: uuid */
+            glJournalId: string;
+            glJournalNumber: string;
+            /** Format: date */
+            postingDate: string;
+            /** Format: date */
+            dueDate: string;
+            currencyCode: string;
+            /** Format: double */
+            grossBillAmount: number | string;
+            /** Format: double */
+            withholdingTaxAmount: number | string;
+            /** Format: double */
+            netPayableAmount: number | string;
+            /** Format: double */
+            paidAmount: number | string;
+            /** Format: double */
+            remainingOpenAmount: number | string;
+            status: string;
+            paymentBlockStatus: string;
+            paymentBlockReason: null | string;
+        };
+        PayablesOverviewResponse: {
+            bills: components["schemas"]["SupplierBillSummaryDto"][];
+            payables: components["schemas"]["PayableItemDto"][];
+            eligibleAccrualLines: components["schemas"]["EligibleAccrualLineDto"][];
+            taxCodes: components["schemas"]["PayableTaxCodeDto"][];
+            activeMatchPolicy: components["schemas"]["InvoiceMatchPolicyDto"];
+            recentPriceAdjustments: components["schemas"]["InvoicePriceAdjustmentDto"][];
+            /** Format: double */
+            openGrniBalanceIdr: number | string;
+            /** Format: double */
+            openPayableTotalIdr: number | string;
+            /** Format: int32 */
+            blockedPayableCount: number | string;
+            /** Format: int32 */
+            pendingApprovalBillCount: number | string;
+            od03Notice: string;
+            od08Notice: string;
+        };
+        PayableTaxCodeDto: {
+            /** Format: uuid */
+            taxCodeId: string;
+            code: string;
+            name: string;
+            taxFamily: string;
+            direction: string;
+            treatmentClass: string;
+            /** Format: double */
+            nominalRatePercent: number | string;
+            /** Format: int32 */
+            taxableBaseRatioNumerator: number | string;
+            /** Format: int32 */
+            taxableBaseRatioDenominator: number | string;
+            requiresCounterpartyNpwp: boolean;
+            /** Format: date */
+            effectiveFrom: string;
+            /** Format: date */
+            effectiveTo: null | string;
+            reviewStatus: string;
+        };
         PoHeaderFieldDiffDto: {
             fieldKey: string;
             previousValue: null | string;
@@ -2510,6 +3016,11 @@ export interface components {
             sourceEventKey: string;
             lines: components["schemas"]["JournalLineInputDto"][];
         };
+        PostSupplierBillRequest: {
+            /** Format: date */
+            postingDate: string;
+            idempotencyKey: string;
+        };
         PreviewJournalSuggestionDto: {
             side: string;
             accountCode: string;
@@ -2523,6 +3034,19 @@ export interface components {
             acceptanceDate: string;
             stockStatus: string;
             lines: components["schemas"]["AcceptReceiptLineRequest"][];
+        };
+        PreviewSupplierBillRequest: {
+            billType: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            currencyCode: null | string;
+            /** Format: date */
+            invoiceDate: string;
+            /** Format: date */
+            postingDate: null | string;
+            /** Format: double */
+            declaredGrossAmount: number | string;
+            lines: components["schemas"]["BillLineInputRequest"][];
         };
         ProblemDetails: {
             type?: null | string;
@@ -3085,6 +3609,187 @@ export interface components {
         SubmitPoRevisionRequest: {
             poNumberOverride: null | string;
         };
+        SupplierBillDetailResponse: {
+            bill: components["schemas"]["SupplierBillSummaryDto"];
+            lines: components["schemas"]["SupplierBillLineDto"][];
+            evaluations: components["schemas"]["InvoiceMatchEvaluationDto"][];
+            receiptMatches: components["schemas"]["SupplierBillReceiptMatchDto"][];
+            priceAdjustments: components["schemas"]["InvoicePriceAdjustmentDto"][];
+            taxDeterminations: components["schemas"]["TaxDeterminationDto"][];
+            payableItem: null | components["schemas"]["PayableItemDto"];
+            liveComparison: null | components["schemas"]["SupplierBillPreviewResponse"];
+            wasIdempotentReplay: boolean;
+        };
+        SupplierBillLineDto: {
+            /** Format: uuid */
+            supplierBillLineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: uuid */
+            receiptAccrualLineId: string;
+            /** Format: uuid */
+            valuedAcceptanceLineId: string;
+            /** Format: uuid */
+            goodsReceiptLineId: string;
+            /** Format: uuid */
+            poLineId: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: double */
+            orderedBaseQty: number | string;
+            /** Format: double */
+            acceptedUnbilledQtySnapshot: number | string;
+            /** Format: double */
+            billedBaseQuantity: number | string;
+            /** Format: double */
+            poUnitPriceFunctional: number | string;
+            /** Format: double */
+            invoiceUnitPriceBase: number | string;
+            /** Format: double */
+            lineNetAmount: number | string;
+            /** Format: double */
+            grniClearAmount: number | string;
+            /** Format: double */
+            priceVarianceAmount: number | string;
+            /** Format: uuid */
+            ppnTaxCodeId: string;
+            ppnTaxCodeSnapshot: string;
+            /** Format: double */
+            ppnTaxAmount: number | string;
+            /** Format: uuid */
+            withholdingTaxCodeId: null | string;
+            withholdingTaxCodeSnapshot: null | string;
+            /** Format: double */
+            withholdingTaxAmount: number | string;
+            dqOutcome: string;
+            ppOutcome: string;
+            lineNotes: null | string;
+        };
+        SupplierBillPreviewResponse: {
+            /** Format: uuid */
+            purchaseOrderId: string;
+            poNumber: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCode: string;
+            supplierLegalName: string;
+            currencyCode: string;
+            /** Format: date */
+            invoiceDate: string;
+            dqOutcome: string;
+            ppOutcome: string;
+            bdOutcome: string;
+            overallMatchStatus: string;
+            isPostingBlocked: boolean;
+            requiresApproval: boolean;
+            /** Format: double */
+            linesNetSubtotal: number | string;
+            /** Format: double */
+            totalGrniClearAmount: number | string;
+            /** Format: double */
+            totalPriceVarianceAmount: number | string;
+            /** Format: double */
+            totalInventoryAdjAmount: number | string;
+            /** Format: double */
+            totalPnlVarianceAmount: number | string;
+            /** Format: double */
+            declaredGrossAmount: number | string;
+            /** Format: double */
+            computedGrossTotal: number | string;
+            /** Format: double */
+            bdWriteOffAmount: number | string;
+            /** Format: double */
+            ppnTaxTotal: number | string;
+            /** Format: double */
+            withholdingTaxTotal: number | string;
+            /** Format: double */
+            netPayableAmount: number | string;
+            lines: components["schemas"]["MatchedLineComparisonDto"][];
+            journalPreview: components["schemas"]["BillJournalSuggestionDto"][];
+            blockingReasons: string[];
+            od03Notice: string;
+        };
+        SupplierBillReceiptMatchDto: {
+            /** Format: uuid */
+            matchId: string;
+            /** Format: uuid */
+            supplierBillLineId: string;
+            /** Format: uuid */
+            receiptAccrualId: string;
+            /** Format: uuid */
+            receiptAccrualLineId: string;
+            /** Format: uuid */
+            itemId: string;
+            /** Format: double */
+            matchedBaseQuantity: number | string;
+            /** Format: double */
+            receiptUnitCostBase: number | string;
+            /** Format: double */
+            invoiceUnitPriceBase: number | string;
+            /** Format: double */
+            grniClearedAmount: number | string;
+            /** Format: double */
+            priceVarianceAmount: number | string;
+            /** Format: double */
+            coveredBaseQuantity: number | string;
+            /** Format: double */
+            inventoryAdjustmentAmount: number | string;
+            /** Format: double */
+            pnlVarianceAmount: number | string;
+        };
+        SupplierBillSummaryDto: {
+            /** Format: uuid */
+            supplierBillId: string;
+            draftCode: string;
+            billNumber: null | string;
+            billType: string;
+            /** Format: uuid */
+            purchaseOrderId: string;
+            poNumber: string;
+            /** Format: uuid */
+            supplierPartnerId: string;
+            supplierCode: string;
+            supplierLegalName: string;
+            supplierInvoiceNumber: string;
+            taxInvoiceNumber: null | string;
+            /** Format: date */
+            invoiceDate: string;
+            /** Format: date */
+            dueDate: string;
+            currencyCode: string;
+            /** Format: double */
+            declaredGrossAmount: number | string;
+            /** Format: double */
+            totalGrniClearAmount: number | string;
+            /** Format: double */
+            totalPriceVarianceAmount: number | string;
+            /** Format: double */
+            totalInventoryAdjAmount: number | string;
+            /** Format: double */
+            totalPnlVarianceAmount: number | string;
+            /** Format: double */
+            ppnTaxTotal: number | string;
+            /** Format: double */
+            withholdingTaxTotal: number | string;
+            /** Format: double */
+            netPayableAmount: number | string;
+            status: string;
+            matchStatus: string;
+            paymentBlockStatus: string;
+            varianceApproved: boolean;
+            /** Format: uuid */
+            postedJournalId: null | string;
+            postedJournalNumber: null | string;
+            submittedByEmail: null | string;
+            approvedByEmail: null | string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+        };
         TaxCodeDto: {
             /** Format: uuid */
             taxCodeId: string;
@@ -3118,6 +3823,33 @@ export interface components {
         TaxCodeListResponse: {
             items: components["schemas"]["TaxCodeDto"][];
             governanceNotice: string;
+        };
+        TaxDeterminationDto: {
+            /** Format: uuid */
+            determinationId: string;
+            /** Format: uuid */
+            sourceDocumentLineId: string;
+            taxRole: string;
+            taxCodeSnapshot: string;
+            taxFamily: string;
+            direction: string;
+            treatmentClass: string;
+            /** Format: double */
+            grossAmount: number | string;
+            /** Format: double */
+            taxableBaseAmount: number | string;
+            /** Format: double */
+            nominalRatePercent: number | string;
+            /** Format: double */
+            effectiveRatePercent: number | string;
+            /** Format: double */
+            taxAmount: number | string;
+            reviewStatus: string;
+            evidenceStatus: string;
+            documentaryEvidenceRef: null | string;
+            counterpartyNpwpSnapshot: null | string;
+            /** Format: date */
+            transactionDate: string;
         };
         TenantEntitiesResponse: {
             tenant: components["schemas"]["TenantSummaryDto"];
@@ -3165,6 +3897,10 @@ export interface components {
         UomListResponse: {
             items: components["schemas"]["UnitOfMeasureDto"][];
         };
+        UpdateBillPaymentBlockRequest: {
+            targetBlockStatus: string;
+            reason: string;
+        };
         UpdateGlAccountRequest: {
             name: string;
             accountCategory: string;
@@ -3175,6 +3911,20 @@ export interface components {
             status: null | string;
             /** Format: int64 */
             expectedVersion: number | string;
+        };
+        UpdateInvoiceMatchPolicyRequest: {
+            /** Format: double */
+            ppTolerancePercent: number | string;
+            /** Format: double */
+            ppToleranceAmount: number | string;
+            /** Format: double */
+            dqTolerancePercent: number | string;
+            /** Format: double */
+            dqToleranceBaseQty: number | string;
+            /** Format: double */
+            bdWriteOffLimitAmount: number | string;
+            /** Format: uuid */
+            bdWriteOffAccountId: null | string;
         };
         UpdateItemRequest: {
             name: string;
@@ -3216,6 +3966,19 @@ export interface components {
             changeReason: null | string;
             notes: null | string;
             lines: components["schemas"]["PoLineInputDto"][];
+        };
+        UpdateSupplierBillRequest: {
+            supplierInvoiceNumber: string;
+            taxInvoiceNumber: null | string;
+            withholdingSlipReference: null | string;
+            /** Format: date */
+            invoiceDate: string;
+            /** Format: date */
+            dueDate: null | string;
+            /** Format: double */
+            declaredGrossAmount: number | string;
+            notes: null | string;
+            lines: components["schemas"]["BillLineInputRequest"][];
         };
         UpsertAccountMappingRequest: {
             purposeCode: string;
@@ -7924,6 +8687,756 @@ export interface operations {
             };
             /** @description Not Found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateOperationalInventoryIssue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOperationalIssueRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OperationalIssueOutcomeDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OperationalIssueOutcomeDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetPayablesOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayablesOverviewResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetSupplierBillDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierBillDetailResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpdateSupplierBillDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSupplierBillRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierBillDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    PreviewSupplierBillMatch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PreviewSupplierBillRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierBillPreviewResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateSupplierBillDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSupplierBillRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierBillDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    SubmitSupplierBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierBillDetailResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    DecideSupplierBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecideSupplierBillRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierBillDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    PostSupplierBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PostSupplierBillRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierBillDetailResponse"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierBillDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpdateSupplierBillPaymentBlock: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateBillPaymentBlockRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SupplierBillDetailResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UpdateInvoiceMatchPolicy: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateInvoiceMatchPolicyRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceMatchPolicyDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

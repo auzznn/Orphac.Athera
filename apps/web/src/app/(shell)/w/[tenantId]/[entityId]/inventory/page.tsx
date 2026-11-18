@@ -38,7 +38,7 @@ import {
 } from "@/components/inventory/InventoryStockDetailSheet";
 import { formatIdr, formatUnitCostIdr, formatJakartaDateTime } from "@/lib/i18n/messages";
 import { useLocale } from "@/lib/i18n/LocaleProvider";
-import { formatQuantityValue, parseScaledBigInt } from "@/lib/receivingMath";
+import { formatQuantityValue, formatSignedQuantityValue, parseScaledBigInt } from "@/lib/receivingMath";
 
 const WAREHOUSE_ZONE_TYPES = ["STORAGE", "QUARANTINE", "BLOCKED_HOLD", "DISPATCH", "RECEIVING_STAGING"] as const;
 
@@ -153,6 +153,7 @@ function InventoryErrorCard({
 export function InventorySheet({ tenantId, entityId }: { tenantId: string; entityId: string }) {
   const router = useRouter();
   const routerRef = useRef(router);
+  const detailReqSeqRef = useRef(0);
   const { locale, t } = useLocale();
 
   const [workspace, setWorkspace] = useState<EntityWorkspaceDetailResponse | null>(null);
@@ -212,12 +213,13 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
 
         const firstItem = ov.positions[0]?.itemId ?? null;
         if (firstItem) {
+          const reqSeq = ++detailReqSeqRef.current;
           setSelectedItemId(firstItem);
           setLedgerLoading(true);
           setStockDetailLoading(true);
           fetchItemLedgerAndDetail(tenantId, entityId, firstItem)
             .then(({ ledger, stockDetail: nextStockDetail }) => {
-              if (!active) return;
+              if (!active || detailReqSeqRef.current !== reqSeq) return;
               setLedgerData(ledger);
               setStockDetail(nextStockDetail);
             })
@@ -225,7 +227,7 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
               // Non-fatal detail fetch; user can retry on item click.
             })
             .finally(() => {
-              if (active) {
+              if (active && detailReqSeqRef.current === reqSeq) {
                 setLedgerLoading(false);
                 setStockDetailLoading(false);
               }
@@ -274,14 +276,18 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
             : nextOv.positions[0]?.itemId ?? null;
         setSelectedItemId(targetItem);
         if (targetItem) {
+          const reqSeq = ++detailReqSeqRef.current;
           const { ledger, stockDetail: nextStockDetail } = await fetchItemLedgerAndDetail(
             tenantId,
             entityId,
             targetItem,
           );
-          setLedgerData(ledger);
-          setStockDetail(nextStockDetail);
+          if (detailReqSeqRef.current === reqSeq) {
+            setLedgerData(ledger);
+            setStockDetail(nextStockDetail);
+          }
         } else {
+          detailReqSeqRef.current++;
           setLedgerData(null);
           setStockDetail(null);
         }
@@ -300,6 +306,7 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
   );
 
   const handleInspectItem = async (itemId: string) => {
+    const reqSeq = ++detailReqSeqRef.current;
     setSelectedItemId(itemId);
     setLedgerLoading(true);
     setStockDetailLoading(true);
@@ -309,9 +316,12 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
         entityId,
         itemId,
       );
-      setLedgerData(ledger);
-      setStockDetail(nextStockDetail);
+      if (detailReqSeqRef.current === reqSeq) {
+        setLedgerData(ledger);
+        setStockDetail(nextStockDetail);
+      }
     } catch (err) {
+      if (detailReqSeqRef.current !== reqSeq) return;
       const apiErr = err as ApiProblemError;
       if (apiErr.status === 401) {
         routerRef.current.replace("/login");
@@ -319,8 +329,10 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
       }
       setProblem(apiErr);
     } finally {
-      setLedgerLoading(false);
-      setStockDetailLoading(false);
+      if (detailReqSeqRef.current === reqSeq) {
+        setLedgerLoading(false);
+        setStockDetailLoading(false);
+      }
     }
   };
 
@@ -1106,7 +1118,7 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
                               <span>{t.inventory.entryTypeLabels[entry.entryType] ?? entry.entryType}</span>
                               {" · "}
                               <span className="font-code tabular-nums">
-                                {entry.movementNumber}
+                                {entry.movementNumber ?? "—"}
                                 {entry.journalNumber ? ` · ${entry.journalNumber}` : ""}
                               </span>
                             </div>
@@ -1119,11 +1131,13 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
                           </span>
                           <div className="font-code tabular-nums">
                             <div className="text-[var(--text-primary)]">
-                              +{formatQuantityValue(entry.quantityDelta, locale)} @{" "}
-                              {formatUnitCostIdr(entry.unitCostApplied)}
+                              {formatSignedQuantityValue(entry.quantityDelta, locale)}
+                              {Number(entry.unitCostApplied) > 0
+                                ? ` @ ${formatUnitCostIdr(entry.unitCostApplied)}`
+                                : ""}
                             </div>
                             <div className="text-[11px] text-[var(--text-secondary)]">
-                              {formatIdr(entry.valueDelta)}
+                              {Number(entry.valueDelta) > 0 ? `+${formatIdr(entry.valueDelta)}` : formatIdr(entry.valueDelta)}
                             </div>
                           </div>
                         </td>
@@ -1435,8 +1449,9 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
                           {t.inventory.colMovementQtyVal}
                         </span>
                         <div className="font-code tabular-nums">
-                          <div className="font-semibold text-[var(--text-primary)]">
-                            +{formatQuantityValue(mov.totalBaseQuantity, locale)}
+                          <div className="font-semibold whitespace-nowrap text-[var(--text-primary)]">
+                            {mov.movementType === "OPERATIONAL_ISSUE" ? "-" : "+"}
+                            {formatQuantityValue(mov.totalBaseQuantity, locale)}
                           </div>
                           <div className="text-[11px] text-[var(--text-secondary)]">
                             {formatIdr(mov.totalValuationAmount)}

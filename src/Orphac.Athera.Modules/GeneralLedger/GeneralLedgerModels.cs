@@ -886,6 +886,29 @@ public sealed class ReceiptAccrual
             Version = 1L
         };
     }
+
+    public void ApplyLineClearings(IReadOnlyList<ReceiptAccrualLine> lines, DateTimeOffset nowUtc)
+    {
+        ArgumentNullException.ThrowIfNull(lines);
+        var sumCleared = decimal.Round(lines.Sum(l => l.ClearedLineAmount), 4, MidpointRounding.AwayFromZero);
+        var sumRemaining = decimal.Round(lines.Sum(l => l.RemainingOpenLineAmount), 4, MidpointRounding.AwayFromZero);
+
+        if (sumCleared < 0m || sumRemaining < 0m || sumCleared + sumRemaining != AccruedAmount)
+        {
+            throw new InvalidOperationException(
+                $"grni_accrual_clearing_conservation_failed: Accrual '{AccrualNumber}' cleared ({sumCleared:F4}) + open ({sumRemaining:F4}) does not equal accrued ({AccruedAmount:F4}).");
+        }
+
+        ClearedAmount = sumCleared;
+        RemainingOpenAmount = sumRemaining;
+        Status = RemainingOpenAmount == 0m
+            ? ReceiptAccrualStatuses.Cleared
+            : ClearedAmount > 0m
+                ? ReceiptAccrualStatuses.PartiallyCleared
+                : ReceiptAccrualStatuses.Open;
+        UpdatedAtUtc = nowUtc;
+        Version++;
+    }
 }
 
 /// <summary>
@@ -968,6 +991,147 @@ public sealed class ReceiptAccrualLine
             AccruedLineAmount = amount,
             ClearedLineAmount = 0m,
             RemainingOpenLineAmount = amount
+        };
+    }
+
+    public decimal CalculateClearAmount(decimal billedBaseQuantity)
+    {
+        var qty = decimal.Round(billedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        if (qty <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(billedBaseQuantity), "Billed quantity must be positive.");
+        }
+
+        if (qty > RemainingUnbilledBaseQuantity)
+        {
+            throw new InvalidOperationException(
+                $"dq_exceeds_unbilled_accepted_capacity: Billed quantity {qty:0.######} exceeds remaining unbilled receipt capacity {RemainingUnbilledBaseQuantity:0.######}.");
+        }
+
+        if (qty == RemainingUnbilledBaseQuantity)
+        {
+            return RemainingOpenLineAmount;
+        }
+
+        var proportional = decimal.Round(qty * UnitCostBase, 4, MidpointRounding.AwayFromZero);
+        if (proportional <= 0m)
+        {
+            proportional = 0.0001m;
+        }
+
+        if (proportional >= RemainingOpenLineAmount)
+        {
+            proportional = decimal.Round(RemainingOpenLineAmount - 0.0001m, 4, MidpointRounding.AwayFromZero);
+        }
+
+        return proportional;
+    }
+
+    public decimal ApplyClearing(decimal billedBaseQuantity, decimal? explicitClearAmount = null)
+    {
+        var qty = decimal.Round(billedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        var clearAmt = explicitClearAmount.HasValue
+            ? decimal.Round(explicitClearAmount.Value, 4, MidpointRounding.AwayFromZero)
+            : CalculateClearAmount(qty);
+
+        if (qty <= 0m || qty > RemainingUnbilledBaseQuantity)
+        {
+            throw new InvalidOperationException(
+                $"dq_exceeds_unbilled_accepted_capacity: Billed quantity {qty:0.######} exceeds remaining unbilled receipt capacity {RemainingUnbilledBaseQuantity:0.######}.");
+        }
+
+        if (clearAmt <= 0m || clearAmt > RemainingOpenLineAmount)
+        {
+            throw new InvalidOperationException(
+                $"grni_clearing_amount_invalid: Clear amount {clearAmt:F4} is invalid for open GRNI line amount {RemainingOpenLineAmount:F4}.");
+        }
+
+        BilledBaseQuantity = decimal.Round(BilledBaseQuantity + qty, 6, MidpointRounding.AwayFromZero);
+        RemainingUnbilledBaseQuantity = decimal.Round(AcceptedBaseQuantity - BilledBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        ClearedLineAmount = decimal.Round(ClearedLineAmount + clearAmt, 4, MidpointRounding.AwayFromZero);
+        RemainingOpenLineAmount = decimal.Round(AccruedLineAmount - ClearedLineAmount, 4, MidpointRounding.AwayFromZero);
+
+        if ((RemainingUnbilledBaseQuantity == 0m && RemainingOpenLineAmount != 0m) ||
+            (RemainingUnbilledBaseQuantity > 0m && RemainingOpenLineAmount <= 0m))
+        {
+            throw new InvalidOperationException(
+                $"grni_line_conservation_failed: Partial GRNI clearing left mismatched qty={RemainingUnbilledBaseQuantity:0.######} vs open={RemainingOpenLineAmount:F4}.");
+        }
+
+        return clearAmt;
+    }
+}
+
+/// <summary>
+/// Strictly append-only GRNI clearing evidence linking S07 accrual capacity to S09 posted supplier bills.
+/// </summary>
+public sealed class ReceiptAccrualClearing
+{
+    public Guid ClearingId { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public Guid ReceiptAccrualId { get; private set; }
+    public Guid ReceiptAccrualLineId { get; private set; }
+    public Guid SupplierBillId { get; private set; }
+    public Guid SupplierBillLineId { get; private set; }
+    public Guid GlJournalId { get; private set; }
+    public decimal ClearedBaseQuantity { get; private set; }
+    public decimal ClearedAmount { get; private set; }
+    public DateOnly PostingDate { get; private set; }
+    public Guid CreatedByUserId { get; private set; }
+    public DateTimeOffset CreatedAtUtc { get; private set; }
+
+    private ReceiptAccrualClearing()
+    {
+    }
+
+    public static ReceiptAccrualClearing Create(
+        Guid clearingId,
+        Guid tenantId,
+        Guid legalEntityId,
+        Guid receiptAccrualId,
+        Guid receiptAccrualLineId,
+        Guid supplierBillId,
+        Guid supplierBillLineId,
+        Guid glJournalId,
+        decimal clearedBaseQuantity,
+        decimal clearedAmount,
+        DateOnly postingDate,
+        Guid createdByUserId,
+        DateTimeOffset nowUtc)
+    {
+        GuardValidation.RequireNonEmptyGuid(clearingId, nameof(clearingId));
+        GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId));
+        GuardValidation.RequireNonEmptyGuid(legalEntityId, nameof(legalEntityId));
+        GuardValidation.RequireNonEmptyGuid(receiptAccrualId, nameof(receiptAccrualId));
+        GuardValidation.RequireNonEmptyGuid(receiptAccrualLineId, nameof(receiptAccrualLineId));
+        GuardValidation.RequireNonEmptyGuid(supplierBillId, nameof(supplierBillId));
+        GuardValidation.RequireNonEmptyGuid(supplierBillLineId, nameof(supplierBillLineId));
+        GuardValidation.RequireNonEmptyGuid(glJournalId, nameof(glJournalId));
+        GuardValidation.RequireNonEmptyGuid(createdByUserId, nameof(createdByUserId));
+
+        var qty = decimal.Round(clearedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        var amt = decimal.Round(clearedAmount, 4, MidpointRounding.AwayFromZero);
+        if (qty <= 0m || amt <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(clearedBaseQuantity), "Cleared GRNI quantity and amount must be positive.");
+        }
+
+        return new ReceiptAccrualClearing
+        {
+            ClearingId = clearingId,
+            TenantId = tenantId,
+            LegalEntityId = legalEntityId,
+            ReceiptAccrualId = receiptAccrualId,
+            ReceiptAccrualLineId = receiptAccrualLineId,
+            SupplierBillId = supplierBillId,
+            SupplierBillLineId = supplierBillLineId,
+            GlJournalId = glJournalId,
+            ClearedBaseQuantity = qty,
+            ClearedAmount = amt,
+            PostingDate = postingDate,
+            CreatedByUserId = createdByUserId,
+            CreatedAtUtc = nowUtc
         };
     }
 }

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Orphac.Athera.Modules.AccountsPayable;
 using Orphac.Athera.Modules.Approval;
 using Orphac.Athera.Modules.Catalog;
 using Orphac.Athera.Modules.GeneralLedger;
@@ -79,6 +80,17 @@ public static class DemoDataSeeder
             nowUtc,
             ct);
 
+        var u4Id = await EnsureUserAsync(
+            userManager,
+            db,
+            Guid.Parse("11111111-1111-1111-1111-111111111104"),
+            "siti.rahayu@demo.athera.local",
+            "Siti Rahayu (AP Officer)",
+            SupportedLocales.Indonesian,
+            demoPassword,
+            nowUtc,
+            ct);
+
         var nusaId = await EnsureTenantAsync(db, TenantNusaId, "NUSA", "PT Nusantara Niaga Utama", nowUtc, ct);
         var smdrId = await EnsureTenantAsync(db, TenantSamudraId, "SMDR", "CV Samudra Teknik Mandiri", nowUtc, ct);
 
@@ -114,6 +126,7 @@ public static class DemoDataSeeder
 
         await EnsureMembershipAsync(db, nusaId, u1Id, nowUtc, ct);
         await EnsureMembershipAsync(db, nusaId, u2Id, nowUtc, ct);
+        await EnsureMembershipAsync(db, nusaId, u4Id, nowUtc, ct);
         await EnsureMembershipAsync(db, smdrId, u2Id, nowUtc, ct);
 
         // U1: NUSA-JKT only (NUSA-SBY and SMDR-BDG remain inaccessible; SoD: no approval, quality.inspect, or finance grants)
@@ -145,7 +158,9 @@ public static class DemoDataSeeder
             await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, "SENSITIVE_ACCESS_CHANGE", "Sensitive Entity Access Change", requiresFourEyes: true, requiresApproverMfa: false, nowUtc, ct);
             await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, "HIGH_RISK_PRIVILEGE_ESCALATION", "High-Risk Privilege Escalation (MFA)", requiresFourEyes: true, requiresApproverMfa: true, nowUtc, ct);
             await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, PurchaseOrderWorkflowService.PoApprovalPolicyCode, "Purchase Order Commitment Four-Eyes Approval", requiresFourEyes: true, requiresApproverMfa: false, nowUtc, ct);
+            await EnsureApprovalPolicyAsync(db, scopePair.Item1, scopePair.Item2, ApPolicyDefaults.SupplierBillApprovalPolicyCode, "Supplier Bill Variance & Posting Four-Eyes Approval", requiresFourEyes: true, requiresApproverMfa: false, nowUtc, ct);
             await EnsureTolerancePolicyAsync(db, scopePair.Item1, scopePair.Item2, "EXACT_QTY_OD01_SAFE", "Exact Approved Quantity Only (OD-01 Safe Default)", nowUtc, ct);
+            await SupplierBillCoordinator.EnsureDefaultMatchPolicyAsync(db, scopePair.Item1, scopePair.Item2, nowUtc, ct);
         }
 
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ProcurementRead, nowUtc, ct);
@@ -161,13 +176,26 @@ public static class DemoDataSeeder
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.CatalogManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.FinanceConfigManage, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.FinanceJournalPost, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ApRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ApManage, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ApApprove, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaJktId, u2Id, PermissionCodes.ApPost, nowUtc, ct);
+        foreach (var apClerkPerm in RoleTemplates.GetPermissions(RoleTemplates.ApClerk))
+        {
+            await EnsureGrantAsync(db, nusaId, nusaJktId, u4Id, apClerkPerm, nowUtc, ct);
+        }
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.ProcurementRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.ReceivingRead, nowUtc, ct);
         await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.InventoryRead, nowUtc, ct);
+        await EnsureGrantAsync(db, nusaId, nusaSbyId, u2Id, PermissionCodes.ApRead, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.PartnersManage, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.CatalogManage, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.FinanceConfigManage, nowUtc, ct);
         await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.FinanceJournalPost, nowUtc, ct);
+        await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.ApRead, nowUtc, ct);
+        await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.ApManage, nowUtc, ct);
+        await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.ApApprove, nowUtc, ct);
+        await EnsureGrantAsync(db, smdrId, smdrBdgId, u2Id, PermissionCodes.ApPost, nowUtc, ct);
 
         // S03 master data fixtures (NUSA)
         var nusaPcs = await EnsureUomAsync(db, nusaId, "PCS", "Pieces (Satuan Diskrit)", 0, nowUtc, ct);
@@ -327,6 +355,18 @@ public static class DemoDataSeeder
             nusaSbyId,
             smdrId,
             smdrBdgId,
+            supNusa.PartnerId,
+            nusaPcs.UomId,
+            u1Id,
+            u2Id,
+            nowUtc,
+            ct);
+
+        // S09 valve item with 100 PCS open unbilled GRNI @ Rp 50.000 and 60 PCS operational issue leaving 40 PCS on-hand
+        await EnsureS09PayablesDemoDataAsync(
+            db,
+            nusaId,
+            nusaJktId,
             supNusa.PartnerId,
             nusaPcs.UomId,
             u1Id,
@@ -1493,6 +1533,159 @@ public static class DemoDataSeeder
         if (!accOutcome.Succeeded)
         {
             throw new InvalidOperationException($"Failed seeding S08 Gate 2 quarantine acceptance: {accOutcome.ErrorCode} {accOutcome.ErrorDetail}");
+        }
+
+        await tx.CommitAsync(ct);
+    }
+
+    private static async Task EnsureS09PayablesDemoDataAsync(
+        AtheraDbContext db,
+        Guid nusaTenantId,
+        Guid nusaJktId,
+        Guid nusaSupplierId,
+        Guid pcsUomId,
+        Guid requesterUserId,
+        Guid approverUserId,
+        DateTimeOffset nowUtc,
+        CancellationToken ct)
+    {
+        var valveItem = await EnsureItemAsync(
+            db,
+            nusaTenantId,
+            "ITM-S09-VALVE-01",
+            "Katup Industri PN16 50mm",
+            ItemKinds.StockedGood,
+            pcsUomId,
+            pcsUomId,
+            pcsUomId,
+            EntityScopeModes.AllEntities,
+            eligibleEntityId: null,
+            nowUtc,
+            ct,
+            LotTrackingPolicies.None);
+
+        var alreadySeededAccrual = await db.ReceiptAccrualLines.AnyAsync(
+            l => l.TenantId == nusaTenantId && l.LegalEntityId == nusaJktId && l.ItemId == valveItem.ItemId,
+            ct);
+        if (alreadySeededAccrual)
+        {
+            return;
+        }
+
+        await using var tx = await db.Database.BeginTransactionAsync(ct);
+        var (poId, poLineId) = await CreateAndOptionallyApprovePoAsync(
+            db,
+            nusaTenantId,
+            nusaJktId,
+            nusaSupplierId,
+            valveItem.ItemId,
+            pcsUomId,
+            100m,
+            50_000m,
+            "Gudang Pusat Jakarta",
+            new DateOnly(2026, 11, 8),
+            "Pengadaan katup industri PN16 untuk stok & demonstrasi 3-way match (Demo S09)",
+            "Katup Industri PN16 50mm — Batch Penerimaan S09",
+            requesterUserId,
+            approverUserId,
+            approve: true,
+            nowUtc.AddMinutes(15),
+            ct);
+
+        var grOutcome = await GoodsReceiptWorkflowService.RecordArrivalAsync(
+            db,
+            new RecordGoodsReceiptCommand(
+                nusaTenantId,
+                nusaJktId,
+                poId,
+                "SJ-JKT-DEMO-S09-01",
+                "seed:jkt-s09-gr1",
+                new DateOnly(2026, 11, 8),
+                "Dermaga Utama Jakarta",
+                "B 8890 JKT · Segel JKT-09A",
+                "DO-JKT-20261108-VLV.pdf",
+                "Kedatangan 100 PCS Katup Industri PN16 50mm (Demo S09)",
+                [new ArrivalLineInput(poLineId, pcsUomId, 100m, false, DiscrepancyReasonCodes.None, null, null)],
+                requesterUserId,
+                nowUtc.AddMinutes(16)),
+            ct);
+
+        if (!grOutcome.Succeeded || grOutcome.Receipt is null)
+        {
+            throw new InvalidOperationException($"Failed seeding S09 Gate 1 receipt: {grOutcome.ErrorCode} {grOutcome.ErrorDetail}");
+        }
+
+        var grLineId = await db.GoodsReceiptLines.AsNoTracking()
+            .Where(l => l.TenantId == nusaTenantId && l.LegalEntityId == nusaJktId && l.GoodsReceiptId == grOutcome.Receipt.GoodsReceiptId)
+            .Select(l => l.GoodsReceiptLineId)
+            .SingleAsync(ct);
+
+        var dockOutcome = await GoodsReceiptWorkflowService.RecordDockCheckAsync(
+            db,
+            new RecordDockCheckCommand(
+                nusaTenantId,
+                nusaJktId,
+                grOutcome.Receipt.GoodsReceiptId,
+                grLineId,
+                "seed:jkt-s09-dc1",
+                PendingCheckBaseQuantity: 0m,
+                DockHeldBaseQuantity: 0m,
+                DockReleasedBaseQuantity: 100m,
+                DockRejectedBaseQuantity: 0m,
+                DiscrepancyReasonCode: DiscrepancyReasonCodes.None,
+                InspectionNotes: "100 PCS utuh dan siap diterima ke persediaan bebas",
+                EvidenceReference: "QC-JKT-20261108-VLV",
+                ActorUserId: requesterUserId,
+                NowUtc: nowUtc.AddMinutes(17)),
+            ct);
+
+        if (!dockOutcome.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed seeding S09 Gate 1 release: {dockOutcome.ErrorCode} {dockOutcome.ErrorDetail}");
+        }
+
+        var accOutcome = await ReceiptAcceptanceCoordinator.AcceptReceiptAsync(
+            db,
+            new AcceptReceiptCommand(
+                nusaTenantId,
+                nusaJktId,
+                "IDR",
+                grOutcome.Receipt.GoodsReceiptId,
+                "seed:jkt-s09-acc1",
+                new DateOnly(2026, 11, 8),
+                StockStatuses.Unrestricted,
+                "Penerimaan bernilai 100 PCS @ Rp 50.000 (Rp 5.000.000) ke persediaan bebas",
+                [new AcceptReceiptLineInput(grLineId, 100m, null, null, null, null, null)],
+                approverUserId,
+                nowUtc.AddMinutes(18)),
+            ct);
+
+        if (!accOutcome.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed seeding S09 Gate 2 acceptance: {accOutcome.ErrorCode} {accOutcome.ErrorDetail}");
+        }
+
+        var issueOutcome = await InventoryValuationService.PostOperationalIssueAsync(
+            db,
+            new PostOperationalIssueCommand(
+                nusaTenantId,
+                nusaJktId,
+                "IDR",
+                valveItem.ItemId,
+                LocationId: null,
+                StockLotId: null,
+                Quantity: 60m,
+                PostingDate: new DateOnly(2026, 11, 9),
+                SourceReference: "ISS-JKT-DEMO-S09-01",
+                IdempotencyKey: "seed:jkt-s09-iss1",
+                Notes: "Pemakaian operasional 60 PCS (menyisakan 40 PCS on-hand vs 100 PCS GRNI terbuka)",
+                ActorUserId: approverUserId,
+                NowUtc: nowUtc.AddMinutes(19)),
+            ct);
+
+        if (!issueOutcome.Succeeded)
+        {
+            throw new InvalidOperationException($"Failed seeding S09 operational issue: {issueOutcome.ErrorCode} {issueOutcome.ErrorDetail}");
         }
 
         await tx.CommitAsync(ct);

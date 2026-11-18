@@ -9,6 +9,7 @@ import {
   Check,
   CheckCircle2,
   ChevronDown,
+  CreditCard,
   FolderKanban,
   Handshake,
   KeyRound,
@@ -387,6 +388,25 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         permissionSet.has("inventory.manage") ||
         permissionSet.has("quality.inspect"),
       active: pathname.endsWith("/inventory") || pathname.includes("/inventory/"),
+    },
+    {
+      key: "payables",
+      label: t.shell.navItems.payables,
+      icon: CreditCard,
+      href:
+        baseEntityPath &&
+        (permissionSet.has("ap.read") ||
+          permissionSet.has("ap.manage") ||
+          permissionSet.has("ap.approve") ||
+          permissionSet.has("ap.post"))
+          ? `${baseEntityPath}/payables`
+          : null,
+      permitted:
+        permissionSet.has("ap.read") ||
+        permissionSet.has("ap.manage") ||
+        permissionSet.has("ap.approve") ||
+        permissionSet.has("ap.post"),
+      active: pathname.endsWith("/payables") || pathname.includes("/payables/"),
     },
     {
       key: "finance",

@@ -414,6 +414,7 @@ vi.mock("@/lib/api/client", () => ({
   fetchItemValuationLedger: async () => ledgerPayload,
   listInventoryWarehouses: async () => ({ warehouses: [], locations: [] }),
   getItemStockDetail: async () => null,
+  postInventoryIssue: vi.fn(),
 }));
 
 describe("S07 Gate 2 Valued Acceptance & Inventory Valuation UI", () => {
