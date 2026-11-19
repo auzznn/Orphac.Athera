@@ -2068,6 +2068,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/documents/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetDocumentsOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/documents/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UploadBusinessDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/documents/{documentId}/download-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["IssueDocumentDownloadToken"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/documents/{documentId}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DownloadBusinessDocument"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/documents/evidence-pack/{sourceType}/{sourceId}/summary.pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DownloadEvidencePackPdf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/documents/audit-export.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ExportEntityAuditCsv"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/documents/outbox/{messageId}/retry": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RetryOutboxMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2594,6 +2706,25 @@ export interface components {
             /** Format: uuid */
             withholdingTaxCodeId: null | string;
             lineNotes: null | string;
+        };
+        BusinessDocumentItemDto: {
+            /** Format: uuid */
+            documentId: string;
+            documentNumber: string;
+            fileName: string;
+            contentType: string;
+            /** Format: int64 */
+            byteSize: number | string;
+            sha256Hash: string;
+            category: string;
+            scanStatus: string;
+            notes: null | string;
+            sourceModule: string;
+            sourceDocumentType: string;
+            sourceDocumentId: string;
+            sourceDocumentNumber: string;
+            /** Format: date-time */
+            createdAtUtc: string;
         };
         ClearingReconciliationProofDto: {
             /** Format: double */
@@ -3245,6 +3376,42 @@ export interface components {
             /** Format: date-time */
             decidedAtUtc: null | string;
             decisionReason: null | string;
+        };
+        DocumentAuditEventDto: {
+            /** Format: uuid */
+            eventId: string;
+            eventType: string;
+            subjectType: string;
+            subjectId: string;
+            summary: string;
+            /** Format: date-time */
+            occurredAtUtc: string;
+        };
+        DocumentDownloadTokenResponse: {
+            /** Format: uuid */
+            documentId: string;
+            token: string;
+            /** Format: date-time */
+            expiresAtUtc: string;
+            downloadUrl: string;
+        };
+        DocumentsOverviewResponse: {
+            canUpload: boolean;
+            canRetryOutbox: boolean;
+            /** Format: int32 */
+            totalDocuments: number | string;
+            /** Format: int32 */
+            totalExceptions: number | string;
+            /** Format: int32 */
+            pendingOutboxCount: number | string;
+            /** Format: int32 */
+            failedOutboxCount: number | string;
+            /** Format: int32 */
+            processedOutboxCount: number | string;
+            documents: components["schemas"]["BusinessDocumentItemDto"][];
+            exceptions: components["schemas"]["OperationalExceptionDto"][];
+            outboxMessages: components["schemas"]["OutboxDiagnosticDto"][];
+            auditEvents: components["schemas"]["DocumentAuditEventDto"][];
         };
         EligibleAccrualLineDto: {
             /** Format: uuid */
@@ -4370,6 +4537,16 @@ export interface components {
             permitted: boolean;
             requiredPermission: null | string;
         };
+        OperationalExceptionDto: {
+            exceptionId: string;
+            category: string;
+            severity: string;
+            referenceNumber: string;
+            title: string;
+            detail: string;
+            /** Format: date-time */
+            occurredAtUtc: string;
+        };
         OperationalIssueOutcomeDto: {
             /** Format: uuid */
             stockMovementId: string;
@@ -4387,12 +4564,33 @@ export interface components {
             glJournalNumber: null | string;
             wasIdempotentReplay: boolean;
         };
+        OutboxDiagnosticDto: {
+            /** Format: uuid */
+            messageId: string;
+            topic: string;
+            sourceKey: string;
+            status: string;
+            /** Format: int32 */
+            attemptCount: number | string;
+            lastError: null | string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            processedAtUtc: null | string;
+        };
         OutboxDispatchResponse: {
             /** Format: int32 */
             processedCount: number | string;
             /** Format: int32 */
             failedCount: number | string;
             outboxSummary: components["schemas"]["OutboxSummaryDto"];
+        };
+        OutboxRetryResponse: {
+            /** Format: uuid */
+            messageId: string;
+            status: string;
+            /** Format: date-time */
+            retriedAtUtc: string;
         };
         OutboxSummaryDto: {
             /** Format: int32 */
@@ -7001,6 +7199,17 @@ export interface components {
             taxReturnNoteNumber: null | string;
             notes: null | string;
             lines: components["schemas"]["ReturnLineInputRequest"][];
+        };
+        UploadBusinessDocumentRequest: {
+            fileName: string;
+            contentType: string;
+            contentBase64: string;
+            category: string;
+            sourceModule: string;
+            sourceDocumentType: string;
+            sourceDocumentId: string;
+            sourceDocumentNumber: string;
+            notes: null | string;
         };
         UpsertAccountMappingRequest: {
             purposeCode: string;
@@ -15858,6 +16067,302 @@ export interface operations {
             };
             /** @description Forbidden */
             403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetDocumentsOverview: {
+        parameters: {
+            query?: {
+                q?: string;
+                category?: string;
+                sourceType?: string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentsOverviewResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    UploadBusinessDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadBusinessDocumentRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BusinessDocumentItemDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Payload Too Large */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    IssueDocumentDownloadToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                documentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentDownloadTokenResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    DownloadBusinessDocument: {
+        parameters: {
+            query?: {
+                token?: string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                documentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    DownloadEvidencePackPdf: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                sourceType: string;
+                sourceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ExportEntityAuditCsv: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    RetryOutboxMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                messageId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OutboxRetryResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

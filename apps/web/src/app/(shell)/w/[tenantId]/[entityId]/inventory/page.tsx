@@ -285,11 +285,15 @@ export function InventorySheet({ tenantId, entityId }: { tenantId: string; entit
           if (detailReqSeqRef.current === reqSeq) {
             setLedgerData(ledger);
             setStockDetail(nextStockDetail);
+            setLedgerLoading(false);
+            setStockDetailLoading(false);
           }
         } else {
           detailReqSeqRef.current++;
           setLedgerData(null);
           setStockDetail(null);
+          setLedgerLoading(false);
+          setStockDetailLoading(false);
         }
       } catch (err) {
         const apiErr = err as ApiProblemError;

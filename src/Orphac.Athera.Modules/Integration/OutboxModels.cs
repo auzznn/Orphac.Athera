@@ -78,6 +78,14 @@ public sealed class OutboxMessage
         NextAttemptAtUtc = nowUtc.AddSeconds(Math.Min(300, 15 * AttemptCount));
         Version++;
     }
+
+    public void RequeueForRetry(DateTimeOffset nowUtc)
+    {
+        Status = OutboxStatuses.Pending;
+        NextAttemptAtUtc = nowUtc;
+        LastError = null;
+        Version++;
+    }
 }
 
 /// <summary>

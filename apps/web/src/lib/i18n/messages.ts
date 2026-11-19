@@ -57,6 +57,7 @@ export interface Dictionary {
       receivables: string;
       finance: string;
       reports: string;
+      documents: string;
       admin: string;
     };
     lockedSuffix: string;
@@ -2341,6 +2342,78 @@ export interface Dictionary {
     sourceDocumentTypeLabels: Record<string, string>;
     errors: Record<string, string>;
   };
+  documents: {
+    heading: string;
+    lead: string;
+    backToEntity: string;
+    readOnlyNotice: string;
+    governanceTitle: string;
+    governanceBody: string;
+    kpiAriaLabel: string;
+    kpiTotalDocs: string;
+    kpiExceptions: string;
+    kpiAuditEvents: string;
+    kpiOutboxStatus: string;
+    kpiNoExceptions: string;
+    kpiExceptionsActive: string;
+    kpiOutboxHealthy: string;
+    kpiOutboxFailedSuffix: string;
+    uploadOpenButton: string;
+    exportAuditCsvButton: string;
+    refreshButton: string;
+    searchPlaceholder: string;
+    filterCategoryAll: string;
+    tabDocuments: string;
+    tabExceptionsOutbox: string;
+    tabAudit: string;
+    drawerTitle: string;
+    drawerFileLabel: string;
+    drawerCategoryLabel: string;
+    drawerSourceModuleLabel: string;
+    drawerSourceTypeLabel: string;
+    drawerSourceNumberLabel: string;
+    drawerSourceNumberPlaceholder: string;
+    drawerSourceIdLabel: string;
+    drawerSourceIdPlaceholder: string;
+    drawerNotesLabel: string;
+    drawerNotesPlaceholder: string;
+    drawerSubmit: string;
+    drawerBusy: string;
+    drawerCancel: string;
+    docsTitle: string;
+    docsEmpty: string;
+    colDocNumber: string;
+    colFile: string;
+    colCategory: string;
+    colSourceRef: string;
+    colIntegrity: string;
+    colUploadedAt: string;
+    colActions: string;
+    downloadButton: string;
+    pdfSummaryButton: string;
+    exceptionsTitle: string;
+    exceptionsEmpty: string;
+    outboxTitle: string;
+    outboxEmpty: string;
+    colTopic: string;
+    colStatus: string;
+    colAttempts: string;
+    colLastError: string;
+    colCreatedAt: string;
+    retryButton: string;
+    auditTitle: string;
+    auditEmpty: string;
+    colEventType: string;
+    colSubject: string;
+    colSummary: string;
+    colTime: string;
+    successUploaded: string;
+    successRetried: string;
+    categoryLabels: Record<string, string>;
+    severityLabels: Record<string, string>;
+    outboxStatusLabels: Record<string, string>;
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -2413,6 +2486,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         receivables: "Penerimaan & Umur Piutang",
         finance: "Keuangan & GL",
         reports: "Laporan & Tutup Buku",
+        documents: "Dokumen & Jejak Bukti",
         admin: "Administrasi",
       },
       lockedSuffix: "Tidak diotorisasi pada entitas ini",
@@ -2545,6 +2619,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         receivables: "Penerimaan Pelanggan, Alokasi & Umur Piutang (AR Aging)",
         finance: "Keuangan, Pajak PPN/PPh & GL",
         reports: "Laporan Keuangan, Rekonsiliasi Kontrol & Tutup Buku",
+        documents: "Dokumen Bukti, Antrean Pengecualian & Jejak Audit",
         admin: "Administrasi Organisasi, Undangan & Audit",
       },
     },
@@ -5501,19 +5576,43 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       sourceDocumentTypeLabels: {
         OPENING_SEED: "Saldo Awal",
         MANUAL_JOURNAL: "Jurnal Umum",
+        JOURNAL_ENTRY: "Entri Jurnal GL",
         JOURNAL_REVERSAL: "Jurnal Pembalik",
+        PURCHASE_ORDER: "Pesanan Pembelian (PO)",
+        GOODS_RECEIPT: "Penerimaan Gudang (GRN)",
         VALUED_ACCEPTANCE: "Penerimaan Bernilai",
         SUPPLIER_INVOICE: "Faktur Pemasok",
+        SUPPLIER_BILL: "Tagihan Pemasok (AP)",
         SUPPLIER_RETURN: "Retur Pemasok",
         SUPPLIER_CREDIT_NOTE: "Nota Kredit Pemasok",
         SUPPLIER_PAYMENT: "Pembayaran Pemasok",
+        BANK_PAYMENT_MATCH: "Rekonsiliasi Pembayaran Bank",
         BANK_PAYMENT_RECONCILIATION: "Rekonsiliasi Bank",
         BANK_PAYMENT_REJECTION: "Penolakan Bank",
+        SALES_ORDER: "Pesanan Penjualan (SO)",
         SALES_SHIPMENT: "Pengiriman Penjualan",
         CUSTOMER_INVOICE: "Faktur Pelanggan",
         CUSTOMER_CREDIT_NOTE: "Nota Kredit Pelanggan",
         CUSTOMER_RECEIPT: "Penerimaan Pelanggan",
         CUSTOMER_RECEIPT_REVERSAL: "Pembalikan Penerimaan",
+        BUSINESS_DOCUMENT: "Dokumen Bisnis",
+        FINANCIAL_PERIOD: "Periode Akuntansi",
+        OUTBOX_MESSAGE: "Pesan Outbox Integrasi",
+        BANK_STATEMENT: "Mutasi Bank",
+        PICK_ORDER: "Perintah Pick Gudang",
+        STOCK_RESERVATION: "Reservasi Stok",
+        STOCK_MOVEMENT: "Pergerakan Stok",
+        RECEIPT_INSPECTION: "Inspeksi Mutu Penerimaan",
+        ITEM: "Barang Katalog",
+        PARTNER: "Mitra Bisnis",
+        WAREHOUSE: "Gudang",
+        TAX_CODE: "Kode Pajak",
+        GL_ACCOUNT: "Akun Buku Besar",
+        APPROVAL_CASE: "Kasus Persetujuan",
+        INVITATION: "Undangan Pengguna",
+        ENTITY_ACCESS_GRANT: "Izin Akses Entitas",
+        REPLACEMENT_AUTHORIZATION: "Otorisasi Penggantian (RPA)",
+        SUPPLIER_CREDIT: "Kredit Pemasok (SCN)",
       },
       errors: {
         period_close_control_variance:
@@ -5527,6 +5626,100 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Alasan tertulis wajib diisi untuk membuka kembali periode yang sudah ditutup.",
         insufficient_entity_permission:
           "Izin entitas aktif Anda tidak mencukupi untuk menjalankan aksi periode ini.",
+      },
+    },
+    documents: {
+      heading: "Dokumen Bisnis, Jejak Bukti & Operasional",
+      lead: "Unggah dan tautkan bukti transaksi dengan verifikasi SHA-256, unduhan bertanda tangan, ringkasan PDF, antrean pengecualian, diagnostik outbox, dan jejak audit entitas.",
+      backToEntity: "Kembali ke Ringkasan Entitas",
+      readOnlyNotice:
+        "Mode baca saja pada entitas aktif: Anda dapat meninjau dokumen, mengunduh dengan token bertanda tangan, dan mengekspor CSV audit, namun unggah bukti dan coba ulang outbox memerlukan izin tulis.",
+      governanceTitle: "Kebijakan Retensi & Berbagi Dokumen (OD-12 · Menunggu Persetujuan Pemilik)",
+      governanceBody:
+        "Semua dokumen bisnis dan tautan bukti bersifat permanen (append-only) dan tidak pernah dapat mengubah fakta keuangan yang telah diposting. Tidak ada URL publik; setiap unduhan divalidasi dengan sesi aktif dan token bertanda tangan berbatas waktu.",
+      kpiAriaLabel: "Ringkasan KPI Dokumen dan Operasional",
+      kpiTotalDocs: "Dokumen & Bukti Tertaut",
+      kpiExceptions: "Antrean Pengecualian Aktif",
+      kpiAuditEvents: "Rekam Jejak Audit Entitas",
+      kpiOutboxStatus: "Outbox Integrasi (Gagal / Antre)",
+      kpiNoExceptions: "Tidak Ada Pengecualian",
+      kpiExceptionsActive: "Perlu Tinjauan",
+      kpiOutboxHealthy: "Sehat",
+      kpiOutboxFailedSuffix: "gagal",
+      uploadOpenButton: "Unggah & Tautkan Bukti",
+      exportAuditCsvButton: "Ekspor CSV Audit",
+      refreshButton: "Muat Ulang",
+      searchPlaceholder: "Cari nomor dokumen, berkas, referensi, atau audit...",
+      filterCategoryAll: "Semua Kategori",
+      tabDocuments: "Dokumen & Bukti",
+      tabExceptionsOutbox: "Pengecualian & Outbox",
+      tabAudit: "Jejak Audit Entitas",
+      drawerTitle: "Unggah Dokumen & Tautkan ke Transaksi Sumber",
+      drawerFileLabel: "Pilih Berkas (PDF, PNG, JPEG, CSV, TXT · maks 5 MB)",
+      drawerCategoryLabel: "Kategori Bukti",
+      drawerSourceModuleLabel: "Modul Sumber",
+      drawerSourceTypeLabel: "Jenis Dokumen Sumber",
+      drawerSourceNumberLabel: "Nomor Dokumen Sumber",
+      drawerSourceNumberPlaceholder: "Contoh: PO-2026-00001 atau INV-2026-00001",
+      drawerSourceIdLabel: "ID Referensi Sumber",
+      drawerSourceIdPlaceholder: "Contoh: PO-2026-00001",
+      drawerNotesLabel: "Catatan Bukti (Opsional)",
+      drawerNotesPlaceholder: "Contoh: Faktur Pajak tervalidasi untuk penagihan Q4.",
+      drawerSubmit: "Simpan & Tautkan Bukti",
+      drawerBusy: "Mengunggah...",
+      drawerCancel: "Batal",
+      docsTitle: "Daftar Dokumen Bisnis & Bukti Tertaut",
+      docsEmpty: "Belum ada dokumen bukti yang ditautkan pada entitas ini.",
+      colDocNumber: "Nomor Dokumen",
+      colFile: "Berkas",
+      colCategory: "Kategori",
+      colSourceRef: "Referensi Sumber",
+      colIntegrity: "Integritas (SHA-256)",
+      colUploadedAt: "Diunggah (WIB)",
+      colActions: "Tindakan",
+      downloadButton: "Unduh Aman",
+      pdfSummaryButton: "Ringkasan PDF",
+      exceptionsTitle: "Antrean Pengecualian Operasional",
+      exceptionsEmpty: "Tidak ada pengecualian operasional terbuka pada entitas ini.",
+      outboxTitle: "Diagnostik Outbox Integrasi",
+      outboxEmpty: "Belum ada pesan outbox pada entitas ini.",
+      colTopic: "Topik",
+      colStatus: "Status",
+      colAttempts: "Percobaan",
+      colLastError: "Kesalahan Terakhir",
+      colCreatedAt: "Dibuat (WIB)",
+      retryButton: "Coba Ulang",
+      auditTitle: "Jejak Audit Entitas (Permanen)",
+      auditEmpty: "Belum ada catatan audit yang cocok dengan filter.",
+      colEventType: "Peristiwa",
+      colSubject: "Subjek",
+      colSummary: "Ringkasan",
+      colTime: "Waktu (WIB)",
+      successUploaded: "Dokumen bukti berhasil diunggah, diverifikasi SHA-256, dan ditautkan.",
+      successRetried: "Pesan outbox gagal berhasil dimasukkan kembali ke antrean (PENDING).",
+      categoryLabels: {
+        TAX_EVIDENCE: "Bukti Pajak",
+        DELIVERY_PROOF: "Bukti Kirim (POD)",
+        SUPPLIER_INVOICE: "Faktur Pemasok",
+        BANK_ADVICE: "Bukti Transfer Bank",
+        CONTRACT: "Kontrak Komersial",
+        GENERAL: "Dokumen Umum",
+      },
+      severityLabels: {
+        HIGH: "Tinggi",
+        MEDIUM: "Sedang",
+        LOW: "Rendah",
+      },
+      outboxStatusLabels: {
+        PENDING: "Menunggu",
+        PROCESSED: "Terkirim",
+        FAILED: "Gagal",
+      },
+      errors: {
+        unsafe_file_content: "Konten berkas ditolak oleh pemeriksaan keamanan (terdeteksi biner/skrip berbahaya).",
+        unsupported_media_type: "Jenis berkas tidak diizinkan. Gunakan PDF, PNG, JPEG, CSV, atau TXT.",
+        file_too_large: "Ukuran berkas melebihi batas maksimum 5 MB.",
+        insufficient_entity_permission: "Izin entitas aktif Anda tidak mencukupi untuk aksi dokumen ini.",
       },
     },
   },
@@ -5599,6 +5792,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         receivables: "Receipts & AR Aging",
         finance: "Finance & GL",
         reports: "Reports & Period Close",
+        documents: "Documents & Evidence",
         admin: "Administration",
       },
       lockedSuffix: "Not granted in active entity",
@@ -5731,6 +5925,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         receivables: "Customer Receipts, Allocation & AR Aging",
         finance: "Finance, Indonesian Tax & GL",
         reports: "Financial Statements, Control Reconciliations & Period Close",
+        documents: "Business Documents, Exception Queue & Audit Trails",
         admin: "Organization Administration & Audit",
       },
     },
@@ -8687,19 +8882,43 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
       sourceDocumentTypeLabels: {
         OPENING_SEED: "Opening Balance",
         MANUAL_JOURNAL: "Manual Journal",
+        JOURNAL_ENTRY: "GL Journal Entry",
         JOURNAL_REVERSAL: "Reversal Entry",
+        PURCHASE_ORDER: "Purchase Order (PO)",
+        GOODS_RECEIPT: "Goods Receipt (GRN)",
         VALUED_ACCEPTANCE: "Valued Acceptance",
         SUPPLIER_INVOICE: "Supplier Invoice",
+        SUPPLIER_BILL: "Supplier Bill (AP)",
         SUPPLIER_RETURN: "Supplier Return",
         SUPPLIER_CREDIT_NOTE: "Supplier Credit Note",
         SUPPLIER_PAYMENT: "Supplier Payment",
+        BANK_PAYMENT_MATCH: "Bank Payment Match",
         BANK_PAYMENT_RECONCILIATION: "Bank Reconciliation",
         BANK_PAYMENT_REJECTION: "Bank Rejection",
+        SALES_ORDER: "Sales Order (SO)",
         SALES_SHIPMENT: "Sales Dispatch",
         CUSTOMER_INVOICE: "Customer Invoice",
         CUSTOMER_CREDIT_NOTE: "Customer Credit Note",
         CUSTOMER_RECEIPT: "Customer Receipt",
         CUSTOMER_RECEIPT_REVERSAL: "Receipt Reversal",
+        BUSINESS_DOCUMENT: "Business Document",
+        FINANCIAL_PERIOD: "Financial Period",
+        OUTBOX_MESSAGE: "Integration Outbox",
+        BANK_STATEMENT: "Bank Statement",
+        PICK_ORDER: "Pick Order",
+        STOCK_RESERVATION: "Stock Reservation",
+        STOCK_MOVEMENT: "Stock Movement",
+        RECEIPT_INSPECTION: "Receipt Inspection",
+        ITEM: "Catalog Item",
+        PARTNER: "Business Partner",
+        WAREHOUSE: "Warehouse",
+        TAX_CODE: "Tax Code",
+        GL_ACCOUNT: "GL Account",
+        APPROVAL_CASE: "Approval Case",
+        INVITATION: "User Invitation",
+        ENTITY_ACCESS_GRANT: "Entity Access Grant",
+        REPLACEMENT_AUTHORIZATION: "Replacement Authorization (RPA)",
+        SUPPLIER_CREDIT: "Supplier Credit (SCN)",
       },
       errors: {
         period_close_control_variance:
@@ -8713,6 +8932,100 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "A written justification is mandatory to reopen a closed financial period.",
         insufficient_entity_permission:
           "Your active entity role grants do not permit performing this period action.",
+      },
+    },
+    documents: {
+      heading: "Business Documents, Evidence Trails & Operations",
+      lead: "Upload and link transaction evidence with SHA-256 integrity, time-limited signed downloads, PDF summaries, exception queues, outbox diagnostics, and entity audit trails.",
+      backToEntity: "Back to Entity Overview",
+      readOnlyNotice:
+        "Read-only mode in active entity: you can inspect documents, download with signed tokens, and export audit CSVs, while evidence uploads and outbox retries require write permissions.",
+      governanceTitle: "Document Retention & Sharing Policy (OD-12 · Pending Owner Sign-off)",
+      governanceBody:
+        "All business documents and evidence links are append-only and never mutate posted financial facts. No public URLs exist; every download validates the active session and a short-lived signed token.",
+      kpiAriaLabel: "Documents and Operations KPI Summary",
+      kpiTotalDocs: "Linked Documents & Evidence",
+      kpiExceptions: "Active Exception Queue",
+      kpiAuditEvents: "Entity Audit Trail Records",
+      kpiOutboxStatus: "Integration Outbox (Failed / Pending)",
+      kpiNoExceptions: "Clear",
+      kpiExceptionsActive: "Needs Review",
+      kpiOutboxHealthy: "Healthy",
+      kpiOutboxFailedSuffix: "failed",
+      uploadOpenButton: "Upload & Link Evidence",
+      exportAuditCsvButton: "Export Audit CSV",
+      refreshButton: "Refresh",
+      searchPlaceholder: "Search document number, file, reference, or audit...",
+      filterCategoryAll: "All Categories",
+      tabDocuments: "Documents & Evidence",
+      tabExceptionsOutbox: "Exceptions & Outbox",
+      tabAudit: "Entity Audit Trail",
+      drawerTitle: "Upload Document & Link to Source Transaction",
+      drawerFileLabel: "Select File (PDF, PNG, JPEG, CSV, TXT · max 5 MB)",
+      drawerCategoryLabel: "Evidence Category",
+      drawerSourceModuleLabel: "Source Module",
+      drawerSourceTypeLabel: "Source Document Type",
+      drawerSourceNumberLabel: "Source Document Number",
+      drawerSourceNumberPlaceholder: "e.g. PO-2026-00001 or INV-2026-00001",
+      drawerSourceIdLabel: "Source Reference ID",
+      drawerSourceIdPlaceholder: "e.g. PO-2026-00001",
+      drawerNotesLabel: "Evidence Notes (Optional)",
+      drawerNotesPlaceholder: "e.g. Validated Faktur Pajak for Q4 customer invoice.",
+      drawerSubmit: "Upload & Link Evidence",
+      drawerBusy: "Uploading...",
+      drawerCancel: "Cancel",
+      docsTitle: "Linked Business Documents & Evidence",
+      docsEmpty: "No evidence documents have been linked in this entity yet.",
+      colDocNumber: "Document #",
+      colFile: "File",
+      colCategory: "Category",
+      colSourceRef: "Source Reference",
+      colIntegrity: "Integrity (SHA-256)",
+      colUploadedAt: "Uploaded (WIB)",
+      colActions: "Actions",
+      downloadButton: "Secure Download",
+      pdfSummaryButton: "PDF Summary",
+      exceptionsTitle: "Operational Exception Queue",
+      exceptionsEmpty: "No open operational exceptions in this entity.",
+      outboxTitle: "Integration Outbox Diagnostics",
+      outboxEmpty: "No outbox messages recorded in this entity.",
+      colTopic: "Topic",
+      colStatus: "Status",
+      colAttempts: "Attempts",
+      colLastError: "Last Error",
+      colCreatedAt: "Created (WIB)",
+      retryButton: "Retry",
+      auditTitle: "Entity Audit Trail (Immutable)",
+      auditEmpty: "No audit events matched the current filter.",
+      colEventType: "Event",
+      colSubject: "Subject",
+      colSummary: "Summary",
+      colTime: "Timestamp (WIB)",
+      successUploaded: "Evidence document uploaded, SHA-256 verified, and linked.",
+      successRetried: "Failed outbox message requeued to PENDING.",
+      categoryLabels: {
+        TAX_EVIDENCE: "Tax Evidence",
+        DELIVERY_PROOF: "Delivery Proof (POD)",
+        SUPPLIER_INVOICE: "Supplier Invoice",
+        BANK_ADVICE: "Bank Advice",
+        CONTRACT: "Commercial Contract",
+        GENERAL: "General Document",
+      },
+      severityLabels: {
+        HIGH: "High",
+        MEDIUM: "Medium",
+        LOW: "Low",
+      },
+      outboxStatusLabels: {
+        PENDING: "Pending",
+        PROCESSED: "Processed",
+        FAILED: "Failed",
+      },
+      errors: {
+        unsafe_file_content: "File rejected by security inspection (unsafe binary or script payload detected).",
+        unsupported_media_type: "Unsupported file type. Allowed: PDF, PNG, JPEG, CSV, TXT.",
+        file_too_large: "File exceeds the 5 MB size limit.",
+        insufficient_entity_permission: "Your active entity role grants do not permit this document action.",
       },
     },
   },

@@ -244,6 +244,7 @@ public static class WorkspaceEndpoints
             new("receivables", "AVAILABLE", set.Contains(PermissionCodes.FinanceRead) || set.Contains(PermissionCodes.FinanceJournalPost) || set.Contains(PermissionCodes.SalesRead) || set.Contains(PermissionCodes.SalesManage) || set.Contains(PermissionCodes.SalesApprove), PermissionCodes.FinanceRead),
             new("finance", "AVAILABLE", set.Contains(PermissionCodes.FinanceRead) || set.Contains(PermissionCodes.FinanceConfigManage) || set.Contains(PermissionCodes.FinanceJournalPost), PermissionCodes.FinanceRead),
             new("reports", "AVAILABLE", set.Contains(PermissionCodes.FinanceRead) || set.Contains(PermissionCodes.FinanceConfigManage) || set.Contains(PermissionCodes.FinanceJournalPost), PermissionCodes.FinanceRead),
+            new("documents", "AVAILABLE", set.Count > 0, PermissionCodes.FinanceRead),
             new("admin", "AVAILABLE", set.Contains(PermissionCodes.AdminRead) || set.Contains(PermissionCodes.AdminManage), PermissionCodes.AdminRead)
         ];
     }

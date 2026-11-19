@@ -7,6 +7,7 @@ using Orphac.Athera.Modules.Audit;
 using Orphac.Athera.Modules.Billing;
 using Orphac.Athera.Modules.Cash;
 using Orphac.Athera.Modules.Catalog;
+using Orphac.Athera.Modules.Documents;
 using Orphac.Athera.Modules.Fulfillment;
 using Orphac.Athera.Modules.GeneralLedger;
 using Orphac.Athera.Modules.Identity;
@@ -135,6 +136,9 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
     public DbSet<CustomerReceipt> CustomerReceipts => Set<CustomerReceipt>();
     public DbSet<ReceiptAllocation> ReceiptAllocations => Set<ReceiptAllocation>();
     public DbSet<PeriodCloseReview> PeriodCloseReviews => Set<PeriodCloseReview>();
+    public DbSet<DocumentSequence> DocumentSequences => Set<DocumentSequence>();
+    public DbSet<BusinessDocument> BusinessDocuments => Set<BusinessDocument>();
+    public DbSet<DocumentLink> DocumentLinks => Set<DocumentLink>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -4730,6 +4734,80 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
             entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
 
             entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.PeriodId, x.CreatedAtUtc }).HasDatabaseName("ix_period_close_reviews_period");
+        });
+
+        builder.Entity<DocumentSequence>(entity =>
+        {
+            entity.ToTable("document_sequences", "documents");
+            entity.HasKey(x => x.SequenceId);
+            entity.Property(x => x.SequenceId).HasColumnName("sequence_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.FiscalYear).HasColumnName("fiscal_year").IsRequired();
+            entity.Property(x => x.LastNumber).HasColumnName("last_number").IsRequired();
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.FiscalYear })
+                .IsUnique()
+                .HasDatabaseName("ux_document_sequences_scope_year");
+        });
+
+        builder.Entity<BusinessDocument>(entity =>
+        {
+            entity.ToTable("business_documents", "documents", t =>
+            {
+                t.HasCheckConstraint("ck_business_documents_size", "byte_size > 0 AND byte_size <= 5242880");
+                t.HasCheckConstraint("ck_business_documents_category", "category IN ('TAX_EVIDENCE', 'DELIVERY_PROOF', 'SUPPLIER_INVOICE', 'BANK_ADVICE', 'CONTRACT', 'GENERAL')");
+            });
+            entity.HasKey(x => x.DocumentId);
+            entity.Property(x => x.DocumentId).HasColumnName("document_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.DocumentNumber).HasColumnName("document_number").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.FileName).HasColumnName("file_name").HasMaxLength(180).IsRequired();
+            entity.Property(x => x.ContentType).HasColumnName("content_type").HasMaxLength(100).IsRequired();
+            entity.Property(x => x.ByteSize).HasColumnName("byte_size").IsRequired();
+            entity.Property(x => x.Sha256Hash).HasColumnName("sha256_hash").HasMaxLength(64).IsRequired();
+            entity.Property(x => x.Category).HasColumnName("category").HasMaxLength(30).IsRequired();
+            entity.Property(x => x.ScanStatus).HasColumnName("scan_status").HasMaxLength(20).IsRequired();
+            entity.Property(x => x.ContentBytes).HasColumnName("content_bytes").HasColumnType("bytea").IsRequired();
+            entity.Property(x => x.Notes).HasColumnName("notes").HasMaxLength(300);
+            entity.Property(x => x.UploadedByUserId).HasColumnName("uploaded_by_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.DocumentId });
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.DocumentNumber })
+                .IsUnique()
+                .HasDatabaseName("ux_business_documents_number");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.CreatedAtUtc })
+                .HasDatabaseName("ix_business_documents_created");
+        });
+
+        builder.Entity<DocumentLink>(entity =>
+        {
+            entity.ToTable("document_links", "documents");
+            entity.HasKey(x => x.LinkId);
+            entity.Property(x => x.LinkId).HasColumnName("link_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.DocumentId).HasColumnName("document_id").IsRequired();
+            entity.Property(x => x.SourceModule).HasColumnName("source_module").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.SourceDocumentType).HasColumnName("source_document_type").HasMaxLength(60).IsRequired();
+            entity.Property(x => x.SourceDocumentId).HasColumnName("source_document_id").HasMaxLength(80).IsRequired();
+            entity.Property(x => x.SourceDocumentNumber).HasColumnName("source_document_number").HasMaxLength(80).IsRequired();
+            entity.Property(x => x.CreatedByUserId).HasColumnName("created_by_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SourceDocumentType, x.SourceDocumentId })
+                .HasDatabaseName("ix_document_links_source");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.DocumentId })
+                .HasDatabaseName("ix_document_links_document");
+
+            entity.HasOne<BusinessDocument>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.DocumentId })
+                .HasPrincipalKey(d => new { d.TenantId, d.LegalEntityId, d.DocumentId })
+                .OnDelete(DeleteBehavior.Restrict);
         });
     }
 }

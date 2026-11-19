@@ -85,9 +85,10 @@ test.describe("S16 Accounting Reports, Control Reconciliations & Period Close", 
     await assertNoLayoutClipping(page);
     await captureFullPageScreenshot(page, "03-pnl-and-balance-sheet-desktop.png");
 
-    // 4. Close period drawer & Reopen cycle on NUSA-JKT (so period returns to OPEN cleanly)
+    // 4. Close period drawer & Reopen cycle on NUSA-JKT (always targeting the same 2026-11 period row)
     await page.getByRole("tab", { name: /Rekonsiliasi & Tutup Buku|Reconciliation & Close/i }).click();
-    const closeBtn = page.getByRole("button", { name: /Tutup Periode|Close Period/i }).first();
+    const novRow = page.locator("tbody tr", { hasText: "2026-11" }).first();
+    const closeBtn = novRow.getByRole("button", { name: /Tutup Periode|Close Period/i });
     if ((await closeBtn.count()) > 0) {
       await closeBtn.click();
       await page.locator("#period-action-note").fill("Verifikasi tutup buku S16 E2E");
@@ -101,8 +102,8 @@ test.describe("S16 Accounting Reports, Control Reconciliations & Period Close", 
       await page.getByRole("button", { name: /Konfirmasi Tutup Periode|Confirm Close Period/i }).click();
       await expect(page.getByText(/Periode berhasil ditutup|Financial period closed/i)).toBeVisible();
 
-      // Reopen immediately so subsequent tests still have an OPEN period
-      const reopenBtn = page.getByRole("button", { name: /Buka Kembali|Reopen/i }).first();
+      // Reopen the exact same 2026-11 row so subsequent tests still have 2026-11 OPEN
+      const reopenBtn = novRow.getByRole("button", { name: /Buka Kembali|Reopen/i });
       await reopenBtn.click();
       await page.locator("#period-action-note").fill("Pembukaan kembali untuk kelanjutan operasional");
       await page.getByRole("button", { name: /Konfirmasi Buka Kembali|Confirm Reopen Period/i }).click();

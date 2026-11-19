@@ -11,6 +11,7 @@ import {
   ChevronDown,
   CreditCard,
   FileSpreadsheet,
+  FileText,
   FolderKanban,
   Handshake,
   KeyRound,
@@ -549,6 +550,17 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         href: baseEntityPath && reportsPermitted ? `${baseEntityPath}/reports` : null,
         permitted: reportsPermitted,
         active: pathname.endsWith("/reports") || pathname.includes("/reports/"),
+      };
+    })(),
+    (() => {
+      const documentsPermitted = permissionSet.size > 0;
+      return {
+        key: "documents",
+        label: t.shell.navItems.documents,
+        icon: FileText,
+        href: baseEntityPath && documentsPermitted ? `${baseEntityPath}/documents` : null,
+        permitted: documentsPermitted,
+        active: pathname.endsWith("/documents") || pathname.includes("/documents/"),
       };
     })(),
     {

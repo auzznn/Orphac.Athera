@@ -163,6 +163,7 @@ app.MapFulfillmentEndpoints();
 app.MapBillingEndpoints();
 app.MapReceivablesEndpoints();
 app.MapReportsEndpoints();
+app.MapDocumentsEndpoints();
 
 if (isMigrateMode)
 {

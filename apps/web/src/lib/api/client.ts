@@ -3452,3 +3452,120 @@ export async function reopenReportPeriod(
   }
   return data;
 }
+
+// ── S17: Documents, Evidence Trails & Operational UX ──
+
+export type BusinessDocumentItemDto = components["schemas"]["BusinessDocumentItemDto"];
+export type OperationalExceptionDto = components["schemas"]["OperationalExceptionDto"];
+export type OutboxDiagnosticDto = components["schemas"]["OutboxDiagnosticDto"];
+export type DocumentAuditEventDto = components["schemas"]["DocumentAuditEventDto"];
+export type DocumentsOverviewResponse = components["schemas"]["DocumentsOverviewResponse"];
+export type UploadBusinessDocumentRequest =
+  components["schemas"]["UploadBusinessDocumentRequest"];
+export type DocumentDownloadTokenResponse =
+  components["schemas"]["DocumentDownloadTokenResponse"];
+export type OutboxRetryResponse = components["schemas"]["OutboxRetryResponse"];
+
+export async function fetchDocumentsOverview(
+  tenantId: string,
+  entityId: string,
+  options?: { q?: string; category?: string; sourceType?: string },
+): Promise<DocumentsOverviewResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/documents/overview",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query:
+          options?.q || options?.category || options?.sourceType
+            ? {
+                q: options.q || undefined,
+                category: options.category || undefined,
+                sourceType: options.sourceType || undefined,
+              }
+            : undefined,
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function uploadBusinessDocument(
+  tenantId: string,
+  entityId: string,
+  payload: UploadBusinessDocumentRequest,
+): Promise<BusinessDocumentItemDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/documents/upload",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function issueDocumentDownloadToken(
+  tenantId: string,
+  entityId: string,
+  documentId: string,
+): Promise<DocumentDownloadTokenResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/documents/{documentId}/download-token",
+    {
+      params: { path: { tenantId, entityId, documentId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export function getEvidencePackPdfUrl(
+  tenantId: string,
+  entityId: string,
+  sourceType: string,
+  sourceId: string,
+): string {
+  return `/api/workspaces/${encodeURIComponent(tenantId)}/entities/${encodeURIComponent(entityId)}/documents/evidence-pack/${encodeURIComponent(sourceType)}/${encodeURIComponent(sourceId)}/summary.pdf`;
+}
+
+export function getEntityAuditCsvUrl(tenantId: string, entityId: string): string {
+  return `/api/workspaces/${encodeURIComponent(tenantId)}/entities/${encodeURIComponent(entityId)}/documents/audit-export.csv`;
+}
+
+export async function retryOutboxMessage(
+  tenantId: string,
+  entityId: string,
+  messageId: string,
+): Promise<OutboxRetryResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/documents/outbox/{messageId}/retry",
+    {
+      params: { path: { tenantId, entityId, messageId } },
+      headers: { "X-CSRF-Token": csrf },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}

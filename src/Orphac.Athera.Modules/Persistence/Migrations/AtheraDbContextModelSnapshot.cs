@@ -3482,6 +3482,191 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Documents.BusinessDocument", b =>
+                {
+                    b.Property<Guid>("DocumentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("document_id");
+
+                    b.Property<long>("ByteSize")
+                        .HasColumnType("bigint")
+                        .HasColumnName("byte_size");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("category");
+
+                    b.Property<byte[]>("ContentBytes")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("content_bytes");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("content_type");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<string>("DocumentNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("document_number");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(180)
+                        .HasColumnType("character varying(180)")
+                        .HasColumnName("file_name");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("notes");
+
+                    b.Property<string>("ScanStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("scan_status");
+
+                    b.Property<string>("Sha256Hash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("sha256_hash");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("UploadedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("uploaded_by_user_id");
+
+                    b.HasKey("DocumentId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "CreatedAtUtc")
+                        .HasDatabaseName("ix_business_documents_created");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "DocumentNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_business_documents_number");
+
+                    b.ToTable("business_documents", "documents", t =>
+                        {
+                            t.HasCheckConstraint("ck_business_documents_category", "category IN ('TAX_EVIDENCE', 'DELIVERY_PROOF', 'SUPPLIER_INVOICE', 'BANK_ADVICE', 'CONTRACT', 'GENERAL')");
+
+                            t.HasCheckConstraint("ck_business_documents_size", "byte_size > 0 AND byte_size <= 5242880");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Documents.DocumentLink", b =>
+                {
+                    b.Property<Guid>("LinkId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("link_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<Guid>("DocumentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("document_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("SourceDocumentId")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("source_document_id");
+
+                    b.Property<string>("SourceDocumentNumber")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("source_document_number");
+
+                    b.Property<string>("SourceDocumentType")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("character varying(60)")
+                        .HasColumnName("source_document_type");
+
+                    b.Property<string>("SourceModule")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("source_module");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("LinkId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "DocumentId")
+                        .HasDatabaseName("ix_document_links_document");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SourceDocumentType", "SourceDocumentId")
+                        .HasDatabaseName("ix_document_links_source");
+
+                    b.ToTable("document_links", "documents");
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Documents.DocumentSequence", b =>
+                {
+                    b.Property<Guid>("SequenceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("sequence_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<int>("LastNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("last_number");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.HasKey("SequenceId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "FiscalYear")
+                        .IsUnique()
+                        .HasDatabaseName("ux_document_sequences_scope_year");
+
+                    b.ToTable("document_sequences", "documents");
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Fulfillment.PickLine", b =>
                 {
                     b.Property<Guid>("PickLineId")
@@ -11263,6 +11448,16 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                     b.HasOne("Orphac.Athera.Modules.Platform.Tenant", null)
                         .WithMany()
                         .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Documents.DocumentLink", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Documents.BusinessDocument", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "DocumentId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "DocumentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
