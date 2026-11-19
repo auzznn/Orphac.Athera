@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   ChevronDown,
   CreditCard,
+  FileSpreadsheet,
   FolderKanban,
   Handshake,
   KeyRound,
@@ -484,6 +485,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         href: baseEntityPath && fulfillmentPermitted ? `${baseEntityPath}/fulfillment` : null,
         permitted: fulfillmentPermitted,
         active: pathname.endsWith("/fulfillment") || pathname.includes("/fulfillment/"),
+      };
+    })(),
+    (() => {
+      const billingPermitted =
+        permissionSet.has("finance.read") ||
+        permissionSet.has("finance.journal.post") ||
+        permissionSet.has("sales.read") ||
+        permissionSet.has("sales.manage") ||
+        permissionSet.has("sales.approve");
+      return {
+        key: "billing",
+        label: t.shell.navItems.billing,
+        icon: FileSpreadsheet,
+        href: baseEntityPath && billingPermitted ? `${baseEntityPath}/billing` : null,
+        permitted: billingPermitted,
+        active: pathname.endsWith("/billing") || pathname.includes("/billing/"),
       };
     })(),
     {

@@ -53,6 +53,7 @@ export interface Dictionary {
       payments: string;
       sales: string;
       fulfillment: string;
+      billing: string;
       finance: string;
       admin: string;
     };
@@ -1974,6 +1975,131 @@ export interface Dictionary {
     statusLabels: Record<string, string>;
     errors: Record<string, string>;
   };
+  billing: {
+    heading: string;
+    lead: string;
+    backToEntityLink: string;
+    refreshButton: string;
+    refreshing: string;
+    loading: string;
+    accessDeniedHeading: string;
+    accessDeniedBody: string;
+    readOnlyBanner: string;
+    od07PolicyBanner: string;
+    policyToggleShow: string;
+    policyToggleHide: string;
+    policyCards: {
+      rule1Title: string;
+      rule1Body: string;
+      rule2Title: string;
+      rule2Body: string;
+      rule3Title: string;
+      rule3Body: string;
+      rule4Title: string;
+      rule4Body: string;
+    };
+    statsAriaLabel: string;
+    stats: {
+      unbilledDispatchedQty: string;
+      openDraftInvoicesCount: string;
+      postedRevenueNetTotal: string;
+      openReceivablesTotal: string;
+    };
+    tabListLabel: string;
+    tabs: {
+      billable: string;
+      invoices: string;
+      receivables: string;
+    };
+    billablePanel: {
+      title: string;
+      empty: string;
+      colShipmentSo: string;
+      colCustomerItem: string;
+      colCapacity: string;
+      colUnitPrice: string;
+      colAction: string;
+      shippedPrefix: string;
+      billedPrefix: string;
+      eligiblePrefix: string;
+      draftInvoiceBtn: string;
+      drawerTitlePrefix: string;
+      cancelBtn: string;
+      invoiceDateLabel: string;
+      dueDateLabel: string;
+      taxCodeLabel: string;
+      evidenceRefLabel: string;
+      evidenceRefPlaceholder: string;
+      billQtyLabel: string;
+      maxPrefix: string;
+      notesLabel: string;
+      notesPlaceholder: string;
+      previewSubtotal: string;
+      previewTax: string;
+      previewGrandTotal: string;
+      submitDraftCta: string;
+      creatingDraft: string;
+    };
+    invoicesPanel: {
+      title: string;
+      empty: string;
+      colDocType: string;
+      colCustomerSo: string;
+      colTaxEvidence: string;
+      colAmounts: string;
+      colStatusLedger: string;
+      colAction: string;
+      subtotalPrefix: string;
+      taxPrefix: string;
+      evidencePrefix: string;
+      journalPrefix: string;
+      creditOfPrefix: string;
+      submitBtn: string;
+      submitting: string;
+      cancelBtn: string;
+      cancelling: string;
+      postBtn: string;
+      creditBtn: string;
+      postDrawerTitlePrefix: string;
+      postWarningBanner: string;
+      postEvidenceLabel: string;
+      postEvidencePlaceholder: string;
+      postPreviewHeader: string;
+      glPreviewDrAr: string;
+      glPreviewCrRevenue: string;
+      glPreviewCrOutputVat: string;
+      confirmPostCta: string;
+      posting: string;
+      creditDrawerTitlePrefix: string;
+      creditDateLabel: string;
+      creditEvidenceLabel: string;
+      creditEvidencePlaceholder: string;
+      creditQtyLabel: string;
+      creditMaxPrefix: string;
+      creditNotesLabel: string;
+      creditNotesPlaceholder: string;
+      confirmCreditCta: string;
+      postingCredit: string;
+    };
+    receivablesPanel: {
+      title: string;
+      empty: string;
+      colArDoc: string;
+      colCustomer: string;
+      colDates: string;
+      colOriginalCredited: string;
+      colOpenBalance: string;
+      colStatusGl: string;
+      originalPrefix: string;
+      creditedPrefix: string;
+      receivedPrefix: string;
+      duePrefix: string;
+    };
+    docTypeLabels: Record<string, string>;
+    statusLabels: Record<string, string>;
+    arStatusLabels: Record<string, string>;
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -2042,6 +2168,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         payments: "Pembayaran & Bank",
         sales: "Penjualan",
         fulfillment: "Pemenuhan & Pengiriman",
+        billing: "Penagihan & Piutang (AR)",
         finance: "Keuangan & GL",
         admin: "Administrasi",
       },
@@ -2171,6 +2298,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         payments: "Pembayaran Pemasok, Kliring Keluar & Rekonsiliasi Bank",
         sales: "Penjualan & Penagihan",
         fulfillment: "Pemenuhan SO, Reservasi, Pick & Pengiriman",
+        billing: "Penagihan Pelanggan, Pajak Keluaran & Piutang (AR)",
         finance: "Keuangan, Pajak PPN/PPh & GL",
         admin: "Administrasi Organisasi, Undangan & Audit",
       },
@@ -4659,6 +4787,170 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Izin entitas aktif Anda tidak mencukupi untuk operasi pemenuhan gudang ini.",
       },
     },
+    billing: {
+      heading: "Penagihan Pelanggan, Pajak Keluaran & Piutang (AR)",
+      lead:
+        "Terbitkan faktur penjualan berbasis kapasitas pengiriman (SHP), tetapkan pajak keluaran legal entitas (PPN), posting jurnal GL Dr 1200 Piutang / Cr 4100 Pendapatan + Cr 2210 PPN Keluaran secara atomik, dan kelola Nota Kredit (OD-07 & OD-09).",
+      backToEntityLink: "Kembali ke Ringkasan",
+      refreshButton: "Segarkan",
+      refreshing: "Menyegarkan...",
+      loading: "Memuat kapasitas tagih pengiriman, faktur pelanggan, dan buku pembantu piutang...",
+      accessDeniedHeading: "Akses Penagihan & Piutang Ditolak",
+      accessDeniedBody:
+        "Akun Anda tidak memiliki izin keuangan atau penjualan aktif pada entitas hukum ini.",
+      readOnlyBanner:
+        "Mode hanya-baca: akun Anda berwenang meninjau faktur dan buku pembantu piutang pada entitas ini, namun penyusunan draf atau posting memerlukan izin penjualan/keuangan aktif.",
+      od07PolicyBanner:
+        "Kebijakan Aman OD-07 & OD-09 Aktif (ATH-CR-011): Penagihan hanya berdasarkan kapasitas terkirim (SHP); kode pajak keluaran berbasis tanggal efektif & wajib bukti Faktur Pajak / SKB; faktur terposting bersifat permanen (koreksi wajib via Nota Kredit).",
+      policyToggleShow: "Lihat Aturan OD-07 & OD-09",
+      policyToggleHide: "Sembunyikan Aturan",
+      policyCards: {
+        rule1Title: "1. Anti-Tagih Ganda Berbasis Pengiriman (OD-09)",
+        rule1Body:
+          "Faktur hanya dapat menagih sisa kuantitas pengiriman yang belum ditagih; permintaan paralel diserialisasi dengan kunci transaksi PostgreSQL.",
+        rule2Title: "2. Bukti Pajak Keluaran Wajib (OD-07)",
+        rule2Body:
+          "Tarif pajak dibaca dari aturan pajak OUTPUT entitas (PPN-OUT-11 / PPN-OUT-EXEMPT); nomor Faktur Pajak atau SKB wajib sebelum posting tanpa pelaporan otomatis.",
+        rule3Title: "3. Posting Atomik AR + GL",
+        rule3Body:
+          "Pengesahan faktur membuat jurnal seimbang Dr 1200 Piutang / Cr 4100 Pendapatan (+ Cr 2210 PPN Keluaran) serta kartu piutang AR dalam satu transaksi.",
+        rule4Title: "4. Imutabilitas & Nota Kredit Kompensasi",
+        rule4Body:
+          "Faktur terposting tidak dapat diubah atau dihapus di tingkat PostgreSQL; koreksi menggunakan Nota Kredit tertaut dengan referensi Nota Retur.",
+      },
+      statsAriaLabel: "Ringkasan metrik penagihan pelanggan dan piutang",
+      stats: {
+        unbilledDispatchedQty: "Unit Terkirim Siap Ditagih",
+        openDraftInvoicesCount: "Faktur Draf / Diajukan",
+        postedRevenueNetTotal: "Pendapatan Terposting (Neto)",
+        openReceivablesTotal: "Total Piutang Terbuka (AR)",
+      },
+      tabListLabel: "Mode kerja penagihan dan piutang",
+      tabs: {
+        billable: "Siap Ditagih (SHP)",
+        invoices: "Faktur & Nota Kredit",
+        receivables: "Buku Pembantu Piutang (AR)",
+      },
+      billablePanel: {
+        title: "Baris Pengiriman Terkirim dengan Kapasitas Tagih Tersisa",
+        empty: "Seluruh pengiriman pada entitas ini telah ditagih atau belum ada surat jalan terkirim.",
+        colShipmentSo: "Surat Jalan (SHP) & SO",
+        colCustomerItem: "Pelanggan & Barang",
+        colCapacity: "Terkirim · Ditagih · Siap Tagih",
+        colUnitPrice: "Harga Satuan Basis",
+        colAction: "Tindakan",
+        shippedPrefix: "Terkirim:",
+        billedPrefix: "Tertagih:",
+        eligiblePrefix: "Siap Tagih:",
+        draftInvoiceBtn: "Buat Draf Faktur",
+        drawerTitlePrefix: "Susun Draf Faktur Pelanggan dari",
+        cancelBtn: "Batal",
+        invoiceDateLabel: "Tanggal Faktur",
+        dueDateLabel: "Jatuh Tempo",
+        taxCodeLabel: "Kode Pajak Keluaran (OUTPUT)",
+        evidenceRefLabel: "Referensi Faktur Pajak / SKB (Opsional saat Draf)",
+        evidenceRefPlaceholder: "mis. FP-010.001-26.00000001",
+        billQtyLabel: "Kuantitas Ditagih",
+        maxPrefix: "Maks:",
+        notesLabel: "Catatan Faktur",
+        notesPlaceholder: "Penagihan parsial pengiriman tahap 1",
+        previewSubtotal: "Subtotal DPP",
+        previewTax: "Pajak Keluaran",
+        previewGrandTotal: "Total Tagihan (AR)",
+        submitDraftCta: "Simpan Draf Faktur",
+        creatingDraft: "Menyimpan Draf...",
+      },
+      invoicesPanel: {
+        title: "Buku Besar Faktur Penjualan & Nota Kredit (billing.customer_invoices)",
+        empty: "Belum ada faktur pelanggan atau nota kredit pada entitas ini.",
+        colDocType: "Dokumen & Tanggal",
+        colCustomerSo: "Pelanggan & SO",
+        colTaxEvidence: "Klasifikasi Pajak & Bukti (OD-07)",
+        colAmounts: "DPP · Pajak · Total",
+        colStatusLedger: "Status & Tautan GL",
+        colAction: "Tindakan",
+        subtotalPrefix: "DPP:",
+        taxPrefix: "Pajak:",
+        evidencePrefix: "Bukti:",
+        journalPrefix: "Jurnal:",
+        creditOfPrefix: "Kredit atas:",
+        submitBtn: "Ajukan ke Keuangan",
+        submitting: "Mengajukan...",
+        cancelBtn: "Batalkan",
+        cancelling: "Membatalkan...",
+        postBtn: "Posting AR & GL",
+        creditBtn: "Nota Kredit",
+        postDrawerTitlePrefix: "Konfirmasi Posting Permanen Faktur",
+        postWarningBanner:
+          "Tindakan ini permanen (irreversible): faktur akan terkunci, jurnal GL seimbang (Dr 1200 / Cr 4100 + Cr 2210) diposting, dan kartu Piutang (AR) diterbitkan.",
+        postEvidenceLabel: "Nomor Bukti Faktur Pajak / SKB (Wajib OD-07)",
+        postEvidencePlaceholder: "mis. FP-010.001-26.00000001 atau SKB-2026-01",
+        postPreviewHeader: "Pratinjau Jurnal GL Atomik",
+        glPreviewDrAr: "Dr 1200 Piutang Usaha (AR Control)",
+        glPreviewCrRevenue: "Cr 4100 Pendapatan Penjualan",
+        glPreviewCrOutputVat: "Cr 2210 PPN Keluaran",
+        confirmPostCta: "Sahkan & Posting Permanen",
+        posting: "Memposting AR & GL...",
+        creditDrawerTitlePrefix: "Terbitkan Nota Kredit Kompensasi atas",
+        creditDateLabel: "Tanggal Nota Kredit",
+        creditEvidenceLabel: "Referensi Nota Retur / Bukti Pajak (Wajib OD-07)",
+        creditEvidencePlaceholder: "mis. NR-2026-0001",
+        creditQtyLabel: "Kuantitas Dikreditkan",
+        creditMaxPrefix: "Sisa:",
+        creditNotesLabel: "Alasan Koreksi / Retur",
+        creditNotesPlaceholder: "Penyesuaian kuantitas atau kualitas pengiriman",
+        confirmCreditCta: "Sahkan & Posting Nota Kredit",
+        postingCredit: "Memposting Nota Kredit...",
+      },
+      receivablesPanel: {
+        title: "Buku Pembantu Piutang Pelanggan (ar.customer_receivables)",
+        empty: "Belum ada saldo piutang pelanggan terposting pada entitas ini.",
+        colArDoc: "Nomor AR & Faktur",
+        colCustomer: "Pelanggan",
+        colDates: "Tanggal & Jatuh Tempo",
+        colOriginalCredited: "Awal · Kredit · Diterima",
+        colOpenBalance: "Saldo Piutang Terbuka",
+        colStatusGl: "Status & Jurnal GL",
+        originalPrefix: "Awal:",
+        creditedPrefix: "Kredit:",
+        receivedPrefix: "Bayar:",
+        duePrefix: "Tempo:",
+      },
+      docTypeLabels: {
+        INVOICE: "Faktur Penjualan",
+        CREDIT_NOTE: "Nota Kredit",
+      },
+      statusLabels: {
+        DRAFT: "Draf",
+        SUBMITTED: "Diajukan",
+        POSTED: "Terposting",
+        CANCELLED: "Dibatalkan",
+      },
+      arStatusLabels: {
+        OPEN: "Terbuka",
+        PARTIALLY_SETTLED: "Sebagian Lunas/Kredit",
+        SETTLED: "Lunas",
+        CREDITED: "Dikreditkan Penuh",
+      },
+      errors: {
+        billing_exceeds_shipped_capacity:
+          "Kuantitas penagihan melebihi sisa kapasitas pengiriman (SHP) yang belum ditagih.",
+        billing_tax_evidence_required:
+          "Nomor bukti Faktur Pajak atau SKB fasilitas wajib diisi sebelum posting (OD-07).",
+        billing_credit_tax_evidence_required:
+          "Referensi Nota Retur wajib diisi saat menerbitkan Nota Kredit atas faktur kena pajak (OD-07).",
+        billing_credit_exceeds_invoiced_qty:
+          "Kuantitas Nota Kredit melebihi sisa kuantitas faktur yang dapat dikreditkan.",
+        ar_credit_exceeds_open_amount:
+          "Nilai Nota Kredit melebihi sisa saldo Piutang (AR) yang terbuka.",
+        gl_period_closed:
+          "Periode akuntansi untuk tanggal faktur/nota kredit sudah ditutup (CLOSED).",
+        gl_period_not_found:
+          "Periode akuntansi untuk tanggal dokumen tidak ditemukan atau tidak terbuka.",
+        insufficient_entity_permission:
+          "Izin entitas aktif Anda tidak mencukupi untuk operasi penagihan/posting ini.",
+      },
+    },
   },
   "en-US": {
     appName: "Orphac Athera",
@@ -4725,6 +5017,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         payments: "Payments & Bank",
         sales: "Sales",
         fulfillment: "Fulfillment & Dispatch",
+        billing: "Billing & AR",
         finance: "Finance & GL",
         admin: "Administration",
       },
@@ -4854,6 +5147,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         payments: "Supplier Payments, Outbound Clearing & Bank Reconciliation",
         sales: "Sales & Invoicing",
         fulfillment: "Sales Reservation, Pick & Dispatch Fulfillment",
+        billing: "Customer Billing, Output Tax & Accounts Receivable",
         finance: "Finance, Indonesian Tax & GL",
         admin: "Organization Administration & Audit",
       },
@@ -7340,6 +7634,170 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Delivery evidence (POD) has already been confirmed for this shipment.",
         insufficient_entity_permission:
           "Your active role grants do not permit performing this warehouse fulfillment operation.",
+      },
+    },
+    billing: {
+      heading: "Customer Billing, Output Tax & Accounts Receivable",
+      lead:
+        "Invoice eligible dispatched shipments (SHP), determine legal-entity output tax (PPN), atomically post Dr 1200 AR / Cr 4100 Revenue + Cr 2210 Output VAT journals, and issue linked credit notes (OD-07 & OD-09).",
+      backToEntityLink: "Back to Overview",
+      refreshButton: "Refresh",
+      refreshing: "Refreshing...",
+      loading: "Loading billable shipment capacity, customer invoices, and AR subledger...",
+      accessDeniedHeading: "Billing & Receivables Access Denied",
+      accessDeniedBody:
+        "Your account does not hold active finance or sales permissions on this legal entity.",
+      readOnlyBanner:
+        "Read-only mode: you can inspect customer invoices and AR balances on this entity, but drafting or posting requires active sales/finance permissions.",
+      od07PolicyBanner:
+        "OD-07 & OD-09 Safe Defaults Active (ATH-CR-011): Billing is strictly backed by dispatched shipment capacity (SHP); output tax uses effective-dated entity rules with mandatory Faktur Pajak / SKB evidence; posted invoices are immutable (correct only via linked Credit Note).",
+      policyToggleShow: "View OD-07 & OD-09 Rules",
+      policyToggleHide: "Hide Rules",
+      policyCards: {
+        rule1Title: "1. Shipment-Backed Anti-Double-Billing (OD-09)",
+        rule1Body:
+          "Invoices may only bill remaining unbilled shipment quantities; concurrent requests serialize via PostgreSQL transaction advisory locks.",
+        rule2Title: "2. Mandatory Output Tax Evidence (OD-07)",
+        rule2Body:
+          "Tax rates derive from entity OUTPUT tax rules (PPN-OUT-11 / PPN-OUT-EXEMPT); Faktur Pajak or SKB reference is required before posting with zero automated filing.",
+        rule3Title: "3. Atomic AR + GL Posting",
+        rule3Body:
+          "Finalizing an invoice atomically posts Dr 1200 AR / Cr 4100 Revenue (+ Cr 2210 Output VAT) and creates the source-linked AR receivable.",
+        rule4Title: "4. Immutability & Compensating Credit Notes",
+        rule4Body:
+          "Posted invoices are permanently locked by PostgreSQL triggers; post-posting corrections must be issued as linked Credit Notes with Nota Retur evidence.",
+      },
+      statsAriaLabel: "Customer billing and receivables summary metrics",
+      stats: {
+        unbilledDispatchedQty: "Unbilled Dispatched Units",
+        openDraftInvoicesCount: "Draft / Submitted Invoices",
+        postedRevenueNetTotal: "Net Posted Revenue",
+        openReceivablesTotal: "Open Receivables (AR)",
+      },
+      tabListLabel: "Customer billing and AR workbench tabs",
+      tabs: {
+        billable: "Billable Shipments (SHP)",
+        invoices: "Invoices & Credit Notes",
+        receivables: "AR Subledger",
+      },
+      billablePanel: {
+        title: "Dispatched Shipment Lines with Remaining Billable Capacity",
+        empty: "All shipments on this entity are fully billed or no outbound shipments exist yet.",
+        colShipmentSo: "Shipment (SHP) & SO",
+        colCustomerItem: "Customer & Item",
+        colCapacity: "Shipped · Billed · Eligible",
+        colUnitPrice: "Base Unit Price",
+        colAction: "Action",
+        shippedPrefix: "Shipped:",
+        billedPrefix: "Billed:",
+        eligiblePrefix: "Eligible:",
+        draftInvoiceBtn: "Draft Invoice",
+        drawerTitlePrefix: "Compose Customer Invoice Draft from",
+        cancelBtn: "Cancel",
+        invoiceDateLabel: "Invoice Date",
+        dueDateLabel: "Due Date",
+        taxCodeLabel: "Output Tax Code (OUTPUT)",
+        evidenceRefLabel: "Faktur Pajak / SKB Evidence Ref (Optional on Draft)",
+        evidenceRefPlaceholder: "e.g., FP-010.001-26.00000001",
+        billQtyLabel: "Quantity to Bill",
+        maxPrefix: "Max:",
+        notesLabel: "Invoice Notes",
+        notesPlaceholder: "Partial billing for first delivery",
+        previewSubtotal: "Taxable Subtotal (DPP)",
+        previewTax: "Output Tax",
+        previewGrandTotal: "Invoice Total (AR)",
+        submitDraftCta: "Save Invoice Draft",
+        creatingDraft: "Saving Draft...",
+      },
+      invoicesPanel: {
+        title: "Customer Invoices & Credit Notes Ledger (billing.customer_invoices)",
+        empty: "No customer invoices or credit notes exist on this entity yet.",
+        colDocType: "Document & Date",
+        colCustomerSo: "Customer & SO",
+        colTaxEvidence: "Tax Classification & Evidence (OD-07)",
+        colAmounts: "DPP · Tax · Grand Total",
+        colStatusLedger: "Status & GL Link",
+        colAction: "Action",
+        subtotalPrefix: "DPP:",
+        taxPrefix: "Tax:",
+        evidencePrefix: "Ref:",
+        journalPrefix: "GL:",
+        creditOfPrefix: "Credits:",
+        submitBtn: "Submit to Finance",
+        submitting: "Submitting...",
+        cancelBtn: "Cancel",
+        cancelling: "Cancelling...",
+        postBtn: "Post AR & GL",
+        creditBtn: "Credit Note",
+        postDrawerTitlePrefix: "Confirm Irreversible Posting for",
+        postWarningBanner:
+          "This action is irreversible: the invoice will be permanently locked, a balanced GL journal (Dr 1200 / Cr 4100 + Cr 2210) will be posted, and an AR receivable will be created.",
+        postEvidenceLabel: "Faktur Pajak / SKB Evidence Reference (Required OD-07)",
+        postEvidencePlaceholder: "e.g., FP-010.001-26.00000001 or SKB-2026-01",
+        postPreviewHeader: "Atomic GL Posting Preview",
+        glPreviewDrAr: "Dr 1200 Accounts Receivable (AR Control)",
+        glPreviewCrRevenue: "Cr 4100 Sales Revenue",
+        glPreviewCrOutputVat: "Cr 2210 Output VAT Payable",
+        confirmPostCta: "Finalize & Post Permanently",
+        posting: "Posting AR & GL...",
+        creditDrawerTitlePrefix: "Issue Compensating Credit Note for",
+        creditDateLabel: "Credit Note Date",
+        creditEvidenceLabel: "Nota Retur / Tax Evidence Reference (Required OD-07)",
+        creditEvidencePlaceholder: "e.g., NR-2026-0001",
+        creditQtyLabel: "Quantity to Credit",
+        creditMaxPrefix: "Rem:",
+        creditNotesLabel: "Correction / Return Reason",
+        creditNotesPlaceholder: "Quantity or quality adjustment",
+        confirmCreditCta: "Finalize & Post Credit Note",
+        postingCredit: "Posting Credit Note...",
+      },
+      receivablesPanel: {
+        title: "Customer Accounts Receivable Subledger (ar.customer_receivables)",
+        empty: "No posted customer receivables exist on this entity yet.",
+        colArDoc: "AR Number & Invoice",
+        colCustomer: "Customer",
+        colDates: "Invoice & Due Date",
+        colOriginalCredited: "Original · Credited · Received",
+        colOpenBalance: "Open AR Balance",
+        colStatusGl: "Status & GL Journal",
+        originalPrefix: "Orig:",
+        creditedPrefix: "Credited:",
+        receivedPrefix: "Paid:",
+        duePrefix: "Due:",
+      },
+      docTypeLabels: {
+        INVOICE: "Customer Invoice",
+        CREDIT_NOTE: "Credit Note",
+      },
+      statusLabels: {
+        DRAFT: "Draft",
+        SUBMITTED: "Submitted",
+        POSTED: "Posted",
+        CANCELLED: "Cancelled",
+      },
+      arStatusLabels: {
+        OPEN: "Open",
+        PARTIALLY_SETTLED: "Partially Settled/Credited",
+        SETTLED: "Settled",
+        CREDITED: "Fully Credited",
+      },
+      errors: {
+        billing_exceeds_shipped_capacity:
+          "Requested billing quantity exceeds remaining unbilled shipment (SHP) capacity.",
+        billing_tax_evidence_required:
+          "A Faktur Pajak or tax facility SKB evidence reference is required before posting (OD-07).",
+        billing_credit_tax_evidence_required:
+          "A Nota Retur reference is required when issuing a credit note against a taxable invoice (OD-07).",
+        billing_credit_exceeds_invoiced_qty:
+          "Credit note quantity exceeds remaining creditable invoice quantity.",
+        ar_credit_exceeds_open_amount:
+          "Credit note total exceeds the remaining open Accounts Receivable balance.",
+        gl_period_closed:
+          "The accounting period for this document date is closed.",
+        gl_period_not_found:
+          "No open accounting period exists for this document date.",
+        insufficient_entity_permission:
+          "Your active role grants do not permit performing this billing or posting operation.",
       },
     },
   },

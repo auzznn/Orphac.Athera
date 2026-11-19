@@ -2054,6 +2054,556 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                     b.ToTable("audit_events", "audit");
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Billing.CreditNoteSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "FiscalYear");
+
+                    b.ToTable("credit_note_sequences", "billing", t =>
+                        {
+                            t.HasCheckConstraint("ck_credit_note_sequences_last_number", "last_number >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Billing.CustomerInvoice", b =>
+                {
+                    b.Property<Guid>("InvoiceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("invoice_id");
+
+                    b.Property<Guid?>("ArReceivableId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("ar_receivable_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<string>("CustomerCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("customer_code_snapshot");
+
+                    b.Property<string>("CustomerNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("customer_name_snapshot");
+
+                    b.Property<string>("CustomerNpwpSnapshot")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("customer_npwp_snapshot");
+
+                    b.Property<Guid>("CustomerPartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("customer_partner_id");
+
+                    b.Property<string>("DocumentType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("document_type");
+
+                    b.Property<DateOnly>("DueDate")
+                        .HasColumnType("date")
+                        .HasColumnName("due_date");
+
+                    b.Property<Guid?>("GlJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("gl_journal_id");
+
+                    b.Property<string>("GlJournalNumber")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("gl_journal_number");
+
+                    b.Property<decimal>("GrandTotalAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("grand_total_amount");
+
+                    b.Property<string>("IdempotencyKey")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("idempotency_key");
+
+                    b.Property<DateOnly>("InvoiceDate")
+                        .HasColumnType("date")
+                        .HasColumnName("invoice_date");
+
+                    b.Property<string>("InvoiceNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("invoice_number");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("notes");
+
+                    b.Property<Guid?>("OriginalInvoiceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("original_invoice_id");
+
+                    b.Property<string>("OriginalInvoiceNumberSnapshot")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("original_invoice_number_snapshot");
+
+                    b.Property<DateTimeOffset?>("PostedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("posted_at_utc");
+
+                    b.Property<Guid?>("PostedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("posted_by_user_id");
+
+                    b.Property<bool>("RequiresTaxEvidenceSnapshot")
+                        .HasColumnType("boolean")
+                        .HasColumnName("requires_tax_evidence_snapshot");
+
+                    b.Property<Guid>("SalesOrderId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("sales_order_id");
+
+                    b.Property<string>("SalesOrderNumberSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("sales_order_number_snapshot");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<DateTimeOffset?>("SubmittedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("submitted_at_utc");
+
+                    b.Property<Guid?>("SubmittedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("submitted_by_user_id");
+
+                    b.Property<decimal>("SubtotalAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("subtotal_amount");
+
+                    b.Property<decimal>("TaxAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("tax_amount");
+
+                    b.Property<Guid>("TaxCodeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tax_code_id");
+
+                    b.Property<string>("TaxCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("tax_code_snapshot");
+
+                    b.Property<string>("TaxDeterminationSummary")
+                        .IsRequired()
+                        .HasMaxLength(240)
+                        .HasColumnType("character varying(240)")
+                        .HasColumnName("tax_determination_summary");
+
+                    b.Property<string>("TaxEvidenceReference")
+                        .HasMaxLength(120)
+                        .HasColumnType("character varying(120)")
+                        .HasColumnName("tax_evidence_reference");
+
+                    b.Property<decimal>("TaxRatePercentSnapshot")
+                        .HasColumnType("numeric(9,4)")
+                        .HasColumnName("tax_rate_percent_snapshot");
+
+                    b.Property<string>("TaxTreatmentClassSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("tax_treatment_class_snapshot");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint")
+                        .HasColumnName("version");
+
+                    b.HasKey("InvoiceId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "IdempotencyKey")
+                        .IsUnique()
+                        .HasDatabaseName("ux_customer_invoices_idempotency");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "InvoiceNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_customer_invoices_number");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "SalesOrderId")
+                        .HasDatabaseName("ix_customer_invoices_so");
+
+                    b.ToTable("customer_invoices", "billing", t =>
+                        {
+                            t.HasCheckConstraint("ck_customer_invoices_amounts", "subtotal_amount > 0 AND tax_amount >= 0 AND grand_total_amount = subtotal_amount + tax_amount");
+
+                            t.HasCheckConstraint("ck_customer_invoices_dates", "due_date >= invoice_date");
+
+                            t.HasCheckConstraint("ck_customer_invoices_doc_type", "document_type IN ('INVOICE', 'CREDIT_NOTE')");
+
+                            t.HasCheckConstraint("ck_customer_invoices_status", "status IN ('DRAFT', 'SUBMITTED', 'POSTED', 'CANCELLED')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Billing.CustomerInvoiceLine", b =>
+                {
+                    b.Property<Guid>("InvoiceLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("invoice_line_id");
+
+                    b.Property<string>("BaseUomCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("base_uom_code_snapshot");
+
+                    b.Property<Guid>("BaseUomId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("base_uom_id");
+
+                    b.Property<decimal>("BilledBaseQuantity")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("billed_base_quantity");
+
+                    b.Property<Guid>("InvoiceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("invoice_id");
+
+                    b.Property<string>("ItemCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("item_code_snapshot");
+
+                    b.Property<Guid>("ItemId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("item_id");
+
+                    b.Property<string>("ItemNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)")
+                        .HasColumnName("item_name_snapshot");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("LineNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("line_number");
+
+                    b.Property<decimal>("LineSubtotalAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("line_subtotal_amount");
+
+                    b.Property<decimal>("LineTaxAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("line_tax_amount");
+
+                    b.Property<decimal>("LineTotalAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("line_total_amount");
+
+                    b.Property<string>("LineageLineKey")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("lineage_line_key");
+
+                    b.Property<Guid?>("OriginalInvoiceLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("original_invoice_line_id");
+
+                    b.Property<Guid>("ShipmentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("shipment_id");
+
+                    b.Property<Guid>("ShipmentLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("shipment_line_id");
+
+                    b.Property<string>("ShipmentNumberSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("shipment_number_snapshot");
+
+                    b.Property<Guid>("SoLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("so_line_id");
+
+                    b.Property<Guid>("TaxCodeId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tax_code_id");
+
+                    b.Property<string>("TaxCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("tax_code_snapshot");
+
+                    b.Property<decimal>("TaxRatePercent")
+                        .HasColumnType("numeric(9,4)")
+                        .HasColumnName("tax_rate_percent");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("numeric(18,6)")
+                        .HasColumnName("unit_price");
+
+                    b.HasKey("InvoiceLineId");
+
+                    b.HasAlternateKey("TenantId", "LegalEntityId", "InvoiceLineId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ShipmentLineId")
+                        .HasDatabaseName("ix_customer_invoice_lines_shipment_line");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "InvoiceId", "LineNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_customer_invoice_lines_number");
+
+                    b.ToTable("customer_invoice_lines", "billing", t =>
+                        {
+                            t.HasCheckConstraint("ck_customer_invoice_lines_amounts", "billed_base_quantity > 0 AND unit_price >= 0 AND line_subtotal_amount > 0 AND line_tax_amount >= 0 AND line_total_amount = line_subtotal_amount + line_tax_amount");
+
+                            t.HasCheckConstraint("ck_customer_invoice_lines_number", "line_number >= 1");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Billing.CustomerReceivable", b =>
+                {
+                    b.Property<Guid>("ReceivableId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("receivable_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<decimal>("CreditedAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("credited_amount");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<string>("CustomerCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("customer_code_snapshot");
+
+                    b.Property<string>("CustomerNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("customer_name_snapshot");
+
+                    b.Property<Guid>("CustomerPartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("customer_partner_id");
+
+                    b.Property<DateOnly>("DueDate")
+                        .HasColumnType("date")
+                        .HasColumnName("due_date");
+
+                    b.Property<Guid>("GlJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("gl_journal_id");
+
+                    b.Property<string>("GlJournalNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("gl_journal_number");
+
+                    b.Property<DateOnly>("InvoiceDate")
+                        .HasColumnType("date")
+                        .HasColumnName("invoice_date");
+
+                    b.Property<Guid>("InvoiceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("invoice_id");
+
+                    b.Property<string>("InvoiceNumberSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("invoice_number_snapshot");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<decimal>("OpenAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("open_amount");
+
+                    b.Property<decimal>("OriginalAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("original_amount");
+
+                    b.Property<string>("ReceivableNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("receivable_number");
+
+                    b.Property<decimal>("ReceivedAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("received_amount");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint")
+                        .HasColumnName("version");
+
+                    b.HasKey("ReceivableId");
+
+                    b.HasAlternateKey("TenantId", "LegalEntityId", "ReceivableId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "CustomerPartnerId")
+                        .HasDatabaseName("ix_customer_receivables_customer");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "InvoiceId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_customer_receivables_invoice");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReceivableNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_customer_receivables_number");
+
+                    b.ToTable("customer_receivables", "ar", t =>
+                        {
+                            t.HasCheckConstraint("ck_customer_receivables_amounts", "original_amount > 0 AND credited_amount >= 0 AND received_amount >= 0 AND open_amount >= 0 AND open_amount = original_amount - credited_amount - received_amount");
+
+                            t.HasCheckConstraint("ck_customer_receivables_status", "status IN ('OPEN', 'PARTIALLY_SETTLED', 'SETTLED', 'CREDITED')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Billing.InvoiceSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "FiscalYear");
+
+                    b.ToTable("invoice_sequences", "billing", t =>
+                        {
+                            t.HasCheckConstraint("ck_invoice_sequences_last_number", "last_number >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Billing.ReceivableSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "FiscalYear");
+
+                    b.ToTable("receivable_sequences", "ar", t =>
+                        {
+                            t.HasCheckConstraint("ck_receivable_sequences_last_number", "last_number >= 0");
+                        });
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Cash.BankAccount", b =>
                 {
                     b.Property<Guid>("BankAccountId")
@@ -3509,8 +4059,6 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .HasColumnName("warehouse_id");
 
                     b.HasKey("ShipmentLineId");
-
-                    b.HasAlternateKey("TenantId", "LegalEntityId", "ShipmentLineId");
 
                     b.HasIndex("TenantId", "LegalEntityId", "PickLineId");
 
@@ -10074,6 +10622,33 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("TenantId", "LegalEntityId")
                         .HasPrincipalKey("TenantId", "LegalEntityId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Billing.CustomerInvoiceLine", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Billing.CustomerInvoice", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "InvoiceId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "InvoiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Fulfillment.SalesShipmentLine", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ShipmentLineId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ShipmentLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Billing.CustomerReceivable", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Billing.CustomerInvoice", null)
+                        .WithOne()
+                        .HasForeignKey("Orphac.Athera.Modules.Billing.CustomerReceivable", "TenantId", "LegalEntityId", "InvoiceId")
+                        .HasPrincipalKey("Orphac.Athera.Modules.Billing.CustomerInvoice", "TenantId", "LegalEntityId", "InvoiceId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

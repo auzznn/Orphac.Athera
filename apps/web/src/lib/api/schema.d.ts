@@ -1796,6 +1796,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/billing/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetBillingOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/billing/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateCustomerInvoiceDraft"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/billing/invoices/{invoiceId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SubmitCustomerInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/billing/invoices/{invoiceId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CancelCustomerInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/billing/invoices/{invoiceId}/post": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["PostCustomerInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/billing/credit-notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateAndPostCreditNote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2105,6 +2201,84 @@ export interface components {
             counterpartyName: null | string;
             description: string;
         };
+        BillableShipmentLineDto: {
+            /** Format: uuid */
+            shipmentLineId: string;
+            /** Format: uuid */
+            shipmentId: string;
+            shipmentNumber: string;
+            /** Format: date */
+            dispatchDate: string;
+            shipmentStatus: string;
+            /** Format: uuid */
+            salesOrderId: string;
+            salesOrderNumber: string;
+            /** Format: uuid */
+            customerPartnerId: string;
+            customerCode: string;
+            customerName: string;
+            customerNpwp: null | string;
+            /** Format: int32 */
+            paymentTermsDays: number | string;
+            /** Format: uuid */
+            soLineId: string;
+            lineageLineKey: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: double */
+            dispatchedBaseQuantity: number | string;
+            /** Format: double */
+            alreadyBilledBaseQuantity: number | string;
+            /** Format: double */
+            remainingBillableBaseQuantity: number | string;
+            /** Format: double */
+            unitPricePerBase: number | string;
+            /** Format: uuid */
+            defaultTaxCodeId: null | string;
+            defaultTaxCodeSnapshot: null | string;
+        };
+        BillingOutputTaxCodeDto: {
+            /** Format: uuid */
+            taxCodeId: string;
+            code: string;
+            name: string;
+            treatmentClass: string;
+            /** Format: double */
+            nominalRatePercent: number | string;
+            /** Format: int32 */
+            taxableBaseRatioNumerator: number | string;
+            /** Format: int32 */
+            taxableBaseRatioDenominator: number | string;
+            /** Format: double */
+            effectiveRatePercent: number | string;
+            requiresDocumentaryEvidence: boolean;
+            /** Format: date */
+            effectiveFrom: string;
+            /** Format: date */
+            effectiveTo: null | string;
+        };
+        BillingOverviewResponse: {
+            canDraft: boolean;
+            canPost: boolean;
+            stats: components["schemas"]["BillingSummaryStatsDto"];
+            outputTaxCodes: components["schemas"]["BillingOutputTaxCodeDto"][];
+            billableShipmentLines: components["schemas"]["BillableShipmentLineDto"][];
+            invoices: components["schemas"]["CustomerInvoiceDto"][];
+            receivables: components["schemas"]["CustomerReceivableDto"][];
+        };
+        BillingSummaryStatsDto: {
+            /** Format: double */
+            unbilledDispatchedBaseQty: number | string;
+            /** Format: int32 */
+            openDraftInvoicesCount: number | string;
+            /** Format: double */
+            postedRevenueNetTotal: number | string;
+            /** Format: double */
+            openReceivablesTotal: number | string;
+        };
         BillJournalSuggestionDto: {
             side: string;
             accountCode: string;
@@ -2195,6 +2369,42 @@ export interface components {
             reason: string;
             /** Format: uuid */
             targetUserId?: null | string;
+        };
+        CreateCreditNoteLineRequest: {
+            /** Format: uuid */
+            originalInvoiceLineId: string;
+            /** Format: double */
+            creditedBaseQuantity: number | string;
+        };
+        CreateCreditNoteRequest: {
+            /** Format: uuid */
+            originalInvoiceId: string;
+            /** Format: date */
+            creditDate: string;
+            taxEvidenceReference: null | string;
+            idempotencyKey: string;
+            notes: null | string;
+            lines: components["schemas"]["CreateCreditNoteLineRequest"][];
+        };
+        CreateCustomerInvoiceLineRequest: {
+            /** Format: uuid */
+            shipmentLineId: string;
+            /** Format: double */
+            billedBaseQuantity: number | string;
+        };
+        CreateCustomerInvoiceRequest: {
+            /** Format: uuid */
+            salesOrderId: string;
+            /** Format: uuid */
+            taxCodeId: string;
+            /** Format: date */
+            invoiceDate: string;
+            /** Format: date */
+            dueDate: null | string;
+            taxEvidenceReference: null | string;
+            idempotencyKey: string;
+            notes: null | string;
+            lines: components["schemas"]["CreateCustomerInvoiceLineRequest"][];
         };
         CreateFinancialPeriodRequest: {
             periodCode: string;
@@ -2451,6 +2661,126 @@ export interface components {
             /** Format: int32 */
             authorizedWorkspaceCount: number | string;
             mfaEnabled: boolean;
+        };
+        CustomerInvoiceDto: {
+            /** Format: uuid */
+            invoiceId: string;
+            invoiceNumber: string;
+            documentType: string;
+            /** Format: uuid */
+            originalInvoiceId: null | string;
+            originalInvoiceNumber: null | string;
+            /** Format: uuid */
+            salesOrderId: string;
+            salesOrderNumber: string;
+            /** Format: uuid */
+            customerPartnerId: string;
+            customerCode: string;
+            customerName: string;
+            customerNpwp: null | string;
+            /** Format: date */
+            invoiceDate: string;
+            /** Format: date */
+            dueDate: string;
+            currencyCode: string;
+            status: string;
+            /** Format: double */
+            subtotalAmount: number | string;
+            /** Format: double */
+            taxAmount: number | string;
+            /** Format: double */
+            grandTotalAmount: number | string;
+            /** Format: uuid */
+            taxCodeId: string;
+            taxCodeSnapshot: string;
+            taxTreatmentClassSnapshot: string;
+            /** Format: double */
+            taxRatePercentSnapshot: number | string;
+            requiresTaxEvidenceSnapshot: boolean;
+            taxEvidenceReference: null | string;
+            taxDeterminationSummary: string;
+            /** Format: uuid */
+            glJournalId: null | string;
+            glJournalNumber: null | string;
+            /** Format: uuid */
+            arReceivableId: null | string;
+            notes: null | string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            submittedAtUtc: null | string;
+            /** Format: date-time */
+            postedAtUtc: null | string;
+            lines: components["schemas"]["CustomerInvoiceLineDto"][];
+        };
+        CustomerInvoiceLineDto: {
+            /** Format: uuid */
+            invoiceLineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: uuid */
+            shipmentId: string;
+            shipmentNumber: string;
+            /** Format: uuid */
+            shipmentLineId: string;
+            /** Format: uuid */
+            soLineId: string;
+            lineageLineKey: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: double */
+            billedBaseQuantity: number | string;
+            /** Format: double */
+            alreadyCreditedBaseQuantity: number | string;
+            /** Format: double */
+            remainingCreditableBaseQuantity: number | string;
+            /** Format: double */
+            unitPrice: number | string;
+            /** Format: double */
+            lineSubtotalAmount: number | string;
+            taxCodeSnapshot: string;
+            /** Format: double */
+            taxRatePercent: number | string;
+            /** Format: double */
+            lineTaxAmount: number | string;
+            /** Format: double */
+            lineTotalAmount: number | string;
+            /** Format: uuid */
+            originalInvoiceLineId: null | string;
+        };
+        CustomerReceivableDto: {
+            /** Format: uuid */
+            receivableId: string;
+            receivableNumber: string;
+            /** Format: uuid */
+            invoiceId: string;
+            invoiceNumber: string;
+            /** Format: uuid */
+            customerPartnerId: string;
+            customerCode: string;
+            customerName: string;
+            /** Format: date */
+            invoiceDate: string;
+            /** Format: date */
+            dueDate: string;
+            currencyCode: string;
+            /** Format: double */
+            originalAmount: number | string;
+            /** Format: double */
+            creditedAmount: number | string;
+            /** Format: double */
+            receivedAmount: number | string;
+            /** Format: double */
+            openAmount: number | string;
+            status: string;
+            /** Format: uuid */
+            glJournalId: string;
+            glJournalNumber: string;
+            /** Format: date-time */
+            createdAtUtc: string;
         };
         DecideApprovalCaseRequest: {
             decision: string;
@@ -4036,6 +4366,9 @@ export interface components {
             currentOrderedBaseQty: number | string;
             /** Format: double */
             orderedBaseQtyDelta: number | string;
+        };
+        PostCustomerInvoiceRequest: {
+            taxEvidenceReference: null | string;
         };
         PostJournalRequest: {
             /** Format: date */
@@ -14133,6 +14466,299 @@ export interface operations {
             };
             /** @description Not Found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetBillingOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BillingOverviewResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateCustomerInvoiceDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCustomerInvoiceRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerInvoiceDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerInvoiceDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    SubmitCustomerInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CancelCustomerInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    PostCustomerInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": null | components["schemas"]["PostCustomerInvoiceRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerInvoiceDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreateAndPostCreditNote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCreditNoteRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerInvoiceDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerInvoiceDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };

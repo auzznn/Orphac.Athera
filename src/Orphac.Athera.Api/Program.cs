@@ -160,6 +160,7 @@ app.MapPayablesEndpoints();
 app.MapPaymentsAndBankingEndpoints();
 app.MapSalesOrdersEndpoints();
 app.MapFulfillmentEndpoints();
+app.MapBillingEndpoints();
 
 if (isMigrateMode)
 {
