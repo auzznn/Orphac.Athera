@@ -6,6 +6,7 @@
 - Current target: **Local S18 regression PASS; release gate BLOCKED on ATH-CR-015, PO_ACCEPTANCE_PENDING (0/19).**
 - Original S18 implementation SHA: `895add3` (baseline `e25008f`).
 - S18 local verification and release evidence SHA: `f6de2aaf5187e751f8c2b060b983d464aabba231` (`greenfield/mvp`; not an Owner sign-off).
+- S18 supplier-bill confirmation follow-up: `f7269471d5dc0e24150197753487c8ae51c0ce03`; [targeted verification](../evidence/S18/supplier-bill-confirmation.log). Release status unchanged.
 - PostgreSQL test instance: VERIFIED (`athera-greenfield-pg` healthy on `127.0.0.1:55433/athera_dev`; low-privilege `athera_app` + `athera_migrator` verified).
 - Ponytail skill availability: AVAILABLE (`v5.3.3` `full`).
 - Impeccable skill availability: AVAILABLE (`v4.9.1`).
