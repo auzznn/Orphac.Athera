@@ -1,16 +1,11 @@
-# Orphac Athera — Greenfield Long-Horizon Engineering Pack
+# Orphac Athera
 
-**Version:** 2.0 (greenfield) | **Prepared:** 2026-11-17 | **Status:** Preauthorized development contracts; no slice has been built or accepted.
+Industry-neutral ERP for Indonesian SMEs. S00-S18 implemented; local synthetic checks passed, real-data release BLOCKED, 0/19 slices accepted.
 
-## Important: this is a NEW repository
-The Product Owner is **starting Athera from zero** with **Next.js + React + TypeScript, ASP.NET Core 10 and PostgreSQL**. There is **no legacy application to inspect, migrate, port, preserve or rebaseline**. The earlier Blazor / SQL Server implementation is not part of this repository, and is not evidence for any new slice. This ZIP contains specifications, prompts, reusable governance forms and optional development bootstrap examples — **not a finished ERP codebase**.
-
-## Quick start for the Product Owner
-1. Create an **empty directory** for `Orphac.Athera`. Extract **all** contents of this ZIP into its root. Do not nest the contents inside another package folder.
-2. Open that directory with the coding agent. Ensure it has access to a supported .NET 10 SDK, Node.js toolchain, and a disposable PostgreSQL service; access can be configured by the agent after its preflight.
-3. Paste `prompts/00_MASTER_GOAL.md` into the coding agent. It will read `AGENTS.md` and the full S00–S18 contracts.
-4. Review `docs/implementation/WORKSTREAM-STATE.md` as slices progress. The agent may engineer/test/commit the approved scope but **cannot approve itself**.
-5. Request an unsigned evidence packet with `prompts/02_REQUEST_PO_SIGNOFF.md`; approve an exact commit SHA using the DOCX form in `reference/` only after personally reviewing behavior, module ownership, invariants and evidence.
+- [Engineering & Operational Handover](docs/handover/ENGINEERING_AND_OPERATIONAL_HANDOVER.md)
+- [Workstream State Ledger](docs/implementation/WORKSTREAM-STATE.md)
+- [S18 Release Evidence](docs/evidence/S18/README.md)
+- [ATH-CR-015 — Live posting paths under open decisions](docs/decisions/ATH-CR-015-live-posting-paths-under-open-decisions.md)
 
 ## Authoritative source order
 1. Latest explicit Product Owner decision or signed change request.

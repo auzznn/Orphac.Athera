@@ -1,57 +1,20 @@
-# Slice S18 Evidence Packet — Cross-Module UAT, Security & Release Candidate
+# S18 release evidence: local synthetic candidate
 
-**Release Candidate Version:** `1.0.0-rc1`  
-**Git Branch:** `greenfield/mvp`  
-**Implementation State:** `CODE_COMPLETE`  
-**Engineering Verification:** `PASS`  
-**Product Owner Acceptance:** `PENDING` (UNSIGNED — see `PO-FOUR-PILLAR-ACCEPTANCE-PACKET.md`)  
+Implementation: `CODE_COMPLETE`. Local automated checks: **PASS**. Overall release gate: **BLOCKED**. Product Owner acceptance: **PENDING** for all 19 slices. Immutable postings remain executable under unsigned policies; the real-data hold is operational, not a server-side feature gate. See [ATH-CR-015](../../decisions/ATH-CR-015-live-posting-paths-under-open-decisions.md).
 
----
+| Check | Local result and limits | Evidence |
+|---|---|---|
+| Backend | `dotnet test Orphac.Athera.sln`: 79 unit + 100 real-PostgreSQL integration, none failed or skipped. | [Full run](dotnet-test.log) |
+| Business flow (`S18_RC_01`) | Five actors use the API from PO through payable, payment and clearing, then sale through dispatch, invoice and receipt. Final trial balance IDR 7,550,000 per side, five control variances zero; closed-period posting and locked-period reopen rejected. Synthetic zero-rate tax fixture, not tax advice. | [Executable story](../../../tests/Orphac.Athera.IntegrationTests/S18ReleaseCandidateFlowPostgresTests.cs), [manual UAT](uat-script.md) |
+| Isolation and concurrency | `S18_SEC_01`: neither RLS flag missing on ordinary tenant-id tables; `athera_app` non-superuser, no bypass, owns zero tables; 14 read routes. `S18_SEC_02`: two valid-body mutations denied across four caller classes; 12 empty-body routes reject anonymous/foreign/unassigned callers, including validation failures. Checks selected table counts, not exhaustive fuzzing. `S18_CONCURRENCY_01`: 12 journal attempts, six source keys; 2 of 8 stock reservations succeed against 10 PCS. | [PostgreSQL tests](../../../tests/Orphac.Athera.IntegrationTests/S18ReleaseCandidatePostgresTests.cs) |
+| Local latency (`S18_PERF_01`) | 2,000 added journals, three warm-ups and 40 serial observations per operation. Isolated local p95: report read 20 ms, journal post 9 ms. Not multi-user production throughput, event latency or an agreed pilot workload. | [Measured output](perf-test.log), [recipe](../../../tests/Orphac.Athera.IntegrationTests/S18PerformancePostgresTests.cs) |
+| Web checks | Generated client diff, TypeScript, ESLint and Next build passed; Vitest 50/50; Chromium 31/31 on fresh seed. S03 foreign-workspace denial passed without a code change: original cause unknown. S09 asserts 40 PCS, IDR 200,000 inventory / 300,000 PPV and 2,200,000 ending inventory. Reusing mutated fixtures is not a valid release run. | [Frontend + browser run](frontend-and-e2e.log), [create-only runner verification](e2e-create-only.log) |
+| Recovery | Source and restored database match for 109 forced-RLS tables and counts of tenants (2), entities (3), journals (32), documents (1). Down/up rehearsal verified table disappearance/recreation, not row survival after downgrade or full parity. | [Saved drill](backup-restore-and-migration-drill.log), [runbook](../../runbooks/LOCAL_AND_STAGING_OPERATIONS_RUNBOOK.md) |
+| Dependencies and credentials | NuGet transitive and npm production advisories, plus selected key/token signatures on working-tree text files. No coverage of all secrets or git history. | [Dependency audit](dependency-audit.log), [secrets check](secrets-scan.log) |
+| UI and operations | Browser walkthrough covers 1280/768/390 px and a Tab focus smoke check; not an accessibility certification. Visible risks include one-click bill posting and lengthy mobile receiving. Outbox restart recovery, tracing and privacy/retention remain open. | [Screenshots](screenshots/), [Impeccable critique](impeccable-review.md), [observability/privacy review](observability-privacy-review.md), [Ponytail review](ponytail-review.md) |
 
-## 1. Executive Summary & Verification Ledger
+## Reproduce or review
 
-Slice S18 delivers the final cross-module integration verification, security fuzzing, PostgreSQL 18 Row-Level Security auditing, concurrency soaking, disaster recovery rehearsals, and operational runbooks for the entire Orphac Athera Greenfield ERP (`S00`–`S18`).
+From the root with local PG18 and bootstrap roles, run `dotnet test Orphac.Athera.sln`. In `apps/web` run `npm ci`, `npm run api:check`, `npm run typecheck`, `npm run lint`, `npm test`, `npm run build`, then `npm run e2e:fresh` (Chromium installed, ports 3200 and 5200 free). The fresh runner allocates and retains a uniquely named local DB; it never resets an existing one. Browser tests write screenshots to slice evidence directories. Use a disposable checkout when preserving historical captures. The browser walkthrough visits workbenches; the numerical P2P/O2C proof runs through the API, not a browser.
 
-### Deliverables Checklist
-| Deliverable | Location | Status |
-| :--- | :--- | :--- |
-| **Release Candidate Test Plan** | [`docs/design/slices/S18-design.md`](../../design/slices/S18-design.md) | Verified |
-| **Local & Staging Runbook** | [`docs/runbooks/LOCAL_AND_STAGING_OPERATIONS_RUNBOOK.md`](../../runbooks/LOCAL_AND_STAGING_OPERATIONS_RUNBOOK.md) | Verified |
-| **Engineering & Operations Handover** | [`docs/handover/ENGINEERING_AND_OPERATIONAL_HANDOVER.md`](../../handover/ENGINEERING_AND_OPERATIONAL_HANDOVER.md) | Verified |
-| **PO 4-Pillar Acceptance Packet** | [`PO-FOUR-PILLAR-ACCEPTANCE-PACKET.md`](PO-FOUR-PILLAR-ACCEPTANCE-PACKET.md) | `PENDING` |
-| **PG18 Security & Isolation Tests** | [`tests/Orphac.Athera.IntegrationTests/S18ReleaseCandidatePostgresTests.cs`](../../../tests/Orphac.Athera.IntegrationTests/S18ReleaseCandidatePostgresTests.cs) | Passed (`176/176`) |
-| **Backup & Migration Rehearsal** | [`backup-restore-and-migration-drill.log`](backup-restore-and-migration-drill.log) | Verified (109 RLS tables) |
-| **Dependency & Secrets Audit** | [`dependency-audit.log`](dependency-audit.log), [`secrets-scan.log`](secrets-scan.log) | Clean (0 vulnerabilities) |
-| **Playwright Master UAT** | [`apps/web/e2e/s18-release-candidate-uat.spec.ts`](../../../apps/web/e2e/s18-release-candidate-uat.spec.ts) | Passed (`31/31` specs) |
-| **Ponytail Craft Review** | [`ponytail-review.md`](ponytail-review.md) | Pass (`full`) |
-| **Interactive UAT Script** | [`uat-script.md`](uat-script.md) | Documented |
-
----
-
-## 2. PostgreSQL 18 Security Audit (`S18_SEC_01`)
-- **109 Tables Audited:** All 109 tenant-scoped tables across all 18 schemas confirmed `ENABLE` and `FORCE ROW LEVEL SECURITY`.
-- **Least Privilege:** Runtime role `athera_app` confirmed non-superuser, `NOBYPASSRLS`, and owning 0 tables.
-- **Tenant Fuzzing:** 14 module API endpoints tested against unauthenticated and cross-tenant callers; zero data leakage detected.
-
----
-
-## 3. Concurrency Soak (`S18_CONCURRENCY_01`)
-- **12-Way Journal Posting Idempotency:** Zero duplicate journals created; General Ledger Trial Balance balanced.
-- **8-Way Stock Reservation Soak:** Zero negative inventory; zero over-allocation.
-
----
-
-## 4. Disaster Recovery & Migration Drill
-- Real `pg_dump` with dedicated backup role `athera_dev_admin` and `pg_restore` verified with 100% row and table parity.
-- EF Core migration rollback (`M17 -> M16`) and reapply (`M16 -> M17`) verified clean.
-
----
-
-## 5. Visual UAT Screenshots
-Screenshots captured across Desktop (1280px), Tablet (768px), and Mobile (390px):
-- `screenshots/01-rc-p2p-cycle-desktop.png`
-- `screenshots/02-rc-o2c-cycle-desktop.png`
-- `screenshots/03-rc-reconciliations-desktop.png`
-- `screenshots/04-rc-evidence-vault-desktop.png`
-- `screenshots/05-rc-tablet-768px.png`
-- `screenshots/06-rc-mobile-390px.png`
+[Owner packet](PO-FOUR-PILLAR-ACCEPTANCE-PACKET.md) · [State and reviewed SHA](../../implementation/WORKSTREAM-STATE.md) · [Handover](../../handover/ENGINEERING_AND_OPERATIONAL_HANDOVER.md)

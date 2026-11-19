@@ -11,7 +11,8 @@
     "api:generate": "openapi-typescript ../../docs/contracts/openapi.v1.json -o src/lib/api/schema.d.ts",
     "api:check": "openapi-typescript ../../docs/contracts/openapi.v1.json -o .openapi.check.d.ts && diff -u src/lib/api/schema.d.ts .openapi.check.d.ts && rm -f .openapi.check.d.ts",
     "test": "vitest run",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "e2e:fresh": "../../scripts/dev/e2e-fresh-db.sh"
   },
   "dependencies": {
     "lucide-react": "^1.0.1",

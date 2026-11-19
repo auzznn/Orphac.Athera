@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Orphac.Athera.Api.Contracts;
 using Orphac.Athera.IntegrationTests.Infrastructure;
@@ -201,7 +202,130 @@ public sealed class S18ReleaseCandidatePostgresTests
         Assert.All(resResponses, r => Assert.NotEqual(HttpStatusCode.InternalServerError, r.StatusCode));
     }
 
-    private sealed record RcWorld(
+    [Fact]
+    public async Task S18_SEC_02_HostileMutationMatrixNeverWritesOrLeaks()
+    {
+        await using var fx = new PostgresTestDatabaseFixture();
+        await fx.InitializeAsync();
+        var world = await SeedRcWorldAsync(fx);
+
+        using var factory = fx.CreateApiFactory();
+        using var anonClient = factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        using var foreignClient = await SignInAndGetCsrfAsync(factory, world.ForeignEmail, world.Password);
+        using var unassignedClient = await SignInAndGetCsrfAsync(factory, world.UnassignedEmail, world.Password);
+        using var readerClient = await SignInAndGetCsrfAsync(factory, world.ReaderEmail, world.Password);
+
+        var entityBase = $"/api/workspaces/{world.TenantAId}/entities/{world.EntityA1Id}";
+
+        async Task AssertNoLeakAsync(HttpResponseMessage res, string route, string actor)
+        {
+            var body = await res.Content.ReadAsStringAsync();
+            Assert.False(body.Contains("NUSA", StringComparison.Ordinal) || body.Contains("Nusantara", StringComparison.Ordinal),
+                $"Response body leaked tenant data on {route} for {actor}: {body}");
+        }
+
+        var journalBody = new PostJournalRequest(
+            new DateOnly(2026, 11, 15),
+            "IDR",
+            "Hostile journal attempt",
+            "MANUAL_GL",
+            "MANUAL_JOURNAL",
+            "sec02-jrn",
+            "sec02-jrn",
+            [
+                new JournalLineInputDto(world.CashAccountId, "Dr", 10_000m, 0m, null, null, null),
+                new JournalLineInputDto(world.RevenueAccountId, "Cr", 0m, 10_000m, null, null, null)
+            ]);
+        var reservationBody = new CreateStockReservationRequest(
+            world.ItemId,
+            world.MainLocationId,
+            null,
+            "MANUAL_HOLD",
+            null,
+            "SEC02-HOLD",
+            null,
+            1m,
+            null,
+            "sec02-res",
+            "Hostile reservation attempt");
+
+        var validTargets = new (string Route, object Body)[]
+        {
+            ($"{entityBase}/finance/journals", journalBody),
+            ($"{entityBase}/inventory/reservations", reservationBody)
+        };
+
+        foreach (var (route, body) in validTargets)
+        {
+            var anonRes = await anonClient.PostAsJsonAsync(route, body, JsonOptions);
+            Assert.True(
+                anonRes.StatusCode is HttpStatusCode.Unauthorized or HttpStatusCode.Forbidden,
+                $"Expected 401/403 for anonymous on {route}, got {anonRes.StatusCode}");
+            await AssertNoLeakAsync(anonRes, route, "anonymous");
+
+            var foreignRes = await foreignClient.PostAsJsonAsync(route, body, JsonOptions);
+            Assert.True(
+                foreignRes.StatusCode is HttpStatusCode.Forbidden or HttpStatusCode.NotFound,
+                $"Expected 403/404 for foreign tenant on {route}, got {foreignRes.StatusCode}");
+            await AssertNoLeakAsync(foreignRes, route, "foreign");
+
+            var unassignedRes = await unassignedClient.PostAsJsonAsync(route, body, JsonOptions);
+            Assert.True(
+                unassignedRes.StatusCode is HttpStatusCode.Forbidden or HttpStatusCode.NotFound,
+                $"Expected 403/404 for unassigned user on {route}, got {unassignedRes.StatusCode}");
+            await AssertNoLeakAsync(unassignedRes, route, "unassigned");
+
+            var readerRes = await readerClient.PostAsJsonAsync(route, body, JsonOptions);
+            Assert.True(
+                readerRes.StatusCode == HttpStatusCode.Forbidden,
+                $"Expected exactly 403 for read-only user on {route}, got {readerRes.StatusCode}");
+        }
+
+        var emptyBodyTargets = new[]
+        {
+            $"{entityBase}/partners",
+            $"{entityBase}/catalog/items",
+            $"{entityBase}/procurement/purchase-orders",
+            $"{entityBase}/receiving/receipts",
+            $"{entityBase}/payables/bills",
+            $"{entityBase}/payments",
+            $"{entityBase}/sales-orders",
+            $"{entityBase}/fulfillment/reservations",
+            $"{entityBase}/billing/invoices",
+            $"{entityBase}/receivables/receipts",
+            $"{entityBase}/documents/upload",
+            $"{entityBase}/admin/invitations"
+        };
+
+        foreach (var route in emptyBodyTargets)
+        {
+            foreach (var (client, actor) in new (HttpClient Client, string Actor)[]
+            {
+                (anonClient, "anonymous"), (foreignClient, "foreign"), (unassignedClient, "unassigned")
+            })
+            {
+                var res = await client.PostAsJsonAsync(route, new { }, JsonOptions);
+                Assert.True(
+                    res.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.Unauthorized
+                        or HttpStatusCode.Forbidden or HttpStatusCode.NotFound,
+                    $"Hostile {actor} on {route} returned {(int)res.StatusCode} {res.StatusCode}");
+                await AssertNoLeakAsync(res, route, actor);
+            }
+        }
+
+        // Hostile matrix wrote nothing on tenant A
+        await using (var db = fx.CreateMigratorDbContext())
+        {
+            Assert.Equal(1, await db.JournalEntries.LongCountAsync(
+                j => j.TenantId == world.TenantAId && j.LegalEntityId == world.EntityA1Id));
+            Assert.Equal(0, await db.StockReservations.LongCountAsync(
+                r => r.TenantId == world.TenantAId && r.LegalEntityId == world.EntityA1Id));
+            Assert.Equal(0, await db.Partners.LongCountAsync(p => p.TenantId == world.TenantAId));
+            Assert.Equal(0, await db.PurchaseOrders.LongCountAsync(p => p.TenantId == world.TenantAId));
+        }
+    }
+
+    internal sealed record RcWorld(
         Guid TenantAId,
         Guid EntityA1Id,
         Guid TenantBId,
@@ -210,6 +334,7 @@ public sealed class S18ReleaseCandidatePostgresTests
         string ControllerEmail,
         string ForeignEmail,
         string UnassignedEmail,
+        string ReaderEmail,
         Guid PeriodNovId,
         Guid CashAccountId,
         Guid RevenueAccountId,
@@ -217,12 +342,13 @@ public sealed class S18ReleaseCandidatePostgresTests
         Guid MainLocationId,
         string Password);
 
-    private static async Task<RcWorld> SeedRcWorldAsync(PostgresTestDatabaseFixture fx)
+    internal static async Task<RcWorld> SeedRcWorldAsync(PostgresTestDatabaseFixture fx)
     {
         const string pw = "Pass!word1234";
         var (ctrlId, ctrlEmail, _) = await fx.CreateTestUserAsync("ctrl.s18@test.local", "Budi RC", pw);
         var (foreignId, foreignEmail, _) = await fx.CreateTestUserAsync("foreign.s18@test.local", "Foreign RC", pw);
         var (unassignedId, unassignedEmail, _) = await fx.CreateTestUserAsync("unassigned.s18@test.local", "Unassigned RC", pw);
+        var (readerId, readerEmail, _) = await fx.CreateTestUserAsync("reader.s18@test.local", "Reader RC", pw);
 
         var now = DateTimeOffset.UtcNow.AddMinutes(-10);
         var tenantA = Guid.NewGuid();
@@ -240,6 +366,7 @@ public sealed class S18ReleaseCandidatePostgresTests
 
         db.TenantMemberships.AddRange(
             TenantMembership.Create(Guid.NewGuid(), tenantA, ctrlId, now),
+            TenantMembership.Create(Guid.NewGuid(), tenantA, readerId, now),
             TenantMembership.Create(Guid.NewGuid(), tenantB, foreignId, now));
         _ = unassignedId;
 
@@ -252,6 +379,10 @@ public sealed class S18ReleaseCandidatePostgresTests
             db.EntityAccessGrants.Add(EntityAccessGrant.Create(Guid.NewGuid(), tenantA, entityA1, ctrlId, p, now, null, now));
         }
         db.EntityAccessGrants.Add(EntityAccessGrant.Create(Guid.NewGuid(), tenantB, entityB1, foreignId, PermissionCodes.FinanceRead, now, null, now));
+        foreach (var p in new[] { PermissionCodes.WorkspaceView, PermissionCodes.FinanceRead, PermissionCodes.InventoryRead })
+        {
+            db.EntityAccessGrants.Add(EntityAccessGrant.Create(Guid.NewGuid(), tenantA, entityA1, readerId, p, now, null, now));
+        }
 
         var cash = GlAccount.Create(Guid.NewGuid(), tenantA, entityA1, "1110", "Kas & Bank", GlAccountTypes.Asset, GlAccountCategories.CashBank, null, true, false, now);
         var equity = GlAccount.Create(Guid.NewGuid(), tenantA, entityA1, "3100", "Modal Disetor", GlAccountTypes.Equity, GlAccountCategories.EquityCapital, null, true, false, now);
@@ -292,12 +423,12 @@ public sealed class S18ReleaseCandidatePostgresTests
             await tx.CommitAsync();
 
             return new RcWorld(
-                tenantA, entityA1, tenantB, entityB1, ctrlId, ctrlEmail, foreignEmail, unassignedEmail,
+                tenantA, entityA1, tenantB, entityB1, ctrlId, ctrlEmail, foreignEmail, unassignedEmail, readerEmail,
                 nov.PeriodId, cash.AccountId, rev.AccountId, item.ItemId, mainLoc.LocationId, pw);
         }
     }
 
-    private static async Task<HttpClient> SignInAndGetCsrfAsync(WebApplicationFactory<Program> factory, string email, string password)
+    internal static async Task<HttpClient> SignInAndGetCsrfAsync(WebApplicationFactory<Program> factory, string email, string password)
     {
         var client = factory.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false, HandleCookies = true });
         var csrfRes = await client.GetAsync("/api/auth/csrf");

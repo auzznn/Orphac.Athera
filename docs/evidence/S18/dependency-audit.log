@@ -1,4 +1,4 @@
-=== .NET VULNERABLE PACKAGE AUDIT ===
+# dotnet list Orphac.Athera.sln package --vulnerable --include-transitive
   Determining projects to restore...
   All projects are up-to-date for restore.
 
@@ -9,6 +9,8 @@ The given project `Orphac.Athera.Modules` has no vulnerable packages given the c
 The given project `Orphac.Athera.Api` has no vulnerable packages given the current sources.
 The given project `Orphac.Athera.UnitTests` has no vulnerable packages given the current sources.
 The given project `Orphac.Athera.IntegrationTests` has no vulnerable packages given the current sources.
+dotnet-list-exit=0
 
-=== NPM PRODUCTION DEPENDENCY AUDIT ===
+# npm --prefix apps/web audit --omit=dev
 found 0 vulnerabilities
+npm-audit-exit=0

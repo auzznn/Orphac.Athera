@@ -1,0 +1,61 @@
+
+> @orphac-athera/web@0.1.0 e2e:fresh
+> ../../scripts/dev/e2e-fresh-db.sh
+
+CREATE DATABASE
+REVOKE
+GRANT
+REVOKE
+Fresh local database (retained for inspection): athera_e2e_20261119133820_17622
+fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+      Failed executing DbCommand (13ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT "MigrationId", "ProductVersion"
+      FROM identity.__ef_migrations_history
+      ORDER BY "MigrationId";
+PostgreSQL migrations applied successfully.
+Disposable demo identities seeded successfully.
+
+> @orphac-athera/web@0.1.0 e2e
+> playwright test
+
+
+Running 31 tests using 1 worker
+
+  ✓   1 [chromium] › e2e/s00-auth.spec.ts:10:3 › S00 Authenticated Vertical Path › unauthenticated redirect, CSRF check, login failure/success, screenshots and sign out (2.3s)
+  ✓   2 [chromium] › e2e/s01-workspace.spec.ts:32:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-01 U1 sees only NUSA-JKT and hostile tenant/entity URLs fail safely with zero leak (1.3s)
+  ✓   3 [chromium] › e2e/s01-workspace.spec.ts:68:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-02 U2 navigates multi-tenant directory, switches entities and tenants cleanly, and fits mobile (1.2s)
+  ✓   4 [chromium] › e2e/s01-workspace.spec.ts:126:3 › S01 Secure Tenant and Legal-Entity Workspace › S01-E2E-03 U3 authenticated without workspaces sees accessible default-deny guidance (628ms)
+  ✓   5 [chromium] › e2e/s02-admin-approvals.spec.ts:34:3 › S02 Organization Administration, Approvals, Audit and Outbox › S02-E2E-01 U2 invites U3, U3 accepts token and gains NUSA-JKT, then U2 dispatches outbox and revokes U3 (3.0s)
+  ✓   6 [chromium] › e2e/s02-admin-approvals.spec.ts:99:3 › S02 Organization Administration, Approvals, Audit and Outbox › S02-E2E-02 U1 submits approval request, self-approval blocked in UI, and U2 approves independently (1.8s)
+  ✓   7 [chromium] › e2e/s03-partners-catalog.spec.ts:37:3 › S03 Partners, Catalogue and Unit of Measure › S03-E2E-01 U1 creates dual partner & stock item with exact UoM 3 BOX = 72 PCS and NUSA-JKT eligibility (2.5s)
+  ✓   8 [chromium] › e2e/s03-partners-catalog.spec.ts:131:3 › S03 Partners, Catalogue and Unit of Measure › S03-E2E-02 U2 on NUSA-SBY sees read-only restrictions and U1 is denied foreign SMDR master URL (1.3s)
+  ✓   9 [chromium] › e2e/s04-finance-gl.spec.ts:37:3 › S04 Financial Configuration and Immutable Posting Kernel › S04-E2E-01 U2 tries unbalanced/closed-period rejections, posts balanced journal, reverses it, and checks CoA & OD-07 tax (2.5s)
+  ✓  10 [chromium] › e2e/s04-finance-gl.spec.ts:129:3 › S04 Financial Configuration and Immutable Posting Kernel › S04-E2E-02 U2 on NUSA-SBY sees read-only GL, U1 gets 403 on NUSA-JKT finance and 404 on SMDR (1.1s)
+  ✓  11 [chromium] › e2e/s05-procurement-po.spec.ts:52:3 › S05 Purchase Orders, Approved Revisions and Four-Eyes › S05-E2E-01 U1 drafts & submits multi-line PO, self-approval is blocked, U2 approves Rev 1, U1 amends Rev 2, U2 compares diff & approves, Rev 1 unchanged, U1 short-closes (5.0s)
+  ✓  12 [chromium] › e2e/s05-procurement-po.spec.ts:187:3 › S05 Purchase Orders, Approved Revisions and Four-Eyes › S05-E2E-02 U2 sees NUSA-SBY read-only PO with Hash Snapshot, gets 403 on SMDR-BDG, and U1 gets 404 on SMDR (1.1s)
+S06 INNER CLIPPED: []
+S06 INNER CLIPPED: []
+S06 INNER CLIPPED: []
+S06 INNER CLIPPED: []
+  ✓  13 [chromium] › e2e/s06-receiving-dock.spec.ts:73:3 › S06 Dock Custody & Receiving Gate One (Unvalued) › S06-E2E-01 Partial arrival, unvalued rejection split, OD-01 overdelivery hold & release block, and zero GL/GRNI proof (4.3s)
+S06 INNER CLIPPED: []
+  ✓  14 [chromium] › e2e/s06-receiving-dock.spec.ts:234:3 › S06 Dock Custody & Receiving Gate One (Unvalued) › S06-E2E-02 U2 views NUSA-SBY seeded SJ-SBY-DEMO-001 read-only, gets 403 on SMDR-BDG, and U1 gets 404 on SMDR (1.1s)
+  ✓  15 [chromium] › e2e/s07-valued-acceptance-inventory.spec.ts:80:3 › S07 Valued Acceptance, Moving-Average Inventory & Open GRNI › S07-E2E-01 Gate 2 closed-period block, preview-before-confirm moving-average recalculation, GRNI & inventory ledger (4.0s)
+  ✓  16 [chromium] › e2e/s08-stock-locations-quality.spec.ts:80:3 › S08 Stock Availability, Warehouses, Lots & Quality Restrictions › S08-E2E-01 Catalog lot policy, Gate 2 quarantine receipt, U1/U2 SoD, partial disposition, putaway transfer & OD-10 reservations (5.2s)
+  ✓  17 [chromium] › e2e/s08-stock-locations-quality.spec.ts:381:3 › S08 Stock Availability, Warehouses, Lots & Quality Restrictions › S08-E2E-02 NUSA-SBY empty-state isolation and U1 hostile cross-tenant SMDR inventory denial (950ms)
+  ✓  18 [chromium] › e2e/s09-supplier-bills-ap.spec.ts:47:3 › S09 Supplier Invoice Three-Way Match, AP & Price Difference › S09-E2E-01 U4 drafts & submits variance bill, U2 approves/posts DEC-P2P-013 split, releases hold & verifies Inventory (4.3s)
+  ✓  19 [chromium] › e2e/s09-supplier-bills-ap.spec.ts:169:3 › S09 Supplier Invoice Three-Way Match, AP & Price Difference › S09-E2E-02 Enforces AP access denial for U1 and read-only enforcement on NUSA-SBY for U2 (932ms)
+  ✓  20 [chromium] › e2e/s10-supplier-returns-credits.spec.ts:47:3 › S10 Supplier Returns, Replacements & Financial Corrections › S10-E2E-01 M1 unvalued dock rejection executes with zero GL, issues RPA, receives replacement & Gate 2 values it (4.1s)
+  ✓  21 [chromium] › e2e/s10-supplier-returns-credits.spec.ts:165:3 › S10 Supplier Returns, Replacements & Financial Corrections › S10-E2E-02 M2 valued unbilled return posts compensating GRNI/Inventory reversal and outbound movement (2.9s)
+  ✓  22 [chromium] › e2e/s10-supplier-returns-credits.spec.ts:233:3 › S10 Supplier Returns, Replacements & Financial Corrections › S10-E2E-03 M4 blocks replacement on billed item, OD-07 enforces Nota Retur, M3 creates SCN & reduces Payable (3.6s)
+  ✓  23 [chromium] › e2e/s10-supplier-returns-credits.spec.ts:326:3 › S10 Supplier Returns, Replacements & Financial Corrections › S10-E2E-04 Enforces NUSA-SBY read-only boundary and 390x844 mobile id-ID layout without clipping (913ms)
+  ✓  24 [chromium] › e2e/s11-payments-bank-reconciliation.spec.ts:55:3 › S11 Supplier Settlement, Outbound Clearing & Bank Reconciliation › S11-E2E-01 Proposal & simulated file (0 GL), four-eyes release (Dr 2100/Cr 1120), CSV statement import & bank match (Dr 1120/Cr 1110), and read-only entity + mobile (3.2s)
+  ✓  25 [chromium] › e2e/s12-sales-orders.spec.ts:70:3 › S12 Customer Sales Orders and Commercial Commitments › S12-E2E-01 Live availability + Output VAT draft/submit (U5), four-eyes commitment approve (U2), Rev 2 amendment diff, read-only NUSA-SBY & mobile (4.2s)
+  ✓  26 [chromium] › e2e/s13-fulfillment.spec.ts:55:3 › S13 Sales Reservation, Pick and Dispatch › S13-E2E-01 Reserve UNRESTRICTED stock against approved SO-2026-00001, create & confirm Pick Order, partial dispatch with atomic weighted-average COGS (Dr 5100 / Cr 1300), confirm POD delivery, read-only NUSA-SBY & mobile (2.5s)
+  ✓  27 [chromium] › e2e/s14-billing-ar.spec.ts:86:3 › S14 Customer Billing, Output Tax & Accounts Receivable › S14-E2E-01 Sales drafts & submits partial invoice, Finance posts with Faktur Pajak (Dr 1200/Cr 4100/Cr 2210), verifies AR subledger, issues linked Credit Note (Nota Retur), read-only NUSA-SBY & mobile (2.7s)
+  ✓  28 [chromium] › e2e/s15-receivables-aging.spec.ts:42:3 › S15 Customer Receipts, Allocation & AR Aging › S15-E2E-01 Import inbound bank CREDIT CSV, confirm customer receipt with partial allocation & unapplied remainder, verify GL 1200 proof and AR Aging, read-only NUSA-SBY & mobile (1.7s)
+  ✓  29 [chromium] › e2e/s16-reports-period-close.spec.ts:51:3 › S16 Accounting Reports, Control Reconciliations & Period Close › S16-E2E-01 Reconciliation & Period Close cockpit, Trial Balance + GL Drilldown, P&L & Balance Sheet, Close + Reopen cycle, Read-only NUSA-SBY & Mobile 390px (2.5s)
+  ✓  30 [chromium] › e2e/s17-documents-evidence.spec.ts:50:3 › S17 Documents, Evidence Trails & Operational UX › S17-E2E-01 Upload & link evidence with SHA-256, inspect Exceptions/Outbox & Audit Trail, verify read-only NUSA-SBY & Mobile 390px (2.4s)
+  ✓  31 [chromium] › e2e/s18-release-candidate-uat.spec.ts:42:3 › S18 Cross-Module Release Candidate UAT & Multi-Viewport Polish Audit › S18-E2E-01 Verifies Entity Overview, P2P Payables, O2C Receivables, Accounting Reports & Documents across 1280px desktop, 768px tablet, and 390px mobile with keyboard focusability (2.1s)
+
+  31 passed (1.4m)

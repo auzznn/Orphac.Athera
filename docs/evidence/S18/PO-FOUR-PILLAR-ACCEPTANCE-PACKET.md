@@ -25,17 +25,17 @@
 | `S15` | Customer Receipts, Allocation, Unapplied & AR Aging | `CODE_COMPLETE` / `PASS` | `20e0ab2` | `ATH-CR-012` (`OD-09`) |
 | `S16` | Accounting Reports, 5-Control Reconciliations & Close | `CODE_COMPLETE` / `PASS` | `308be0e` | `ATH-CR-013` (`OD-11`, `OD-13`) |
 | `S17` | Business Documents, Signed Downloads, PDF & Audit UX | `CODE_COMPLETE` / `PASS` | `6814aec` | `ATH-CR-014` (`OD-12`) |
-| `S18` | Cross-Module UAT, Security, Concurrency & RC Runbook | `CODE_COMPLETE` / `PASS` | *Recorded in S18 commit* | All `OD-01`–`OD-13` |
+| `S18` | Cross-Module UAT, Security, Concurrency & RC Runbook | `CODE_COMPLETE` / `BLOCKED` (local checks `PASS`) | `895add3` (original); see workstream ledger for closeout SHA | All `OD-01`–`OD-13` |
 
 ## 2. Open Business Policy Decisions Register (All `OPEN` — Owner Resolution Required Before Pilot/Production)
-| CR ID | Decision IDs | Topic | Safe Default Active |
+| CR ID | Decision IDs | Topic | Engineering behavior in synthetic build (not ratified) |
 | --- | --- | --- | --- |
 | `ATH-CR-001` | `OD-02` | Four-Eyes Segregation of Duties & Role Matrix | Requester cannot approve/release own submission |
 | `ATH-CR-002` | `OD-07`, `OD-13` | Indonesian Tax Determinations & Fiscal Calendar | Effective-dated configurable codes; explicit evidence required |
 | `ATH-CR-003` | `OD-01` | PO Delivery Tolerance Policy | Exact approved quantity only (`EXACT_QTY_OD01_SAFE`) |
 | `ATH-CR-004` | `OD-04` | Moving-Average Valuation Edge Cases | Weighted-average per legal entity; zero negative stock |
 | `ATH-CR-005` | `OD-10` | Negative Stock & Reservation Policy | Strict non-negative available stock; `UNRESTRICTED` only |
-| `ATH-CR-006` | `OD-03`, `OD-08` | 3-Way Match Tolerances & AP Price Difference Split | `DEC-P2P-013` stock coverage vs PPV `5200`; variance blocks payment |
+| `ATH-CR-006` | `OD-03`, `OD-08` | 3-Way Match Tolerances & AP Price Difference Split | `DEC-P2P-013` stock coverage vs PPV `5200`; independent variance approval; payment hold optional |
 | `ATH-CR-007` | `OD-05`, `OD-07` | Supplier Returns (`M1`–`M7`), RPA & Nota Retur | Strict `M4` block on billed replacement; mandatory `Nota Retur` |
 | `ATH-CR-008` | `OD-06` | Payment Release & Simulated Bank File Clearing | Simulated payload only; zero live bank transmission; 4-stage clearing |
 | `ATH-CR-009` | `OD-09` | Sales Commercial Terms & Customer Credit Policy | Explicit approved SO commitment; four-eyes required |
@@ -44,19 +44,26 @@
 | `ATH-CR-012` | `OD-09` | Customer Receipts, Unapplied Cash & AR Aging | Bank-statement-backed receipts; explicit allocation & compensating reversal |
 | `ATH-CR-013` | `OD-11`, `OD-13` | Opening Balances Cutover & Locked Period Override | Balanced TB required; `LOCKED` period permanently frozen |
 | `ATH-CR-014` | `OD-12` | Document Retention & External Sharing | Append-only immutability; authenticated 5-min signed tokens; zero public URLs |
+| [`ATH-CR-015`](../../decisions/ATH-CR-015-live-posting-paths-under-open-decisions.md) | `OD-03`, `OD-05`, `OD-06`, `OD-07`, `OD-09` | Live Posting Paths Under Open Decisions | Five executable posting groups post immutable GL/inventory/subledger entries under engineering defaults; real-data pilot blocked until ruled |
 
 ## 3. Known Residual Risks & Operational Boundaries
 1. **No Live Bank or DJP e-Faktur Integration:** Payment files are explicitly tagged `"SIMULATED FILE · ZERO LIVE BANK TRANSFER"`, and Indonesian tax evidence (`Faktur Pajak`, `SKB`, `Nota Retur`) is captured as auditable structured evidence rather than claiming live DJP filing.
 2. **Backup Role Separation:** Because `FORCE ROW LEVEL SECURITY` constrains even table owner `athera_migrator`, scheduled `pg_dump` backups must execute under a dedicated `BYPASSRLS` backup role (documented and rehearsed in [LOCAL_AND_STAGING_OPERATIONS_RUNBOOK.md](../../runbooks/LOCAL_AND_STAGING_OPERATIONS_RUNBOOK.md)).
 3. **Production Secret Provisioning:** Local defaults (`Security:DocumentDownloadSigningKey`, local demo password) must never be reused in staging/production; `--seed-demo` automatically refuses execution when `ASPNETCORE_ENVIRONMENT=Production`.
 
+[Observability/privacy review](observability-privacy-review.md): no automatic outbox sweep after restart, no cross-tier correlation, unresolved retention. [UX review](impeccable-review.md): one-click irreversible bill posting, long mobile receiving workflow; focus smoke test only. Evidence for PRD tenant provisioning, general stock adjustments and customer invoice PDFs has not been established in this packet. The S17 evidence-pack PDF does not prove invoice PDF support. No hosted CI or deployment is evidenced here.
+
 ## 4. Human Product Owner Four-Pillar Sign-off (LEAVE BLANK UNTIL HUMAN REVIEW)
+
+Evaluation pillars per [ATH-PO-GOVERNANCE-001](../../governance/ATH-PO-GOVERNANCE-001.md).
 | Pillar | Evaluation Criteria | Status | Signer Name | Signature & Date |
 | --- | --- | --- | --- | --- |
-| **1. Business & Functional Fit** | P2P, O2C, Inventory, Indonesian Tax, Accounting & Reports match approved business scope and `OD-01`–`OD-13` resolutions | `[ ] ACCEPTED` `[ ] REVISIONS` | ___________________ | ___________________ |
-| **2. Financial & Accounting Integrity** | Balanced GL, 5/5 control account reconciliations, immutability, compensating reversals, and period close controls verified | `[ ] ACCEPTED` `[ ] REVISIONS` | ___________________ | ___________________ |
-| **3. Security, Tenancy & Recoverability** | Forced PG18 RLS (`109` tables), least-privilege `athera_app`, CSRF/same-origin sessions, signed document downloads, backup/restore verified | `[ ] ACCEPTED` `[ ] REVISIONS` | ___________________ | ___________________ |
-| **4. Operational UX & Pilot Readiness** | Bilingual `id-ID`/`en-US` clarity, desktop/tablet/mobile polish, keyboard accessibility, and staging runbook approved | `[ ] ACCEPTED` `[ ] REVISIONS` | ___________________ | ___________________ |
+| **A. Business behavior** | P2P and O2C demonstrations plus exception and tax handling match approved business scope and `OD-01`–`OD-13` resolutions | `[ ] ACCEPTED` `[ ] REVISIONS` | ___________________ | ___________________ |
+| **B. Module ownership** | Sources of truth, bounded interfaces and controlled cross-schema writes respected | `[ ] ACCEPTED` `[ ] REVISIONS` | ___________________ | ___________________ |
+| **C. Critical invariants** | Authorization, balances, idempotency, quantity conservation and immutability verified | `[ ] ACCEPTED` `[ ] REVISIONS` | ___________________ | ___________________ |
+| **D. Acceptance evidence** | Exact SHA, test/PostgreSQL/recovery logs, defects, UX and privacy evidence complete | `[ ] ACCEPTED` `[ ] REVISIONS` | ___________________ | ___________________ |
+
+**Reviewed commit SHA:** `____________________`   **Defects / exemptions noted:** `____________________`
 
 **Overall Release Candidate Decision:** `[ ] APPROVED FOR STAGING PILOT   [ ] HOLD — SEE NOTES`  
 **Product Owner Signature:** ___________________________   **Date:** ___________________________

@@ -2,13 +2,13 @@
   All projects are up-to-date for restore.
   Orphac.Athera.Modules -> /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Modules/bin/Debug/net10.0/Orphac.Athera.Modules.dll
   Orphac.Athera.Api -> /Users/macbook/Documents/orphac/Orphac.Athera/src/Orphac.Athera.Api/bin/Debug/net10.0/Orphac.Athera.Api.dll
-  Orphac.Athera.IntegrationTests -> /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/Orphac.Athera.IntegrationTests.dll
-Test run for /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/Orphac.Athera.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
   Orphac.Athera.UnitTests -> /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/bin/Debug/net10.0/Orphac.Athera.UnitTests.dll
 Test run for /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.UnitTests/bin/Debug/net10.0/Orphac.Athera.UnitTests.dll (.NETCoreApp,Version=v10.0)
+  Orphac.Athera.IntegrationTests -> /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/Orphac.Athera.IntegrationTests.dll
+Test run for /Users/macbook/Documents/orphac/Orphac.Athera/tests/Orphac.Athera.IntegrationTests/bin/Debug/net10.0/Orphac.Athera.IntegrationTests.dll (.NETCoreApp,Version=v10.0)
 A total of 1 test files matched the specified pattern.
 A total of 1 test files matched the specified pattern.
 
-Passed!  - Failed:     0, Passed:    79, Skipped:     0, Total:    79, Duration: 106 ms - Orphac.Athera.UnitTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:    79, Skipped:     0, Total:    79, Duration: 379 ms - Orphac.Athera.UnitTests.dll (net10.0)
 
-Passed!  - Failed:     0, Passed:    97, Skipped:     0, Total:    97, Duration: 4 m 39 s - Orphac.Athera.IntegrationTests.dll (net10.0)
+Passed!  - Failed:     0, Passed:   100, Skipped:     0, Total:   100, Duration: 6 m 8 s - Orphac.Athera.IntegrationTests.dll (net10.0)

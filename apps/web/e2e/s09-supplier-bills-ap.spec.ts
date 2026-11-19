@@ -63,7 +63,7 @@ test.describe("S09 Supplier Invoice Three-Way Match, AP & Price Difference", () 
     const valveGrniRow = page.locator("#ap-grni-table tbody tr", { hasText: "ITM-S09-VALVE-01" }).first();
     await expect(valveGrniRow).toBeVisible();
     await expect(valveGrniRow).toContainText("100");
-    await expect(valveGrniRow).toContainText(/Stok Pool:\s+\d+\s+PCS/);
+    await expect(valveGrniRow).toContainText(/Stok Pool:\s+40\s+PCS/);
     await assertNoLayoutClipping(page);
     await page.screenshot({ path: path.join(evidenceDir, "01-payables-overview-desktop.png"), fullPage: true });
 
@@ -86,8 +86,8 @@ test.describe("S09 Supplier Invoice Three-Way Match, AP & Price Difference", () 
 
     const previewBox = page.getByTestId("ap-live-match-preview");
     await expect(previewBox).toBeVisible();
-    await expect(previewBox).toContainText(/180\.000|200\.000/);
-    await expect(previewBox).toContainText(/320\.000|300\.000/);
+    await expect(previewBox).toContainText("200.000");
+    await expect(previewBox).toContainText("300.000");
     await expect(previewBox).toContainText("5.995.000");
     await expect(previewBox).toContainText(/Wajib Persetujuan Selisih|Approval Required/);
     await assertNoLayoutClipping(page);
@@ -151,7 +151,7 @@ test.describe("S09 Supplier Invoice Three-Way Match, AP & Price Difference", () 
     await page.goto(`/w/${TENANT_NUSA_ID}/${ENTITY_NUSA_JKT_ID}/inventory`);
     const invRow = page.locator("tbody tr", { hasText: "ITM-S09-VALVE-01" }).first();
     await expect(invRow).toBeVisible();
-    await expect(invRow).toContainText(/1\.980\.000|2\.200\.000/);
+    await expect(invRow).toContainText("2.200.000");
     await expect(invRow).toContainText("55.000");
     await invRow.getByRole("button", { name: /Buka Buku Besar|Buku Besar Dibuka|Open Ledger|Ledger Active/ }).click();
     await expect(page.locator("body")).toContainText(/Penyesuaian Harga Faktur|Invoice Price Adjustment/);
