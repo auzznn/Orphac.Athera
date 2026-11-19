@@ -3,12 +3,12 @@
 **Initial state:** 2026-11-17 | New repository / planning documents only | No code, tests, migrations or PO acceptance exist yet.
 
 - Stack: Next.js 16.4.6 + ASP.NET Core 10 + PostgreSQL 18.
-- Current target: **S15 — Customer Receipts, Allocation, AR Aging and Credits** (S00 `920bc78`, S01 `737971a`, S02 `57618ad`, S03 `287d7e5`, S04 `0fcb7b5`, S05 `d2bf6b5`, S06 `876a916`, S07 `e64f46b`, S08 `606f138`, S09 `b42150e`, S10 `0d7a969`, S11 `1b84521`, S12 `d60e309`, S13 `2633364`, S14 `b4625e8` implemented/verified, PO acceptance pending).
-- Current Git commit SHA: `b4625e8` (`greenfield/mvp`; baseline `e25008f`).
+- Current target: **S16 — Accounting Reports, Reconciliations and Period Close** (S00 `920bc78`, S01 `737971a`, S02 `57618ad`, S03 `287d7e5`, S04 `0fcb7b5`, S05 `d2bf6b5`, S06 `876a916`, S07 `e64f46b`, S08 `606f138`, S09 `b42150e`, S10 `0d7a969`, S11 `1b84521`, S12 `d60e309`, S13 `2633364`, S14 `b4625e8`, S15 `20e0ab2` implemented/verified, PO acceptance pending).
+- Current Git commit SHA: `20e0ab2` (`greenfield/mvp`; baseline `e25008f`).
 - PostgreSQL test instance: VERIFIED (`athera-greenfield-pg` healthy on `127.0.0.1:55433/athera_dev`; low-privilege `athera_app` + `athera_migrator` verified).
 - Ponytail skill availability: AVAILABLE (`v5.3.3` `full`).
 - Impeccable skill availability: AVAILABLE (`v4.9.1`).
-- First Owner acceptance document: NOT SIGNED (S00–S14 PO acceptance packets staged under `docs/evidence/S00/README.md` through `docs/evidence/S14/README.md`).
+- First Owner acceptance document: NOT SIGNED (S00–S15 PO acceptance packets staged under `docs/evidence/S00/README.md` through `docs/evidence/S15/README.md`).
 
 | Slice | Implementation | Engineering verification | PO acceptance | SHA | Blocker / evidence |
 |---|---|---|---|---|---|
@@ -27,7 +27,7 @@
 | S12 | CODE_COMPLETE | PASS | PENDING | d60e309 | [S12 Evidence Packet](../evidence/S12/README.md); [ATH-CR-009 (OD-09)](../decisions/ATH-CR-009-OD09-sales-order-commercial-terms-and-credit-policy.md) |
 | S13 | CODE_COMPLETE | PASS | PENDING | 2633364 | [S13 Evidence Packet](../evidence/S13/README.md); [ATH-CR-010 (OD-10/OD-09)](../decisions/ATH-CR-010-OD10-OD09-sales-fulfillment-pick-dispatch-policy.md) |
 | S14 | CODE_COMPLETE | PASS | PENDING | b4625e8 | [S14 Evidence Packet](../evidence/S14/README.md); [ATH-CR-011 (OD-07/OD-09)](../decisions/ATH-CR-011-OD07-OD09-customer-billing-tax-and-ar-policy.md) |
-| S15 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
+| S15 | CODE_COMPLETE | PASS | PENDING | 20e0ab2 | [S15 Evidence Packet](../evidence/S15/README.md); [ATH-CR-012 (OD-09)](../decisions/ATH-CR-012-OD09-customer-receipts-unapplied-and-ar-aging-policy.md) |
 | S16 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
 | S17 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
 | S18 | NOT_STARTED | NOT_RUN | NOT_REQUESTED | — | — |
