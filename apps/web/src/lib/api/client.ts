@@ -3302,3 +3302,153 @@ export async function reverseCustomerReceipt(
   }
   return data;
 }
+
+// ── S16: Accounting Reports, Reconciliations and Period Close ──
+
+export type TrialBalanceRowDto = components["schemas"]["TrialBalanceRowDto"];
+export type TrialBalanceReportDto = components["schemas"]["TrialBalanceReportDto"];
+export type StatementAccountLineDto = components["schemas"]["StatementAccountLineDto"];
+export type ProfitAndLossReportDto = components["schemas"]["ProfitAndLossReportDto"];
+export type BalanceSheetReportDto = components["schemas"]["BalanceSheetReportDto"];
+export type ControlReconciliationRowDto = components["schemas"]["ControlReconciliationRowDto"];
+export type AgingBucketTotalsDto = components["schemas"]["AgingBucketTotalsDto"];
+export type ReportPeriodDto = components["schemas"]["ReportPeriodDto"];
+export type PeriodCloseReviewDto = components["schemas"]["PeriodCloseReviewDto"];
+export type AccountingReportsOverviewResponse =
+  components["schemas"]["AccountingReportsOverviewResponse"];
+export type AccountLedgerEntryDto = components["schemas"]["AccountLedgerEntryDto"];
+export type AccountLedgerDrilldownResponse =
+  components["schemas"]["AccountLedgerDrilldownResponse"];
+export type ClosePeriodRequest = components["schemas"]["ClosePeriodRequest"];
+export type LockPeriodRequest = components["schemas"]["LockPeriodRequest"];
+export type ReopenPeriodRequest = components["schemas"]["ReopenPeriodRequest"];
+
+export async function fetchAccountingReportsOverview(
+  tenantId: string,
+  entityId: string,
+  options?: { periodId?: string; asOfDate?: string },
+): Promise<AccountingReportsOverviewResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/overview",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query:
+          options?.periodId || options?.asOfDate
+            ? { periodId: options.periodId, asOfDate: options.asOfDate }
+            : undefined,
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function fetchAccountLedgerDrilldown(
+  tenantId: string,
+  entityId: string,
+  accountId: string,
+  options?: { fromDate?: string; toDate?: string },
+): Promise<AccountLedgerDrilldownResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/accounts/{accountId}/ledger",
+    {
+      params: {
+        path: { tenantId, entityId, accountId },
+        query:
+          options?.fromDate || options?.toDate
+            ? { fromDate: options.fromDate, toDate: options.toDate }
+            : undefined,
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export function getTrialBalanceCsvUrl(
+  tenantId: string,
+  entityId: string,
+  periodId?: string,
+): string {
+  const qs = periodId ? `?periodId=${encodeURIComponent(periodId)}` : "";
+  return `/api/workspaces/${encodeURIComponent(tenantId)}/entities/${encodeURIComponent(entityId)}/reports/trial-balance/export.csv${qs}`;
+}
+
+export async function closeReportPeriod(
+  tenantId: string,
+  entityId: string,
+  periodId: string,
+  payload: ClosePeriodRequest,
+): Promise<PeriodCloseReviewDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/periods/{periodId}/close",
+    {
+      params: { path: { tenantId, entityId, periodId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function lockReportPeriod(
+  tenantId: string,
+  entityId: string,
+  periodId: string,
+  payload: LockPeriodRequest,
+): Promise<PeriodCloseReviewDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/periods/{periodId}/lock",
+    {
+      params: { path: { tenantId, entityId, periodId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function reopenReportPeriod(
+  tenantId: string,
+  entityId: string,
+  periodId: string,
+  payload: ReopenPeriodRequest,
+): Promise<PeriodCloseReviewDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/periods/{periodId}/reopen",
+    {
+      params: { path: { tenantId, entityId, periodId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}

@@ -406,6 +406,103 @@ public sealed class FinancialPeriod
         UpdatedAtUtc = nowUtc;
         Version++;
     }
+
+    public void ReopenFromClosed(Guid actorUserId, string reason, DateTimeOffset nowUtc)
+    {
+        GuardValidation.RequireNonEmptyGuid(actorUserId, nameof(actorUserId));
+        if (Status == FinancialPeriodStatuses.Locked)
+        {
+            throw new InvalidOperationException(
+                $"period_locked_reopen_blocked: Financial period '{PeriodCode}' is permanently LOCKED and cannot be reopened without Owner policy override (OD-13).");
+        }
+
+        if (Status != FinancialPeriodStatuses.Closed)
+        {
+            throw new InvalidOperationException(
+                $"period_not_closed: Financial period '{PeriodCode}' is '{Status}' and does not require reopening.");
+        }
+
+        CloseNote = GuardValidation.RequireName(reason, nameof(reason), 300);
+        Status = FinancialPeriodStatuses.Open;
+        UpdatedAtUtc = nowUtc;
+        Version++;
+    }
+}
+
+public static class PeriodCloseActionTypes
+{
+    public const string Closed = "CLOSED";
+    public const string Locked = "LOCKED";
+    public const string Reopened = "REOPENED";
+
+    public static readonly IReadOnlyList<string> All = [Closed, Locked, Reopened];
+}
+
+public sealed class PeriodCloseReview
+{
+    public Guid CloseReviewId { get; private set; }
+    public Guid TenantId { get; private set; }
+    public Guid LegalEntityId { get; private set; }
+    public Guid PeriodId { get; private set; }
+    public string PeriodCodeSnapshot { get; private set; } = string.Empty;
+    public string ActionType { get; private set; } = PeriodCloseActionTypes.Closed;
+    public decimal TrialBalanceDebits { get; private set; }
+    public decimal TrialBalanceCredits { get; private set; }
+    public bool IsTrialBalanceBalanced { get; private set; }
+    public int ReconciliationVarianceCount { get; private set; }
+    public decimal TotalVarianceAmount { get; private set; }
+    public decimal UnbilledGrniAmount { get; private set; }
+    public string ChecklistSummaryJson { get; private set; } = "{}";
+    public string? Reason { get; private set; }
+    public Guid ActorUserId { get; private set; }
+    public DateTimeOffset CreatedAtUtc { get; private set; }
+
+    private PeriodCloseReview() { }
+
+    public static PeriodCloseReview Create(
+        Guid closeReviewId,
+        Guid tenantId,
+        Guid legalEntityId,
+        Guid periodId,
+        string periodCodeSnapshot,
+        string actionType,
+        decimal trialBalanceDebits,
+        decimal trialBalanceCredits,
+        int reconciliationVarianceCount,
+        decimal totalVarianceAmount,
+        decimal unbilledGrniAmount,
+        string checklistSummaryJson,
+        string? reason,
+        Guid actorUserId,
+        DateTimeOffset nowUtc)
+    {
+        if (!PeriodCloseActionTypes.All.Contains(actionType, StringComparer.Ordinal))
+        {
+            throw new ArgumentException($"Unsupported period close action '{actionType}'.", nameof(actionType));
+        }
+
+        var debits = decimal.Round(trialBalanceDebits, 2, MidpointRounding.AwayFromZero);
+        var credits = decimal.Round(trialBalanceCredits, 2, MidpointRounding.AwayFromZero);
+        return new PeriodCloseReview
+        {
+            CloseReviewId = GuardValidation.RequireNonEmptyGuid(closeReviewId, nameof(closeReviewId)),
+            TenantId = GuardValidation.RequireNonEmptyGuid(tenantId, nameof(tenantId)),
+            LegalEntityId = GuardValidation.RequireNonEmptyGuid(legalEntityId, nameof(legalEntityId)),
+            PeriodId = GuardValidation.RequireNonEmptyGuid(periodId, nameof(periodId)),
+            PeriodCodeSnapshot = GuardValidation.RequireCode(periodCodeSnapshot, nameof(periodCodeSnapshot), 20),
+            ActionType = actionType,
+            TrialBalanceDebits = debits,
+            TrialBalanceCredits = credits,
+            IsTrialBalanceBalanced = debits == credits,
+            ReconciliationVarianceCount = Math.Max(0, reconciliationVarianceCount),
+            TotalVarianceAmount = decimal.Round(totalVarianceAmount, 2, MidpointRounding.AwayFromZero),
+            UnbilledGrniAmount = decimal.Round(unbilledGrniAmount, 2, MidpointRounding.AwayFromZero),
+            ChecklistSummaryJson = string.IsNullOrWhiteSpace(checklistSummaryJson) ? "{}" : checklistSummaryJson,
+            Reason = GuardValidation.NormalizeOptional(reason, 300, nameof(reason)),
+            ActorUserId = GuardValidation.RequireNonEmptyGuid(actorUserId, nameof(actorUserId)),
+            CreatedAtUtc = nowUtc
+        };
+    }
 }
 
 public static class AccountMappingValidator

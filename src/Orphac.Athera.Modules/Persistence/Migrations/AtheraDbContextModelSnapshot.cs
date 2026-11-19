@@ -4573,6 +4573,89 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.PeriodCloseReview", b =>
+                {
+                    b.Property<Guid>("CloseReviewId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("close_review_id");
+
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("action_type");
+
+                    b.Property<Guid>("ActorUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("actor_user_id");
+
+                    b.Property<string>("ChecklistSummaryJson")
+                        .IsRequired()
+                        .HasColumnType("jsonb")
+                        .HasColumnName("checklist_summary_json");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<bool>("IsTrialBalanceBalanced")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_trial_balance_balanced");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("PeriodCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("period_code_snapshot");
+
+                    b.Property<Guid>("PeriodId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("period_id");
+
+                    b.Property<string>("Reason")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("reason");
+
+                    b.Property<int>("ReconciliationVarianceCount")
+                        .HasColumnType("integer")
+                        .HasColumnName("reconciliation_variance_count");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("TotalVarianceAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total_variance_amount");
+
+                    b.Property<decimal>("TrialBalanceCredits")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("trial_balance_credits");
+
+                    b.Property<decimal>("TrialBalanceDebits")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("trial_balance_debits");
+
+                    b.Property<decimal>("UnbilledGrniAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("unbilled_grni_amount");
+
+                    b.HasKey("CloseReviewId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "PeriodId", "CreatedAtUtc")
+                        .HasDatabaseName("ix_period_close_reviews_period");
+
+                    b.ToTable("period_close_reviews", "gl", t =>
+                        {
+                            t.HasCheckConstraint("ck_period_close_reviews_action", "action_type IN ('CLOSED', 'LOCKED', 'REOPENED')");
+                        });
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.GeneralLedger.ReceiptAccrual", b =>
                 {
                     b.Property<Guid>("ReceiptAccrualId")

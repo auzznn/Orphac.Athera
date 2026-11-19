@@ -56,6 +56,7 @@ export interface Dictionary {
       billing: string;
       receivables: string;
       finance: string;
+      reports: string;
       admin: string;
     };
     lockedSuffix: string;
@@ -2217,6 +2218,129 @@ export interface Dictionary {
     receiptStatusLabels: Record<string, string>;
     errors: Record<string, string>;
   };
+  reports: {
+    heading: string;
+    lead: string;
+    backToEntity: string;
+    readOnlyNotice: string;
+    governanceTitle: string;
+    governanceBody: string;
+    periodLabel: string;
+    refreshButton: string;
+    exportCsvButton: string;
+    kpiTbBalanceLabel: string;
+    kpiTbBalancedBadge: string;
+    kpiTbUnbalancedBadge: string;
+    kpiNetIncomeLabel: string;
+    kpiTotalAssetsLabel: string;
+    kpiControlStatusLabel: string;
+    kpiAllReconciled: string;
+    kpiVariancesFound: string;
+    tabReconciliationClose: string;
+    tabTrialBalance: string;
+    tabStatements: string;
+    tabAgingSummary: string;
+    reconciliationsTitle: string;
+    reconciliationsSubtitle: string;
+    colControlAccount: string;
+    colGlBalance: string;
+    colSubledgerBalance: string;
+    colVariance: string;
+    colOpenItems: string;
+    colStatus: string;
+    colDrilldown: string;
+    drilldownButton: string;
+    periodCloseTitle: string;
+    periodCloseSubtitle: string;
+    colPeriodCode: string;
+    colDateRange: string;
+    colPeriodStatus: string;
+    colCloseNote: string;
+    colActions: string;
+    closePeriodButton: string;
+    lockPeriodButton: string;
+    reopenPeriodButton: string;
+    closeHistoryTitle: string;
+    closeHistoryEmpty: string;
+    colReviewTime: string;
+    colReviewAction: string;
+    colReviewTb: string;
+    colReviewVariances: string;
+    colReviewReason: string;
+    tbTitle: string;
+    tbSubtitle: string;
+    colAccount: string;
+    colType: string;
+    colOpeningDr: string;
+    colOpeningCr: string;
+    colPeriodDr: string;
+    colPeriodCr: string;
+    colEndingDr: string;
+    colEndingCr: string;
+    tbTotalLabel: string;
+    tbEmpty: string;
+    pnlTitle: string;
+    pnlRevenueHeading: string;
+    pnlExpenseHeading: string;
+    pnlTotalRevenue: string;
+    pnlTotalExpense: string;
+    pnlNetIncome: string;
+    bsTitle: string;
+    bsAssetHeading: string;
+    bsLiabilityHeading: string;
+    bsEquityHeading: string;
+    bsCurrentEarnings: string;
+    bsTotalAssets: string;
+    bsTotalLiabEquity: string;
+    bsBalancedBadge: string;
+    bsUnbalancedBadge: string;
+    agingTitle: string;
+    agingSubtitle: string;
+    agingApHeading: string;
+    agingArHeading: string;
+    agingCurrent: string;
+    aging1To30: string;
+    aging31To60: string;
+    aging61To90: string;
+    agingOver90: string;
+    agingTotalOpen: string;
+    agingOpenCountSuffix: string;
+    drilldownTitle: string;
+    drilldownLoading: string;
+    drilldownEmpty: string;
+    drilldownCloseButton: string;
+    colJournalNumber: string;
+    colPostingDate: string;
+    colSource: string;
+    colDescription: string;
+    colDebit: string;
+    colCredit: string;
+    colRunningBalance: string;
+    drawerCloseTitle: string;
+    drawerLockTitle: string;
+    drawerReopenTitle: string;
+    drawerNoteLabel: string;
+    drawerNotePlaceholder: string;
+    drawerReasonLabel: string;
+    drawerReasonPlaceholder: string;
+    drawerBlockOnVarianceLabel: string;
+    drawerSubmitClose: string;
+    drawerSubmitLock: string;
+    drawerSubmitReopen: string;
+    drawerCancel: string;
+    drawerBusy: string;
+    successClosed: string;
+    successLocked: string;
+    successReopened: string;
+    statusLabels: Record<string, string>;
+    reconciliationStatusLabels: Record<string, string>;
+    actionTypeLabels: Record<string, string>;
+    accountTypeLabels: Record<string, string>;
+    kpiAriaLabel: string;
+    sourceModuleLabels: Record<string, string>;
+    sourceDocumentTypeLabels: Record<string, string>;
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -2288,6 +2412,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         billing: "Penagihan & Piutang (AR)",
         receivables: "Penerimaan & Umur Piutang",
         finance: "Keuangan & GL",
+        reports: "Laporan & Tutup Buku",
         admin: "Administrasi",
       },
       lockedSuffix: "Tidak diotorisasi pada entitas ini",
@@ -2419,6 +2544,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         billing: "Penagihan Pelanggan, Pajak Keluaran & Piutang (AR)",
         receivables: "Penerimaan Pelanggan, Alokasi & Umur Piutang (AR Aging)",
         finance: "Keuangan, Pajak PPN/PPh & GL",
+        reports: "Laporan Keuangan, Rekonsiliasi Kontrol & Tutup Buku",
         admin: "Administrasi Organisasi, Undangan & Audit",
       },
     },
@@ -5216,6 +5342,193 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Izin entitas aktif Anda tidak mencukupi untuk operasi penerimaan/alokasi ini.",
       },
     },
+    reports: {
+      heading: "Laporan Akuntansi, Rekonsiliasi Kontrol & Tutup Buku",
+      lead: "Neraca Saldo, Laba Rugi, Neraca, rekonsiliasi 5 akun kontrol GL ke subledger, penelusuran jurnal, dan tata kelola tutup buku periode.",
+      backToEntity: "Kembali ke Ringkasan Entitas",
+      readOnlyNotice:
+        "Mode baca saja pada entitas aktif: Anda dapat meninjau laporan, menelusuri jurnal akun, dan mengekspor CSV, namun aksi tutup/kunci/buka ulang periode memerlukan izin keuangan terkait.",
+      governanceTitle: "Kebijakan Saldo Awal & Pembukaan Kembali Periode (OD-11 / OD-13 · Menunggu Persetujuan Pemilik)",
+      governanceBody:
+        "Tutup buku menutup posting pada periode terkait dan merekam bukti pemeriksaan permanen. Pembukaan kembali hanya diizinkan dari status CLOSED dengan alasan tertulis oleh pengelola konfigurasi keuangan; periode LOCKED terkunci permanen.",
+      periodLabel: "Periode Pelaporan",
+      refreshButton: "Muat Ulang",
+      exportCsvButton: "Ekspor CSV Neraca Saldo",
+      kpiTbBalanceLabel: "Total Debit / Kredit Neraca Saldo",
+      kpiTbBalancedBadge: "Seimbang",
+      kpiTbUnbalancedBadge: "Tidak Seimbang",
+      kpiNetIncomeLabel: "Laba / (Rugi) Bersih Periode",
+      kpiTotalAssetsLabel: "Total Aset (Neraca)",
+      kpiControlStatusLabel: "Status 5 Akun Kontrol GL",
+      kpiAllReconciled: "5/5 Terekonsiliasi",
+      kpiVariancesFound: "Selisih Ditemukan",
+      tabReconciliationClose: "Rekonsiliasi & Tutup Buku",
+      tabTrialBalance: "Neraca Saldo (TB)",
+      tabStatements: "Laba Rugi & Neraca",
+      tabAgingSummary: "Ringkasan Umur AP & AR",
+      reconciliationsTitle: "Rekonsiliasi 5 Akun Kontrol (GL vs Subledger)",
+      reconciliationsSubtitle:
+        "Membandingkan saldo buku besar terhadap subledger operasional (Kas/Bank, Piutang AR, Persediaan, GRNI, dan Hutang AP).",
+      colControlAccount: "Akun Kontrol",
+      colGlBalance: "Saldo GL",
+      colSubledgerBalance: "Saldo Subledger",
+      colVariance: "Selisih",
+      colOpenItems: "Item Terbuka",
+      colStatus: "Status",
+      colDrilldown: "Penelusuran",
+      drilldownButton: "Telusuri GL",
+      periodCloseTitle: "Daftar Periode Akuntansi & Kontrol Tutup Buku",
+      periodCloseSubtitle:
+        "Tutup periode untuk menghentikan posting baru, kunci permanen setelah tinjauan selesai, atau buka kembali periode CLOSED dengan alasan tertulis.",
+      colPeriodCode: "Periode",
+      colDateRange: "Rentang Tanggal",
+      colPeriodStatus: "Status",
+      colCloseNote: "Catatan Terakhir",
+      colActions: "Tindakan",
+      closePeriodButton: "Tutup Periode",
+      lockPeriodButton: "Kunci Permanen",
+      reopenPeriodButton: "Buka Kembali",
+      closeHistoryTitle: "Riwayat Audit Tutup Buku Periode",
+      closeHistoryEmpty: "Belum ada catatan tutup buku atau pembukaan kembali pada entitas ini.",
+      colReviewTime: "Waktu (WIB)",
+      colReviewAction: "Aksi",
+      colReviewTb: "Saldo Neraca Saldo",
+      colReviewVariances: "Selisih Kontrol",
+      colReviewReason: "Catatan / Alasan",
+      tbTitle: "Neraca Saldo (Trial Balance)",
+      tbSubtitle: "Klik baris akun untuk menelusuri seluruh jurnal sumber yang membentuk saldo periode.",
+      colAccount: "Akun",
+      colType: "Jenis",
+      colOpeningDr: "Awal (Dr)",
+      colOpeningCr: "Awal (Cr)",
+      colPeriodDr: "Mutasi (Dr)",
+      colPeriodCr: "Mutasi (Cr)",
+      colEndingDr: "Akhir (Dr)",
+      colEndingCr: "Akhir (Cr)",
+      tbTotalLabel: "Total Neraca Saldo",
+      tbEmpty: "Belum ada akun GL aktif pada entitas ini.",
+      pnlTitle: "Laporan Laba Rugi (Profit & Loss)",
+      pnlRevenueHeading: "Pendapatan",
+      pnlExpenseHeading: "Beban & HPP",
+      pnlTotalRevenue: "Total Pendapatan",
+      pnlTotalExpense: "Total Beban",
+      pnlNetIncome: "Laba / (Rugi) Bersih",
+      bsTitle: "Laporan Posisi Keuangan (Neraca)",
+      bsAssetHeading: "Aset",
+      bsLiabilityHeading: "Liabilitas",
+      bsEquityHeading: "Ekuitas",
+      bsCurrentEarnings: "Laba / (Rugi) Tahun Berjalan",
+      bsTotalAssets: "Total Aset",
+      bsTotalLiabEquity: "Total Liabilitas & Ekuitas",
+      bsBalancedBadge: "Neraca Seimbang",
+      bsUnbalancedBadge: "Selisih Neraca",
+      agingTitle: "Ringkasan Umur Hutang (AP) & Piutang (AR)",
+      agingSubtitle: "Distribusi saldo terbuka berdasarkan jatuh tempo per tanggal akhir periode aktif.",
+      agingApHeading: "Umur Hutang Usaha (AP)",
+      agingArHeading: "Umur Piutang Usaha (AR)",
+      agingCurrent: "Belum Jatuh Tempo",
+      aging1To30: "1–30 Hari",
+      aging31To60: "31–60 Hari",
+      aging61To90: "61–90 Hari",
+      agingOver90: "> 90 Hari",
+      agingTotalOpen: "Total Terbuka",
+      agingOpenCountSuffix: "dokumen terbuka",
+      drilldownTitle: "Penelusuran Buku Besar Akun",
+      drilldownLoading: "Memuat mutasi jurnal akun...",
+      drilldownEmpty: "Tidak ada baris jurnal terposting untuk akun ini pada periode terpilih.",
+      drilldownCloseButton: "Tutup Panel",
+      colJournalNumber: "Nomor Jurnal",
+      colPostingDate: "Tanggal",
+      colSource: "Modul / Sumber",
+      colDescription: "Keterangan",
+      colDebit: "Debit",
+      colCredit: "Kredit",
+      colRunningBalance: "Saldo Berjalan",
+      drawerCloseTitle: "Tutup Periode Akuntansi",
+      drawerLockTitle: "Kunci Permanen Periode Akuntansi",
+      drawerReopenTitle: "Buka Kembali Periode Tertutup",
+      drawerNoteLabel: "Catatan Tutup Buku (Opsional)",
+      drawerNotePlaceholder: "Contoh: Rekonsiliasi 5 akun kontrol selesai, siap tutup bulan.",
+      drawerReasonLabel: "Alasan Pembukaan Kembali (Wajib)",
+      drawerReasonPlaceholder: "Contoh: Jurnal penyesuaian faktur akhir bulan sesuai persetujuan Controller.",
+      drawerBlockOnVarianceLabel: "Blokir tutup buku jika masih ada selisih akun kontrol",
+      drawerSubmitClose: "Konfirmasi Tutup Periode",
+      drawerSubmitLock: "Konfirmasi Kunci Permanen",
+      drawerSubmitReopen: "Konfirmasi Buka Kembali",
+      drawerCancel: "Batal",
+      drawerBusy: "Memproses...",
+      successClosed: "Periode berhasil ditutup dan bukti pemeriksaan telah direkam.",
+      successLocked: "Periode berhasil dikunci secara permanen (LOCKED).",
+      successReopened: "Periode berhasil dibuka kembali (OPEN) dengan jejak audit.",
+      statusLabels: {
+        OPEN: "Terbuka",
+        CLOSED: "Tertutup",
+        LOCKED: "Terkunci Permanen",
+      },
+      reconciliationStatusLabels: {
+        RECONCILED: "Terekonsiliasi",
+        VARIANCE: "Ada Selisih",
+        UNMAPPED: "Belum Dipetakan",
+      },
+      actionTypeLabels: {
+        CLOSED: "Ditutup",
+        LOCKED: "Dikunci Permanen",
+        REOPENED: "Dibuka Kembali",
+      },
+      accountTypeLabels: {
+        ASSET: "Aset",
+        LIABILITY: "Liabilitas",
+        EQUITY: "Ekuitas",
+        REVENUE: "Pendapatan",
+        EXPENSE: "Beban",
+      },
+      kpiAriaLabel: "Ringkasan KPI Akuntansi",
+      sourceModuleLabels: {
+        DEMO_SEED: "Saldo Awal",
+        MANUAL_GL: "Jurnal Manual",
+        GL_REVERSAL: "Pembalikan GL",
+        INVENTORY: "Persediaan",
+        PROCUREMENT: "Pengadaan",
+        AP: "Hutang Usaha (AP)",
+        PAYABLES: "Hutang Usaha (AP)",
+        CASH: "Kas & Bank",
+        PAYMENTS: "Pembayaran & Bank",
+        FULFILLMENT: "Pengiriman",
+        BILLING: "Penagihan",
+        AR: "Piutang Usaha (AR)",
+        RECEIVABLES: "Piutang Usaha (AR)",
+      },
+      sourceDocumentTypeLabels: {
+        OPENING_SEED: "Saldo Awal",
+        MANUAL_JOURNAL: "Jurnal Umum",
+        JOURNAL_REVERSAL: "Jurnal Pembalik",
+        VALUED_ACCEPTANCE: "Penerimaan Bernilai",
+        SUPPLIER_INVOICE: "Faktur Pemasok",
+        SUPPLIER_RETURN: "Retur Pemasok",
+        SUPPLIER_CREDIT_NOTE: "Nota Kredit Pemasok",
+        SUPPLIER_PAYMENT: "Pembayaran Pemasok",
+        BANK_PAYMENT_RECONCILIATION: "Rekonsiliasi Bank",
+        BANK_PAYMENT_REJECTION: "Penolakan Bank",
+        SALES_SHIPMENT: "Pengiriman Penjualan",
+        CUSTOMER_INVOICE: "Faktur Pelanggan",
+        CUSTOMER_CREDIT_NOTE: "Nota Kredit Pelanggan",
+        CUSTOMER_RECEIPT: "Penerimaan Pelanggan",
+        CUSTOMER_RECEIPT_REVERSAL: "Pembalikan Penerimaan",
+      },
+      errors: {
+        period_close_control_variance:
+          "Penutupan periode diblokir karena masih terdapat selisih pada akun kontrol GL.",
+        period_not_open: "Periode tidak dalam status OPEN sehingga tidak dapat ditutup.",
+        period_must_be_closed_before_lock:
+          "Periode harus berstatus CLOSED terlebih dahulu sebelum dikunci permanen.",
+        period_locked_reopen_blocked:
+          "Periode berstatus LOCKED terkunci permanen dan tidak dapat dibuka kembali tanpa kebijakan Pemilik (OD-13).",
+        period_reopen_reason_required:
+          "Alasan tertulis wajib diisi untuk membuka kembali periode yang sudah ditutup.",
+        insufficient_entity_permission:
+          "Izin entitas aktif Anda tidak mencukupi untuk menjalankan aksi periode ini.",
+      },
+    },
   },
   "en-US": {
     appName: "Orphac Athera",
@@ -5285,6 +5598,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         billing: "Billing & AR",
         receivables: "Receipts & AR Aging",
         finance: "Finance & GL",
+        reports: "Reports & Period Close",
         admin: "Administration",
       },
       lockedSuffix: "Not granted in active entity",
@@ -5416,6 +5730,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         billing: "Customer Billing, Output Tax & Accounts Receivable",
         receivables: "Customer Receipts, Allocation & AR Aging",
         finance: "Finance, Indonesian Tax & GL",
+        reports: "Financial Statements, Control Reconciliations & Period Close",
         admin: "Organization Administration & Audit",
       },
     },
@@ -8211,6 +8526,193 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "The accounting period for this transaction date is closed.",
         insufficient_entity_permission:
           "Your active role grants do not permit performing this receipt or allocation operation.",
+      },
+    },
+    reports: {
+      heading: "Accounting Reports, Control Reconciliations & Period Close",
+      lead: "Trial Balance, Profit & Loss, Balance Sheet, 5-control GL-to-subledger reconciliations, source-linked drilldown, and audited period close governance.",
+      backToEntity: "Back to Entity Overview",
+      readOnlyNotice:
+        "Read-only mode in active entity: you can inspect statements, drill into GL journals, and export CSV, while period close/lock/reopen actions require finance permissions.",
+      governanceTitle: "Opening Balances & Period Reopen Policy (OD-11 / OD-13 · Pending Owner Sign-off)",
+      governanceBody:
+        "Closing a period blocks new postings and records an immutable close-review snapshot. Reopening is permitted only from CLOSED with a mandatory written reason; LOCKED periods are permanently frozen.",
+      periodLabel: "Reporting Period",
+      refreshButton: "Refresh",
+      exportCsvButton: "Export Trial Balance CSV",
+      kpiTbBalanceLabel: "Trial Balance Debits / Credits",
+      kpiTbBalancedBadge: "Balanced",
+      kpiTbUnbalancedBadge: "Unbalanced",
+      kpiNetIncomeLabel: "Period Net Income / (Loss)",
+      kpiTotalAssetsLabel: "Total Assets (Balance Sheet)",
+      kpiControlStatusLabel: "5 GL Control Accounts",
+      kpiAllReconciled: "5/5 Reconciled",
+      kpiVariancesFound: "Variance Detected",
+      tabReconciliationClose: "Reconciliation & Close",
+      tabTrialBalance: "Trial Balance",
+      tabStatements: "P&L & Balance Sheet",
+      tabAgingSummary: "AP & AR Aging Summary",
+      reconciliationsTitle: "5-Control Account Reconciliations (GL vs Subledger)",
+      reconciliationsSubtitle:
+        "Compares posted General Ledger control balances against operational subledgers (Cash/Bank, AR, Inventory, GRNI, and AP).",
+      colControlAccount: "Control Account",
+      colGlBalance: "GL Balance",
+      colSubledgerBalance: "Subledger Balance",
+      colVariance: "Variance",
+      colOpenItems: "Open Items",
+      colStatus: "Status",
+      colDrilldown: "Drilldown",
+      drilldownButton: "Inspect GL",
+      periodCloseTitle: "Financial Periods & Close Controls",
+      periodCloseSubtitle:
+        "Close a period to block further postings, permanently lock after review, or reopen a CLOSED period with written justification.",
+      colPeriodCode: "Period",
+      colDateRange: "Date Range",
+      colPeriodStatus: "Status",
+      colCloseNote: "Latest Note",
+      colActions: "Actions",
+      closePeriodButton: "Close Period",
+      lockPeriodButton: "Lock Permanently",
+      reopenPeriodButton: "Reopen",
+      closeHistoryTitle: "Period Close Audit History",
+      closeHistoryEmpty: "No period close or reopen reviews recorded yet in this entity.",
+      colReviewTime: "Timestamp (WIB)",
+      colReviewAction: "Action",
+      colReviewTb: "Trial Balance Total",
+      colReviewVariances: "Control Variances",
+      colReviewReason: "Note / Reason",
+      tbTitle: "Trial Balance",
+      tbSubtitle: "Select any account row to drill down into the underlying posted GL journals.",
+      colAccount: "Account",
+      colType: "Type",
+      colOpeningDr: "Opening (Dr)",
+      colOpeningCr: "Opening (Cr)",
+      colPeriodDr: "Period (Dr)",
+      colPeriodCr: "Period (Cr)",
+      colEndingDr: "Ending (Dr)",
+      colEndingCr: "Ending (Cr)",
+      tbTotalLabel: "Trial Balance Total",
+      tbEmpty: "No active GL accounts found in this entity.",
+      pnlTitle: "Profit & Loss Statement",
+      pnlRevenueHeading: "Revenue",
+      pnlExpenseHeading: "Cost of Goods Sold & Expenses",
+      pnlTotalRevenue: "Total Revenue",
+      pnlTotalExpense: "Total Expense",
+      pnlNetIncome: "Net Income / (Loss)",
+      bsTitle: "Balance Sheet",
+      bsAssetHeading: "Assets",
+      bsLiabilityHeading: "Liabilities",
+      bsEquityHeading: "Equity",
+      bsCurrentEarnings: "Current Period Earnings",
+      bsTotalAssets: "Total Assets",
+      bsTotalLiabEquity: "Total Liabilities & Equity",
+      bsBalancedBadge: "Balanced",
+      bsUnbalancedBadge: "Out of Balance",
+      agingTitle: "AP & AR Aging Summary",
+      agingSubtitle: "Open balance distribution by due-date bucket as of the selected period end date.",
+      agingApHeading: "Accounts Payable (AP) Aging",
+      agingArHeading: "Accounts Receivable (AR) Aging",
+      agingCurrent: "Current",
+      aging1To30: "1–30 Days",
+      aging31To60: "31–60 Days",
+      aging61To90: "61–90 Days",
+      agingOver90: "> 90 Days",
+      agingTotalOpen: "Total Open",
+      agingOpenCountSuffix: "open items",
+      drilldownTitle: "GL Account Ledger Drilldown",
+      drilldownLoading: "Loading posted journal lines...",
+      drilldownEmpty: "No posted journal entries found for this account in the selected range.",
+      drilldownCloseButton: "Close Panel",
+      colJournalNumber: "Journal #",
+      colPostingDate: "Date",
+      colSource: "Module / Source",
+      colDescription: "Description",
+      colDebit: "Debit",
+      colCredit: "Credit",
+      colRunningBalance: "Running Balance",
+      drawerCloseTitle: "Close Financial Period",
+      drawerLockTitle: "Permanently Lock Financial Period",
+      drawerReopenTitle: "Reopen Closed Period",
+      drawerNoteLabel: "Close Note (Optional)",
+      drawerNotePlaceholder: "e.g. All 5 control accounts reconciled; ready for month-end close.",
+      drawerReasonLabel: "Reopen Justification (Required)",
+      drawerReasonPlaceholder: "e.g. Late month-end adjustment approved by Group Controller.",
+      drawerBlockOnVarianceLabel: "Block period close if any control account variance exists",
+      drawerSubmitClose: "Confirm Close Period",
+      drawerSubmitLock: "Confirm Permanent Lock",
+      drawerSubmitReopen: "Confirm Reopen Period",
+      drawerCancel: "Cancel",
+      drawerBusy: "Processing...",
+      successClosed: "Financial period closed and immutable close-review snapshot recorded.",
+      successLocked: "Financial period permanently locked (LOCKED).",
+      successReopened: "Financial period reopened (OPEN) with audit trail.",
+      statusLabels: {
+        OPEN: "Open",
+        CLOSED: "Closed",
+        LOCKED: "Locked",
+      },
+      reconciliationStatusLabels: {
+        RECONCILED: "Reconciled",
+        VARIANCE: "Variance",
+        UNMAPPED: "Unmapped",
+      },
+      actionTypeLabels: {
+        CLOSED: "Closed",
+        LOCKED: "Locked",
+        REOPENED: "Reopened",
+      },
+      accountTypeLabels: {
+        ASSET: "Asset",
+        LIABILITY: "Liability",
+        EQUITY: "Equity",
+        REVENUE: "Revenue",
+        EXPENSE: "Expense",
+      },
+      kpiAriaLabel: "Accounting KPI Summary",
+      sourceModuleLabels: {
+        DEMO_SEED: "Opening Seed",
+        MANUAL_GL: "Manual GL",
+        GL_REVERSAL: "GL Reversal",
+        INVENTORY: "Inventory",
+        PROCUREMENT: "Procurement",
+        AP: "Accounts Payable",
+        PAYABLES: "Accounts Payable",
+        CASH: "Cash & Bank",
+        PAYMENTS: "Payments & Bank",
+        FULFILLMENT: "Fulfillment",
+        BILLING: "Billing",
+        AR: "Accounts Receivable",
+        RECEIVABLES: "Accounts Receivable",
+      },
+      sourceDocumentTypeLabels: {
+        OPENING_SEED: "Opening Balance",
+        MANUAL_JOURNAL: "Manual Journal",
+        JOURNAL_REVERSAL: "Reversal Entry",
+        VALUED_ACCEPTANCE: "Valued Acceptance",
+        SUPPLIER_INVOICE: "Supplier Invoice",
+        SUPPLIER_RETURN: "Supplier Return",
+        SUPPLIER_CREDIT_NOTE: "Supplier Credit Note",
+        SUPPLIER_PAYMENT: "Supplier Payment",
+        BANK_PAYMENT_RECONCILIATION: "Bank Reconciliation",
+        BANK_PAYMENT_REJECTION: "Bank Rejection",
+        SALES_SHIPMENT: "Sales Dispatch",
+        CUSTOMER_INVOICE: "Customer Invoice",
+        CUSTOMER_CREDIT_NOTE: "Customer Credit Note",
+        CUSTOMER_RECEIPT: "Customer Receipt",
+        CUSTOMER_RECEIPT_REVERSAL: "Receipt Reversal",
+      },
+      errors: {
+        period_close_control_variance:
+          "Period close blocked because one or more GL control accounts have an unresolved variance.",
+        period_not_open: "Period is not OPEN and cannot be closed.",
+        period_must_be_closed_before_lock:
+          "Period must be CLOSED before it can be permanently locked.",
+        period_locked_reopen_blocked:
+          "LOCKED periods are permanently frozen and cannot be reopened without Owner policy override (OD-13).",
+        period_reopen_reason_required:
+          "A written justification is mandatory to reopen a closed financial period.",
+        insufficient_entity_permission:
+          "Your active entity role grants do not permit performing this period action.",
       },
     },
   },

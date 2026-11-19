@@ -12471,6 +12471,477 @@
           }
         }
       }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/overview": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetAccountingReportsOverview",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "periodId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "asOfDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountingReportsOverviewResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/accounts/{accountId}/ledger": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "GetAccountLedgerDrilldown",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "accountId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "toDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountLedgerDrilldownResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/trial-balance/export.csv": {
+      "get": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ExportTrialBalanceCsv",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "periodId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/periods/{periodId}/close": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "CloseReportPeriod",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "periodId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ClosePeriodRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeriodCloseReviewDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/periods/{periodId}/lock": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "LockReportPeriod",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "periodId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "$ref": "#/components/schemas/LockPeriodRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeriodCloseReviewDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/periods/{periodId}/reopen": {
+      "post": {
+        "tags": [
+          "Orphac.Athera.Api"
+        ],
+        "operationId": "ReopenReportPeriod",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "periodId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReopenPeriodRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeriodCloseReviewDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -12825,6 +13296,161 @@
           }
         }
       },
+      "AccountingReportsOverviewResponse": {
+        "required": [
+          "canClosePeriod",
+          "canLockOrReopen",
+          "trialBalance",
+          "profitAndLoss",
+          "balanceSheet",
+          "reconciliations",
+          "apAging",
+          "arAging",
+          "periods",
+          "closeReviews"
+        ],
+        "type": "object",
+        "properties": {
+          "canClosePeriod": {
+            "type": "boolean"
+          },
+          "canLockOrReopen": {
+            "type": "boolean"
+          },
+          "trialBalance": {
+            "$ref": "#/components/schemas/TrialBalanceReportDto"
+          },
+          "profitAndLoss": {
+            "$ref": "#/components/schemas/ProfitAndLossReportDto"
+          },
+          "balanceSheet": {
+            "$ref": "#/components/schemas/BalanceSheetReportDto"
+          },
+          "reconciliations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ControlReconciliationRowDto"
+            }
+          },
+          "apAging": {
+            "$ref": "#/components/schemas/AgingBucketTotalsDto"
+          },
+          "arAging": {
+            "$ref": "#/components/schemas/AgingBucketTotalsDto"
+          },
+          "periods": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReportPeriodDto"
+            }
+          },
+          "closeReviews": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PeriodCloseReviewDto"
+            }
+          }
+        }
+      },
+      "AccountLedgerDrilldownResponse": {
+        "required": [
+          "accountId",
+          "accountCode",
+          "accountName",
+          "normalBalance",
+          "entries"
+        ],
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accountCode": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "normalBalance": {
+            "type": "string"
+          },
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountLedgerEntryDto"
+            }
+          }
+        }
+      },
+      "AccountLedgerEntryDto": {
+        "required": [
+          "journalId",
+          "journalNumber",
+          "postingDate",
+          "entryKind",
+          "sourceModule",
+          "sourceDocumentType",
+          "sourceDocumentId",
+          "description",
+          "debitAmount",
+          "creditAmount",
+          "runningBalance"
+        ],
+        "type": "object",
+        "properties": {
+          "journalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "journalNumber": {
+            "type": "string"
+          },
+          "postingDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "entryKind": {
+            "type": "string"
+          },
+          "sourceModule": {
+            "type": "string"
+          },
+          "sourceDocumentType": {
+            "type": "string"
+          },
+          "sourceDocumentId": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "debitAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "creditAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "runningBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
       "AccountMappingDto": {
         "required": [
           "mappingId",
@@ -12950,6 +13576,76 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "AgingBucketTotalsDto": {
+        "required": [
+          "currentAmount",
+          "days1To30Amount",
+          "days31To60Amount",
+          "days61To90Amount",
+          "over90Amount",
+          "totalOpenAmount",
+          "openItemCount"
+        ],
+        "type": "object",
+        "properties": {
+          "currentAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "days1To30Amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "days31To60Amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "days61To90Amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "over90Amount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalOpenAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "openItemCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
           }
         }
       },
@@ -13459,6 +14155,83 @@
           },
           "csrfToken": {
             "type": "string"
+          }
+        }
+      },
+      "BalanceSheetReportDto": {
+        "required": [
+          "totalAssets",
+          "totalLiabilities",
+          "totalEquity",
+          "currentEarnings",
+          "totalLiabilitiesAndEquity",
+          "isBalanced",
+          "assetLines",
+          "liabilityLines",
+          "equityLines"
+        ],
+        "type": "object",
+        "properties": {
+          "totalAssets": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalLiabilities": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalEquity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "currentEarnings": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalLiabilitiesAndEquity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "isBalanced": {
+            "type": "boolean"
+          },
+          "assetLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatementAccountLineDto"
+            }
+          },
+          "liabilityLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatementAccountLineDto"
+            }
+          },
+          "equityLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatementAccountLineDto"
+            }
           }
         }
       },
@@ -14358,6 +15131,24 @@
           }
         }
       },
+      "ClosePeriodRequest": {
+        "required": [
+          "note"
+        ],
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "blockOnVariance": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
       "ConfirmCustomerReceiptRequest": {
         "required": [
           "bankStatementLineId",
@@ -14447,6 +15238,87 @@
             "type": "string"
           },
           "evidenceReference": {
+            "type": "string"
+          }
+        }
+      },
+      "ControlReconciliationRowDto": {
+        "required": [
+          "purposeCode",
+          "controlLabel",
+          "accountCode",
+          "accountName",
+          "accountId",
+          "glBalance",
+          "subledgerBalance",
+          "varianceAmount",
+          "status",
+          "openItemCount",
+          "explanation"
+        ],
+        "type": "object",
+        "properties": {
+          "purposeCode": {
+            "type": "string"
+          },
+          "controlLabel": {
+            "type": "string"
+          },
+          "accountCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "accountName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "accountId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "glBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "subledgerBalance": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "varianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "status": {
+            "type": "string"
+          },
+          "openItemCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "explanation": {
             "type": "string"
           }
         }
@@ -20768,6 +21640,20 @@
           }
         }
       },
+      "LockPeriodRequest": {
+        "required": [
+          "note"
+        ],
+        "type": "object",
+        "properties": {
+          "note": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "LoginRequest": {
         "required": [
           "email",
@@ -22204,6 +23090,92 @@
           }
         }
       },
+      "PeriodCloseReviewDto": {
+        "required": [
+          "closeReviewId",
+          "periodId",
+          "periodCode",
+          "actionType",
+          "trialBalanceDebits",
+          "trialBalanceCredits",
+          "isTrialBalanceBalanced",
+          "reconciliationVarianceCount",
+          "totalVarianceAmount",
+          "unbilledGrniAmount",
+          "reason",
+          "createdAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "closeReviewId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "periodId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "periodCode": {
+            "type": "string"
+          },
+          "actionType": {
+            "type": "string"
+          },
+          "trialBalanceDebits": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "trialBalanceCredits": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "isTrialBalanceBalanced": {
+            "type": "boolean"
+          },
+          "reconciliationVarianceCount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalVarianceAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unbilledGrniAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "PickLineDto": {
         "required": [
           "pickLineId",
@@ -23302,6 +24274,54 @@
           },
           "reviewStatus": {
             "type": "string"
+          }
+        }
+      },
+      "ProfitAndLossReportDto": {
+        "required": [
+          "totalRevenue",
+          "totalExpense",
+          "netIncome",
+          "revenueLines",
+          "expenseLines"
+        ],
+        "type": "object",
+        "properties": {
+          "totalRevenue": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalExpense": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "netIncome": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "revenueLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatementAccountLineDto"
+            }
+          },
+          "expenseLines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StatementAccountLineDto"
+            }
           }
         }
       },
@@ -25376,6 +26396,17 @@
           }
         }
       },
+      "ReopenPeriodRequest": {
+        "required": [
+          "reason"
+        ],
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string"
+          }
+        }
+      },
       "ReplacementAuthorizationDto": {
         "required": [
           "replacementAuthorizationId",
@@ -25500,6 +26531,51 @@
           },
           "updatedAtUtc": {
             "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ReportPeriodDto": {
+        "required": [
+          "periodId",
+          "periodCode",
+          "startDate",
+          "endDate",
+          "status",
+          "closeNote",
+          "closedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "periodId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "periodCode": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string"
+          },
+          "closeNote": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "closedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
             "format": "date-time"
           }
         }
@@ -27777,6 +28853,39 @@
             "format": "double"
           },
           "orderedBaseQtyDelta": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "StatementAccountLineDto": {
+        "required": [
+          "accountId",
+          "accountCode",
+          "accountName",
+          "accountType",
+          "amount"
+        ],
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accountCode": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "accountType": {
+            "type": "string"
+          },
+          "amount": {
             "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
             "type": [
               "number",
@@ -30744,6 +31853,182 @@
               "null",
               "string"
             ]
+          }
+        }
+      },
+      "TrialBalanceReportDto": {
+        "required": [
+          "periodId",
+          "periodCode",
+          "startDate",
+          "endDate",
+          "totalOpeningDebit",
+          "totalOpeningCredit",
+          "totalPeriodDebit",
+          "totalPeriodCredit",
+          "totalEndingDebit",
+          "totalEndingCredit",
+          "isBalanced",
+          "rows"
+        ],
+        "type": "object",
+        "properties": {
+          "periodId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "periodCode": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "totalOpeningDebit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalOpeningCredit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalPeriodDebit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalPeriodCredit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalEndingDebit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalEndingCredit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "isBalanced": {
+            "type": "boolean"
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrialBalanceRowDto"
+            }
+          }
+        }
+      },
+      "TrialBalanceRowDto": {
+        "required": [
+          "accountId",
+          "accountCode",
+          "accountName",
+          "accountType",
+          "normalBalance",
+          "openingDebit",
+          "openingCredit",
+          "periodDebit",
+          "periodCredit",
+          "endingDebit",
+          "endingCredit"
+        ],
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accountCode": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "accountType": {
+            "type": "string"
+          },
+          "normalBalance": {
+            "type": "string"
+          },
+          "openingDebit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "openingCredit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "periodDebit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "periodCredit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "endingDebit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "endingCredit": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },

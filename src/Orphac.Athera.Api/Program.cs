@@ -162,6 +162,7 @@ app.MapSalesOrdersEndpoints();
 app.MapFulfillmentEndpoints();
 app.MapBillingEndpoints();
 app.MapReceivablesEndpoints();
+app.MapReportsEndpoints();
 
 if (isMigrateMode)
 {

@@ -1972,6 +1972,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingReportsOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/accounts/{accountId}/ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountLedgerDrilldown"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/trial-balance/export.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ExportTrialBalanceCsv"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/periods/{periodId}/close": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CloseReportPeriod"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/periods/{periodId}/lock": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["LockReportPeriod"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/reports/periods/{periodId}/reopen": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReopenReportPeriod"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2061,6 +2157,44 @@ export interface components {
             notes: null | string;
             lines: components["schemas"]["AcceptReceiptLineRequest"][];
         };
+        AccountingReportsOverviewResponse: {
+            canClosePeriod: boolean;
+            canLockOrReopen: boolean;
+            trialBalance: components["schemas"]["TrialBalanceReportDto"];
+            profitAndLoss: components["schemas"]["ProfitAndLossReportDto"];
+            balanceSheet: components["schemas"]["BalanceSheetReportDto"];
+            reconciliations: components["schemas"]["ControlReconciliationRowDto"][];
+            apAging: components["schemas"]["AgingBucketTotalsDto"];
+            arAging: components["schemas"]["AgingBucketTotalsDto"];
+            periods: components["schemas"]["ReportPeriodDto"][];
+            closeReviews: components["schemas"]["PeriodCloseReviewDto"][];
+        };
+        AccountLedgerDrilldownResponse: {
+            /** Format: uuid */
+            accountId: string;
+            accountCode: string;
+            accountName: string;
+            normalBalance: string;
+            entries: components["schemas"]["AccountLedgerEntryDto"][];
+        };
+        AccountLedgerEntryDto: {
+            /** Format: uuid */
+            journalId: string;
+            journalNumber: string;
+            /** Format: date */
+            postingDate: string;
+            entryKind: string;
+            sourceModule: string;
+            sourceDocumentType: string;
+            sourceDocumentId: string;
+            description: string;
+            /** Format: double */
+            debitAmount: number | string;
+            /** Format: double */
+            creditAmount: number | string;
+            /** Format: double */
+            runningBalance: number | string;
+        };
         AccountMappingDto: {
             /** Format: uuid */
             mappingId: string;
@@ -2088,6 +2222,22 @@ export interface components {
             outboxSummary: components["schemas"]["OutboxSummaryDto"];
             availablePermissions: string[];
             availableRoleTemplates: string[];
+        };
+        AgingBucketTotalsDto: {
+            /** Format: double */
+            currentAmount: number | string;
+            /** Format: double */
+            days1To30Amount: number | string;
+            /** Format: double */
+            days31To60Amount: number | string;
+            /** Format: double */
+            days61To90Amount: number | string;
+            /** Format: double */
+            over90Amount: number | string;
+            /** Format: double */
+            totalOpenAmount: number | string;
+            /** Format: int32 */
+            openItemCount: number | string;
         };
         AllocateCustomerReceiptRequest: {
             allocations: components["schemas"]["ReceiptAllocationLineRequest"][];
@@ -2217,6 +2367,22 @@ export interface components {
         AuthSessionResponse: {
             user: components["schemas"]["CurrentUserResponse"];
             csrfToken: string;
+        };
+        BalanceSheetReportDto: {
+            /** Format: double */
+            totalAssets: number | string;
+            /** Format: double */
+            totalLiabilities: number | string;
+            /** Format: double */
+            totalEquity: number | string;
+            /** Format: double */
+            currentEarnings: number | string;
+            /** Format: double */
+            totalLiabilitiesAndEquity: number | string;
+            isBalanced: boolean;
+            assetLines: components["schemas"]["StatementAccountLineDto"][];
+            liabilityLines: components["schemas"]["StatementAccountLineDto"][];
+            equityLines: components["schemas"]["StatementAccountLineDto"][];
         };
         BankAccountDto: {
             /** Format: uuid */
@@ -2450,6 +2616,11 @@ export interface components {
         CloseOrCancelSoRequest: {
             reason: string;
         };
+        ClosePeriodRequest: {
+            note: null | string;
+            /** @default true */
+            blockOnVariance: boolean;
+        };
         ConfirmCustomerReceiptRequest: {
             /** Format: uuid */
             bankStatementLineId: string;
@@ -2473,6 +2644,24 @@ export interface components {
         ConfirmShipmentDeliveryRequest: {
             confirmedByName: string;
             evidenceReference: string;
+        };
+        ControlReconciliationRowDto: {
+            purposeCode: string;
+            controlLabel: string;
+            accountCode: null | string;
+            accountName: null | string;
+            /** Format: uuid */
+            accountId: null | string;
+            /** Format: double */
+            glBalance: number | string;
+            /** Format: double */
+            subledgerBalance: number | string;
+            /** Format: double */
+            varianceAmount: number | string;
+            status: string;
+            /** Format: int32 */
+            openItemCount: number | string;
+            explanation: string;
         };
         ConvertQuantityPreviewRequest: {
             /** Format: uuid */
@@ -4093,6 +4282,9 @@ export interface components {
             status: string;
             permissions: string[];
         };
+        LockPeriodRequest: {
+            note: null | string;
+        };
         LoginRequest: {
             email: string;
             password: string;
@@ -4442,6 +4634,28 @@ export interface components {
             /** Format: date-time */
             serverTimestampUtc: string;
         };
+        PeriodCloseReviewDto: {
+            /** Format: uuid */
+            closeReviewId: string;
+            /** Format: uuid */
+            periodId: string;
+            periodCode: string;
+            actionType: string;
+            /** Format: double */
+            trialBalanceDebits: number | string;
+            /** Format: double */
+            trialBalanceCredits: number | string;
+            isTrialBalanceBalanced: boolean;
+            /** Format: int32 */
+            reconciliationVarianceCount: number | string;
+            /** Format: double */
+            totalVarianceAmount: number | string;
+            /** Format: double */
+            unbilledGrniAmount: number | string;
+            reason: null | string;
+            /** Format: date-time */
+            createdAtUtc: string;
+        };
         PickLineDto: {
             /** Format: uuid */
             pickLineId: string;
@@ -4718,6 +4932,16 @@ export interface components {
             /** Format: date */
             effectiveTo: null | string;
             reviewStatus: string;
+        };
+        ProfitAndLossReportDto: {
+            /** Format: double */
+            totalRevenue: number | string;
+            /** Format: double */
+            totalExpense: number | string;
+            /** Format: double */
+            netIncome: number | string;
+            revenueLines: components["schemas"]["StatementAccountLineDto"][];
+            expenseLines: components["schemas"]["StatementAccountLineDto"][];
         };
         PurchaseOrderDetailDto: {
             /** Format: uuid */
@@ -5252,6 +5476,9 @@ export interface components {
             releaseReference: string;
             idempotencyKey: string;
         };
+        ReopenPeriodRequest: {
+            reason: string;
+        };
         ReplacementAuthorizationDto: {
             /** Format: uuid */
             replacementAuthorizationId: string;
@@ -5287,6 +5514,19 @@ export interface components {
             createdAtUtc: string;
             /** Format: date-time */
             updatedAtUtc: string;
+        };
+        ReportPeriodDto: {
+            /** Format: uuid */
+            periodId: string;
+            periodCode: string;
+            /** Format: date */
+            startDate: string;
+            /** Format: date */
+            endDate: string;
+            status: string;
+            closeNote: null | string;
+            /** Format: date-time */
+            closedAtUtc: null | string;
         };
         ReserveSalesOrderLineRequest: {
             /** Format: uuid */
@@ -5847,6 +6087,15 @@ export interface components {
             currentOrderedBaseQty: number | string;
             /** Format: double */
             orderedBaseQtyDelta: number | string;
+        };
+        StatementAccountLineDto: {
+            /** Format: uuid */
+            accountId: string;
+            accountCode: string;
+            accountName: string;
+            accountType: string;
+            /** Format: double */
+            amount: number | string;
         };
         StockLocationBalanceDto: {
             /** Format: uuid */
@@ -6572,6 +6821,49 @@ export interface components {
             postingDate: string;
             idempotencyKey: string;
             notes: null | string;
+        };
+        TrialBalanceReportDto: {
+            /** Format: uuid */
+            periodId: null | string;
+            periodCode: string;
+            /** Format: date */
+            startDate: string;
+            /** Format: date */
+            endDate: string;
+            /** Format: double */
+            totalOpeningDebit: number | string;
+            /** Format: double */
+            totalOpeningCredit: number | string;
+            /** Format: double */
+            totalPeriodDebit: number | string;
+            /** Format: double */
+            totalPeriodCredit: number | string;
+            /** Format: double */
+            totalEndingDebit: number | string;
+            /** Format: double */
+            totalEndingCredit: number | string;
+            isBalanced: boolean;
+            rows: components["schemas"]["TrialBalanceRowDto"][];
+        };
+        TrialBalanceRowDto: {
+            /** Format: uuid */
+            accountId: string;
+            accountCode: string;
+            accountName: string;
+            accountType: string;
+            normalBalance: string;
+            /** Format: double */
+            openingDebit: number | string;
+            /** Format: double */
+            openingCredit: number | string;
+            /** Format: double */
+            periodDebit: number | string;
+            /** Format: double */
+            periodCredit: number | string;
+            /** Format: double */
+            endingDebit: number | string;
+            /** Format: double */
+            endingCredit: number | string;
         };
         UnitOfMeasureDto: {
             /** Format: uuid */
@@ -15285,6 +15577,274 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CustomerReceiptDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetAccountingReportsOverview: {
+        parameters: {
+            query?: {
+                periodId?: string;
+                asOfDate?: string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountingReportsOverviewResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetAccountLedgerDrilldown: {
+        parameters: {
+            query?: {
+                fromDate?: string;
+                toDate?: string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                accountId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountLedgerDrilldownResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ExportTrialBalanceCsv: {
+        parameters: {
+            query?: {
+                periodId?: string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CloseReportPeriod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                periodId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": null | components["schemas"]["ClosePeriodRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeriodCloseReviewDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    LockReportPeriod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                periodId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": null | components["schemas"]["LockPeriodRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeriodCloseReviewDto"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ReopenReportPeriod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                periodId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReopenPeriodRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeriodCloseReviewDto"];
                 };
             };
             /** @description Bad Request */

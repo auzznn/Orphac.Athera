@@ -24,6 +24,7 @@ import {
   Receipt,
   RefreshCw,
   RotateCcw,
+  Scale,
   ShieldCheck,
   ShoppingCart,
   Tags,
@@ -536,6 +537,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         permissionSet.has("finance.journal.post"),
       active: pathname.endsWith("/finance"),
     },
+    (() => {
+      const reportsPermitted =
+        permissionSet.has("finance.read") ||
+        permissionSet.has("finance.config.manage") ||
+        permissionSet.has("finance.journal.post");
+      return {
+        key: "reports",
+        label: t.shell.navItems.reports,
+        icon: Scale,
+        href: baseEntityPath && reportsPermitted ? `${baseEntityPath}/reports` : null,
+        permitted: reportsPermitted,
+        active: pathname.endsWith("/reports") || pathname.includes("/reports/"),
+      };
+    })(),
     {
       key: "admin",
       label: t.shell.navItems.admin,

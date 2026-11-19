@@ -134,6 +134,7 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
     public DbSet<CustomerReceiptSequence> CustomerReceiptSequences => Set<CustomerReceiptSequence>();
     public DbSet<CustomerReceipt> CustomerReceipts => Set<CustomerReceipt>();
     public DbSet<ReceiptAllocation> ReceiptAllocations => Set<ReceiptAllocation>();
+    public DbSet<PeriodCloseReview> PeriodCloseReviews => Set<PeriodCloseReview>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -4701,6 +4702,34 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
                 .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ReceivableId })
                 .HasPrincipalKey(r => new { r.TenantId, r.LegalEntityId, r.ReceivableId })
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PeriodCloseReview>(entity =>
+        {
+            entity.ToTable("period_close_reviews", "gl", t =>
+            {
+                t.HasCheckConstraint("ck_period_close_reviews_action", "action_type IN ('CLOSED', 'LOCKED', 'REOPENED')");
+            });
+
+            entity.HasKey(x => x.CloseReviewId);
+            entity.Property(x => x.CloseReviewId).HasColumnName("close_review_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.PeriodId).HasColumnName("period_id").IsRequired();
+            entity.Property(x => x.PeriodCodeSnapshot).HasColumnName("period_code_snapshot").HasMaxLength(20).IsRequired();
+            entity.Property(x => x.ActionType).HasColumnName("action_type").HasMaxLength(20).IsRequired();
+            entity.Property(x => x.TrialBalanceDebits).HasColumnName("trial_balance_debits").HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(x => x.TrialBalanceCredits).HasColumnName("trial_balance_credits").HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(x => x.IsTrialBalanceBalanced).HasColumnName("is_trial_balance_balanced").IsRequired();
+            entity.Property(x => x.ReconciliationVarianceCount).HasColumnName("reconciliation_variance_count").IsRequired();
+            entity.Property(x => x.TotalVarianceAmount).HasColumnName("total_variance_amount").HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(x => x.UnbilledGrniAmount).HasColumnName("unbilled_grni_amount").HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(x => x.ChecklistSummaryJson).HasColumnName("checklist_summary_json").HasColumnType("jsonb").IsRequired();
+            entity.Property(x => x.Reason).HasColumnName("reason").HasMaxLength(300);
+            entity.Property(x => x.ActorUserId).HasColumnName("actor_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.PeriodId, x.CreatedAtUtc }).HasDatabaseName("ix_period_close_reviews_period");
         });
     }
 }
