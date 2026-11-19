@@ -686,6 +686,13 @@ public static class InventoryValuationService
                 DO UPDATE SET last_number = ar.receivable_sequences.last_number + 1
                 RETURNING last_number;
                 """,
+            "ar.receipt_sequences" => """
+                INSERT INTO ar.receipt_sequences (tenant_id, legal_entity_id, fiscal_year, last_number)
+                VALUES (@tid, @eid, @fy, 1)
+                ON CONFLICT (tenant_id, legal_entity_id, fiscal_year)
+                DO UPDATE SET last_number = ar.receipt_sequences.last_number + 1
+                RETURNING last_number;
+                """,
             _ => throw new ArgumentException($"Unsupported sequence table '{qualifiedTableName}'.", nameof(qualifiedTableName))
         };
 

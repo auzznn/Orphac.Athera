@@ -2887,6 +2887,20 @@ export type CreateCustomerInvoiceRequest = components["schemas"]["CreateCustomer
 export type PostCustomerInvoiceRequest = components["schemas"]["PostCustomerInvoiceRequest"];
 export type CreateCreditNoteRequest = components["schemas"]["CreateCreditNoteRequest"];
 
+export type ReceivablesBankAccountDto = components["schemas"]["ReceivablesBankAccountDto"];
+export type InboundBankCreditLineDto = components["schemas"]["InboundBankCreditLineDto"];
+export type ReceivablesCustomerOptionDto = components["schemas"]["ReceivablesCustomerOptionDto"];
+export type ReceiptAllocationDto = components["schemas"]["ReceiptAllocationDto"];
+export type CustomerReceiptDto = components["schemas"]["CustomerReceiptDto"];
+export type ArAgingCustomerRowDto = components["schemas"]["ArAgingCustomerRowDto"];
+export type ArAgingSummaryDto = components["schemas"]["ArAgingSummaryDto"];
+export type ReceivablesOverviewResponse = components["schemas"]["ReceivablesOverviewResponse"];
+export type ImportInboundBankStatementRequest = components["schemas"]["ImportInboundBankStatementRequest"];
+export type ImportInboundBankStatementResponse = components["schemas"]["ImportInboundBankStatementResponse"];
+export type ConfirmCustomerReceiptRequest = components["schemas"]["ConfirmCustomerReceiptRequest"];
+export type AllocateCustomerReceiptRequest = components["schemas"]["AllocateCustomerReceiptRequest"];
+export type ReverseCustomerReceiptRequest = components["schemas"]["ReverseCustomerReceiptRequest"];
+
 export async function fetchFulfillmentOverview(
   tenantId: string,
   entityId: string,
@@ -3161,6 +3175,121 @@ export async function createAndPostCreditNote(
     "/api/workspaces/{tenantId}/entities/{entityId}/billing/credit-notes",
     {
       params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function fetchReceivablesOverview(
+  tenantId: string,
+  entityId: string,
+  asOfDate?: string,
+): Promise<ReceivablesOverviewResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receivables/overview",
+    {
+      params: {
+        path: { tenantId, entityId },
+        query: asOfDate ? { asOfDate } : undefined,
+      },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function importInboundBankStatement(
+  tenantId: string,
+  entityId: string,
+  payload: ImportInboundBankStatementRequest,
+): Promise<ImportInboundBankStatementResponse> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receivables/bank-statements/import",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function confirmCustomerReceipt(
+  tenantId: string,
+  entityId: string,
+  payload: ConfirmCustomerReceiptRequest,
+): Promise<CustomerReceiptDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receivables/receipts",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function allocateCustomerReceipt(
+  tenantId: string,
+  entityId: string,
+  receiptId: string,
+  payload: AllocateCustomerReceiptRequest,
+): Promise<CustomerReceiptDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receivables/receipts/{receiptId}/allocate",
+    {
+      params: { path: { tenantId, entityId, receiptId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function reverseCustomerReceipt(
+  tenantId: string,
+  entityId: string,
+  receiptId: string,
+  payload: ReverseCustomerReceiptRequest,
+): Promise<CustomerReceiptDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/receivables/receipts/{receiptId}/reverse",
+    {
+      params: { path: { tenantId, entityId, receiptId } },
       headers: { "X-CSRF-Token": csrf },
       body: payload,
       cache: "no-store",

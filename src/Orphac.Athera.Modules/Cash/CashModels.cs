@@ -528,6 +528,39 @@ public sealed class BankStatementLine
         Version++;
     }
 
+    public void ApplyInboundReceiptMatch(decimal matchAmount, DateTimeOffset nowUtc)
+    {
+        if (Direction != BankStatementLineDirections.Credit)
+        {
+            throw new InvalidOperationException("statement_line_direction_invalid: Customer receipt confirmation requires a CREDIT inbound bank statement line.");
+        }
+
+        if (Status == BankStatementLineStatuses.Matched || Status == BankStatementLineStatuses.Ignored)
+        {
+            throw new InvalidOperationException($"statement_line_already_settled: Bank statement line '{BankReference}' is already '{Status}'.");
+        }
+
+        var amt = decimal.Round(matchAmount, 4, MidpointRounding.AwayFromZero);
+        if (amt <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(matchAmount), "Match amount must be strictly positive.");
+        }
+
+        if (amt > UnmatchedAmount)
+        {
+            throw new InvalidOperationException(
+                $"match_exceeds_unmatched_statement_line: Receipt amount ({amt:F4}) exceeds unmatched bank statement balance ({UnmatchedAmount:F4}).");
+        }
+
+        MatchedAmount = decimal.Round(MatchedAmount + amt, 4, MidpointRounding.AwayFromZero);
+        UnmatchedAmount = decimal.Round(Amount - MatchedAmount, 4, MidpointRounding.AwayFromZero);
+        Status = UnmatchedAmount == 0m
+            ? BankStatementLineStatuses.Matched
+            : BankStatementLineStatuses.PartiallyMatched;
+        UpdatedAtUtc = nowUtc;
+        Version++;
+    }
+
     public void ReverseMatch(decimal reversalAmount, DateTimeOffset nowUtc)
     {
         var amt = decimal.Round(reversalAmount, 4, MidpointRounding.AwayFromZero);

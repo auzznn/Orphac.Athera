@@ -452,4 +452,45 @@ public sealed class CustomerReceivable
         UpdatedAtUtc = nowUtc;
         Version++;
     }
+
+    public void ApplyReceipt(decimal receiptAllocationAmount, DateTimeOffset nowUtc)
+    {
+        var amt = decimal.Round(receiptAllocationAmount, 2, MidpointRounding.AwayFromZero);
+        if (amt <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(receiptAllocationAmount), "ar_receipt_allocation_must_be_positive: Allocation amount must be strictly positive.");
+        }
+
+        if (amt > OpenAmount)
+        {
+            throw new InvalidOperationException(
+                $"ar_allocation_exceeds_open_amount: Allocation ({amt:0.00}) exceeds remaining open AR balance ({OpenAmount:0.00}).");
+        }
+
+        ReceivedAmount = decimal.Round(ReceivedAmount + amt, 2, MidpointRounding.AwayFromZero);
+        OpenAmount = decimal.Round(OriginalAmount - CreditedAmount - ReceivedAmount, 2, MidpointRounding.AwayFromZero);
+        Status = OpenAmount == 0m
+            ? ReceivableStatuses.Settled
+            : ReceivableStatuses.PartiallySettled;
+        UpdatedAtUtc = nowUtc;
+        Version++;
+    }
+
+    public void ReverseReceipt(decimal reversedAllocationAmount, DateTimeOffset nowUtc)
+    {
+        var amt = decimal.Round(reversedAllocationAmount, 2, MidpointRounding.AwayFromZero);
+        if (amt <= 0m || amt > ReceivedAmount)
+        {
+            throw new InvalidOperationException(
+                $"ar_reversal_exceeds_received_amount: Reversal ({amt:0.00}) exceeds received amount ({ReceivedAmount:0.00}).");
+        }
+
+        ReceivedAmount = decimal.Round(ReceivedAmount - amt, 2, MidpointRounding.AwayFromZero);
+        OpenAmount = decimal.Round(OriginalAmount - CreditedAmount - ReceivedAmount, 2, MidpointRounding.AwayFromZero);
+        Status = OpenAmount == 0m
+            ? (ReceivedAmount > 0m ? ReceivableStatuses.Settled : ReceivableStatuses.Credited)
+            : (ReceivedAmount == 0m && CreditedAmount == 0m ? ReceivableStatuses.Open : ReceivableStatuses.PartiallySettled);
+        UpdatedAtUtc = nowUtc;
+        Version++;
+    }
 }

@@ -54,6 +54,7 @@ export interface Dictionary {
       sales: string;
       fulfillment: string;
       billing: string;
+      receivables: string;
       finance: string;
       admin: string;
     };
@@ -2100,6 +2101,122 @@ export interface Dictionary {
     arStatusLabels: Record<string, string>;
     errors: Record<string, string>;
   };
+  receivables: {
+    heading: string;
+    lead: string;
+    backToEntityLink: string;
+    refreshButton: string;
+    refreshing: string;
+    loading: string;
+    accessDeniedHeading: string;
+    accessDeniedBody: string;
+    readOnlyBanner: string;
+    od09PolicyBanner: string;
+    policyToggleShow: string;
+    policyToggleHide: string;
+    policyCards: {
+      rule1Title: string;
+      rule1Body: string;
+      rule2Title: string;
+      rule2Body: string;
+      rule3Title: string;
+      rule3Body: string;
+      rule4Title: string;
+      rule4Body: string;
+    };
+    statsAriaLabel: string;
+    stats: {
+      totalOpenReceivables: string;
+      totalUnappliedReceipts: string;
+      netArSubledger: string;
+      glArControlBalance: string;
+      glReconciledBadge: string;
+      glVarianceBadge: string;
+    };
+    tabListLabel: string;
+    tabs: {
+      bankAndReceipts: string;
+      allocations: string;
+      aging: string;
+    };
+    bankPanel: {
+      title: string;
+      empty: string;
+      importCsvBtn: string;
+      colDateRef: string;
+      colBankCounterparty: string;
+      colAmount: string;
+      colStatus: string;
+      colAction: string;
+      confirmReceiptBtn: string;
+      importDrawerTitle: string;
+      bankAccountLabel: string;
+      stmtRefLabel: string;
+      stmtDateLabel: string;
+      csvLabel: string;
+      submitImportCta: string;
+      importing: string;
+      cancelBtn: string;
+      confirmDrawerTitlePrefix: string;
+      customerLabel: string;
+      receiptDateLabel: string;
+      notesLabel: string;
+      notesPlaceholder: string;
+      initialAllocHeader: string;
+      receivedPrefix: string;
+      allocatedPrefix: string;
+      unappliedPrefix: string;
+      openInvoicePrefix: string;
+      noOpenInvoicesForCustomer: string;
+      confirmReceiptCta: string;
+      confirming: string;
+    };
+    receiptsPanel: {
+      title: string;
+      empty: string;
+      colReceiptDoc: string;
+      colCustomerBank: string;
+      colAmounts: string;
+      colAllocations: string;
+      colStatusGl: string;
+      colAction: string;
+      receivedPrefix: string;
+      allocatedPrefix: string;
+      unappliedPrefix: string;
+      bankRefPrefix: string;
+      journalPrefix: string;
+      reversalJournalPrefix: string;
+      allocateBtn: string;
+      reverseBtn: string;
+      allocateDrawerTitlePrefix: string;
+      noOpenInvoicesToAllocate: string;
+      confirmAllocateCta: string;
+      allocating: string;
+      reverseDrawerTitlePrefix: string;
+      reverseDateLabel: string;
+      reverseReasonLabel: string;
+      reverseReasonPlaceholder: string;
+      confirmReverseCta: string;
+      reversing: string;
+    };
+    agingPanel: {
+      title: string;
+      empty: string;
+      asOfLabel: string;
+      colCustomer: string;
+      colCurrent: string;
+      col1To30: string;
+      col31To60: string;
+      col61To90: string;
+      colOver90: string;
+      colUnapplied: string;
+      colNetAr: string;
+      totalRowLabel: string;
+    };
+    bankStatusLabels: Record<string, string>;
+    receiptStatusLabels: Record<string, string>;
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -2169,6 +2286,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         sales: "Penjualan",
         fulfillment: "Pemenuhan & Pengiriman",
         billing: "Penagihan & Piutang (AR)",
+        receivables: "Penerimaan & Umur Piutang",
         finance: "Keuangan & GL",
         admin: "Administrasi",
       },
@@ -2299,6 +2417,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         sales: "Penjualan & Penagihan",
         fulfillment: "Pemenuhan SO, Reservasi, Pick & Pengiriman",
         billing: "Penagihan Pelanggan, Pajak Keluaran & Piutang (AR)",
+        receivables: "Penerimaan Pelanggan, Alokasi & Umur Piutang (AR Aging)",
         finance: "Keuangan, Pajak PPN/PPh & GL",
         admin: "Administrasi Organisasi, Undangan & Audit",
       },
@@ -4951,6 +5070,152 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Izin entitas aktif Anda tidak mencukupi untuk operasi penagihan/posting ini.",
       },
     },
+    receivables: {
+      heading: "Penerimaan Pelanggan, Alokasi & Umur Piutang (AR Aging)",
+      lead:
+        "Impor mutasi bank masuk (CREDIT), konfirmasi penerimaan pelanggan (Dr 1110 Kas/Bank / Cr 1200 Piutang Usaha), alokasikan ke satu atau beberapa faktur terbuka sambil melacak dana belum dialokasikan, dan tinjau Umur Piutang yang terekonsiliasi dengan GL 1200.",
+      backToEntityLink: "Kembali ke Ringkasan",
+      refreshButton: "Segarkan",
+      refreshing: "Menyegarkan...",
+      loading: "Memuat mutasi bank masuk, penerimaan pelanggan, dan umur piutang...",
+      accessDeniedHeading: "Akses Penerimaan & Umur Piutang Ditolak",
+      accessDeniedBody:
+        "Akun Anda tidak memiliki izin keuangan atau penjualan aktif pada entitas hukum ini.",
+      readOnlyBanner:
+        "Mode hanya-baca: akun Anda berwenang meninjau penerimaan dan umur piutang pada entitas ini, namun impor mutasi, konfirmasi, alokasi, dan pembalikan memerlukan izin finance.journal.post.",
+      od09PolicyBanner:
+        "Kebijakan Aman OD-09 Aktif (ATH-CR-012): Penerimaan wajib berasal dari mutasi bank masuk (CREDIT) anti-duplikasi; total alokasi tidak dapat melebihi penerimaan maupun saldo faktur; dana belum dialokasikan tetap tercatat eksplisit hingga dialokasikan.",
+      policyToggleShow: "Lihat Aturan OD-09",
+      policyToggleHide: "Sembunyikan Aturan",
+      policyCards: {
+        rule1Title: "1. Anti-Duplikasi Mutasi Bank Masuk",
+        rule1Body:
+          "Setiap baris mutasi CREDIT dilindungi sidik jari SHA-256 dan kunci unik PostgreSQL sehingga satu transaksi bank tidak dapat diakui dua kali.",
+        rule2Title: "2. Konservasi Jumlah & Dana Belum Dialokasikan",
+        rule2Body:
+          "Total alokasi <= nilai penerimaan dan <= sisa saldo faktur; kelebihan bayar tercatat eksplisit sebagai Saldo Belum Dialokasikan (Unapplied).",
+        rule3Title: "3. Rekonsiliasi Kontrol GL 1200",
+        rule3Body:
+          "Saldo GL 1200 Piutang Usaha selalu seimbang dengan Total Piutang Terbuka dikurangi Total Penerimaan Belum Dialokasikan.",
+        rule4Title: "4. Pembalikan Kompensasi (Reversal)",
+        rule4Body:
+          "Pembatalan penerimaan memposting jurnal pembalik Dr 1200 / Cr 1110, memulihkan saldo faktur, dan membuka kembali baris mutasi bank.",
+      },
+      statsAriaLabel: "Ringkasan metrik piutang dan rekonsiliasi GL 1200",
+      stats: {
+        totalOpenReceivables: "Total Piutang Terbuka",
+        totalUnappliedReceipts: "Dana Belum Dialokasikan",
+        netArSubledger: "Piutang Neto Buku Pembantu",
+        glArControlBalance: "Saldo Kontrol GL 1200",
+        glReconciledBadge: "GL 1200 = Buku Pembantu AR",
+        glVarianceBadge: "Selisih Kontrol GL",
+      },
+      tabListLabel: "Mode kerja penerimaan dan umur piutang",
+      tabs: {
+        bankAndReceipts: "Mutasi Bank (CREDIT)",
+        allocations: "Penerimaan & Alokasi",
+        aging: "Umur Piutang (Aging)",
+      },
+      bankPanel: {
+        title: "Mutasi Rekening Koran Masuk (Kredit Bank)",
+        empty: "Belum ada baris mutasi bank masuk (CREDIT) yang diimpor pada entitas ini.",
+        importCsvBtn: "Impor Mutasi Bank CSV",
+        colDateRef: "Tanggal & Referensi Bank",
+        colBankCounterparty: "Rekening & Pengirim",
+        colAmount: "Nilai Mutasi Masuk",
+        colStatus: "Status Rekonsiliasi",
+        colAction: "Tindakan",
+        confirmReceiptBtn: "Konfirmasi Penerimaan",
+        importDrawerTitle: "Impor Mutasi Bank Masuk (CSV · Anti-Duplikasi SHA-256)",
+        bankAccountLabel: "Rekening Bank Entitas",
+        stmtRefLabel: "Nomor Referensi Rekening Koran",
+        stmtDateLabel: "Tanggal Rekening Koran",
+        csvLabel: "Baris CSV (ValueDate,Direction,Amount,BankReference,Counterparty,Description)",
+        submitImportCta: "Impor Baris Mutasi",
+        importing: "Mengimpor...",
+        cancelBtn: "Batal",
+        confirmDrawerTitlePrefix: "Konfirmasi Penerimaan & Alokasi Awal —",
+        customerLabel: "Identifikasi Pelanggan",
+        receiptDateLabel: "Tanggal Penerimaan (GL)",
+        notesLabel: "Catatan Penerimaan",
+        notesPlaceholder: "Transfer masuk pelunasan faktur",
+        initialAllocHeader: "Alokasi Awal ke Faktur Terbuka (Opsional — sisa menjadi Belum Dialokasikan)",
+        receivedPrefix: "Diterima:",
+        allocatedPrefix: "Dialokasikan:",
+        unappliedPrefix: "Belum Dialokasikan:",
+        openInvoicePrefix: "Terbuka:",
+        noOpenInvoicesForCustomer: "Pelanggan ini belum memiliki faktur terbuka — 100% dana akan dicatat sebagai Saldo Belum Dialokasikan (Unapplied).",
+        confirmReceiptCta: "Konfirmasi & Posting Dr 1110 / Cr 1200",
+        confirming: "Memposting...",
+      },
+      receiptsPanel: {
+        title: "Buku Besar Penerimaan Pelanggan & Alokasi Faktur",
+        empty: "Belum ada penerimaan pelanggan terkonfirmasi pada entitas ini.",
+        colReceiptDoc: "Nomor RCT & Tanggal",
+        colCustomerBank: "Pelanggan & Ref Bank",
+        colAmounts: "Diterima · Dialokasikan · Sisa",
+        colAllocations: "Rincian Alokasi Faktur",
+        colStatusGl: "Status & Jurnal GL",
+        colAction: "Tindakan",
+        receivedPrefix: "Diterima:",
+        allocatedPrefix: "Alokasi:",
+        unappliedPrefix: "Sisa:",
+        bankRefPrefix: "Bank:",
+        journalPrefix: "Jurnal:",
+        reversalJournalPrefix: "Balik:",
+        allocateBtn: "Alokasikan",
+        reverseBtn: "Balikkan",
+        allocateDrawerTitlePrefix: "Alokasikan Sisa Penerimaan",
+        noOpenInvoicesToAllocate: "Tidak ada faktur terbuka untuk pelanggan ini saat ini.",
+        confirmAllocateCta: "Simpan Alokasi Piutang",
+        allocating: "Mengalokasikan...",
+        reverseDrawerTitlePrefix: "Pembalikan Kompensasi Penerimaan",
+        reverseDateLabel: "Tanggal Pembalikan (GL)",
+        reverseReasonLabel: "Alasan Pembalikan (Wajib)",
+        reverseReasonPlaceholder: "mis. Kliring ditolak / salah identifikasi pelanggan",
+        confirmReverseCta: "Sahkan Pembalikan (Dr 1200 / Cr 1110)",
+        reversing: "Membalikkan...",
+      },
+      agingPanel: {
+        title: "Laporan Umur Piutang Pelanggan (AR Aging Schedule)",
+        empty: "Tidak ada saldo piutang terbuka atau dana belum dialokasikan per tanggal ini.",
+        asOfLabel: "Per Tanggal:",
+        colCustomer: "Pelanggan",
+        colCurrent: "Belum Jatuh Tempo",
+        col1To30: "1–30 Hari",
+        col31To60: "31–60 Hari",
+        col61To90: "61–90 Hari",
+        colOver90: "> 90 Hari",
+        colUnapplied: "Belum Alokasi",
+        colNetAr: "Piutang Neto",
+        totalRowLabel: "Total Entitas",
+      },
+      bankStatusLabels: {
+        UNMATCHED: "Belum Dikonfirmasi",
+        PARTIALLY_MATCHED: "Sebagian Dikonfirmasi",
+        MATCHED: "Terekonsiliasi",
+      },
+      receiptStatusLabels: {
+        CONFIRMED: "Diterima (Belum Dialokasikan)",
+        PARTIALLY_ALLOCATED: "Sebagian Dialokasikan",
+        ALLOCATED: "Teralokasi Penuh",
+        REVERSED: "Dibalikkan",
+      },
+      errors: {
+        duplicate_bank_statement_line:
+          "Baris mutasi bank duplikat terdeteksi (sidik jari SHA-256 sudah pernah diimpor).",
+        ar_bank_line_already_recognized:
+          "Baris mutasi bank ini sudah diakui sebagai penerimaan pelanggan.",
+        ar_allocation_exceeds_unapplied:
+          "Total alokasi melebihi sisa dana penerimaan yang belum dialokasikan.",
+        ar_allocation_exceeds_open_amount:
+          "Jumlah alokasi melebihi sisa saldo terbuka pada faktur tujuan.",
+        gl_period_closed:
+          "Periode akuntansi untuk tanggal transaksi sudah ditutup (CLOSED).",
+        insufficient_entity_permission:
+          "Izin entitas aktif Anda tidak mencukupi untuk operasi penerimaan/alokasi ini.",
+      },
+    },
   },
   "en-US": {
     appName: "Orphac Athera",
@@ -5018,6 +5283,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         sales: "Sales",
         fulfillment: "Fulfillment & Dispatch",
         billing: "Billing & AR",
+        receivables: "Receipts & AR Aging",
         finance: "Finance & GL",
         admin: "Administration",
       },
@@ -5148,6 +5414,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         sales: "Sales & Invoicing",
         fulfillment: "Sales Reservation, Pick & Dispatch Fulfillment",
         billing: "Customer Billing, Output Tax & Accounts Receivable",
+        receivables: "Customer Receipts, Allocation & AR Aging",
         finance: "Finance, Indonesian Tax & GL",
         admin: "Organization Administration & Audit",
       },
@@ -7798,6 +8065,152 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "No open accounting period exists for this document date.",
         insufficient_entity_permission:
           "Your active role grants do not permit performing this billing or posting operation.",
+      },
+    },
+    receivables: {
+      heading: "Customer Receipts, Allocation & AR Aging",
+      lead:
+        "Import inbound bank statement CREDIT lines, confirm customer receipts (Dr 1110 Bank / Cr 1200 AR Control), allocate across one or multiple open invoices while tracking unapplied balances, and review GL-reconciled AR Aging.",
+      backToEntityLink: "Back to Overview",
+      refreshButton: "Refresh",
+      refreshing: "Refreshing...",
+      loading: "Loading inbound bank statement lines, customer receipts, and AR aging...",
+      accessDeniedHeading: "Receivables & Aging Access Denied",
+      accessDeniedBody:
+        "Your account does not hold active finance or sales permissions on this legal entity.",
+      readOnlyBanner:
+        "Read-only mode: you can inspect customer receipts and AR aging on this entity, but importing statements, confirming receipts, allocating, and reversing require finance.journal.post permission.",
+      od09PolicyBanner:
+        "OD-09 Safe Defaults Active (ATH-CR-012): Receipts require deduplicated inbound bank CREDIT lines; sum of allocations cannot exceed receipt or open invoice balances; unapplied remainders stay explicitly tracked.",
+      policyToggleShow: "View OD-09 Rules",
+      policyToggleHide: "Hide Rules",
+      policyCards: {
+        rule1Title: "1. Anti-Duplicate Inbound Bank Lines",
+        rule1Body:
+          "Every inbound CREDIT statement line is guarded by SHA-256 fingerprinting and a partial unique index so one bank credit is never recognized twice.",
+        rule2Title: "2. Amount Conservation & Unapplied Funds",
+        rule2Body:
+          "Allocations cannot exceed receipt amount or invoice open balance; any unallocated remainder is explicitly carried as Unapplied balance.",
+        rule3Title: "3. GL 1200 Control Reconciliation",
+        rule3Body:
+          "GL 1200 AR Control always reconciles to Total Open Receivables minus Total Unapplied Customer Receipts.",
+        rule4Title: "4. Compensating Reversal",
+        rule4Body:
+          "Reversing a receipt posts Dr 1200 / Cr 1110, restores allocated invoice open amounts, and unmatches the source bank statement line.",
+      },
+      statsAriaLabel: "Receivables and GL 1200 reconciliation summary metrics",
+      stats: {
+        totalOpenReceivables: "Total Open Receivables",
+        totalUnappliedReceipts: "Unapplied Receipts",
+        netArSubledger: "Net AR Subledger",
+        glArControlBalance: "GL 1200 Control Balance",
+        glReconciledBadge: "GL 1200 = AR Subledger",
+        glVarianceBadge: "GL Control Variance",
+      },
+      tabListLabel: "Customer receipts and AR aging workbench tabs",
+      tabs: {
+        bankAndReceipts: "Inbound Bank (CREDIT)",
+        allocations: "Receipts & Allocations",
+        aging: "AR Aging",
+      },
+      bankPanel: {
+        title: "Inbound Bank Statement Lines (Bank Credits)",
+        empty: "No inbound CREDIT bank statement lines have been imported on this entity yet.",
+        importCsvBtn: "Import Bank CSV",
+        colDateRef: "Value Date & Bank Ref",
+        colBankCounterparty: "Bank Account & Counterparty",
+        colAmount: "Inbound Amount",
+        colStatus: "Reconciliation Status",
+        colAction: "Action",
+        confirmReceiptBtn: "Confirm Receipt",
+        importDrawerTitle: "Import Inbound Bank Statement (CSV · SHA-256 Deduplicated)",
+        bankAccountLabel: "Entity Bank Account",
+        stmtRefLabel: "Statement Reference",
+        stmtDateLabel: "Statement Date",
+        csvLabel: "CSV Rows (ValueDate,Direction,Amount,BankReference,Counterparty,Description)",
+        submitImportCta: "Import Statement Lines",
+        importing: "Importing...",
+        cancelBtn: "Cancel",
+        confirmDrawerTitlePrefix: "Confirm Customer Receipt & Initial Allocation —",
+        customerLabel: "Identify Customer",
+        receiptDateLabel: "Receipt Posting Date (GL)",
+        notesLabel: "Receipt Notes",
+        notesPlaceholder: "Customer transfer settlement",
+        initialAllocHeader: "Initial Allocation to Open Invoices (Optional — remainder stays Unapplied)",
+        receivedPrefix: "Received:",
+        allocatedPrefix: "Allocated:",
+        unappliedPrefix: "Unapplied:",
+        openInvoicePrefix: "Open:",
+        noOpenInvoicesForCustomer: "This customer currently has no open invoices — 100% of the receipt will be recorded as Unapplied balance.",
+        confirmReceiptCta: "Confirm & Post Dr 1110 / Cr 1200",
+        confirming: "Posting...",
+      },
+      receiptsPanel: {
+        title: "Customer Receipts & Invoice Allocations Ledger",
+        empty: "No confirmed customer receipts exist on this entity yet.",
+        colReceiptDoc: "RCT Number & Date",
+        colCustomerBank: "Customer & Bank Ref",
+        colAmounts: "Received · Allocated · Unapplied",
+        colAllocations: "Invoice Allocations",
+        colStatusGl: "Status & GL Journal",
+        colAction: "Action",
+        receivedPrefix: "Rcvd:",
+        allocatedPrefix: "Alloc:",
+        unappliedPrefix: "Unapp:",
+        bankRefPrefix: "Bank:",
+        journalPrefix: "GL:",
+        reversalJournalPrefix: "Rev:",
+        allocateBtn: "Allocate",
+        reverseBtn: "Reverse",
+        allocateDrawerTitlePrefix: "Allocate Remaining Unapplied Funds for",
+        noOpenInvoicesToAllocate: "No open invoices are currently available for this customer.",
+        confirmAllocateCta: "Save Allocations",
+        allocating: "Allocating...",
+        reverseDrawerTitlePrefix: "Reverse Confirmed Customer Receipt",
+        reverseDateLabel: "Reversal Date (GL)",
+        reverseReasonLabel: "Reversal Reason (Required)",
+        reverseReasonPlaceholder: "e.g., Bank recall / misidentified customer",
+        confirmReverseCta: "Confirm Reversal (Dr 1200 / Cr 1110)",
+        reversing: "Reversing...",
+      },
+      agingPanel: {
+        title: "Customer Accounts Receivable Aging Schedule",
+        empty: "No open receivables or unapplied customer receipts as of this date.",
+        asOfLabel: "As Of Date:",
+        colCustomer: "Customer",
+        colCurrent: "Current",
+        col1To30: "1–30 Days",
+        col31To60: "31–60 Days",
+        col61To90: "61–90 Days",
+        colOver90: "> 90 Days",
+        colUnapplied: "Unapplied",
+        colNetAr: "Net AR",
+        totalRowLabel: "Entity Total",
+      },
+      bankStatusLabels: {
+        UNMATCHED: "Unmatched",
+        PARTIALLY_MATCHED: "Partially Matched",
+        MATCHED: "Reconciled",
+      },
+      receiptStatusLabels: {
+        CONFIRMED: "Received (Unapplied)",
+        PARTIALLY_ALLOCATED: "Partially Allocated",
+        ALLOCATED: "Fully Allocated",
+        REVERSED: "Reversed",
+      },
+      errors: {
+        duplicate_bank_statement_line:
+          "Duplicate bank statement line detected (SHA-256 fingerprint already imported).",
+        ar_bank_line_already_recognized:
+          "This bank statement line has already been recognized as a customer receipt.",
+        ar_allocation_exceeds_unapplied:
+          "Total allocation exceeds the remaining unapplied receipt balance.",
+        ar_allocation_exceeds_open_amount:
+          "Allocation amount exceeds the remaining open balance on the target invoice.",
+        gl_period_closed:
+          "The accounting period for this transaction date is closed.",
+        insufficient_entity_permission:
+          "Your active role grants do not permit performing this receipt or allocation operation.",
       },
     },
   },

@@ -16,6 +16,7 @@ using Orphac.Athera.Modules.Partners;
 using Orphac.Athera.Modules.Platform;
 using Orphac.Athera.Modules.Procurement;
 using Orphac.Athera.Modules.Quality;
+using Orphac.Athera.Modules.Receivables;
 using Orphac.Athera.Modules.Sales;
 using Orphac.Athera.Modules.Tax;
 
@@ -130,6 +131,9 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
     public DbSet<CustomerInvoice> CustomerInvoices => Set<CustomerInvoice>();
     public DbSet<CustomerInvoiceLine> CustomerInvoiceLines => Set<CustomerInvoiceLine>();
     public DbSet<CustomerReceivable> CustomerReceivables => Set<CustomerReceivable>();
+    public DbSet<CustomerReceiptSequence> CustomerReceiptSequences => Set<CustomerReceiptSequence>();
+    public DbSet<CustomerReceipt> CustomerReceipts => Set<CustomerReceipt>();
+    public DbSet<ReceiptAllocation> ReceiptAllocations => Set<ReceiptAllocation>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -4595,6 +4599,107 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
                 .WithOne()
                 .HasForeignKey<CustomerReceivable>(x => new { x.TenantId, x.LegalEntityId, x.InvoiceId })
                 .HasPrincipalKey<CustomerInvoice>(i => new { i.TenantId, i.LegalEntityId, i.InvoiceId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<CustomerReceiptSequence>(entity =>
+        {
+            entity.ToTable("receipt_sequences", "ar", t => t.HasCheckConstraint("ck_receipt_sequences_last_number", "last_number >= 0"));
+            entity.HasKey(x => new { x.TenantId, x.LegalEntityId, x.FiscalYear });
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.FiscalYear).HasColumnName("fiscal_year").IsRequired();
+            entity.Property(x => x.LastNumber).HasColumnName("last_number").IsRequired();
+        });
+
+        builder.Entity<CustomerReceipt>(entity =>
+        {
+            entity.ToTable("customer_receipts", "ar", t =>
+            {
+                t.HasCheckConstraint("ck_customer_receipts_status", "status IN ('CONFIRMED', 'PARTIALLY_ALLOCATED', 'ALLOCATED', 'REVERSED')");
+                t.HasCheckConstraint("ck_customer_receipts_amounts", "receipt_amount > 0 AND allocated_amount >= 0 AND unapplied_amount >= 0 AND unapplied_amount = receipt_amount - allocated_amount");
+            });
+
+            entity.HasKey(x => x.ReceiptId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.ReceiptId });
+
+            entity.Property(x => x.ReceiptId).HasColumnName("receipt_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.ReceiptNumber).HasColumnName("receipt_number").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.BankAccountId).HasColumnName("bank_account_id").IsRequired();
+            entity.Property(x => x.BankStatementId).HasColumnName("bank_statement_id").IsRequired();
+            entity.Property(x => x.BankStatementLineId).HasColumnName("bank_statement_line_id").IsRequired();
+            entity.Property(x => x.CustomerPartnerId).HasColumnName("customer_partner_id").IsRequired();
+            entity.Property(x => x.CustomerCodeSnapshot).HasColumnName("customer_code_snapshot").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.CustomerNameSnapshot).HasColumnName("customer_name_snapshot").HasMaxLength(200).IsRequired();
+            entity.Property(x => x.ReceiptDate).HasColumnName("receipt_date").IsRequired();
+            entity.Property(x => x.BankReferenceSnapshot).HasColumnName("bank_reference_snapshot").HasMaxLength(100).IsRequired();
+            entity.Property(x => x.CurrencyCode).HasColumnName("currency_code").HasMaxLength(3).IsRequired();
+            entity.Property(x => x.ReceiptAmount).HasColumnName("receipt_amount").HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(x => x.AllocatedAmount).HasColumnName("allocated_amount").HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(x => x.UnappliedAmount).HasColumnName("unapplied_amount").HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.GlJournalId).HasColumnName("gl_journal_id").IsRequired();
+            entity.Property(x => x.GlJournalNumber).HasColumnName("gl_journal_number").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.ReversalGlJournalId).HasColumnName("reversal_gl_journal_id");
+            entity.Property(x => x.ReversalGlJournalNumber).HasColumnName("reversal_gl_journal_number").HasMaxLength(40);
+            entity.Property(x => x.ReversalReason).HasColumnName("reversal_reason").HasMaxLength(240);
+            entity.Property(x => x.ReversedByUserId).HasColumnName("reversed_by_user_id");
+            entity.Property(x => x.ReversedAtUtc).HasColumnName("reversed_at_utc");
+            entity.Property(x => x.IdempotencyKey).HasColumnName("idempotency_key").HasMaxLength(80).IsRequired();
+            entity.Property(x => x.Notes).HasColumnName("notes").HasMaxLength(300);
+            entity.Property(x => x.CreatedByUserId).HasColumnName("created_by_user_id").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+            entity.Property(x => x.Version).HasColumnName("version").IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.ReceiptNumber }).IsUnique().HasDatabaseName("ux_customer_receipts_number");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.IdempotencyKey }).IsUnique().HasDatabaseName("ux_customer_receipts_idempotency");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.BankStatementLineId })
+                .IsUnique()
+                .HasFilter("status <> 'REVERSED'")
+                .HasDatabaseName("ux_customer_receipts_active_bank_line");
+        });
+
+        builder.Entity<ReceiptAllocation>(entity =>
+        {
+            entity.ToTable("receipt_allocations", "ar", t =>
+            {
+                t.HasCheckConstraint("ck_receipt_allocations_status", "status IN ('ACTIVE', 'REVERSED')");
+                t.HasCheckConstraint("ck_receipt_allocations_amount", "allocated_amount > 0");
+            });
+
+            entity.HasKey(x => x.AllocationId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.AllocationId });
+
+            entity.Property(x => x.AllocationId).HasColumnName("allocation_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.ReceiptId).HasColumnName("receipt_id").IsRequired();
+            entity.Property(x => x.ReceivableId).HasColumnName("receivable_id").IsRequired();
+            entity.Property(x => x.InvoiceId).HasColumnName("invoice_id").IsRequired();
+            entity.Property(x => x.InvoiceNumberSnapshot).HasColumnName("invoice_number_snapshot").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.AllocatedAmount).HasColumnName("allocated_amount").HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(20).IsRequired();
+            entity.Property(x => x.AllocatedByUserId).HasColumnName("allocated_by_user_id").IsRequired();
+            entity.Property(x => x.AllocatedAtUtc).HasColumnName("allocated_at_utc").IsRequired();
+            entity.Property(x => x.ReversedByUserId).HasColumnName("reversed_by_user_id");
+            entity.Property(x => x.ReversedAtUtc).HasColumnName("reversed_at_utc");
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.ReceiptId }).HasDatabaseName("ix_receipt_allocations_receipt");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.ReceivableId }).HasDatabaseName("ix_receipt_allocations_receivable");
+
+            entity.HasOne<CustomerReceipt>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ReceiptId })
+                .HasPrincipalKey(r => new { r.TenantId, r.LegalEntityId, r.ReceiptId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<CustomerReceivable>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ReceivableId })
+                .HasPrincipalKey(r => new { r.TenantId, r.LegalEntityId, r.ReceivableId })
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

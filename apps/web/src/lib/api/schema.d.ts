@@ -1892,6 +1892,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/receivables/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetReceivablesOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/receivables/bank-statements/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ImportInboundBankStatement"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/receivables/receipts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ConfirmCustomerReceipt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/receivables/receipts/{receiptId}/allocate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AllocateCustomerReceipt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/receivables/receipts/{receiptId}/reverse": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReverseCustomerReceipt"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2009,6 +2089,9 @@ export interface components {
             availablePermissions: string[];
             availableRoleTemplates: string[];
         };
+        AllocateCustomerReceiptRequest: {
+            allocations: components["schemas"]["ReceiptAllocationLineRequest"][];
+        };
         ApprovalCaseDto: {
             /** Format: uuid */
             caseId: string;
@@ -2051,6 +2134,52 @@ export interface components {
             requiresFourEyes: boolean;
             requiresApproverMfa: boolean;
             isActive: boolean;
+        };
+        ArAgingCustomerRowDto: {
+            /** Format: uuid */
+            customerPartnerId: string;
+            customerCode: string;
+            customerName: string;
+            /** Format: double */
+            currentAmount: number | string;
+            /** Format: double */
+            days1To30Amount: number | string;
+            /** Format: double */
+            days31To60Amount: number | string;
+            /** Format: double */
+            days61To90Amount: number | string;
+            /** Format: double */
+            over90Amount: number | string;
+            /** Format: double */
+            totalOpenReceivables: number | string;
+            /** Format: double */
+            unappliedReceiptsAmount: number | string;
+            /** Format: double */
+            netReceivableBalance: number | string;
+        };
+        ArAgingSummaryDto: {
+            /** Format: date */
+            asOfDate: string;
+            /** Format: double */
+            currentTotal: number | string;
+            /** Format: double */
+            days1To30Total: number | string;
+            /** Format: double */
+            days31To60Total: number | string;
+            /** Format: double */
+            days61To90Total: number | string;
+            /** Format: double */
+            over90Total: number | string;
+            /** Format: double */
+            totalOpenReceivables: number | string;
+            /** Format: double */
+            totalUnappliedReceipts: number | string;
+            /** Format: double */
+            netArSubledger: number | string;
+            /** Format: double */
+            glArControlBalance: number | string;
+            isGlReconciled: boolean;
+            customers: components["schemas"]["ArAgingCustomerRowDto"][];
         };
         ArrivalLineRequest: {
             /** Format: uuid */
@@ -2320,6 +2449,17 @@ export interface components {
         };
         CloseOrCancelSoRequest: {
             reason: string;
+        };
+        ConfirmCustomerReceiptRequest: {
+            /** Format: uuid */
+            bankStatementLineId: string;
+            /** Format: uuid */
+            customerPartnerId: string;
+            /** Format: date */
+            receiptDate: string;
+            idempotencyKey: string;
+            notes: null | string;
+            initialAllocations: null | components["schemas"]["ReceiptAllocationLineRequest"][];
         };
         ConfirmPickLineInputDto: {
             /** Format: uuid */
@@ -2750,6 +2890,41 @@ export interface components {
             lineTotalAmount: number | string;
             /** Format: uuid */
             originalInvoiceLineId: null | string;
+        };
+        CustomerReceiptDto: {
+            /** Format: uuid */
+            receiptId: string;
+            receiptNumber: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            /** Format: uuid */
+            bankStatementLineId: string;
+            /** Format: uuid */
+            customerPartnerId: string;
+            customerCode: string;
+            customerName: string;
+            /** Format: date */
+            receiptDate: string;
+            bankReference: string;
+            currencyCode: string;
+            /** Format: double */
+            receiptAmount: number | string;
+            /** Format: double */
+            allocatedAmount: number | string;
+            /** Format: double */
+            unappliedAmount: number | string;
+            status: string;
+            /** Format: uuid */
+            glJournalId: string;
+            glJournalNumber: string;
+            reversalGlJournalNumber: null | string;
+            reversalReason: null | string;
+            notes: null | string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            reversedAtUtc: null | string;
+            allocations: components["schemas"]["ReceiptAllocationDto"][];
         };
         CustomerReceivableDto: {
             /** Format: uuid */
@@ -3417,6 +3592,48 @@ export interface components {
             closingBalance: number | string;
             csvContent: null | string;
             lines: null | components["schemas"]["BankStatementLineImportRequest"][];
+        };
+        ImportInboundBankStatementRequest: {
+            /** Format: uuid */
+            bankAccountId: string;
+            statementReference: string;
+            /** Format: date */
+            statementDate: string;
+            /** Format: double */
+            openingBalance: number | string;
+            /** Format: double */
+            closingBalance: number | string;
+            csvContent: string;
+        };
+        ImportInboundBankStatementResponse: {
+            /** Format: uuid */
+            bankStatementId: string;
+            statementNumber: string;
+            /** Format: int32 */
+            importedCount: number | string;
+            /** Format: int32 */
+            duplicateSkippedCount: number | string;
+        };
+        InboundBankCreditLineDto: {
+            /** Format: uuid */
+            bankStatementLineId: string;
+            /** Format: uuid */
+            bankStatementId: string;
+            /** Format: uuid */
+            bankAccountId: string;
+            bankAccountCode: string;
+            /** Format: date */
+            valueDate: string;
+            /** Format: double */
+            amount: number | string;
+            /** Format: double */
+            matchedAmount: number | string;
+            /** Format: double */
+            unmatchedAmount: number | string;
+            bankReference: string;
+            counterpartyName: null | string;
+            description: string;
+            status: string;
         };
         InspectionDispositionDto: {
             /** Format: uuid */
@@ -4859,6 +5076,30 @@ export interface components {
             /** Format: date-time */
             createdAtUtc: string;
         };
+        ReceiptAllocationDto: {
+            /** Format: uuid */
+            allocationId: string;
+            /** Format: uuid */
+            receiptId: string;
+            /** Format: uuid */
+            receivableId: string;
+            /** Format: uuid */
+            invoiceId: string;
+            invoiceNumber: string;
+            /** Format: double */
+            allocatedAmount: number | string;
+            status: string;
+            /** Format: date-time */
+            allocatedAtUtc: string;
+            /** Format: date-time */
+            reversedAtUtc: null | string;
+        };
+        ReceiptAllocationLineRequest: {
+            /** Format: uuid */
+            receivableId: string;
+            /** Format: double */
+            allocatedAmount: number | string;
+        };
         ReceiptInspectionSummaryDto: {
             /** Format: uuid */
             receiptInspectionId: string;
@@ -4896,6 +5137,29 @@ export interface components {
             /** Format: date-time */
             updatedAtUtc: string;
             dispositions: components["schemas"]["InspectionDispositionDto"][];
+        };
+        ReceivablesBankAccountDto: {
+            /** Format: uuid */
+            bankAccountId: string;
+            accountCode: string;
+            bankName: string;
+            accountNumberMasked: string;
+            currencyCode: string;
+        };
+        ReceivablesCustomerOptionDto: {
+            /** Format: uuid */
+            partnerId: string;
+            partnerCode: string;
+            legalName: string;
+        };
+        ReceivablesOverviewResponse: {
+            canManage: boolean;
+            aging: components["schemas"]["ArAgingSummaryDto"];
+            bankAccounts: components["schemas"]["ReceivablesBankAccountDto"][];
+            inboundBankLines: components["schemas"]["InboundBankCreditLineDto"][];
+            customers: components["schemas"]["ReceivablesCustomerOptionDto"][];
+            openReceivables: components["schemas"]["CustomerReceivableDto"][];
+            receipts: components["schemas"]["CustomerReceiptDto"][];
         };
         ReceiveReplacementRequest: {
             /** Format: uuid */
@@ -5101,6 +5365,11 @@ export interface components {
         ReverseBankMatchRequest: {
             /** Format: date */
             reversalPostingDate: string;
+            reason: string;
+        };
+        ReverseCustomerReceiptRequest: {
+            /** Format: date */
+            reversalDate: string;
             reason: string;
         };
         ReverseJournalRequest: {
@@ -14746,6 +15015,276 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CustomerInvoiceDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetReceivablesOverview: {
+        parameters: {
+            query?: {
+                asOfDate?: string;
+            };
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReceivablesOverviewResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ImportInboundBankStatement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ImportInboundBankStatementRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportInboundBankStatementResponse"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ConfirmCustomerReceipt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmCustomerReceiptRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerReceiptDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerReceiptDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    AllocateCustomerReceipt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                receiptId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AllocateCustomerReceiptRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerReceiptDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ReverseCustomerReceipt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                receiptId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReverseCustomerReceiptRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CustomerReceiptDto"];
                 };
             };
             /** @description Bad Request */

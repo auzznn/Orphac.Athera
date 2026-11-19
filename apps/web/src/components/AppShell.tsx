@@ -503,6 +503,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         active: pathname.endsWith("/billing") || pathname.includes("/billing/"),
       };
     })(),
+    (() => {
+      const receivablesPermitted =
+        permissionSet.has("finance.read") ||
+        permissionSet.has("finance.journal.post") ||
+        permissionSet.has("sales.read") ||
+        permissionSet.has("sales.manage") ||
+        permissionSet.has("sales.approve");
+      return {
+        key: "receivables",
+        label: t.shell.navItems.receivables,
+        icon: Wallet,
+        href: baseEntityPath && receivablesPermitted ? `${baseEntityPath}/receivables` : null,
+        permitted: receivablesPermitted,
+        active: pathname.endsWith("/receivables") || pathname.includes("/receivables/"),
+      };
+    })(),
     {
       key: "finance",
       label: t.shell.navItems.finance,

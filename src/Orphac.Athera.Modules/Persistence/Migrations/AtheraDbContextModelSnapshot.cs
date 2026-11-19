@@ -2531,8 +2531,6 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
 
                     b.HasKey("ReceivableId");
 
-                    b.HasAlternateKey("TenantId", "LegalEntityId", "ReceivableId");
-
                     b.HasIndex("TenantId", "LegalEntityId", "CustomerPartnerId")
                         .HasDatabaseName("ix_customer_receivables_customer");
 
@@ -9245,6 +9243,274 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Orphac.Athera.Modules.Receivables.CustomerReceipt", b =>
+                {
+                    b.Property<Guid>("ReceiptId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("receipt_id");
+
+                    b.Property<decimal>("AllocatedAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("allocated_amount");
+
+                    b.Property<Guid>("BankAccountId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_account_id");
+
+                    b.Property<string>("BankReferenceSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("bank_reference_snapshot");
+
+                    b.Property<Guid>("BankStatementId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_statement_id");
+
+                    b.Property<Guid>("BankStatementLineId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("bank_statement_line_id");
+
+                    b.Property<DateTimeOffset>("CreatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at_utc");
+
+                    b.Property<Guid>("CreatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("created_by_user_id");
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)")
+                        .HasColumnName("currency_code");
+
+                    b.Property<string>("CustomerCodeSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("customer_code_snapshot");
+
+                    b.Property<string>("CustomerNameSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("customer_name_snapshot");
+
+                    b.Property<Guid>("CustomerPartnerId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("customer_partner_id");
+
+                    b.Property<Guid>("GlJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("gl_journal_id");
+
+                    b.Property<string>("GlJournalNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("gl_journal_number");
+
+                    b.Property<string>("IdempotencyKey")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("character varying(80)")
+                        .HasColumnName("idempotency_key");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(300)
+                        .HasColumnType("character varying(300)")
+                        .HasColumnName("notes");
+
+                    b.Property<decimal>("ReceiptAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("receipt_amount");
+
+                    b.Property<DateOnly>("ReceiptDate")
+                        .HasColumnType("date")
+                        .HasColumnName("receipt_date");
+
+                    b.Property<string>("ReceiptNumber")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("receipt_number");
+
+                    b.Property<Guid?>("ReversalGlJournalId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reversal_gl_journal_id");
+
+                    b.Property<string>("ReversalGlJournalNumber")
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("reversal_gl_journal_number");
+
+                    b.Property<string>("ReversalReason")
+                        .HasMaxLength(240)
+                        .HasColumnType("character varying(240)")
+                        .HasColumnName("reversal_reason");
+
+                    b.Property<DateTimeOffset?>("ReversedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reversed_at_utc");
+
+                    b.Property<Guid?>("ReversedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reversed_by_user_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("character varying(24)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<decimal>("UnappliedAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("unapplied_amount");
+
+                    b.Property<DateTimeOffset>("UpdatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at_utc");
+
+                    b.Property<long>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("bigint")
+                        .HasColumnName("version");
+
+                    b.HasKey("ReceiptId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "BankStatementLineId")
+                        .IsUnique()
+                        .HasDatabaseName("ux_customer_receipts_active_bank_line")
+                        .HasFilter("status <> 'REVERSED'");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "IdempotencyKey")
+                        .IsUnique()
+                        .HasDatabaseName("ux_customer_receipts_idempotency");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReceiptNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_customer_receipts_number");
+
+                    b.ToTable("customer_receipts", "ar", t =>
+                        {
+                            t.HasCheckConstraint("ck_customer_receipts_amounts", "receipt_amount > 0 AND allocated_amount >= 0 AND unapplied_amount >= 0 AND unapplied_amount = receipt_amount - allocated_amount");
+
+                            t.HasCheckConstraint("ck_customer_receipts_status", "status IN ('CONFIRMED', 'PARTIALLY_ALLOCATED', 'ALLOCATED', 'REVERSED')");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Receivables.CustomerReceiptSequence", b =>
+                {
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<int>("FiscalYear")
+                        .HasColumnType("integer")
+                        .HasColumnName("fiscal_year");
+
+                    b.Property<long>("LastNumber")
+                        .HasColumnType("bigint")
+                        .HasColumnName("last_number");
+
+                    b.HasKey("TenantId", "LegalEntityId", "FiscalYear")
+                        .HasName("PK_receipt_sequences1");
+
+                    b.ToTable("receipt_sequences", "ar", t =>
+                        {
+                            t.HasCheckConstraint("ck_receipt_sequences_last_number", "last_number >= 0");
+                        });
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Receivables.ReceiptAllocation", b =>
+                {
+                    b.Property<Guid>("AllocationId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("allocation_id");
+
+                    b.Property<decimal>("AllocatedAmount")
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("allocated_amount");
+
+                    b.Property<DateTimeOffset>("AllocatedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("allocated_at_utc");
+
+                    b.Property<Guid>("AllocatedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("allocated_by_user_id");
+
+                    b.Property<Guid>("InvoiceId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("invoice_id");
+
+                    b.Property<string>("InvoiceNumberSnapshot")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("character varying(40)")
+                        .HasColumnName("invoice_number_snapshot");
+
+                    b.Property<Guid>("LegalEntityId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("legal_entity_id");
+
+                    b.Property<Guid>("ReceiptId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("receipt_id");
+
+                    b.Property<Guid>("ReceivableId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("receivable_id");
+
+                    b.Property<DateTimeOffset?>("ReversedAtUtc")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("reversed_at_utc");
+
+                    b.Property<Guid?>("ReversedByUserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("reversed_by_user_id");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("status");
+
+                    b.Property<Guid>("TenantId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("tenant_id");
+
+                    b.HasKey("AllocationId");
+
+                    b.HasAlternateKey("TenantId", "LegalEntityId", "AllocationId");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReceiptId")
+                        .HasDatabaseName("ix_receipt_allocations_receipt");
+
+                    b.HasIndex("TenantId", "LegalEntityId", "ReceivableId")
+                        .HasDatabaseName("ix_receipt_allocations_receivable");
+
+                    b.ToTable("receipt_allocations", "ar", t =>
+                        {
+                            t.HasCheckConstraint("ck_receipt_allocations_amount", "allocated_amount > 0");
+
+                            t.HasCheckConstraint("ck_receipt_allocations_status", "status IN ('ACTIVE', 'REVERSED')");
+                        });
+                });
+
             modelBuilder.Entity("Orphac.Athera.Modules.Sales.SalesOrder", b =>
                 {
                     b.Property<Guid>("SalesOrderId")
@@ -12371,6 +12637,23 @@ namespace Orphac.Athera.Modules.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("TenantId", "LegalEntityId", "ValuedAcceptanceLineId")
                         .HasPrincipalKey("TenantId", "LegalEntityId", "ValuedAcceptanceLineId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Orphac.Athera.Modules.Receivables.ReceiptAllocation", b =>
+                {
+                    b.HasOne("Orphac.Athera.Modules.Receivables.CustomerReceipt", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ReceiptId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ReceiptId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Orphac.Athera.Modules.Billing.CustomerReceivable", null)
+                        .WithMany()
+                        .HasForeignKey("TenantId", "LegalEntityId", "ReceivableId")
+                        .HasPrincipalKey("TenantId", "LegalEntityId", "ReceivableId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
