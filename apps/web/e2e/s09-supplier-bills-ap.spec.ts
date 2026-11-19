@@ -46,7 +46,7 @@ test.describe("S09 Supplier Invoice Three-Way Match, AP & Price Difference", () 
 
   test("S09-E2E-01 U4 drafts & submits variance bill, U2 approves/posts DEC-P2P-013 split, releases hold & verifies Inventory", async ({
     page,
-  }) => {
+  }, testInfo) => {
     const stamp = String(Date.now()).slice(-6);
     const vendorInvNo = `INV-JKT-S09-${stamp}`;
     const taxInvNo = `010.001-26.${stamp.padStart(8, "0")}`;
@@ -126,9 +126,45 @@ test.describe("S09 Supplier Invoice Three-Way Match, AP & Price Difference", () 
 
     await expect(sheet).toContainText(/Disetujui \(Siap Post\)|Approved \(Ready to Post\)/);
 
-    await page.locator("#ap-post-date-input").fill("2026-11-10");
-    await page.locator("#ap-post-bill-btn").click();
+    const postDate = page.locator("#ap-post-date-input");
+    await postDate.fill("2026-11-10");
+    const postReviewTrigger = page.locator("#ap-post-bill-btn");
+    const postReview = page.getByRole("region", { name: /Tinjau Posting Faktur|Review Bill Posting/ });
+    let postRequests = 0;
+    page.on("request", (request) => {
+      if (request.method() === "POST" && /\/payables\/bills\/[^/]+\/post$/.test(new URL(request.url()).pathname)) {
+        postRequests++;
+      }
+    });
+    await postReviewTrigger.press("Enter");
+    await expect(postReview).toBeVisible();
+    await expect(postReview).toContainText(vendorInvNo);
+    await expect(postReview).toContainText("2026-11-10");
+    await expect(postReview).toContainText("5.995.000");
+    await expect(postDate).toBeDisabled();
+    const cancelPost = postReview.getByRole("button", { name: /^(Batal|Cancel)$/ });
+    await expect(cancelPost).toBeFocused();
+    await cancelPost.press("Enter");
+    await expect(postReview).toBeHidden();
+    await expect(postReviewTrigger).toBeFocused();
+    expect(postRequests).toBe(0);
+    await postReviewTrigger.press("Enter");
+    await expect(cancelPost).toBeFocused();
+    await cancelPost.press("Escape");
+    await expect(postReviewTrigger).toBeFocused();
+    await expect(postReview).toBeHidden();
+    await expect(postDate).toBeEnabled();
+    expect(postRequests).toBe(0);
+    await postReviewTrigger.click();
+    for (const width of [1280, 768, 390]) {
+      await page.setViewportSize({ width, height: 844 });
+      expect(await postReview.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true);
+      await postReview.screenshot({ path: testInfo.outputPath(`bill-post-review-${width}.png`) });
+    }
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await postReview.getByRole("button", { name: /^(Posting Permanen|Post Permanently)$/ }).click();
     await expect(sheet).toContainText(/Sudah Diposting|Posted/);
+    expect(postRequests).toBe(1);
     await expect(sheet).toContainText(/Pembayaran Ditahan|Payment Blocked/);
 
     await page.locator("#ap-payment-block-reason").fill("Salinan Faktur Pajak asli terverifikasi");

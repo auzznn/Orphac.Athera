@@ -75,3 +75,7 @@ A calm, precise working surface whose best moment is Gate 2: nothing posts until
 - Why does the reversible action demand a preview while the irreversible one does not?
 - Would an approvals-first "my work" view cut more daily navigation than any single screen fix?
 - Do permanent policy banners reassure, or train people to ignore warning surfaces?
+
+## Follow-up: supplier-bill posting
+
+The payables detail now requires an explicit confirmation after review of the supplier invoice, posting date and net payable. Cancel and Escape restore focus without a posting request. `S09-E2E-01` verifies this against disposable PostgreSQL before the confirmed post and preserves exact monetary assertions. This addresses accidental one-click posting only; the panel is not a committed GL preview or an activation gate for ATH-CR-015. No other findings were closed.

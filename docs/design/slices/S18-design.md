@@ -27,3 +27,7 @@
 | `S18_DRILL_01` | `pg_dump` -> `pg_restore` into clean PG18 DB + row/RLS parity + `M17 -> M16 -> M17` migration drill | Real PG18 CLI |
 | `S18_AUDIT_01` | `dotnet list package --vulnerable`, `npm audit --omit=dev`, secrets regex scan | CLI |
 | `S18_E2E_01` | Browser smoke walkthrough + `1280px` desktop, `768px` tablet, `390px` mobile & keyboard focus audit (UI presence only; the numeric P2P/O2C proof is `S18_RC_01` via API) | Playwright + Impeccable Reviewer |
+
+## Follow-up: supplier-bill posting UX
+
+For an approved bill and existing post permission, the action first opens an inline review of the supplier invoice reference, posting date and net payable. Review and cancellation do not call the API. Explicit confirmation uses the existing S09 posting request; the backend still owns locking, date and permission checks, and journal computation. This is an accidental-posting guard, not a journal preview or a new policy gate. ATH-CR-015 and Owner acceptance remain open.

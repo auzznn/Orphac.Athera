@@ -51,7 +51,7 @@
 2. **Backup Role Separation:** Because `FORCE ROW LEVEL SECURITY` constrains even table owner `athera_migrator`, scheduled `pg_dump` backups must execute under a dedicated `BYPASSRLS` backup role (documented and rehearsed in [LOCAL_AND_STAGING_OPERATIONS_RUNBOOK.md](../../runbooks/LOCAL_AND_STAGING_OPERATIONS_RUNBOOK.md)).
 3. **Production Secret Provisioning:** Local defaults (`Security:DocumentDownloadSigningKey`, local demo password) must never be reused in staging/production; `--seed-demo` automatically refuses execution when `ASPNETCORE_ENVIRONMENT=Production`.
 
-[Observability/privacy review](observability-privacy-review.md): no automatic outbox sweep after restart, no cross-tier correlation, unresolved retention. [UX review](impeccable-review.md): one-click irreversible bill posting, long mobile receiving workflow; focus smoke test only. Evidence for PRD tenant provisioning, general stock adjustments and customer invoice PDFs has not been established in this packet. The S17 evidence-pack PDF does not prove invoice PDF support. No hosted CI or deployment is evidenced here.
+[Observability/privacy review](observability-privacy-review.md): no automatic outbox sweep after restart, no cross-tier correlation, unresolved retention. [UX review](impeccable-review.md): supplier-bill confirmation added in follow-up; long mobile receiving and broader keyboard coverage remain open. Evidence for PRD tenant provisioning, general stock adjustments and customer invoice PDFs has not been established in this packet. The S17 evidence-pack PDF does not prove invoice PDF support. No hosted CI or deployment is evidenced here.
 
 ## 4. Human Product Owner Four-Pillar Sign-off (LEAVE BLANK UNTIL HUMAN REVIEW)
 

@@ -1,0 +1,110 @@
+## lint
+
+> @orphac-athera/web@0.1.0 lint
+> eslint .
+
+lint-exit=0
+
+## typecheck
+
+> @orphac-athera/web@0.1.0 typecheck
+> tsc --noEmit
+
+typecheck-exit=0
+
+## build
+
+> @orphac-athera/web@0.1.0 build
+> next build
+
+▲ Next.js 16.4.6 (Turbopack)
+✓ Running next.config.ts took 77ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 984ms
+  Running TypeScript ...
+  Finished TypeScript in 4.8s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/3) ...
+✓ Generating static pages using 7 workers (3/3) in 87ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/[...path]
+├ ƒ /invitations
+├ ○ /login
+├ ƒ /w/[tenantId]/[entityId]
+├ ƒ /w/[tenantId]/[entityId]/admin
+├ ƒ /w/[tenantId]/[entityId]/approvals
+├ ƒ /w/[tenantId]/[entityId]/billing
+├ ƒ /w/[tenantId]/[entityId]/catalog
+├ ƒ /w/[tenantId]/[entityId]/documents
+├ ƒ /w/[tenantId]/[entityId]/finance
+├ ƒ /w/[tenantId]/[entityId]/fulfillment
+├ ƒ /w/[tenantId]/[entityId]/inventory
+├ ƒ /w/[tenantId]/[entityId]/partners
+├ ƒ /w/[tenantId]/[entityId]/payables
+├ ƒ /w/[tenantId]/[entityId]/payments
+├ ƒ /w/[tenantId]/[entityId]/procurement
+├ ƒ /w/[tenantId]/[entityId]/receivables
+├ ƒ /w/[tenantId]/[entityId]/receiving
+├ ƒ /w/[tenantId]/[entityId]/reports
+├ ƒ /w/[tenantId]/[entityId]/returns
+├ ƒ /w/[tenantId]/[entityId]/sales-orders
+└ ƒ /workspaces
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+build-exit=0
+
+## vitest
+> vitest run
+
+
+ RUN  v5.1.0 /Users/macbook/Documents/orphac/Orphac.Athera/apps/web
+
+
+ Test Files  18 passed (18)
+      Tests  50 passed (50)
+   Start at  20:51:18
+   Duration  3.87s (environment 34%, tests 30%, import 21%, transform 8%, setup 5%, worker 1%)
+
+Environment  jsdom was created 18 times · 7.87s total, 34% of tracked time
+             create it once per worker with pool: 'vmThreads' (keeps per-file isolation) or isolate: false (shares it across files)
+             learn more: https://vitest.dev/guide/improving-performance#test-environments
+
+vitest-done
+
+## e2e:fresh s09-supplier-bills-ap.spec.ts
+
+> @orphac-athera/web@0.1.0 e2e:fresh
+> ../../scripts/dev/e2e-fresh-db.sh s09-supplier-bills-ap.spec.ts
+
+CREATE DATABASE
+REVOKE
+GRANT
+REVOKE
+Fresh local database (retained for inspection): athera_e2e_20261119135127_33263
+fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+      Failed executing DbCommand (11ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT "MigrationId", "ProductVersion"
+      FROM identity.__ef_migrations_history
+      ORDER BY "MigrationId";
+PostgreSQL migrations applied successfully.
+Disposable demo identities seeded successfully.
+
+> @orphac-athera/web@0.1.0 e2e
+> playwright test s09-supplier-bills-ap.spec.ts
+
+
+Running 2 tests using 1 worker
+
+  ✓  1 [chromium] › e2e/s09-supplier-bills-ap.spec.ts:47:3 › S09 Supplier Invoice Three-Way Match, AP & Price Difference › S09-E2E-01 U4 drafts & submits variance bill, U2 approves/posts DEC-P2P-013 split, releases hold & verifies Inventory (6.2s)
+  ✓  2 [chromium] › e2e/s09-supplier-bills-ap.spec.ts:205:3 › S09 Supplier Invoice Three-Way Match, AP & Price Difference › S09-E2E-02 Enforces AP access denial for U1 and read-only enforcement on NUSA-SBY for U2 (825ms)
+
+  2 passed (12.8s)
+e2e-exit=0

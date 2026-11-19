@@ -1258,6 +1258,9 @@ export interface Dictionary {
       postSectionTitle: string;
       postingDateLabel: string;
       postButton: string;
+      postConfirmButton: string;
+      postCancelButton: string;
+      postWarning: string;
       postBusy: string;
       blockControlTitle: string;
       holdPaymentButton: string;
@@ -4094,7 +4097,10 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Pemisahan Tugas Empat Mata (OD-02): Pengaju faktur tidak boleh menyetujui atau menolak faktur yang diajukannya sendiri.",
         postSectionTitle: "Posting Atomik ke AP, Persediaan & Buku Besar (GL)",
         postingDateLabel: "Tanggal Posting GL",
-        postButton: "Posting Faktur ke AP & GL",
+        postButton: "Tinjau Posting Faktur",
+        postConfirmButton: "Posting Permanen",
+        postCancelButton: "Batal",
+        postWarning: "Posting mencatat faktur di utang usaha dan buku besar serta dapat menyesuaikan nilai persediaan. Setelah diposting, faktur tidak dapat diedit.",
         postBusy: "Memposting...",
         blockControlTitle: "Kontrol Blokir / Rilis Pembayaran Hutang Usaha",
         holdPaymentButton: "Tahan Pembayaran",
@@ -7401,7 +7407,10 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Four-Eyes Segregation (OD-02): The bill submitter cannot approve or reject their own submission.",
         postSectionTitle: "Atomic AP, Inventory & GL Posting (TX-BILL)",
         postingDateLabel: "GL Posting Date",
-        postButton: "Post Bill to AP & GL",
+        postButton: "Review Bill Posting",
+        postConfirmButton: "Post Permanently",
+        postCancelButton: "Cancel",
+        postWarning: "Posting records this bill in payables and the general ledger and may adjust inventory value. Once posted, the bill cannot be edited.",
         postBusy: "Posting...",
         blockControlTitle: "Payable Payment Hold / Release Control",
         holdPaymentButton: "Hold Payment",

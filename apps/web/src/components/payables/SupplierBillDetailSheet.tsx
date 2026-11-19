@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   AlertCircle,
   CheckCircle2,
@@ -160,6 +160,14 @@ export function SupplierBillDetailSheet({
       : todayJakartaDate(),
   );
 
+  const [postReviewOpen, setPostReviewOpen] = useState(false);
+  const postReviewTrigger = useRef<HTMLButtonElement>(null);
+  const cancelPostReview = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (postReviewOpen) cancelPostReview.current?.focus();
+  }, [postReviewOpen]);
+
   const [blockReason, setBlockReason] = useState("");
 
   const isSubmitter = Boolean(
@@ -222,7 +230,13 @@ export function SupplierBillDetailSheet({
     }
   }
 
+  function dismissPostReview() {
+    setPostReviewOpen(false);
+    postReviewTrigger.current?.focus();
+  }
+
   async function handlePost() {
+    if (!postReviewOpen || !canPost || bill.status !== "APPROVED" || isBlockedMatch || !postingDate || busyAction !== null) return;
     setBusyAction("post");
     setActionError(null);
     try {
@@ -694,29 +708,86 @@ export function SupplierBillDetailSheet({
               {!canPost ? (
                 <p className="text-xs text-[var(--text-secondary)]">{dt.noPermPostHint}</p>
               ) : (
-                <div className="flex flex-wrap items-end gap-3">
-                  <label className="block space-y-1">
-                    <span className="block text-[11px] font-medium text-[var(--text-secondary)]">
-                      {dt.postingDateLabel}
-                    </span>
-                    <input
-                      id="ap-post-date-input"
-                      type="date"
-                      value={postingDate}
-                      onChange={(e) => setPostingDate(e.target.value)}
-                      className="font-code min-h-9 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs tabular-nums text-[var(--text-primary)]"
-                    />
-                  </label>
-                  <button
-                    type="button"
-                    id="ap-post-bill-btn"
-                    disabled={busyAction !== null || isBlockedMatch}
-                    onClick={handlePost}
-                    className="inline-flex min-h-10 items-center gap-1.5 rounded-[var(--radius-sm)] bg-[var(--accent-primary)] px-4 text-xs font-semibold text-[var(--accent-primary-ink)] hover:bg-[var(--accent-primary-hover)] disabled:opacity-60"
-                  >
-                    <CheckCircle2 className="h-4 w-4" strokeWidth={1.75} aria-hidden="true" />
-                    <span>{busyAction === "post" ? dt.postBusy : dt.postButton}</span>
-                  </button>
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-end gap-3">
+                    <label className="block space-y-1">
+                      <span className="block text-[11px] font-medium text-[var(--text-secondary)]">{dt.postingDateLabel}</span>
+                      <input
+                        id="ap-post-date-input"
+                        type="date"
+                        value={postingDate}
+                        disabled={postReviewOpen}
+                        onChange={(e) => setPostingDate(e.target.value)}
+                        className="font-code min-h-9 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 text-xs tabular-nums text-[var(--text-primary)] disabled:opacity-60"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      id="ap-post-bill-btn"
+                      ref={postReviewTrigger}
+                      aria-expanded={postReviewOpen}
+                      aria-controls={postReviewOpen ? "ap-post-review" : undefined}
+                      disabled={busyAction !== null || isBlockedMatch || !postingDate}
+                      onClick={() => postReviewOpen ? dismissPostReview() : setPostReviewOpen(true)}
+                      className="inline-flex min-h-10 items-center rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-chrome)] disabled:opacity-60"
+                    >
+                      {dt.postButton}
+                    </button>
+                  </div>
+                  {postReviewOpen ? (
+                    <section
+                      id="ap-post-review"
+                      aria-labelledby="ap-post-review-title"
+                      aria-busy={busyAction === "post"}
+                      className="space-y-3 border-t border-[var(--border-hairline)] pt-3 text-sm"
+                      onKeyDown={(e) => {
+                        if (e.key === "Escape" && busyAction === null) {
+                          e.stopPropagation();
+                          dismissPostReview();
+                        }
+                      }}
+                    >
+                      <h3 id="ap-post-review-title" className="font-semibold text-[var(--text-primary)]">{dt.postButton}</h3>
+                      <div className="flex items-start gap-2 rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-3 py-2 text-[var(--status-warn-text)]">
+                        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.75} aria-hidden="true" />
+                        <p>{dt.postWarning}</p>
+                      </div>
+                      <dl className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                        <div className="min-w-0">
+                          <dt className="text-[var(--text-secondary)]">{dt.headerVendor}</dt>
+                          <dd className="break-words font-semibold text-[var(--text-primary)]">{bill.supplierLegalName}</dd>
+                          <dd className="font-code break-words text-[var(--text-secondary)]">{bill.supplierInvoiceNumber}</dd>
+                        </div>
+                        <div className="min-w-0">
+                          <dt className="text-[var(--text-secondary)]">{dt.postingDateLabel}</dt>
+                          <dd className="font-code tabular-nums text-[var(--text-primary)]">{postingDate}</dd>
+                        </div>
+                        <div className="min-w-0">
+                          <dt className="text-[var(--text-secondary)]">{pt.composer.netApLabel}</dt>
+                          <dd className="font-code break-words font-semibold tabular-nums text-[var(--text-primary)]">{formatIdr(bill.netPayableAmount)}</dd>
+                        </div>
+                      </dl>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          ref={cancelPostReview}
+                          disabled={busyAction !== null}
+                          onClick={dismissPostReview}
+                          className="min-h-11 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-4 font-semibold text-[var(--text-primary)] hover:bg-[var(--bg-chrome)] disabled:opacity-60"
+                        >
+                          {dt.postCancelButton}
+                        </button>
+                        <button
+                          type="button"
+                          disabled={busyAction !== null || isBlockedMatch}
+                          onClick={handlePost}
+                          className="min-h-11 rounded-[var(--radius-sm)] bg-[var(--accent-primary)] px-4 font-semibold text-[var(--accent-primary-ink)] hover:bg-[var(--accent-primary-hover)] disabled:opacity-60"
+                        >
+                          {busyAction === "post" ? dt.postBusy : dt.postConfirmButton}
+                        </button>
+                      </div>
+                    </section>
+                  ) : null}
                 </div>
               )}
             </div>
