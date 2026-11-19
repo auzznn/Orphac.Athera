@@ -1,5 +1,7 @@
 # S18 release evidence: local synthetic candidate
 
+Implementation and evidence snapshot: `f6de2aaf5187e751f8c2b060b983d464aabba231` on `greenfield/mvp`.
+
 Implementation: `CODE_COMPLETE`. Local automated checks: **PASS**. Overall release gate: **BLOCKED**. Product Owner acceptance: **PENDING** for all 19 slices. Immutable postings remain executable under unsigned policies; the real-data hold is operational, not a server-side feature gate. See [ATH-CR-015](../../decisions/ATH-CR-015-live-posting-paths-under-open-decisions.md).
 
 | Check | Local result and limits | Evidence |

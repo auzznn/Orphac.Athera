@@ -5,6 +5,7 @@
 - Stack: Next.js 16.4.6 + ASP.NET Core 10 + PostgreSQL 18.
 - Current target: **Local S18 regression PASS; release gate BLOCKED on ATH-CR-015, PO_ACCEPTANCE_PENDING (0/19).**
 - Original S18 implementation SHA: `895add3` (baseline `e25008f`).
+- S18 local verification and release evidence SHA: `f6de2aaf5187e751f8c2b060b983d464aabba231` (`greenfield/mvp`; not an Owner sign-off).
 - PostgreSQL test instance: VERIFIED (`athera-greenfield-pg` healthy on `127.0.0.1:55433/athera_dev`; low-privilege `athera_app` + `athera_migrator` verified).
 - Ponytail skill availability: AVAILABLE (`v5.3.3` `full`).
 - Impeccable skill availability: AVAILABLE (`v4.9.1`).
@@ -30,4 +31,4 @@
 | S15 | CODE_COMPLETE | PASS | PENDING | 20e0ab2 | [S15 Evidence Packet](../evidence/S15/README.md); [ATH-CR-012 (OD-09)](../decisions/ATH-CR-012-OD09-customer-receipts-unapplied-and-ar-aging-policy.md) |
 | S16 | CODE_COMPLETE | PASS | PENDING | 308be0e | [S16 Evidence Packet](../evidence/S16/README.md); [ATH-CR-013 (OD-11/OD-13)](../decisions/ATH-CR-013-OD11-OD13-opening-balances-and-period-close-policy.md) |
 | S17 | CODE_COMPLETE | PASS | PENDING | 6814aec | [S17 Evidence Packet](../evidence/S17/README.md); [ATH-CR-014 (OD-12)](../decisions/ATH-CR-014-OD12-document-retention-and-sharing-policy.md) |
-| S18 | CODE_COMPLETE | BLOCKED (automated checks PASS) | PENDING | 895add3 | [S18 Evidence Packet](../evidence/S18/README.md); [PO Four-Pillar Acceptance](../evidence/S18/PO-FOUR-PILLAR-ACCEPTANCE-PACKET.md); [Handover Guide](../handover/ENGINEERING_AND_OPERATIONAL_HANDOVER.md); [ATH-CR-015](../decisions/ATH-CR-015-live-posting-paths-under-open-decisions.md) |
+| S18 | CODE_COMPLETE | BLOCKED (automated checks PASS) | PENDING | f6de2aa | [S18 Evidence Packet](../evidence/S18/README.md); [PO Four-Pillar Acceptance](../evidence/S18/PO-FOUR-PILLAR-ACCEPTANCE-PACKET.md); [Handover Guide](../handover/ENGINEERING_AND_OPERATIONAL_HANDOVER.md); [ATH-CR-015](../decisions/ATH-CR-015-live-posting-paths-under-open-decisions.md) |
