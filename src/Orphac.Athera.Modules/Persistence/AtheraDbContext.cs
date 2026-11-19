@@ -6,6 +6,7 @@ using Orphac.Athera.Modules.Approval;
 using Orphac.Athera.Modules.Audit;
 using Orphac.Athera.Modules.Cash;
 using Orphac.Athera.Modules.Catalog;
+using Orphac.Athera.Modules.Fulfillment;
 using Orphac.Athera.Modules.GeneralLedger;
 using Orphac.Athera.Modules.Identity;
 using Orphac.Athera.Modules.Integration;
@@ -116,6 +117,12 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
     public DbSet<SalesOrder> SalesOrders => Set<SalesOrder>();
     public DbSet<SalesOrderRevision> SalesOrderRevisions => Set<SalesOrderRevision>();
     public DbSet<SalesOrderLine> SalesOrderLines => Set<SalesOrderLine>();
+    public DbSet<PickSequence> PickSequences => Set<PickSequence>();
+    public DbSet<ShipmentSequence> ShipmentSequences => Set<ShipmentSequence>();
+    public DbSet<PickOrder> PickOrders => Set<PickOrder>();
+    public DbSet<PickLine> PickLines => Set<PickLine>();
+    public DbSet<SalesShipment> SalesShipments => Set<SalesShipment>();
+    public DbSet<SalesShipmentLine> SalesShipmentLines => Set<SalesShipmentLine>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -1976,7 +1983,7 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
         {
             entity.ToTable("stock_movements", "inventory", t =>
             {
-                t.HasCheckConstraint("ck_stock_movements_type", "movement_type IN ('PURCHASE_RECEIPT_ACCEPTANCE', 'LOCATION_TRANSFER', 'QUALITY_STATUS_CHANGE', 'OPERATIONAL_ISSUE', 'PURCHASE_RETURN_OUTBOUND')");
+                t.HasCheckConstraint("ck_stock_movements_type", "movement_type IN ('PURCHASE_RECEIPT_ACCEPTANCE', 'LOCATION_TRANSFER', 'QUALITY_STATUS_CHANGE', 'OPERATIONAL_ISSUE', 'PURCHASE_RETURN_OUTBOUND', 'SALES_DISPATCH_OUTBOUND')");
             });
 
             entity.HasKey(x => x.StockMovementId);
@@ -2099,10 +2106,10 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
         {
             entity.ToTable("valuation_entries", "inventory", t =>
             {
-                t.HasCheckConstraint("ck_valuation_entries_type", "entry_type IN ('RECEIPT_ACCEPTANCE', 'OPERATIONAL_ISSUE', 'INVOICE_PRICE_ADJUSTMENT', 'PURCHASE_RETURN_OUTBOUND')");
+                t.HasCheckConstraint("ck_valuation_entries_type", "entry_type IN ('RECEIPT_ACCEPTANCE', 'OPERATIONAL_ISSUE', 'INVOICE_PRICE_ADJUSTMENT', 'PURCHASE_RETURN_OUTBOUND', 'SALES_DISPATCH_OUTBOUND')");
                 t.HasCheckConstraint("ck_valuation_entries_currency", "currency_code = 'IDR'");
                 t.HasCheckConstraint("ck_valuation_entries_seq", "pool_sequence_number >= 1");
-                t.HasCheckConstraint("ck_valuation_entries_values", "previous_pool_base_quantity >= 0 AND previous_pool_carrying_value >= 0 AND previous_moving_average_cost >= 0 AND new_pool_base_quantity >= 0 AND new_pool_carrying_value >= 0 AND new_moving_average_cost >= 0 AND ((entry_type = 'RECEIPT_ACCEPTANCE' AND quantity_delta > 0 AND value_delta > 0 AND unit_cost_applied > 0 AND new_pool_base_quantity > 0 AND new_pool_carrying_value > 0 AND new_moving_average_cost > 0 AND stock_movement_id IS NOT NULL AND movement_line_id IS NOT NULL AND gl_journal_id IS NOT NULL) OR (entry_type IN ('OPERATIONAL_ISSUE', 'PURCHASE_RETURN_OUTBOUND') AND quantity_delta < 0 AND value_delta < 0 AND unit_cost_applied > 0 AND stock_movement_id IS NOT NULL AND movement_line_id IS NOT NULL AND gl_journal_id IS NOT NULL) OR (entry_type = 'INVOICE_PRICE_ADJUSTMENT' AND quantity_delta = 0 AND value_delta <> 0 AND new_pool_base_quantity > 0 AND new_pool_carrying_value > 0 AND new_moving_average_cost > 0 AND gl_journal_id IS NOT NULL))");
+                t.HasCheckConstraint("ck_valuation_entries_values", "previous_pool_base_quantity >= 0 AND previous_pool_carrying_value >= 0 AND previous_moving_average_cost >= 0 AND new_pool_base_quantity >= 0 AND new_pool_carrying_value >= 0 AND new_moving_average_cost >= 0 AND ((entry_type = 'RECEIPT_ACCEPTANCE' AND quantity_delta > 0 AND value_delta > 0 AND unit_cost_applied > 0 AND new_pool_base_quantity > 0 AND new_pool_carrying_value > 0 AND new_moving_average_cost > 0 AND stock_movement_id IS NOT NULL AND movement_line_id IS NOT NULL AND gl_journal_id IS NOT NULL) OR (entry_type IN ('OPERATIONAL_ISSUE', 'PURCHASE_RETURN_OUTBOUND', 'SALES_DISPATCH_OUTBOUND') AND quantity_delta < 0 AND value_delta < 0 AND unit_cost_applied > 0 AND stock_movement_id IS NOT NULL AND movement_line_id IS NOT NULL AND gl_journal_id IS NOT NULL) OR (entry_type = 'INVOICE_PRICE_ADJUSTMENT' AND quantity_delta = 0 AND value_delta <> 0 AND new_pool_base_quantity > 0 AND new_pool_carrying_value > 0 AND new_moving_average_cost > 0 AND gl_journal_id IS NOT NULL))");
             });
 
             entity.HasKey(x => x.ValuationEntryId);
@@ -4114,6 +4121,287 @@ public sealed class AtheraDbContext(DbContextOptions<AtheraDbContext> options)
                 .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.TaxCodeId })
                 .HasPrincipalKey(tc => new { tc.TenantId, tc.LegalEntityId, tc.TaxCodeId })
                 .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PickSequence>(entity =>
+        {
+            entity.ToTable("pick_sequences", "fulfillment", t =>
+            {
+                t.HasCheckConstraint("ck_pick_sequences_nonnegative", "last_number >= 0");
+                t.HasCheckConstraint("ck_pick_sequences_year", "fiscal_year >= 2000 AND fiscal_year <= 2100");
+            });
+
+            entity.HasKey(x => new { x.TenantId, x.LegalEntityId, x.FiscalYear });
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.FiscalYear).HasColumnName("fiscal_year").IsRequired();
+            entity.Property(x => x.LastNumber).HasColumnName("last_number").IsRequired();
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<ShipmentSequence>(entity =>
+        {
+            entity.ToTable("shipment_sequences", "fulfillment", t =>
+            {
+                t.HasCheckConstraint("ck_shipment_sequences_nonnegative", "last_number >= 0");
+                t.HasCheckConstraint("ck_shipment_sequences_year", "fiscal_year >= 2000 AND fiscal_year <= 2100");
+            });
+
+            entity.HasKey(x => new { x.TenantId, x.LegalEntityId, x.FiscalYear });
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.FiscalYear).HasColumnName("fiscal_year").IsRequired();
+            entity.Property(x => x.LastNumber).HasColumnName("last_number").IsRequired();
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PickOrder>(entity =>
+        {
+            entity.ToTable("pick_orders", "fulfillment", t =>
+            {
+                t.HasCheckConstraint("ck_pick_orders_status", "status IN ('OPEN', 'PICKED', 'DISPATCHED', 'CANCELLED')");
+                t.HasCheckConstraint("ck_pick_orders_quantities", "total_requested_base_quantity > 0 AND total_picked_base_quantity >= 0 AND total_dispatched_base_quantity >= 0 AND total_picked_base_quantity <= total_requested_base_quantity AND total_dispatched_base_quantity <= total_picked_base_quantity");
+            });
+
+            entity.HasKey(x => x.PickOrderId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.PickOrderId });
+
+            entity.Property(x => x.PickOrderId).HasColumnName("pick_order_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.PickNumber).HasColumnName("pick_number").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.SalesOrderId).HasColumnName("sales_order_id").IsRequired();
+            entity.Property(x => x.SalesOrderNumberSnapshot).HasColumnName("sales_order_number_snapshot").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.RevisionId).HasColumnName("revision_id").IsRequired();
+            entity.Property(x => x.WarehouseId).HasColumnName("warehouse_id").IsRequired();
+            entity.Property(x => x.WarehouseCodeSnapshot).HasColumnName("warehouse_code_snapshot").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.TotalRequestedBaseQuantity).HasColumnName("total_requested_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.TotalPickedBaseQuantity).HasColumnName("total_picked_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.TotalDispatchedBaseQuantity).HasColumnName("total_dispatched_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.IdempotencyKey).HasColumnName("idempotency_key").HasMaxLength(80).IsRequired();
+            entity.Property(x => x.Notes).HasColumnName("notes").HasMaxLength(300);
+            entity.Property(x => x.CreatedByUserId).HasColumnName("created_by_user_id").IsRequired();
+            entity.Property(x => x.PickedByUserId).HasColumnName("picked_by_user_id");
+            entity.Property(x => x.PickedAtUtc).HasColumnName("picked_at_utc");
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.PickNumber }).IsUnique().HasDatabaseName("ux_pick_orders_number");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.IdempotencyKey }).IsUnique().HasDatabaseName("ux_pick_orders_idempotency");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SalesOrderId, x.Status }).HasDatabaseName("ix_pick_orders_so_status");
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<SalesOrder>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.SalesOrderId })
+                .HasPrincipalKey(so => new { so.TenantId, so.LegalEntityId, so.SalesOrderId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<Warehouse>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.WarehouseId })
+                .HasPrincipalKey(w => new { w.TenantId, w.LegalEntityId, w.WarehouseId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<PickLine>(entity =>
+        {
+            entity.ToTable("pick_lines", "fulfillment", t =>
+            {
+                t.HasCheckConstraint("ck_pick_lines_number", "line_number >= 1");
+                t.HasCheckConstraint("ck_pick_lines_quantities", "requested_pick_base_quantity > 0 AND picked_base_quantity >= 0 AND dispatched_base_quantity >= 0 AND picked_base_quantity <= requested_pick_base_quantity AND dispatched_base_quantity <= picked_base_quantity");
+            });
+
+            entity.HasKey(x => x.PickLineId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.PickLineId });
+
+            entity.Property(x => x.PickLineId).HasColumnName("pick_line_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.PickOrderId).HasColumnName("pick_order_id").IsRequired();
+            entity.Property(x => x.LineNumber).HasColumnName("line_number").IsRequired();
+            entity.Property(x => x.SoLineId).HasColumnName("so_line_id").IsRequired();
+            entity.Property(x => x.LineageLineKey).HasColumnName("lineage_line_key").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.StockReservationId).HasColumnName("stock_reservation_id").IsRequired();
+            entity.Property(x => x.ItemId).HasColumnName("item_id").IsRequired();
+            entity.Property(x => x.ItemCodeSnapshot).HasColumnName("item_code_snapshot").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.ItemNameSnapshot).HasColumnName("item_name_snapshot").HasMaxLength(160).IsRequired();
+            entity.Property(x => x.BaseUomId).HasColumnName("base_uom_id").IsRequired();
+            entity.Property(x => x.BaseUomCodeSnapshot).HasColumnName("base_uom_code_snapshot").HasMaxLength(16).IsRequired();
+            entity.Property(x => x.WarehouseId).HasColumnName("warehouse_id").IsRequired();
+            entity.Property(x => x.LocationId).HasColumnName("location_id").IsRequired();
+            entity.Property(x => x.LocationCodeSnapshot).HasColumnName("location_code_snapshot").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.StockLotId).HasColumnName("stock_lot_id");
+            entity.Property(x => x.LotNumberSnapshot).HasColumnName("lot_number_snapshot").HasMaxLength(64);
+            entity.Property(x => x.RequestedPickBaseQuantity).HasColumnName("requested_pick_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.PickedBaseQuantity).HasColumnName("picked_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.DispatchedBaseQuantity).HasColumnName("dispatched_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.PickOrderId, x.LineNumber }).IsUnique().HasDatabaseName("ux_pick_lines_number");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.StockReservationId }).HasDatabaseName("ix_pick_lines_reservation");
+
+            entity.HasOne<PickOrder>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PickOrderId })
+                .HasPrincipalKey(po => new { po.TenantId, po.LegalEntityId, po.PickOrderId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<StockReservation>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.StockReservationId })
+                .HasPrincipalKey(sr => new { sr.TenantId, sr.LegalEntityId, sr.StockReservationId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<SalesShipment>(entity =>
+        {
+            entity.ToTable("shipments", "fulfillment", t =>
+            {
+                t.HasCheckConstraint("ck_shipments_status", "status IN ('DISPATCHED', 'DELIVERED')");
+                t.HasCheckConstraint("ck_shipments_currency", "currency_code = 'IDR'");
+                t.HasCheckConstraint("ck_shipments_totals", "total_dispatched_base_quantity > 0 AND total_cogs_amount >= 0");
+            });
+
+            entity.HasKey(x => x.ShipmentId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.ShipmentId });
+
+            entity.Property(x => x.ShipmentId).HasColumnName("shipment_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.ShipmentNumber).HasColumnName("shipment_number").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.PickOrderId).HasColumnName("pick_order_id").IsRequired();
+            entity.Property(x => x.SalesOrderId).HasColumnName("sales_order_id").IsRequired();
+            entity.Property(x => x.SalesOrderNumberSnapshot).HasColumnName("sales_order_number_snapshot").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.RevisionId).HasColumnName("revision_id").IsRequired();
+            entity.Property(x => x.CustomerPartnerId).HasColumnName("customer_partner_id").IsRequired();
+            entity.Property(x => x.CustomerCodeSnapshot).HasColumnName("customer_code_snapshot").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.CustomerNameSnapshot).HasColumnName("customer_name_snapshot").HasMaxLength(200).IsRequired();
+            entity.Property(x => x.DeliveryAddressSnapshot).HasColumnName("delivery_address_snapshot").HasMaxLength(240).IsRequired();
+            entity.Property(x => x.DispatchDate).HasColumnName("dispatch_date").IsRequired();
+            entity.Property(x => x.Status).HasColumnName("status").HasMaxLength(24).IsRequired();
+            entity.Property(x => x.CarrierName).HasColumnName("carrier_name").HasMaxLength(120);
+            entity.Property(x => x.TrackingOrVehicleNumber).HasColumnName("tracking_or_vehicle_number").HasMaxLength(80);
+            entity.Property(x => x.DeliveryNoteReference).HasColumnName("delivery_note_reference").HasMaxLength(80).IsRequired();
+            entity.Property(x => x.DeliveryConfirmedByName).HasColumnName("delivery_confirmed_by_name").HasMaxLength(120);
+            entity.Property(x => x.DeliveryEvidenceReference).HasColumnName("delivery_evidence_reference").HasMaxLength(120);
+            entity.Property(x => x.DeliveredAtUtc).HasColumnName("delivered_at_utc");
+            entity.Property(x => x.DeliveryConfirmedByUserId).HasColumnName("delivery_confirmed_by_user_id");
+            entity.Property(x => x.StockMovementId).HasColumnName("stock_movement_id").IsRequired();
+            entity.Property(x => x.StockMovementNumber).HasColumnName("stock_movement_number").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.GlJournalId).HasColumnName("gl_journal_id").IsRequired();
+            entity.Property(x => x.GlJournalNumber).HasColumnName("gl_journal_number").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.CurrencyCode).HasColumnName("currency_code").HasColumnType("char(3)").IsRequired();
+            entity.Property(x => x.TotalDispatchedBaseQuantity).HasColumnName("total_dispatched_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.TotalCogsAmount).HasColumnName("total_cogs_amount").HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(x => x.IdempotencyKey).HasColumnName("idempotency_key").HasMaxLength(80).IsRequired();
+            entity.Property(x => x.Notes).HasColumnName("notes").HasMaxLength(300);
+            entity.Property(x => x.DispatchedByUserId).HasColumnName("dispatched_by_user_id").IsRequired();
+            entity.Property(x => x.DispatchedAtUtc).HasColumnName("dispatched_at_utc").IsRequired();
+            entity.Property(x => x.CreatedAtUtc).HasColumnName("created_at_utc").IsRequired();
+            entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
+            entity.Property(x => x.Version).HasColumnName("version").HasDefaultValue(1L).IsConcurrencyToken().IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.ShipmentNumber }).IsUnique().HasDatabaseName("ux_shipments_number");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.IdempotencyKey }).IsUnique().HasDatabaseName("ux_shipments_idempotency");
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.SalesOrderId }).HasDatabaseName("ix_shipments_so");
+
+            entity.HasOne<LegalEntity>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId })
+                .HasPrincipalKey(e => new { e.TenantId, e.LegalEntityId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<PickOrder>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PickOrderId })
+                .HasPrincipalKey(po => new { po.TenantId, po.LegalEntityId, po.PickOrderId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<SalesOrder>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.SalesOrderId })
+                .HasPrincipalKey(so => new { so.TenantId, so.LegalEntityId, so.SalesOrderId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<StockMovement>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.StockMovementId })
+                .HasPrincipalKey(sm => new { sm.TenantId, sm.LegalEntityId, sm.StockMovementId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<JournalEntry>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.GlJournalId })
+                .HasPrincipalKey(j => new { j.TenantId, j.LegalEntityId, j.JournalId })
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<SalesShipmentLine>(entity =>
+        {
+            entity.ToTable("shipment_lines", "fulfillment", t =>
+            {
+                t.HasCheckConstraint("ck_shipment_lines_number", "line_number >= 1");
+                t.HasCheckConstraint("ck_shipment_lines_quantities", "dispatched_base_quantity > 0 AND unit_cost_applied >= 0 AND line_cogs_amount >= 0");
+            });
+
+            entity.HasKey(x => x.ShipmentLineId);
+            entity.HasAlternateKey(x => new { x.TenantId, x.LegalEntityId, x.ShipmentLineId });
+
+            entity.Property(x => x.ShipmentLineId).HasColumnName("shipment_line_id").ValueGeneratedNever();
+            entity.Property(x => x.TenantId).HasColumnName("tenant_id").IsRequired();
+            entity.Property(x => x.LegalEntityId).HasColumnName("legal_entity_id").IsRequired();
+            entity.Property(x => x.ShipmentId).HasColumnName("shipment_id").IsRequired();
+            entity.Property(x => x.LineNumber).HasColumnName("line_number").IsRequired();
+            entity.Property(x => x.PickLineId).HasColumnName("pick_line_id").IsRequired();
+            entity.Property(x => x.SoLineId).HasColumnName("so_line_id").IsRequired();
+            entity.Property(x => x.LineageLineKey).HasColumnName("lineage_line_key").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.StockReservationId).HasColumnName("stock_reservation_id").IsRequired();
+            entity.Property(x => x.ItemId).HasColumnName("item_id").IsRequired();
+            entity.Property(x => x.ItemCodeSnapshot).HasColumnName("item_code_snapshot").HasMaxLength(40).IsRequired();
+            entity.Property(x => x.ItemNameSnapshot).HasColumnName("item_name_snapshot").HasMaxLength(160).IsRequired();
+            entity.Property(x => x.BaseUomId).HasColumnName("base_uom_id").IsRequired();
+            entity.Property(x => x.BaseUomCodeSnapshot).HasColumnName("base_uom_code_snapshot").HasMaxLength(16).IsRequired();
+            entity.Property(x => x.WarehouseId).HasColumnName("warehouse_id").IsRequired();
+            entity.Property(x => x.LocationId).HasColumnName("location_id").IsRequired();
+            entity.Property(x => x.LocationCodeSnapshot).HasColumnName("location_code_snapshot").HasMaxLength(32).IsRequired();
+            entity.Property(x => x.StockLotId).HasColumnName("stock_lot_id");
+            entity.Property(x => x.LotNumberSnapshot).HasColumnName("lot_number_snapshot").HasMaxLength(64);
+            entity.Property(x => x.DispatchedBaseQuantity).HasColumnName("dispatched_base_quantity").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.UnitCostApplied).HasColumnName("unit_cost_applied").HasColumnType("numeric(18,6)").IsRequired();
+            entity.Property(x => x.LineCogsAmount).HasColumnName("line_cogs_amount").HasColumnType("numeric(18,2)").IsRequired();
+            entity.Property(x => x.MovementLineId).HasColumnName("movement_line_id").IsRequired();
+            entity.Property(x => x.ValuationEntryId).HasColumnName("valuation_entry_id").IsRequired();
+
+            entity.HasIndex(x => new { x.TenantId, x.LegalEntityId, x.ShipmentId, x.LineNumber }).IsUnique().HasDatabaseName("ux_shipment_lines_number");
+
+            entity.HasOne<SalesShipment>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.ShipmentId })
+                .HasPrincipalKey(s => new { s.TenantId, s.LegalEntityId, s.ShipmentId })
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne<PickLine>()
+                .WithMany()
+                .HasForeignKey(x => new { x.TenantId, x.LegalEntityId, x.PickLineId })
+                .HasPrincipalKey(pl => new { pl.TenantId, pl.LegalEntityId, pl.PickLineId })
                 .OnDelete(DeleteBehavior.Restrict);
         });
     }

@@ -1684,6 +1684,118 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetFulfillmentOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/reservations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReserveSalesOrderLine"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/reservations/{reservationId}/release": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReleaseSalesOrderReservation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/picks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreatePickOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/picks/{pickOrderId}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ConfirmPickOrder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/shipments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DispatchSalesShipment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/shipments/{shipmentId}/confirm-delivery": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ConfirmSalesShipmentDelivery"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2035,6 +2147,19 @@ export interface components {
         CloseOrCancelSoRequest: {
             reason: string;
         };
+        ConfirmPickLineInputDto: {
+            /** Format: uuid */
+            pickLineId: string;
+            /** Format: double */
+            pickedBaseQuantity: number | string;
+        };
+        ConfirmPickOrderRequest: {
+            lines: components["schemas"]["ConfirmPickLineInputDto"][];
+        };
+        ConfirmShipmentDeliveryRequest: {
+            confirmedByName: string;
+            evidenceReference: string;
+        };
         ConvertQuantityPreviewRequest: {
             /** Format: uuid */
             sourceUomId: string;
@@ -2155,6 +2280,14 @@ export interface components {
             taxRegistrationNpwp: null | string;
             taxPkpStatus: string;
             entityScopeMode: string;
+        };
+        CreatePickOrderRequest: {
+            /** Format: uuid */
+            salesOrderId: string;
+            confirmImmediately: boolean;
+            idempotencyKey: string;
+            notes: null | string;
+            lines: components["schemas"]["PickLineInputDto"][];
         };
         CreatePoAmendmentRequest: {
             changeReason: string;
@@ -2356,6 +2489,24 @@ export interface components {
             allowUnlimitedOverdelivery: boolean;
             reviewStatus: string;
             isDefault: boolean;
+        };
+        DispatchSalesShipmentRequest: {
+            /** Format: uuid */
+            pickOrderId: string;
+            /** Format: date */
+            dispatchDate: string;
+            deliveryNoteReference: string;
+            carrierName: null | string;
+            trackingOrVehicleNumber: null | string;
+            idempotencyKey: string;
+            notes: null | string;
+            lines?: null | components["schemas"]["DispatchShipmentLineInputDto"][];
+        };
+        DispatchShipmentLineInputDto: {
+            /** Format: uuid */
+            pickLineId: string;
+            /** Format: double */
+            dispatchedBaseQuantity: number | string;
         };
         DockCheckHistoryDto: {
             /** Format: uuid */
@@ -2613,6 +2764,94 @@ export interface components {
         };
         FinancialPeriodListResponse: {
             items: components["schemas"]["FinancialPeriodDto"][];
+        };
+        FulfillableSalesOrderDto: {
+            /** Format: uuid */
+            salesOrderId: string;
+            soNumber: string;
+            status: string;
+            fulfillmentProgress: string;
+            /** Format: uuid */
+            customerPartnerId: string;
+            customerCode: string;
+            customerName: string;
+            deliveryAddressSnapshot: string;
+            /** Format: date */
+            orderDate: string;
+            /** Format: date */
+            requestedDeliveryDate: null | string;
+            /** Format: uuid */
+            currentApprovedRevisionId: string;
+            /** Format: int32 */
+            currentApprovedRevisionNumber: number | string;
+            /** Format: double */
+            totalOrderedBaseQuantity: number | string;
+            /** Format: double */
+            totalReservedBaseQuantity: number | string;
+            /** Format: double */
+            totalDispatchedBaseQuantity: number | string;
+            /** Format: double */
+            remainingUnfulfilledBaseQuantity: number | string;
+            lines: components["schemas"]["FulfillableSalesOrderLineDto"][];
+        };
+        FulfillableSalesOrderLineDto: {
+            /** Format: uuid */
+            soLineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            lineageLineKey: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            lotTrackingPolicy: string;
+            orderedUomCode: string;
+            /** Format: double */
+            orderedQuantity: number | string;
+            baseUomCode: string;
+            /** Format: double */
+            orderedBaseQuantity: number | string;
+            /** Format: double */
+            reservedBaseQuantity: number | string;
+            /** Format: double */
+            dispatchedBaseQuantity: number | string;
+            /** Format: double */
+            remainingToReserveBaseQuantity: number | string;
+            /** Format: double */
+            remainingToDispatchBaseQuantity: number | string;
+            /** Format: double */
+            movingAverageUnitCost: number | string;
+            eligibleLocations: components["schemas"]["FulfillmentEligibleBalanceDto"][];
+        };
+        FulfillmentEligibleBalanceDto: {
+            /** Format: uuid */
+            stockLocationBalanceId: string;
+            /** Format: uuid */
+            warehouseId: string;
+            warehouseCode: string;
+            /** Format: uuid */
+            locationId: string;
+            locationCode: string;
+            zoneType: string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            lotNumber: null | string;
+            /** Format: date */
+            expiryDate: null | string;
+            /** Format: double */
+            onHandBaseQuantity: number | string;
+            /** Format: double */
+            reservedBaseQuantity: number | string;
+            /** Format: double */
+            availableBaseQuantity: number | string;
+        };
+        FulfillmentOverviewResponse: {
+            fulfillableOrders: components["schemas"]["FulfillableSalesOrderDto"][];
+            reservations: components["schemas"]["SalesReservationDto"][];
+            pickOrders: components["schemas"]["PickOrderDto"][];
+            shipments: components["schemas"]["SalesShipmentDto"][];
+            od10Notice: string;
+            od09Notice: string;
         };
         GlAccountDto: {
             /** Format: uuid */
@@ -3656,6 +3895,77 @@ export interface components {
             /** Format: date-time */
             serverTimestampUtc: string;
         };
+        PickLineDto: {
+            /** Format: uuid */
+            pickLineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: uuid */
+            soLineId: string;
+            lineageLineKey: string;
+            /** Format: uuid */
+            stockReservationId: string;
+            reservationNumber: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: uuid */
+            warehouseId: string;
+            /** Format: uuid */
+            locationId: string;
+            locationCode: string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            lotNumber: null | string;
+            /** Format: double */
+            requestedPickBaseQuantity: number | string;
+            /** Format: double */
+            pickedBaseQuantity: number | string;
+            /** Format: double */
+            dispatchedBaseQuantity: number | string;
+            /** Format: double */
+            remainingToDispatchBaseQuantity: number | string;
+        };
+        PickLineInputDto: {
+            /** Format: uuid */
+            reservationId: string;
+            /** Format: double */
+            requestedPickBaseQuantity: number | string;
+            /** Format: double */
+            pickedBaseQuantity?: null | number | string;
+        };
+        PickOrderDto: {
+            /** Format: uuid */
+            pickOrderId: string;
+            pickNumber: string;
+            /** Format: uuid */
+            salesOrderId: string;
+            salesOrderNumber: string;
+            /** Format: uuid */
+            revisionId: string;
+            /** Format: uuid */
+            warehouseId: string;
+            warehouseCode: string;
+            status: string;
+            /** Format: double */
+            totalRequestedBaseQuantity: number | string;
+            /** Format: double */
+            totalPickedBaseQuantity: number | string;
+            /** Format: double */
+            totalDispatchedBaseQuantity: number | string;
+            /** Format: double */
+            remainingToDispatchBaseQuantity: number | string;
+            notes: null | string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            pickedAtUtc: null | string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+            lines: components["schemas"]["PickLineDto"][];
+        };
         PoHeaderFieldDiffDto: {
             fieldKey: string;
             previousValue: null | string;
@@ -4331,6 +4641,10 @@ export interface components {
             reversalPostingDate: string;
             reason: string;
         };
+        ReleaseSalesReservationRequest: {
+            /** Format: double */
+            releaseBaseQuantity?: null | number | string;
+        };
         ReleaseStockReservationRequest: {
             /** Format: double */
             releaseBaseQuantity: null | number | string;
@@ -4376,6 +4690,20 @@ export interface components {
             createdAtUtc: string;
             /** Format: date-time */
             updatedAtUtc: string;
+        };
+        ReserveSalesOrderLineRequest: {
+            /** Format: uuid */
+            salesOrderId: string;
+            /** Format: uuid */
+            soLineId: string;
+            /** Format: uuid */
+            locationId: string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            /** Format: double */
+            quantityBase: number | string;
+            idempotencyKey: string;
+            notes?: null | string;
         };
         ReturnLineInputRequest: {
             /** Format: uuid */
@@ -4709,6 +5037,124 @@ export interface components {
             updatedAtUtc: string;
             /** Format: double */
             pendingGrandTotalAmount?: null | number | string;
+        };
+        SalesReservationDto: {
+            /** Format: uuid */
+            stockReservationId: string;
+            reservationNumber: string;
+            /** Format: uuid */
+            salesOrderId: string;
+            salesOrderNumber: string;
+            /** Format: uuid */
+            soLineId: string;
+            lineageLineKey: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: uuid */
+            warehouseId: string;
+            warehouseCode: string;
+            /** Format: uuid */
+            locationId: string;
+            locationCode: string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            lotNumber: null | string;
+            /** Format: double */
+            reservedBaseQuantity: number | string;
+            /** Format: double */
+            consumedBaseQuantity: number | string;
+            /** Format: double */
+            releasedBaseQuantity: number | string;
+            /** Format: double */
+            remainingReservedBaseQuantity: number | string;
+            /** Format: double */
+            allocatedToOpenPickBaseQuantity: number | string;
+            /** Format: double */
+            unallocatedReservedBaseQuantity: number | string;
+            status: string;
+            notes: null | string;
+            /** Format: date-time */
+            createdAtUtc: string;
+            /** Format: date-time */
+            updatedAtUtc: string;
+        };
+        SalesShipmentDto: {
+            /** Format: uuid */
+            shipmentId: string;
+            shipmentNumber: string;
+            /** Format: uuid */
+            pickOrderId: string;
+            pickNumber: string;
+            /** Format: uuid */
+            salesOrderId: string;
+            salesOrderNumber: string;
+            /** Format: uuid */
+            customerPartnerId: string;
+            customerCode: string;
+            customerName: string;
+            deliveryAddressSnapshot: string;
+            /** Format: date */
+            dispatchDate: string;
+            status: string;
+            carrierName: null | string;
+            trackingOrVehicleNumber: null | string;
+            deliveryNoteReference: string;
+            deliveryConfirmedByName: null | string;
+            deliveryEvidenceReference: null | string;
+            /** Format: date-time */
+            deliveredAtUtc: null | string;
+            /** Format: uuid */
+            stockMovementId: string;
+            stockMovementNumber: string;
+            /** Format: uuid */
+            glJournalId: string;
+            glJournalNumber: string;
+            currencyCode: string;
+            /** Format: double */
+            totalDispatchedBaseQuantity: number | string;
+            /** Format: double */
+            totalCogsAmount: number | string;
+            notes: null | string;
+            /** Format: date-time */
+            dispatchedAtUtc: string;
+            lines: components["schemas"]["SalesShipmentLineDto"][];
+        };
+        SalesShipmentLineDto: {
+            /** Format: uuid */
+            shipmentLineId: string;
+            /** Format: int32 */
+            lineNumber: number | string;
+            /** Format: uuid */
+            pickLineId: string;
+            /** Format: uuid */
+            soLineId: string;
+            lineageLineKey: string;
+            /** Format: uuid */
+            stockReservationId: string;
+            /** Format: uuid */
+            itemId: string;
+            itemCode: string;
+            itemName: string;
+            baseUomCode: string;
+            /** Format: uuid */
+            locationId: string;
+            locationCode: string;
+            /** Format: uuid */
+            stockLotId: null | string;
+            lotNumber: null | string;
+            /** Format: double */
+            dispatchedBaseQuantity: number | string;
+            /** Format: double */
+            unitCostApplied: number | string;
+            /** Format: double */
+            lineCogsAmount: number | string;
+            /** Format: uuid */
+            movementLineId: string;
+            /** Format: uuid */
+            valuationEntryId: string;
         };
         SalesTaxOptionDto: {
             /** Format: uuid */
@@ -13157,6 +13603,518 @@ export interface operations {
             };
             /** @description Bad Request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    GetFulfillmentOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FulfillmentOverviewResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ReserveSalesOrderLine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReserveSalesOrderLineRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesReservationDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesReservationDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ReleaseSalesOrderReservation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                reservationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReleaseSalesReservationRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesReservationDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    CreatePickOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePickOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PickOrderDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PickOrderDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ConfirmPickOrder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                pickOrderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmPickOrderRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PickOrderDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    DispatchSalesShipment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DispatchSalesShipmentRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesShipmentDto"];
+                };
+            };
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesShipmentDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+        };
+    };
+    ConfirmSalesShipmentDelivery: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                tenantId: string;
+                entityId: string;
+                shipmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConfirmShipmentDeliveryRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SalesShipmentDto"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProblemDetails"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };

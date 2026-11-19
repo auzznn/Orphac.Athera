@@ -754,6 +754,28 @@ public sealed class SalesOrderLine
         DispatchedBaseQuantity = decimal.Round(dispatchedBaseQty, 6, MidpointRounding.AwayFromZero);
         BilledBaseQuantity = decimal.Round(billedBaseQty, 6, MidpointRounding.AwayFromZero);
     }
+
+    public void ApplyFulfillmentDelta(decimal reservedDelta, decimal dispatchedDelta, decimal billedDelta)
+    {
+        var nextReserved = decimal.Round(ReservedBaseQuantity + reservedDelta, 6, MidpointRounding.AwayFromZero);
+        var nextDispatched = decimal.Round(DispatchedBaseQuantity + dispatchedDelta, 6, MidpointRounding.AwayFromZero);
+        var nextBilled = decimal.Round(BilledBaseQuantity + billedDelta, 6, MidpointRounding.AwayFromZero);
+
+        if (nextReserved < 0m || nextDispatched < 0m || nextBilled < 0m)
+        {
+            throw new InvalidOperationException("fulfillment_counter_negative: Sales order line fulfillment counters cannot become negative.");
+        }
+
+        if (decimal.Round(nextReserved + nextDispatched, 6, MidpointRounding.AwayFromZero) > OrderedBaseQuantity)
+        {
+            throw new InvalidOperationException(
+                $"fulfillment_exceeds_ordered_quantity: Total reserved ({nextReserved:0.######}) + dispatched ({nextDispatched:0.######}) exceeds ordered base quantity ({OrderedBaseQuantity:0.######}).");
+        }
+
+        ReservedBaseQuantity = nextReserved;
+        DispatchedBaseQuantity = nextDispatched;
+        BilledBaseQuantity = nextBilled;
+    }
 }
 
 public static class SalesOrderHash

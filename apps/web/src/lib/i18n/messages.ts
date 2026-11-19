@@ -52,6 +52,7 @@ export interface Dictionary {
       payables: string;
       payments: string;
       sales: string;
+      fulfillment: string;
       finance: string;
       admin: string;
     };
@@ -1843,6 +1844,136 @@ export interface Dictionary {
     fulfillmentLabels: Record<string, string>;
     errors: Record<string, string>;
   };
+  fulfillment: {
+    heading: string;
+    lead: string;
+    backToEntityLink: string;
+    refreshButton: string;
+    refreshing: string;
+    loading: string;
+    accessDeniedHeading: string;
+    accessDeniedBody: string;
+    readOnlyBanner: string;
+    od10PolicyBanner: string;
+    policyToggleShow: string;
+    policyToggleHide: string;
+    policyCards: {
+      rule1Title: string;
+      rule1Body: string;
+      rule2Title: string;
+      rule2Body: string;
+      rule3Title: string;
+      rule3Body: string;
+      rule4Title: string;
+      rule4Body: string;
+    };
+    statsAriaLabel: string;
+    stats: {
+      openOrderRemainingBaseQty: string;
+      activeReservedBaseQty: string;
+      pickedReadyToDispatchBaseQty: string;
+      totalDispatchedCogsAmount: string;
+    };
+    tabListLabel: string;
+    tabs: {
+      orders: string;
+      reservationsAndPicks: string;
+      shipments: string;
+    };
+    ordersPanel: {
+      title: string;
+      empty: string;
+      colSoCustomer: string;
+      colLineItem: string;
+      colProgressQty: string;
+      colAvailBins: string;
+      colAction: string;
+      orderedPrefix: string;
+      reservedPrefix: string;
+      dispatchedPrefix: string;
+      remainingReservePrefix: string;
+      avgCostPrefix: string;
+      availPrefix: string;
+      lotPrefix: string;
+      lotPolicyLabels: Record<string, string>;
+      noEligibleBins: string;
+      reserveBtn: string;
+      drawerTitlePrefix: string;
+      selectLocationLotLabel: string;
+      reserveQtyLabel: string;
+      notesLabel: string;
+      notesPlaceholder: string;
+      submitReserveCta: string;
+      reserving: string;
+      cancelDrawerBtn: string;
+    };
+    picksPanel: {
+      reservationsTitle: string;
+      emptyReservations: string;
+      colRsvDoc: string;
+      colSoLineItem: string;
+      colLocLot: string;
+      colReservedBalances: string;
+      colAction: string;
+      remainingPrefix: string;
+      inPickPrefix: string;
+      unallocPrefix: string;
+      releaseBtn: string;
+      releasing: string;
+      createPickQuickBtn: string;
+      creatingPick: string;
+      picksTitle: string;
+      emptyPicks: string;
+      colPickDoc: string;
+      colSoWarehouse: string;
+      colPickLines: string;
+      colPickQty: string;
+      reqPrefix: string;
+      pickedPrefix: string;
+      dispatchedPrefix: string;
+      remPrefix: string;
+      maxPrefix: string;
+      confirmPickBtn: string;
+      confirmingPick: string;
+      openDispatchDrawerBtn: string;
+      dispatchDrawerTitlePrefix: string;
+      dispatchDateLabel: string;
+      deliveryNoteLabel: string;
+      deliveryNotePlaceholder: string;
+      carrierNameLabel: string;
+      carrierNamePlaceholder: string;
+      vehicleLabel: string;
+      vehiclePlaceholder: string;
+      dispatchQtyLabel: string;
+      projectedCogsPrefix: string;
+      submitDispatchCta: string;
+      dispatching: string;
+    };
+    shipmentsPanel: {
+      title: string;
+      empty: string;
+      colShipmentDoc: string;
+      colCustomerDelivery: string;
+      colItemsQty: string;
+      colCogsLedger: string;
+      colStatusEvidence: string;
+      colAction: string;
+      sjPrefix: string;
+      movementPrefix: string;
+      journalPrefix: string;
+      podPrefix: string;
+      openDeliverDrawerBtn: string;
+      deliverDrawerTitlePrefix: string;
+      confirmedByLabel: string;
+      confirmedByPlaceholder: string;
+      evidenceRefLabel: string;
+      evidenceRefPlaceholder: string;
+      submitDeliverCta: string;
+      confirmingDelivery: string;
+    };
+    statusLabels: Record<string, string>;
+    errors: Record<string, string>;
+  };
 }
 
 export const MESSAGES: Record<SupportedLocale, Dictionary> = {
@@ -1910,6 +2041,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         payables: "Hutang Usaha (AP)",
         payments: "Pembayaran & Bank",
         sales: "Penjualan",
+        fulfillment: "Pemenuhan & Pengiriman",
         finance: "Keuangan & GL",
         admin: "Administrasi",
       },
@@ -2038,6 +2170,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         payables: "Hutang Usaha (AP), Match 3-Arah & Selisih Harga",
         payments: "Pembayaran Pemasok, Kliring Keluar & Rekonsiliasi Bank",
         sales: "Penjualan & Penagihan",
+        fulfillment: "Pemenuhan SO, Reservasi, Pick & Pengiriman",
         finance: "Keuangan, Pajak PPN/PPh & GL",
         admin: "Administrasi Organisasi, Undangan & Audit",
       },
@@ -4351,6 +4484,181 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "Izin entitas aktif Anda tidak mencukupi untuk tindakan penjualan ini.",
       },
     },
+    fulfillment: {
+      heading: "Pemenuhan SO, Reservasi Stok, Pick & Pengiriman",
+      lead:
+        "Alokasikan stok bebas (UNRESTRICTED) terhadap SO resmi, konfirmasi pengambilan gudang (PCK), dan kirim surat jalan (SHP) dengan jurnal HPP/COGS rata-rata tertimbang otomatis (OD-10 & OD-09).",
+      backToEntityLink: "Kembali ke Ringkasan",
+      refreshButton: "Segarkan",
+      refreshing: "Menyegarkan...",
+      loading: "Memuat antrean pemenuhan penjualan, reservasi lokasi, dan pengiriman...",
+      accessDeniedHeading: "Akses Pemenuhan & Pengiriman Ditolak",
+      accessDeniedBody:
+        "Akun Anda tidak memiliki izin persediaan atau penjualan aktif pada entitas hukum ini.",
+      readOnlyBanner:
+        "Mode hanya-baca: akun Anda berwenang memantau progres pemenuhan dan surat jalan pada entitas ini, namun eksekusi reservasi, pick, dan pengiriman memerlukan izin kelola persediaan (inventory.manage).",
+      od10PolicyBanner:
+        "Kebijakan Aman OD-10 & OD-09 Aktif (ATH-CR-010): Hanya stok UNRESTRICTED pada zona STORAGE/DISPATCH yang dapat direservasi atau dikirim; pengiriman memotong stok & memposting jurnal Dr 5100 HPP / Cr 1300 Persediaan secara atomik.",
+      policyToggleShow: "Lihat Aturan OD-10",
+      policyToggleHide: "Sembunyikan Aturan",
+      policyCards: {
+        rule1Title: "1. Larangan Stok Tertahan & Negatif (OD-10)",
+        rule1Body:
+          "Stok karantina (QUALITY_INSPECTION), diblokir (BLOCKED), atau lot kedaluwarsa tidak memiliki ketersediaan pemenuhan dan ditolak secara deterministik.",
+        rule2Title: "2. Kunci Reservasi Kompetitif (FOR UPDATE)",
+        rule2Body:
+          "Total reservasi tidak dapat melampaui saldo bebas lokasi maupun sisa kuantitas SO; pesanan yang bersaing diserialisasi tanpa overselling.",
+        rule3Title: "3. Pengiriman Parsial & HPP Rata-Rata Tertimbang",
+        rule3Body:
+          "Pengiriman mengonsumsi reservasi, menurunkan saldo fisik & reservasi secara sinkron, mencatat mutasi MOV, dan memposting jurnal GL Dr 5100 HPP / Cr 1300 Persediaan.",
+        rule4Title: "4. Perlindungan Komitmen & Bukti Serah Terima (OD-09)",
+        rule4Body:
+          "SO dengan reservasi aktif atau pengiriman parsial tidak dapat dibatalkan; konfirmasi serah terima mencatat penerima dan nomor bukti POD pada surat jalan.",
+      },
+      statsAriaLabel: "Ringkasan metrik pemenuhan pesanan penjualan",
+      stats: {
+        openOrderRemainingBaseQty: "Sisa Unit SO Belum Terkirim",
+        activeReservedBaseQty: "Unit Direservasi Aktif (RSV)",
+        pickedReadyToDispatchBaseQty: "Unit Terambil Siap Kirim (PCK)",
+        totalDispatchedCogsAmount: "Total HPP (COGS 5100) Terkirim",
+      },
+      tabListLabel: "Mode kerja pemenuhan dan pengiriman",
+      tabs: {
+        orders: "Antrean Pemenuhan SO",
+        reservationsAndPicks: "Reservasi & Pick Gudang",
+        shipments: "Pengiriman, HPP & Bukti Kirim",
+      },
+      ordersPanel: {
+        title: "Pesanan Penjualan Disetujui & Alokasi Lokasi Stok Bebas",
+        empty: "Belum ada pesanan penjualan berstatus Disetujui pada entitas ini.",
+        colSoCustomer: "Nomor SO & Pelanggan",
+        colLineItem: "Baris Barang & Kebijakan Lot",
+        colProgressQty: "Dipesan · Reservasi · Terkirim",
+        colAvailBins: "Lokasi & Lot Bebas (UNRESTRICTED)",
+        colAction: "Tindakan",
+        orderedPrefix: "Dipesan:",
+        reservedPrefix: "Reservasi:",
+        dispatchedPrefix: "Terkirim:",
+        remainingReservePrefix: "Sisa Alokasi:",
+        avgCostPrefix: "HPP Rata-rata:",
+        availPrefix: "Tersedia:",
+        lotPrefix: "Lot:",
+        lotPolicyLabels: {
+          NONE: "Tanpa Lot",
+          OPTIONAL: "Lot Opsional",
+          REQUIRED: "Wajib Lot",
+        },
+        noEligibleBins: "Tidak ada saldo UNRESTRICTED tersedia",
+        reserveBtn: "Reservasi Stok",
+        drawerTitlePrefix: "Alokasi Reservasi Stok untuk",
+        selectLocationLotLabel: "Pilih Lokasi & Lot Stok Bebas (UNRESTRICTED)",
+        reserveQtyLabel: "Kuantitas Basis Direservasi",
+        notesLabel: "Catatan Reservasi Gudang",
+        notesPlaceholder: "Alokasi pengiriman tahap pertama",
+        submitReserveCta: "Simpan Reservasi Stok (RSV)",
+        reserving: "Mereservasi...",
+        cancelDrawerBtn: "Batal",
+      },
+      picksPanel: {
+        reservationsTitle: "Reservasi Stok SO Aktif (inventory.stock_reservations)",
+        emptyReservations: "Belum ada reservasi stok penjualan pada entitas ini.",
+        colRsvDoc: "Nomor RSV & Status",
+        colSoLineItem: "SO & Barang",
+        colLocLot: "Gudang · Lokasi · Lot",
+        colReservedBalances: "Direservasi · Terpakai · Sisa",
+        colAction: "Tindakan",
+        remainingPrefix: "Sisa RSV:",
+        inPickPrefix: "Di Pick:",
+        unallocPrefix: "Siap Pick:",
+        releaseBtn: "Lepas RSV",
+        releasing: "Melepas...",
+        createPickQuickBtn: "Buat & Konfirmasi Pick (PCK)",
+        creatingPick: "Membuat Pick...",
+        picksTitle: "Perintah Pengambilan Gudang (fulfillment.pick_orders)",
+        emptyPicks: "Belum ada dokumen pengambilan (Pick Order) pada entitas ini.",
+        colPickDoc: "Nomor Pick & Tanggal",
+        colSoWarehouse: "SO & Gudang",
+        colPickLines: "Rincian Lokasi & Barang",
+        colPickQty: "Diminta · Diambil · Terkirim",
+        reqPrefix: "Diminta:",
+        pickedPrefix: "Diambil:",
+        dispatchedPrefix: "Terkirim:",
+        remPrefix: "Sisa:",
+        maxPrefix: "Maks:",
+        confirmPickBtn: "Konfirmasi Pick",
+        confirmingPick: "Mengonfirmasi...",
+        openDispatchDrawerBtn: "Kirim Surat Jalan (SHP)",
+        dispatchDrawerTitlePrefix: "Pengiriman Surat Jalan & Posting HPP dari",
+        dispatchDateLabel: "Tanggal Pengiriman",
+        deliveryNoteLabel: "Nomor Surat Jalan (Referensi Fisik)",
+        deliveryNotePlaceholder: "mis. SJ-JKT-2026-001",
+        carrierNameLabel: "Ekspedisi / Armada Pengangkut",
+        carrierNamePlaceholder: "mis. Armada Internal / JNE Trucking",
+        vehicleLabel: "Nomor Kendaraan / Resi",
+        vehiclePlaceholder: "mis. B 9412 TCD",
+        dispatchQtyLabel: "Kuantitas Basis Dikirim Sekarang",
+        projectedCogsPrefix: "Estimasi Posting HPP (Dr 5100 / Cr 1300):",
+        submitDispatchCta: "Sahkan Pengiriman & Posting HPP",
+        dispatching: "Mengirim & Memposting...",
+      },
+      shipmentsPanel: {
+        title: "Buku Besar Pengiriman Penjualan, Mutasi Stok & Jurnal HPP (fulfillment.shipments)",
+        empty: "Belum ada pengiriman penjualan pada entitas ini.",
+        colShipmentDoc: "Nomor SHP & Tanggal Kirim",
+        colCustomerDelivery: "Pelanggan, Tujuan & Surat Jalan",
+        colItemsQty: "Barang, Lokasi & Kuantitas Kirim",
+        colCogsLedger: "Nilai HPP (COGS) & Tautan Buku Besar",
+        colStatusEvidence: "Status & Bukti Serah Terima (POD)",
+        colAction: "Tindakan",
+        sjPrefix: "Surat Jalan:",
+        movementPrefix: "Mutasi:",
+        journalPrefix: "Jurnal GL:",
+        podPrefix: "POD:",
+        openDeliverDrawerBtn: "Konfirmasi POD",
+        deliverDrawerTitlePrefix: "Konfirmasi Bukti Serah Terima Pelanggan —",
+        confirmedByLabel: "Nama Penerima di Lokasi Pelanggan",
+        confirmedByPlaceholder: "mis. Tari Wibowo (Bagian Penerimaan)",
+        evidenceRefLabel: "Nomor Bukti Serah Terima / POD Tertandatangan",
+        evidenceRefPlaceholder: "mis. POD-GRN-2026-001",
+        submitDeliverCta: "Simpan Bukti Serah Terima (DELIVERED)",
+        confirmingDelivery: "Menyimpan...",
+      },
+      statusLabels: {
+        ACTIVE: "Reservasi Aktif",
+        PARTIALLY_CONSUMED: "Terpakai Sebagian",
+        FULFILLED: "Terpenuhi Penuh",
+        RELEASED: "Dilepas",
+        OPEN: "Terbuka (Menunggu Pick)",
+        PICKED: "Sudah Diambil (Siap Kirim)",
+        DISPATCHED: "Terkirim (Dalam Perjalanan)",
+        DELIVERED: "Terkirim & Diterima (POD)",
+        CANCELLED: "Dibatalkan",
+      },
+      errors: {
+        od10_insufficient_available_stock:
+          "Stok bebas (UNRESTRICTED) pada lokasi/lot tidak mencukupi untuk kuantitas yang diminta (OD-10).",
+        od10_restricted_stock_not_reservable:
+          "Stok berstatus QUALITY_INSPECTION atau BLOCKED tidak dapat direservasi atau dikirim untuk penjualan (OD-10).",
+        lot_required_by_item_policy:
+          "Barang ini mewajibkan pemilihan nomor lot stok aktif untuk reservasi dan pengiriman.",
+        lot_expired_for_fulfillment:
+          "Lot stok yang dipilih telah melewati tanggal kedaluwarsa dan tidak dapat digunakan.",
+        so_not_approved_for_fulfillment:
+          "Hanya pesanan penjualan berstatus APPROVED dengan nomor SO resmi yang dapat dipenuhi.",
+        fulfillment_exceeds_ordered_quantity:
+          "Total kuantitas reservasi dan pengiriman tidak boleh melebihi kuantitas pesanan yang disetujui.",
+        reservation_locked_by_active_pick:
+          "Reservasi sedang dialokasikan pada perintah pengambilan (Pick Order) aktif dan tidak dapat dilepas.",
+        pick_not_ready_for_dispatch:
+          "Perintah pengambilan (Pick Order) harus dikonfirmasi (PICKED) terlebih dahulu sebelum pengiriman.",
+        dispatch_exceeds_picked_quantity:
+          "Kuantitas pengiriman tidak boleh melebihi sisa kuantitas yang telah diambil pada Pick Order.",
+        shipment_already_delivered:
+          "Bukti serah terima (POD) untuk pengiriman ini sudah pernah dikonfirmasi.",
+        insufficient_entity_permission:
+          "Izin entitas aktif Anda tidak mencukupi untuk operasi pemenuhan gudang ini.",
+      },
+    },
   },
   "en-US": {
     appName: "Orphac Athera",
@@ -4416,6 +4724,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         payables: "Accounts Payable",
         payments: "Payments & Bank",
         sales: "Sales",
+        fulfillment: "Fulfillment & Dispatch",
         finance: "Finance & GL",
         admin: "Administration",
       },
@@ -4544,6 +4853,7 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
         payables: "Accounts Payable, 3-Way Match & Price Diff",
         payments: "Supplier Payments, Outbound Clearing & Bank Reconciliation",
         sales: "Sales & Invoicing",
+        fulfillment: "Sales Reservation, Pick & Dispatch Fulfillment",
         finance: "Finance, Indonesian Tax & GL",
         admin: "Organization Administration & Audit",
       },
@@ -6855,6 +7165,181 @@ export const MESSAGES: Record<SupportedLocale, Dictionary> = {
           "This sales order number is already assigned in this legal entity.",
         insufficient_entity_permission:
           "Your active role grants do not permit performing this sales order action.",
+      },
+    },
+    fulfillment: {
+      heading: "Sales Fulfillment, Stock Reservation, Pick & Dispatch",
+      lead:
+        "Allocate unrestricted stock against approved sales orders, confirm warehouse picks (PCK), and dispatch shipments (SHP) with atomic weighted-average COGS journals (OD-10 & OD-09).",
+      backToEntityLink: "Back to Overview",
+      refreshButton: "Refresh",
+      refreshing: "Refreshing...",
+      loading: "Loading sales fulfillment queue, location reservations, and shipments...",
+      accessDeniedHeading: "Fulfillment & Dispatch Access Denied",
+      accessDeniedBody:
+        "Your account does not hold active inventory or sales permissions for this legal entity.",
+      readOnlyBanner:
+        "Read-only mode: you can inspect fulfillment progress and shipments on this entity, but reserving, picking, and dispatching require inventory.manage permission.",
+      od10PolicyBanner:
+        "OD-10 & OD-09 Safe Defaults Active (ATH-CR-010): Only UNRESTRICTED stock in STORAGE/DISPATCH zones can be reserved or shipped; dispatch atomically deducts inventory and posts Dr 5100 COGS / Cr 1300 Inventory Asset.",
+      policyToggleShow: "View OD-10 Rules",
+      policyToggleHide: "Hide Rules",
+      policyCards: {
+        rule1Title: "1. No Restricted or Negative Stock (OD-10)",
+        rule1Body:
+          "Quarantined (QUALITY_INSPECTION), blocked (BLOCKED), or expired lot balances have zero fulfillment availability and are rejected deterministically.",
+        rule2Title: "2. Concurrency-Safe Reservations (FOR UPDATE)",
+        rule2Body:
+          "Total reservations cannot exceed location available balance or unfulfilled SO line quantity; competing orders serialize without overselling.",
+        rule3Title: "3. Partial Dispatch & Moving-Average COGS",
+        rule3Body:
+          "Dispatch consumes the reservation, reduces on-hand and reserved balances in lockstep, records MOV movement, and posts balanced GL Dr 5100 COGS / Cr 1300 Inventory Asset.",
+        rule4Title: "4. Commitment Guard & Delivery Evidence (OD-09)",
+        rule4Body:
+          "Sales orders with active reservations or partial dispatches cannot be cancelled; delivery confirmation records recipient and signed POD reference.",
+      },
+      statsAriaLabel: "Sales fulfillment summary metrics",
+      stats: {
+        openOrderRemainingBaseQty: "Remaining Undispatched SO Units",
+        activeReservedBaseQty: "Active Reserved Units (RSV)",
+        pickedReadyToDispatchBaseQty: "Picked Ready to Dispatch (PCK)",
+        totalDispatchedCogsAmount: "Total Dispatched COGS (5100)",
+      },
+      tabListLabel: "Fulfillment and dispatch workbench tabs",
+      tabs: {
+        orders: "SO Fulfillment Queue",
+        reservationsAndPicks: "Reservations & Warehouse Picks",
+        shipments: "Shipments, COGS & POD",
+      },
+      ordersPanel: {
+        title: "Approved Sales Orders & Unrestricted Location Allocation",
+        empty: "No approved sales orders exist on this legal entity yet.",
+        colSoCustomer: "SO Number & Customer",
+        colLineItem: "Line Item & Lot Policy",
+        colProgressQty: "Ordered · Reserved · Dispatched",
+        colAvailBins: "Eligible Unrestricted Locations & Lots",
+        colAction: "Action",
+        orderedPrefix: "Ordered:",
+        reservedPrefix: "Reserved:",
+        dispatchedPrefix: "Dispatched:",
+        remainingReservePrefix: "Unallocated:",
+        avgCostPrefix: "Avg Cost:",
+        availPrefix: "Avail:",
+        lotPrefix: "Lot:",
+        lotPolicyLabels: {
+          NONE: "No Lot Tracking",
+          OPTIONAL: "Optional Lot",
+          REQUIRED: "Lot Required",
+        },
+        noEligibleBins: "No UNRESTRICTED balance available",
+        reserveBtn: "Reserve Stock",
+        drawerTitlePrefix: "Allocate Stock Reservation for",
+        selectLocationLotLabel: "Select Unrestricted Location & Lot Balance",
+        reserveQtyLabel: "Base Quantity to Reserve",
+        notesLabel: "Warehouse Reservation Notes",
+        notesPlaceholder: "First shipment allocation",
+        submitReserveCta: "Confirm Stock Reservation (RSV)",
+        reserving: "Reserving...",
+        cancelDrawerBtn: "Cancel",
+      },
+      picksPanel: {
+        reservationsTitle: "Active Sales Order Reservations (inventory.stock_reservations)",
+        emptyReservations: "No sales order stock reservations exist on this entity yet.",
+        colRsvDoc: "RSV Number & Status",
+        colSoLineItem: "SO & Item",
+        colLocLot: "Warehouse · Location · Lot",
+        colReservedBalances: "Reserved · Consumed · Remaining",
+        colAction: "Action",
+        remainingPrefix: "Rem RSV:",
+        inPickPrefix: "In Pick:",
+        unallocPrefix: "Pickable:",
+        releaseBtn: "Release RSV",
+        releasing: "Releasing...",
+        createPickQuickBtn: "Create & Confirm Pick (PCK)",
+        creatingPick: "Creating Pick...",
+        picksTitle: "Warehouse Pick Orders (fulfillment.pick_orders)",
+        emptyPicks: "No warehouse pick orders exist on this entity yet.",
+        colPickDoc: "Pick Number & Date",
+        colSoWarehouse: "SO & Warehouse",
+        colPickLines: "Location & Item Breakdown",
+        colPickQty: "Requested · Picked · Dispatched",
+        reqPrefix: "Req:",
+        pickedPrefix: "Picked:",
+        dispatchedPrefix: "Dispatched:",
+        remPrefix: "Rem:",
+        maxPrefix: "Max:",
+        confirmPickBtn: "Confirm Pick",
+        confirmingPick: "Confirming...",
+        openDispatchDrawerBtn: "Dispatch Shipment (SHP)",
+        dispatchDrawerTitlePrefix: "Dispatch Shipment & Post COGS from",
+        dispatchDateLabel: "Dispatch Date",
+        deliveryNoteLabel: "Delivery Note Reference (Surat Jalan)",
+        deliveryNotePlaceholder: "e.g., SJ-JKT-2026-001",
+        carrierNameLabel: "Carrier / Fleet Name",
+        carrierNamePlaceholder: "e.g., Internal Fleet / JNE Trucking",
+        vehicleLabel: "Vehicle / Tracking Number",
+        vehiclePlaceholder: "e.g., B 9412 TCD",
+        dispatchQtyLabel: "Base Quantity to Dispatch Now",
+        projectedCogsPrefix: "Projected COGS Posting (Dr 5100 / Cr 1300):",
+        submitDispatchCta: "Confirm Dispatch & Post COGS",
+        dispatching: "Dispatching & Posting...",
+      },
+      shipmentsPanel: {
+        title: "Outbound Sales Shipments, Stock Movements & COGS Ledger (fulfillment.shipments)",
+        empty: "No sales shipments have been dispatched on this entity yet.",
+        colShipmentDoc: "Shipment Number & Date",
+        colCustomerDelivery: "Customer, Destination & Delivery Note",
+        colItemsQty: "Items, Location & Dispatched Qty",
+        colCogsLedger: "COGS Value & Ledger Links",
+        colStatusEvidence: "Status & Delivery Evidence (POD)",
+        colAction: "Action",
+        sjPrefix: "Delivery Note:",
+        movementPrefix: "Movement:",
+        journalPrefix: "GL Journal:",
+        podPrefix: "POD:",
+        openDeliverDrawerBtn: "Confirm POD",
+        deliverDrawerTitlePrefix: "Confirm Customer Delivery Evidence —",
+        confirmedByLabel: "Recipient Name at Customer Site",
+        confirmedByPlaceholder: "e.g., Tari Wibowo (Receiving Dock)",
+        evidenceRefLabel: "Signed POD / Delivery Receipt Reference",
+        evidenceRefPlaceholder: "e.g., POD-GRN-2026-001",
+        submitDeliverCta: "Record Delivery Confirmation (DELIVERED)",
+        confirmingDelivery: "Recording...",
+      },
+      statusLabels: {
+        ACTIVE: "Active Reservation",
+        PARTIALLY_CONSUMED: "Partially Consumed",
+        FULFILLED: "Fulfilled",
+        RELEASED: "Released",
+        OPEN: "Open (Awaiting Pick)",
+        PICKED: "Picked (Ready to Ship)",
+        DISPATCHED: "Dispatched (In Transit)",
+        DELIVERED: "Delivered (POD Confirmed)",
+        CANCELLED: "Cancelled",
+      },
+      errors: {
+        od10_insufficient_available_stock:
+          "Insufficient UNRESTRICTED available stock at the selected location/lot (OD-10).",
+        od10_restricted_stock_not_reservable:
+          "QUALITY_INSPECTION and BLOCKED stock cannot be reserved or dispatched for sales (OD-10).",
+        lot_required_by_item_policy:
+          "This item requires an explicit active stock lot selection for reservation and fulfillment.",
+        lot_expired_for_fulfillment:
+          "Selected stock lot is expired and cannot be used for sales fulfillment.",
+        so_not_approved_for_fulfillment:
+          "Only APPROVED sales orders with an official SO commitment number can be fulfilled.",
+        fulfillment_exceeds_ordered_quantity:
+          "Total reserved and dispatched quantities cannot exceed the approved ordered quantity.",
+        reservation_locked_by_active_pick:
+          "Reservation is currently allocated to an active pick order and cannot be released.",
+        pick_not_ready_for_dispatch:
+          "Pick order must be confirmed (PICKED) before dispatching a shipment.",
+        dispatch_exceeds_picked_quantity:
+          "Dispatched quantity cannot exceed the remaining picked quantity on the pick order.",
+        shipment_already_delivered:
+          "Delivery evidence (POD) has already been confirmed for this shipment.",
+        insufficient_entity_permission:
+          "Your active role grants do not permit performing this warehouse fulfillment operation.",
       },
     },
   },

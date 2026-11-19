@@ -2856,3 +2856,180 @@ export async function closeSalesOrder(
   }
   return data;
 }
+
+export type FulfillmentEligibleBalanceDto = components["schemas"]["FulfillmentEligibleBalanceDto"];
+export type FulfillableSalesOrderLineDto = components["schemas"]["FulfillableSalesOrderLineDto"];
+export type FulfillableSalesOrderDto = components["schemas"]["FulfillableSalesOrderDto"];
+export type SalesReservationDto = components["schemas"]["SalesReservationDto"];
+export type PickLineDto = components["schemas"]["PickLineDto"];
+export type PickOrderDto = components["schemas"]["PickOrderDto"];
+export type SalesShipmentLineDto = components["schemas"]["SalesShipmentLineDto"];
+export type SalesShipmentDto = components["schemas"]["SalesShipmentDto"];
+export type FulfillmentOverviewResponse = components["schemas"]["FulfillmentOverviewResponse"];
+export type ReserveSalesOrderLineRequest = components["schemas"]["ReserveSalesOrderLineRequest"];
+export type ReleaseSalesReservationRequest = components["schemas"]["ReleaseSalesReservationRequest"];
+export type PickLineInputDto = components["schemas"]["PickLineInputDto"];
+export type CreatePickOrderRequest = components["schemas"]["CreatePickOrderRequest"];
+export type ConfirmPickLineInputDto = components["schemas"]["ConfirmPickLineInputDto"];
+export type ConfirmPickOrderRequest = components["schemas"]["ConfirmPickOrderRequest"];
+export type DispatchShipmentLineInputDto = components["schemas"]["DispatchShipmentLineInputDto"];
+export type DispatchSalesShipmentRequest = components["schemas"]["DispatchSalesShipmentRequest"];
+export type ConfirmShipmentDeliveryRequest = components["schemas"]["ConfirmShipmentDeliveryRequest"];
+
+export async function fetchFulfillmentOverview(
+  tenantId: string,
+  entityId: string,
+): Promise<FulfillmentOverviewResponse> {
+  const { data, error, response } = await rawClient.GET(
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/overview",
+    {
+      params: { path: { tenantId, entityId } },
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    throw extractProblemError(error, (response as Response).status);
+  }
+  return data;
+}
+
+export async function reserveSalesOrderLine(
+  tenantId: string,
+  entityId: string,
+  payload: ReserveSalesOrderLineRequest,
+): Promise<SalesReservationDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/reservations",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function releaseSalesOrderReservation(
+  tenantId: string,
+  entityId: string,
+  reservationId: string,
+  payload: ReleaseSalesReservationRequest = {},
+): Promise<SalesReservationDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/reservations/{reservationId}/release",
+    {
+      params: { path: { tenantId, entityId, reservationId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function createPickOrder(
+  tenantId: string,
+  entityId: string,
+  payload: CreatePickOrderRequest,
+): Promise<PickOrderDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/picks",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function confirmPickOrder(
+  tenantId: string,
+  entityId: string,
+  pickOrderId: string,
+  payload: ConfirmPickOrderRequest,
+): Promise<PickOrderDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/picks/{pickOrderId}/confirm",
+    {
+      params: { path: { tenantId, entityId, pickOrderId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function dispatchSalesShipment(
+  tenantId: string,
+  entityId: string,
+  payload: DispatchSalesShipmentRequest,
+): Promise<SalesShipmentDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/shipments",
+    {
+      params: { path: { tenantId, entityId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}
+
+export async function confirmSalesShipmentDelivery(
+  tenantId: string,
+  entityId: string,
+  shipmentId: string,
+  payload: ConfirmShipmentDeliveryRequest,
+): Promise<SalesShipmentDto> {
+  const csrf = await ensureCsrfToken();
+  const { data, error, response } = await rawClient.POST(
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/shipments/{shipmentId}/confirm-delivery",
+    {
+      params: { path: { tenantId, entityId, shipmentId } },
+      headers: { "X-CSRF-Token": csrf },
+      body: payload,
+      cache: "no-store",
+    },
+  );
+  if (error || !data) {
+    const status = (response as Response).status;
+    handleCsrfFailure(status);
+    throw extractProblemError(error, status);
+  }
+  return data;
+}

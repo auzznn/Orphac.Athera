@@ -10879,6 +10879,733 @@
           }
         }
       }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/overview": {
+      "get": {
+        "tags": [
+          "Fulfillment"
+        ],
+        "operationId": "GetFulfillmentOverview",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FulfillmentOverviewResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/reservations": {
+      "post": {
+        "tags": [
+          "Fulfillment"
+        ],
+        "operationId": "ReserveSalesOrderLine",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReserveSalesOrderLineRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesReservationDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesReservationDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/reservations/{reservationId}/release": {
+      "post": {
+        "tags": [
+          "Fulfillment"
+        ],
+        "operationId": "ReleaseSalesOrderReservation",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "reservationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleaseSalesReservationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesReservationDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/picks": {
+      "post": {
+        "tags": [
+          "Fulfillment"
+        ],
+        "operationId": "CreatePickOrder",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePickOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PickOrderDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PickOrderDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/picks/{pickOrderId}/confirm": {
+      "post": {
+        "tags": [
+          "Fulfillment"
+        ],
+        "operationId": "ConfirmPickOrder",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "pickOrderId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmPickOrderRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PickOrderDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/shipments": {
+      "post": {
+        "tags": [
+          "Fulfillment"
+        ],
+        "operationId": "DispatchSalesShipment",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DispatchSalesShipmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesShipmentDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesShipmentDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workspaces/{tenantId}/entities/{entityId}/fulfillment/shipments/{shipmentId}/confirm-delivery": {
+      "post": {
+        "tags": [
+          "Fulfillment"
+        ],
+        "operationId": "ConfirmSalesShipmentDelivery",
+        "parameters": [
+          {
+            "name": "tenantId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "shipmentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmShipmentDeliveryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalesShipmentDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -12244,6 +12971,56 @@
           }
         }
       },
+      "ConfirmPickLineInputDto": {
+        "required": [
+          "pickLineId",
+          "pickedBaseQuantity"
+        ],
+        "type": "object",
+        "properties": {
+          "pickLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pickedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "ConfirmPickOrderRequest": {
+        "required": [
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ConfirmPickLineInputDto"
+            }
+          }
+        }
+      },
+      "ConfirmShipmentDeliveryRequest": {
+        "required": [
+          "confirmedByName",
+          "evidenceReference"
+        ],
+        "type": "object",
+        "properties": {
+          "confirmedByName": {
+            "type": "string"
+          },
+          "evidenceReference": {
+            "type": "string"
+          }
+        }
+      },
       "ConvertQuantityPreviewRequest": {
         "required": [
           "sourceUomId",
@@ -12697,6 +13474,40 @@
           },
           "entityScopeMode": {
             "type": "string"
+          }
+        }
+      },
+      "CreatePickOrderRequest": {
+        "required": [
+          "salesOrderId",
+          "confirmImmediately",
+          "idempotencyKey",
+          "notes",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "salesOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "confirmImmediately": {
+            "type": "boolean"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PickLineInputDto"
+            }
           }
         }
       },
@@ -13509,6 +14320,82 @@
           },
           "isDefault": {
             "type": "boolean"
+          }
+        }
+      },
+      "DispatchSalesShipmentRequest": {
+        "required": [
+          "pickOrderId",
+          "dispatchDate",
+          "deliveryNoteReference",
+          "carrierName",
+          "trackingOrVehicleNumber",
+          "idempotencyKey",
+          "notes"
+        ],
+        "type": "object",
+        "properties": {
+          "pickOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "dispatchDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "deliveryNoteReference": {
+            "type": "string"
+          },
+          "carrierName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "trackingOrVehicleNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "idempotencyKey": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "lines": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/DispatchShipmentLineInputDto"
+            }
+          }
+        }
+      },
+      "DispatchShipmentLineInputDto": {
+        "required": [
+          "pickLineId",
+          "dispatchedBaseQuantity"
+        ],
+        "type": "object",
+        "properties": {
+          "pickLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "dispatchedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
           }
         }
       },
@@ -14489,6 +15376,364 @@
             "items": {
               "$ref": "#/components/schemas/FinancialPeriodDto"
             }
+          }
+        }
+      },
+      "FulfillableSalesOrderDto": {
+        "required": [
+          "salesOrderId",
+          "soNumber",
+          "status",
+          "fulfillmentProgress",
+          "customerPartnerId",
+          "customerCode",
+          "customerName",
+          "deliveryAddressSnapshot",
+          "orderDate",
+          "requestedDeliveryDate",
+          "currentApprovedRevisionId",
+          "currentApprovedRevisionNumber",
+          "totalOrderedBaseQuantity",
+          "totalReservedBaseQuantity",
+          "totalDispatchedBaseQuantity",
+          "remainingUnfulfilledBaseQuantity",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "salesOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "soNumber": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "fulfillmentProgress": {
+            "type": "string"
+          },
+          "customerPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerCode": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "deliveryAddressSnapshot": {
+            "type": "string"
+          },
+          "orderDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "requestedDeliveryDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "currentApprovedRevisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "currentApprovedRevisionNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "totalOrderedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalReservedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalDispatchedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingUnfulfilledBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FulfillableSalesOrderLineDto"
+            }
+          }
+        }
+      },
+      "FulfillableSalesOrderLineDto": {
+        "required": [
+          "soLineId",
+          "lineNumber",
+          "lineageLineKey",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "lotTrackingPolicy",
+          "orderedUomCode",
+          "orderedQuantity",
+          "baseUomCode",
+          "orderedBaseQuantity",
+          "reservedBaseQuantity",
+          "dispatchedBaseQuantity",
+          "remainingToReserveBaseQuantity",
+          "remainingToDispatchBaseQuantity",
+          "movingAverageUnitCost",
+          "eligibleLocations"
+        ],
+        "type": "object",
+        "properties": {
+          "soLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "lineageLineKey": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "lotTrackingPolicy": {
+            "type": "string"
+          },
+          "orderedUomCode": {
+            "type": "string"
+          },
+          "orderedQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "orderedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reservedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dispatchedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingToReserveBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingToDispatchBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "movingAverageUnitCost": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "eligibleLocations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FulfillmentEligibleBalanceDto"
+            }
+          }
+        }
+      },
+      "FulfillmentEligibleBalanceDto": {
+        "required": [
+          "stockLocationBalanceId",
+          "warehouseId",
+          "warehouseCode",
+          "locationId",
+          "locationCode",
+          "zoneType",
+          "stockLotId",
+          "lotNumber",
+          "expiryDate",
+          "onHandBaseQuantity",
+          "reservedBaseQuantity",
+          "availableBaseQuantity"
+        ],
+        "type": "object",
+        "properties": {
+          "stockLocationBalanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseCode": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationCode": {
+            "type": "string"
+          },
+          "zoneType": {
+            "type": "string"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "lotNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "expiryDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date"
+          },
+          "onHandBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "reservedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "availableBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "FulfillmentOverviewResponse": {
+        "required": [
+          "fulfillableOrders",
+          "reservations",
+          "pickOrders",
+          "shipments",
+          "od10Notice",
+          "od09Notice"
+        ],
+        "type": "object",
+        "properties": {
+          "fulfillableOrders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FulfillableSalesOrderDto"
+            }
+          },
+          "reservations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesReservationDto"
+            }
+          },
+          "pickOrders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PickOrderDto"
+            }
+          },
+          "shipments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesShipmentDto"
+            }
+          },
+          "od10Notice": {
+            "type": "string"
+          },
+          "od09Notice": {
+            "type": "string"
           }
         }
       },
@@ -18648,6 +19893,268 @@
           }
         }
       },
+      "PickLineDto": {
+        "required": [
+          "pickLineId",
+          "lineNumber",
+          "soLineId",
+          "lineageLineKey",
+          "stockReservationId",
+          "reservationNumber",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomCode",
+          "warehouseId",
+          "locationId",
+          "locationCode",
+          "stockLotId",
+          "lotNumber",
+          "requestedPickBaseQuantity",
+          "pickedBaseQuantity",
+          "dispatchedBaseQuantity",
+          "remainingToDispatchBaseQuantity"
+        ],
+        "type": "object",
+        "properties": {
+          "pickLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "soLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineageLineKey": {
+            "type": "string"
+          },
+          "stockReservationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reservationNumber": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationCode": {
+            "type": "string"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "lotNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "requestedPickBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pickedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "dispatchedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingToDispatchBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "PickLineInputDto": {
+        "required": [
+          "reservationId",
+          "requestedPickBaseQuantity"
+        ],
+        "type": "object",
+        "properties": {
+          "reservationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestedPickBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "pickedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "PickOrderDto": {
+        "required": [
+          "pickOrderId",
+          "pickNumber",
+          "salesOrderId",
+          "salesOrderNumber",
+          "revisionId",
+          "warehouseId",
+          "warehouseCode",
+          "status",
+          "totalRequestedBaseQuantity",
+          "totalPickedBaseQuantity",
+          "totalDispatchedBaseQuantity",
+          "remainingToDispatchBaseQuantity",
+          "notes",
+          "createdAtUtc",
+          "pickedAtUtc",
+          "updatedAtUtc",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "pickOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pickNumber": {
+            "type": "string"
+          },
+          "salesOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "salesOrderNumber": {
+            "type": "string"
+          },
+          "revisionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseCode": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "totalRequestedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalPickedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalDispatchedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingToDispatchBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pickedAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PickLineDto"
+            }
+          }
+        }
+      },
       "PoHeaderFieldDiffDto": {
         "required": [
           "fieldKey",
@@ -21317,6 +22824,20 @@
           }
         }
       },
+      "ReleaseSalesReservationRequest": {
+        "type": "object",
+        "properties": {
+          "releaseBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "null",
+              "number",
+              "string"
+            ],
+            "format": "double"
+          }
+        }
+      },
       "ReleaseStockReservationRequest": {
         "required": [
           "releaseBaseQuantity"
@@ -21479,6 +23000,55 @@
           "updatedAtUtc": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "ReserveSalesOrderLineRequest": {
+        "required": [
+          "salesOrderId",
+          "soLineId",
+          "locationId",
+          "stockLotId",
+          "quantityBase",
+          "idempotencyKey"
+        ],
+        "type": "object",
+        "properties": {
+          "salesOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "soLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "quantityBase": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "idempotencyKey": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -22872,6 +24442,442 @@
               "string"
             ],
             "format": "double"
+          }
+        }
+      },
+      "SalesReservationDto": {
+        "required": [
+          "stockReservationId",
+          "reservationNumber",
+          "salesOrderId",
+          "salesOrderNumber",
+          "soLineId",
+          "lineageLineKey",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomCode",
+          "warehouseId",
+          "warehouseCode",
+          "locationId",
+          "locationCode",
+          "stockLotId",
+          "lotNumber",
+          "reservedBaseQuantity",
+          "consumedBaseQuantity",
+          "releasedBaseQuantity",
+          "remainingReservedBaseQuantity",
+          "allocatedToOpenPickBaseQuantity",
+          "unallocatedReservedBaseQuantity",
+          "status",
+          "notes",
+          "createdAtUtc",
+          "updatedAtUtc"
+        ],
+        "type": "object",
+        "properties": {
+          "stockReservationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "reservationNumber": {
+            "type": "string"
+          },
+          "salesOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "salesOrderNumber": {
+            "type": "string"
+          },
+          "soLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineageLineKey": {
+            "type": "string"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "warehouseId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "warehouseCode": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationCode": {
+            "type": "string"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "lotNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "reservedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "consumedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "releasedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "remainingReservedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "allocatedToOpenPickBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unallocatedReservedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "status": {
+            "type": "string"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SalesShipmentDto": {
+        "required": [
+          "shipmentId",
+          "shipmentNumber",
+          "pickOrderId",
+          "pickNumber",
+          "salesOrderId",
+          "salesOrderNumber",
+          "customerPartnerId",
+          "customerCode",
+          "customerName",
+          "deliveryAddressSnapshot",
+          "dispatchDate",
+          "status",
+          "carrierName",
+          "trackingOrVehicleNumber",
+          "deliveryNoteReference",
+          "deliveryConfirmedByName",
+          "deliveryEvidenceReference",
+          "deliveredAtUtc",
+          "stockMovementId",
+          "stockMovementNumber",
+          "glJournalId",
+          "glJournalNumber",
+          "currencyCode",
+          "totalDispatchedBaseQuantity",
+          "totalCogsAmount",
+          "notes",
+          "dispatchedAtUtc",
+          "lines"
+        ],
+        "type": "object",
+        "properties": {
+          "shipmentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "shipmentNumber": {
+            "type": "string"
+          },
+          "pickOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "pickNumber": {
+            "type": "string"
+          },
+          "salesOrderId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "salesOrderNumber": {
+            "type": "string"
+          },
+          "customerPartnerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "customerCode": {
+            "type": "string"
+          },
+          "customerName": {
+            "type": "string"
+          },
+          "deliveryAddressSnapshot": {
+            "type": "string"
+          },
+          "dispatchDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "status": {
+            "type": "string"
+          },
+          "carrierName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "trackingOrVehicleNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "deliveryNoteReference": {
+            "type": "string"
+          },
+          "deliveryConfirmedByName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "deliveryEvidenceReference": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "deliveredAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "stockMovementId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "stockMovementNumber": {
+            "type": "string"
+          },
+          "glJournalId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "glJournalNumber": {
+            "type": "string"
+          },
+          "currencyCode": {
+            "type": "string"
+          },
+          "totalDispatchedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "totalCogsAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "notes": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dispatchedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SalesShipmentLineDto"
+            }
+          }
+        }
+      },
+      "SalesShipmentLineDto": {
+        "required": [
+          "shipmentLineId",
+          "lineNumber",
+          "pickLineId",
+          "soLineId",
+          "lineageLineKey",
+          "stockReservationId",
+          "itemId",
+          "itemCode",
+          "itemName",
+          "baseUomCode",
+          "locationId",
+          "locationCode",
+          "stockLotId",
+          "lotNumber",
+          "dispatchedBaseQuantity",
+          "unitCostApplied",
+          "lineCogsAmount",
+          "movementLineId",
+          "valuationEntryId"
+        ],
+        "type": "object",
+        "properties": {
+          "shipmentLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineNumber": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "pickLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "soLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lineageLineKey": {
+            "type": "string"
+          },
+          "stockReservationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "itemCode": {
+            "type": "string"
+          },
+          "itemName": {
+            "type": "string"
+          },
+          "baseUomCode": {
+            "type": "string"
+          },
+          "locationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationCode": {
+            "type": "string"
+          },
+          "stockLotId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "lotNumber": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dispatchedBaseQuantity": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "unitCostApplied": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "lineCogsAmount": {
+            "pattern": "^-?(?:0|[1-9]\\d*)(?:\\.\\d\u002B)?$",
+            "type": [
+              "number",
+              "string"
+            ],
+            "format": "double"
+          },
+          "movementLineId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "valuationEntryId": {
+            "type": "string",
+            "format": "uuid"
           }
         }
       },
@@ -27631,6 +29637,9 @@
   "tags": [
     {
       "name": "Orphac.Athera.Api"
+    },
+    {
+      "name": "Fulfillment"
     }
   ]
 }

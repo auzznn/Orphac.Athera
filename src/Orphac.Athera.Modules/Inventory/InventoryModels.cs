@@ -33,8 +33,9 @@ public static class StockMovementTypes
     public const string QualityStatusChange = "QUALITY_STATUS_CHANGE";
     public const string OperationalIssue = "OPERATIONAL_ISSUE";
     public const string PurchaseReturnOutbound = "PURCHASE_RETURN_OUTBOUND";
+    public const string SalesDispatchOutbound = "SALES_DISPATCH_OUTBOUND";
 
-    public static readonly IReadOnlyList<string> All = [PurchaseReceiptAcceptance, LocationTransfer, QualityStatusChange, OperationalIssue, PurchaseReturnOutbound];
+    public static readonly IReadOnlyList<string> All = [PurchaseReceiptAcceptance, LocationTransfer, QualityStatusChange, OperationalIssue, PurchaseReturnOutbound, SalesDispatchOutbound];
 }
 
 public static class LocationZoneTypes
@@ -112,8 +113,9 @@ public static class ValuationEntryTypes
     public const string OperationalIssue = "OPERATIONAL_ISSUE";
     public const string InvoicePriceAdjustment = "INVOICE_PRICE_ADJUSTMENT";
     public const string PurchaseReturnOutbound = "PURCHASE_RETURN_OUTBOUND";
+    public const string SalesDispatchOutbound = "SALES_DISPATCH_OUTBOUND";
 
-    public static readonly IReadOnlyList<string> All = [ReceiptAcceptance, OperationalIssue, InvoicePriceAdjustment, PurchaseReturnOutbound];
+    public static readonly IReadOnlyList<string> All = [ReceiptAcceptance, OperationalIssue, InvoicePriceAdjustment, PurchaseReturnOutbound, SalesDispatchOutbound];
 }
 
 public static class InventoryValuationDefaults
@@ -221,6 +223,31 @@ public sealed class StockPosition
                 $"od10_insufficient_available_stock: Issue quantity {qty:0.######} exceeds unreserved available stock ({AvailableBaseQuantity:0.######}).");
         }
 
+        UnrestrictedBaseQuantity = decimal.Round(UnrestrictedBaseQuantity - qty, 6, MidpointRounding.AwayFromZero);
+        RecalculateTotalsAndValidate(nowUtc);
+    }
+
+    public void ConsumeReservedOutboundIssue(decimal consumedBaseQuantity, DateTimeOffset nowUtc)
+    {
+        var qty = decimal.Round(consumedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        if (qty <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(consumedBaseQuantity), "dispatch_qty_must_be_positive: Dispatched base quantity must be strictly positive.");
+        }
+
+        if (qty > ReservedBaseQuantity)
+        {
+            throw new InvalidOperationException(
+                $"od10_insufficient_reserved_stock: Dispatched quantity {qty:0.######} exceeds reserved position stock ({ReservedBaseQuantity:0.######}).");
+        }
+
+        if (qty > UnrestrictedBaseQuantity)
+        {
+            throw new InvalidOperationException(
+                $"od10_negative_stock_forbidden: Dispatched quantity {qty:0.######} exceeds unrestricted on-hand stock ({UnrestrictedBaseQuantity:0.######}).");
+        }
+
+        ReservedBaseQuantity = decimal.Round(ReservedBaseQuantity - qty, 6, MidpointRounding.AwayFromZero);
         UnrestrictedBaseQuantity = decimal.Round(UnrestrictedBaseQuantity - qty, 6, MidpointRounding.AwayFromZero);
         RecalculateTotalsAndValidate(nowUtc);
     }
@@ -1656,6 +1683,37 @@ public sealed class StockLocationBalance
         RecalculateAvailability(nowUtc);
     }
 
+    public void ConsumeReservedOnHand(decimal consumedBaseQuantity, DateTimeOffset nowUtc)
+    {
+        if (StockStatus != StockStatuses.Unrestricted)
+        {
+            throw new InvalidOperationException(
+                $"od10_restricted_stock_not_reservable: Cannot dispatch reserved stock from non-unrestricted status '{StockStatus}'.");
+        }
+
+        var qty = decimal.Round(consumedBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        if (qty <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(consumedBaseQuantity), "dispatch_qty_must_be_positive: Dispatched quantity must be strictly positive.");
+        }
+
+        if (qty > ReservedBaseQuantity)
+        {
+            throw new InvalidOperationException(
+                $"od10_insufficient_reserved_stock: Dispatched quantity {qty:0.######} exceeds location reserved quantity ({ReservedBaseQuantity:0.######}).");
+        }
+
+        if (qty > OnHandBaseQuantity)
+        {
+            throw new InvalidOperationException(
+                $"od10_negative_stock_forbidden: Dispatched quantity {qty:0.######} exceeds location on-hand quantity ({OnHandBaseQuantity:0.######}).");
+        }
+
+        ReservedBaseQuantity = decimal.Round(ReservedBaseQuantity - qty, 6, MidpointRounding.AwayFromZero);
+        OnHandBaseQuantity = decimal.Round(OnHandBaseQuantity - qty, 6, MidpointRounding.AwayFromZero);
+        RecalculateAvailability(nowUtc);
+    }
+
     private void RecalculateAvailability(DateTimeOffset nowUtc)
     {
         if (StockStatus == StockStatuses.Unrestricted)
@@ -1830,6 +1888,41 @@ public sealed class StockReservation
         UpdatedAtUtc = nowUtc;
         Version++;
         return qtyToRelease;
+    }
+
+    public decimal Consume(decimal consumeBaseQuantity, Guid actorUserId, DateTimeOffset nowUtc)
+    {
+        GuardValidation.RequireNonEmptyGuid(actorUserId, nameof(actorUserId));
+        if (RemainingReservedBaseQuantity <= 0m || Status is ReservationStatuses.Released or ReservationStatuses.Fulfilled)
+        {
+            throw new InvalidOperationException("reservation_already_closed: Reservation has no remaining active quantity to consume.");
+        }
+
+        var qtyToConsume = decimal.Round(consumeBaseQuantity, 6, MidpointRounding.AwayFromZero);
+        if (qtyToConsume <= 0m)
+        {
+            throw new ArgumentOutOfRangeException(nameof(consumeBaseQuantity), "dispatch_qty_must_be_positive: Consumed quantity must be strictly positive.");
+        }
+
+        if (qtyToConsume > RemainingReservedBaseQuantity)
+        {
+            throw new InvalidOperationException(
+                $"dispatch_exceeds_reservation: Requested consume quantity ({qtyToConsume:0.######}) exceeds remaining reserved quantity ({RemainingReservedBaseQuantity:0.######}).");
+        }
+
+        ConsumedBaseQuantity = decimal.Round(ConsumedBaseQuantity + qtyToConsume, 6, MidpointRounding.AwayFromZero);
+        RemainingReservedBaseQuantity = decimal.Round(
+            ReservedBaseQuantity - ConsumedBaseQuantity - ReleasedBaseQuantity,
+            6,
+            MidpointRounding.AwayFromZero);
+
+        Status = RemainingReservedBaseQuantity == 0m
+            ? ReservationStatuses.Fulfilled
+            : ReservationStatuses.PartiallyConsumed;
+
+        UpdatedAtUtc = nowUtc;
+        Version++;
+        return qtyToConsume;
     }
 }
 

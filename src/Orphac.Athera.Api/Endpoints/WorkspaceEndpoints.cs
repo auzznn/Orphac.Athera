@@ -239,6 +239,7 @@ public static class WorkspaceEndpoints
             new("payables", "AVAILABLE", set.Contains(PermissionCodes.ApRead) || set.Contains(PermissionCodes.ApManage) || set.Contains(PermissionCodes.ApApprove) || set.Contains(PermissionCodes.ApPost), PermissionCodes.ApRead),
             new("payments", "AVAILABLE", set.Contains(PermissionCodes.ApRead) || set.Contains(PermissionCodes.ApManage) || set.Contains(PermissionCodes.ApApprove) || set.Contains(PermissionCodes.ApPost) || set.Contains(PermissionCodes.FinanceRead) || set.Contains(PermissionCodes.FinanceConfigManage) || set.Contains(PermissionCodes.FinanceJournalPost), PermissionCodes.ApRead),
             new("sales", "AVAILABLE", set.Contains(PermissionCodes.SalesRead) || set.Contains(PermissionCodes.SalesManage) || set.Contains(PermissionCodes.SalesApprove), PermissionCodes.SalesRead),
+            new("fulfillment", "AVAILABLE", set.Contains(PermissionCodes.InventoryRead) || set.Contains(PermissionCodes.InventoryManage) || set.Contains(PermissionCodes.SalesRead) || set.Contains(PermissionCodes.SalesManage) || set.Contains(PermissionCodes.SalesApprove), PermissionCodes.InventoryRead),
             new("finance", "AVAILABLE", set.Contains(PermissionCodes.FinanceRead) || set.Contains(PermissionCodes.FinanceConfigManage) || set.Contains(PermissionCodes.FinanceJournalPost), PermissionCodes.FinanceRead),
             new("admin", "AVAILABLE", set.Contains(PermissionCodes.AdminRead) || set.Contains(PermissionCodes.AdminManage), PermissionCodes.AdminRead)
         ];

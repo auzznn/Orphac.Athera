@@ -26,6 +26,7 @@ import {
   ShieldCheck,
   ShoppingCart,
   Tags,
+  Truck,
   Users,
   Wallet,
   X,
@@ -469,6 +470,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         permissionSet.has("sales.approve"),
       active: pathname.endsWith("/sales-orders") || pathname.includes("/sales-orders/"),
     },
+    (() => {
+      const fulfillmentPermitted =
+        permissionSet.has("inventory.read") ||
+        permissionSet.has("inventory.manage") ||
+        permissionSet.has("sales.read") ||
+        permissionSet.has("sales.manage") ||
+        permissionSet.has("sales.approve");
+      return {
+        key: "fulfillment",
+        label: t.shell.navItems.fulfillment,
+        icon: Truck,
+        href: baseEntityPath && fulfillmentPermitted ? `${baseEntityPath}/fulfillment` : null,
+        permitted: fulfillmentPermitted,
+        active: pathname.endsWith("/fulfillment") || pathname.includes("/fulfillment/"),
+      };
+    })(),
     {
       key: "finance",
       label: t.shell.navItems.finance,
