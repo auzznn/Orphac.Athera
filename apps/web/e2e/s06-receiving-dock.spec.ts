@@ -49,12 +49,19 @@ async function assertNoLayoutClipping(page: Page) {
   );
   expect(docOverflow).toBe(false);
 
-  const innerClipped = await page.evaluate(() =>
-    Array.from(document.querySelectorAll('[class*="overflow-x-auto"]')).some(
-      (el) => el.scrollWidth > el.clientWidth + 1,
-    ),
+  const innerClippedDetails = await page.evaluate(() =>
+    Array.from(document.querySelectorAll('[class*="overflow-x-auto"]'))
+      .filter((el) => el.scrollWidth > el.clientWidth + 1)
+      .map((el) => ({
+        tag: el.tagName,
+        class: el.className,
+        scrollWidth: el.scrollWidth,
+        clientWidth: el.clientWidth,
+        html: el.innerHTML.slice(0, 100),
+      })),
   );
-  expect(innerClipped).toBe(false);
+  console.log("S06 INNER CLIPPED:", JSON.stringify(innerClippedDetails));
+  expect(innerClippedDetails.length).toBe(0);
 }
 
 test.describe("S06 Dock Custody & Receiving Gate One (Unvalued)", () => {

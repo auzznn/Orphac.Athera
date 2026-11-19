@@ -688,7 +688,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   </Link>
 
                   {authorizedCount > 0 ? (
-                    <div className="relative hidden md:block">
+                    <div className="relative hidden lg:block">
                       <button
                         ref={desktopTriggerRef}
                         type="button"
@@ -743,7 +743,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </div>
 
               {authorizedCount > 0 ? (
-                <div className="relative border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-1.5 md:hidden">
+                <div className="relative border-t border-[var(--border-hairline)] bg-[var(--bg-subtle)] px-4 py-1.5 lg:hidden">
                   <button
                     ref={mobileTriggerRef}
                     type="button"
@@ -770,7 +770,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {renderScopePanel("scope-switcher-panel-mobile", "left-4 right-4 top-full mt-1")}
                 </div>
               ) : (
-                <div className="flex items-center gap-2 border-t border-[var(--border-hairline)] bg-[var(--status-warn-bg)] px-4 py-1.5 text-xs font-medium text-[var(--status-warn-text)] md:hidden">
+                <div className="flex items-center gap-2 border-t border-[var(--border-hairline)] bg-[var(--status-warn-bg)] px-4 py-1.5 text-xs font-medium text-[var(--status-warn-text)] lg:hidden">
                   <Building2 className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
                   <span className="truncate">{t.shell.scopeCompactBadge}</span>
                 </div>

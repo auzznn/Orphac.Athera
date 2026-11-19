@@ -1,0 +1,14 @@
+=== .NET VULNERABLE PACKAGE AUDIT ===
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+
+The following sources were used:
+   https://api.nuget.org/v3/index.json
+
+The given project `Orphac.Athera.Modules` has no vulnerable packages given the current sources.
+The given project `Orphac.Athera.Api` has no vulnerable packages given the current sources.
+The given project `Orphac.Athera.UnitTests` has no vulnerable packages given the current sources.
+The given project `Orphac.Athera.IntegrationTests` has no vulnerable packages given the current sources.
+
+=== NPM PRODUCTION DEPENDENCY AUDIT ===
+found 0 vulnerabilities

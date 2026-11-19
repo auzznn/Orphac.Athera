@@ -1182,17 +1182,17 @@ function FinanceSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
               <div className="px-4 py-8 text-center text-sm text-[var(--text-secondary)]">{t.finance.emptyJournals}</div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-left text-sm">
+                <table className="block w-full border-collapse text-left text-sm md:table">
                   <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-surface)] text-xs font-semibold text-[var(--text-secondary)] md:table-header-group">
                     <tr>
-                      <th scope="col" className="px-4 py-2.5">{t.finance.colJournalNumber}</th>
-                      <th scope="col" className="px-4 py-2.5">{t.finance.colDatePeriod}</th>
-                      <th scope="col" className="px-4 py-2.5">{t.finance.colDescriptionSource}</th>
-                      <th scope="col" className="px-4 py-2.5 text-right">{t.finance.colDebitCredit}</th>
-                      <th scope="col" className="px-4 py-2.5 text-right">{t.finance.colStateAction}</th>
+                      <th scope="col" className="px-3 py-2.5">{t.finance.colJournalNumber}</th>
+                      <th scope="col" className="px-3 py-2.5">{t.finance.colDatePeriod}</th>
+                      <th scope="col" className="px-3 py-2.5">{t.finance.colDescriptionSource}</th>
+                      <th scope="col" className="px-3 py-2.5 text-right">{t.finance.colDebitCredit}</th>
+                      <th scope="col" className="px-3 py-2.5 text-right">{t.finance.colStateAction}</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="block md:table-row-group">
                     {journalsData.items.map((j) => {
                       const isSelected = selectedJournalId === j.journalId;
                       return (
@@ -1202,7 +1202,7 @@ function FinanceSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
                             isSelected ? "bg-[var(--accent-tint)]" : ""
                           }`}
                         >
-                          <td className="block pb-1.5 md:table-cell md:px-4 md:py-3 md:align-top">
+                          <td className="block pb-1.5 md:table-cell md:px-3 md:py-3 md:align-top">
                             <div className="font-code text-xs font-semibold whitespace-nowrap text-[var(--text-primary)]">
                               {j.journalNumber}
                             </div>
@@ -1226,7 +1226,7 @@ function FinanceSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
                             </div>
                           </td>
 
-                          <td className="block pb-1.5 md:table-cell md:px-4 md:py-3 md:align-top">
+                          <td className="block pb-1.5 md:table-cell md:px-3 md:py-3 md:align-top">
                             <span className="mr-1.5 text-xs font-medium text-[var(--text-secondary)] md:hidden">
                               {t.finance.colDatePeriod}:
                             </span>
@@ -1238,14 +1238,14 @@ function FinanceSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
                             </div>
                           </td>
 
-                          <td className="block pb-2 md:table-cell md:px-4 md:py-3 md:align-top">
-                            <div className="text-xs font-medium text-[var(--text-primary)]">{j.description}</div>
-                            <div className="font-code mt-0.5 text-[11px] text-[var(--text-secondary)]">
+                          <td className="block min-w-0 pb-2 md:table-cell md:px-3 md:py-3 md:align-top">
+                            <div className="text-xs font-medium break-words text-[var(--text-primary)]">{j.description}</div>
+                            <div className="font-code mt-0.5 text-[11px] break-all text-[var(--text-secondary)]">
                               {j.sourceModule} · {j.sourceEventKey}
                             </div>
                           </td>
 
-                          <td className="block pb-2 md:table-cell md:px-4 md:py-3 md:text-right md:align-top">
+                          <td className="block pb-2 md:table-cell md:px-3 md:py-3 md:text-right md:align-top">
                             <span className="mr-1.5 text-xs font-medium text-[var(--text-secondary)] md:hidden">
                               {t.finance.colDebitCredit}:
                             </span>
@@ -1257,7 +1257,7 @@ function FinanceSheet({ tenantId, entityId }: { tenantId: string; entityId: stri
                             </div>
                           </td>
 
-                          <td className="block md:table-cell md:px-4 md:py-3 md:text-right md:align-top">
+                          <td className="block md:table-cell md:px-3 md:py-3 md:text-right md:align-top">
                             <button
                               type="button"
                               aria-label={`${canPost ? t.finance.manageButton : t.finance.viewOnlyButton} (${j.journalNumber})`}

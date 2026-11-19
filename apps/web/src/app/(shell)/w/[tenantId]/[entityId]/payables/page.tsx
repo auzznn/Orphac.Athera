@@ -616,7 +616,7 @@ export default function PayablesPage() {
       <div
         role="tablist"
         aria-label={pt.tabListLabel}
-        className="flex flex-wrap gap-1.5 border-b border-[var(--border-hairline)] pb-2.5"
+        className="grid grid-cols-1 gap-1.5 rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] p-1 sm:flex sm:flex-wrap"
       >
         {(
           [
@@ -633,10 +633,10 @@ export default function PayablesPage() {
             role="tab"
             aria-selected={activeTab === key}
             onClick={() => setActiveTab(key)}
-            className={`min-h-9 rounded-[var(--radius-sm)] px-3 text-xs font-semibold ${
+            className={`min-h-9 rounded-[var(--radius-sm)] px-3 py-1.5 text-left text-xs font-medium transition-colors sm:text-center ${
               activeTab === key
-                ? "bg-[var(--accent-primary)] text-[var(--accent-primary-ink)]"
-                : "border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-primary)] hover:bg-[var(--bg-chrome)]"
+                ? "border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-primary)]"
+                : "border border-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-chrome)] hover:text-[var(--text-primary)]"
             }`}
           >
             {label}

@@ -1,0 +1,54 @@
+=== S18 REAL POSTGRESQL 18 BACKUP & RESTORE REHEARSAL ===
+Thu Nov 19 11:10:15 UTC 2026
+-- 1. Source DB forced-RLS count & seeded table counts --
+ forced_rls_tables 
+-------------------
+               109
+(1 row)
+
+ tenants | entities | journals | docs 
+---------+----------+----------+------
+       2 |        3 |       32 |    1
+(1 row)
+
+-- 2. pg_dump custom archive (BYPASSRLS backup principal) --
+-rw-r--r-- 1 root root 1.1M Nov 19 11:10 /tmp/athera_s18_rc.dump
+-- 3. Create clean restore DB & pg_restore --
+NOTICE:  database "athera_s18_restore_verify" does not exist, skipping
+DROP DATABASE
+CREATE DATABASE
+-- 4. Verify restored DB forced-RLS count & exact row parity --
+ forced_rls_tables 
+-------------------
+               109
+(1 row)
+
+ tenants | entities | journals | docs 
+---------+----------+----------+------
+       2 |        3 |       32 |    1
+(1 row)
+
+-- 5. EF Core Migration Rollback (M17 -> M16) & Reapply (M16 -> M17) on restored DB --
+Build started...
+Build succeeded.
+Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+Reverting migration '20261119015232_M17_DocumentsAndEvidenceTrails'.
+Done.
+ after_rollback_m16 
+--------------------
+ 
+(1 row)
+
+Build started...
+Build succeeded.
+Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+Applying migration '20261119015232_M17_DocumentsAndEvidenceTrails'.
+Done.
+      after_reapply_m17       
+------------------------------
+ documents.business_documents
+(1 row)
+
+-- 6. Cleanup temporary verify DB & dump --
+DROP DATABASE
+BACKUP_RESTORE_AND_MIGRATION_DRILL_PASS

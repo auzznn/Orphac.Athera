@@ -1550,22 +1550,22 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                 <table className="w-full border-collapse text-left text-sm">
                   <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] text-xs font-semibold text-[var(--text-secondary)] md:table-header-group">
                     <tr>
-                      <th scope="col" className="py-2.5 md:pl-4 md:pr-2.5">
+                      <th scope="col" className="py-2.5 md:pl-3 md:pr-1.5">
                         {t.receiving.colReceipt}
                       </th>
-                      <th scope="col" className="py-2.5 md:px-2.5">
+                      <th scope="col" className="py-2.5 md:px-1.5">
                         {t.receiving.colPoAndSupplier}
                       </th>
-                      <th scope="col" className="py-2.5 md:px-2.5">
+                      <th scope="col" className="py-2.5 md:px-1.5">
                         {t.receiving.colStationAndDate}
                       </th>
-                      <th scope="col" className="py-2.5 md:px-2.5 text-right">
+                      <th scope="col" className="py-2.5 md:px-1.5 text-right">
                         {t.receiving.colQuantities}
                       </th>
-                      <th scope="col" className="py-2.5 md:px-2.5">
+                      <th scope="col" className="py-2.5 md:px-1.5">
                         {t.receiving.colStatus}
                       </th>
-                      <th scope="col" className="py-2.5 md:pl-2.5 md:pr-4 text-right">
+                      <th scope="col" className="py-2.5 md:pl-1.5 md:pr-3 text-right">
                         {t.receiving.colAction}
                       </th>
                     </tr>
@@ -1582,19 +1582,19 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                             isSelected ? "bg-[var(--bg-subtle)]" : "hover:bg-[var(--bg-subtle)]/60"
                           }`}
                         >
-                          <td className="flex flex-col gap-0.5 py-1.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3 md:table-cell md:py-3 md:pl-4 md:pr-2.5">
+                          <td className="flex flex-col gap-0.5 py-1.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3 md:table-cell md:py-3 md:pl-3 md:pr-1.5">
                             <span className="text-xs font-medium text-[var(--text-secondary)] md:hidden">
                               {t.receiving.colReceipt}
                             </span>
                             <div className="sm:text-right md:text-left">
-                              <div className="font-code text-xs font-semibold tabular-nums sm:whitespace-nowrap text-[var(--text-primary)]">
+                              <div className="font-code text-xs font-semibold tabular-nums text-[var(--text-primary)]">
                                 {item.receiptNumber}
                               </div>
                               <div className="font-code text-xs tabular-nums text-[var(--text-secondary)]">
                                 {item.supplierDeliveryNoteNumber}
                               </div>
                               {item.replacementAuthorizationNumber ? (
-                                <div className="mt-1 inline-flex items-center gap-1 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-1.5 py-0.5 font-code text-[11px] font-medium tabular-nums text-[var(--status-warn-text)]">
+                                <div className="mt-1 inline-flex items-center gap-1 rounded-[var(--radius-sm)] border border-[var(--status-warn-border)] bg-[var(--status-warn-bg)] px-1.5 py-0.5 font-code text-[11px] font-medium tabular-nums text-[var(--status-warn-text)]">
                                   <RotateCcw className="h-3.5 w-3.5 shrink-0" strokeWidth={1.75} aria-hidden="true" />
                                   <span>{t.returns.replacementBadgeShort} · {item.replacementAuthorizationNumber}</span>
                                 </div>
@@ -1602,12 +1602,12 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                             </div>
                           </td>
 
-                          <td className="flex flex-col gap-0.5 py-1.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3 md:table-cell md:py-3 md:px-2.5">
+                          <td className="flex flex-col gap-0.5 py-1.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3 md:table-cell md:py-3 md:px-1.5">
                             <span className="text-xs font-medium text-[var(--text-secondary)] md:hidden">
                               {t.receiving.colPoAndSupplier}
                             </span>
                             <div className="sm:text-right md:text-left">
-                              <div className="font-code text-xs font-semibold tabular-nums sm:whitespace-nowrap text-[var(--text-primary)]">
+                              <div className="font-code text-xs font-semibold tabular-nums text-[var(--text-primary)]">
                                 {item.poNumberSnapshot} · Rev {String(item.poRevisionNumberSnapshot)}
                               </div>
                               <div className="text-xs text-[var(--text-secondary)]">
@@ -1616,7 +1616,7 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                             </div>
                           </td>
 
-                          <td className="flex flex-col gap-0.5 py-1.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3 md:table-cell md:py-3 md:px-2.5">
+                          <td className="flex flex-col gap-0.5 py-1.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3 md:table-cell md:py-3 md:px-1.5">
                             <span className="text-xs font-medium text-[var(--text-secondary)] md:hidden">
                               {t.receiving.colStationAndDate}
                             </span>
@@ -1630,18 +1630,18 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                             </div>
                           </td>
 
-                          <td className="flex flex-col gap-0.5 py-1.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3 md:table-cell md:py-3 md:px-2.5 md:text-right">
+                          <td className="flex flex-col gap-0.5 py-1.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3 md:table-cell md:py-3 md:px-1.5 md:text-right">
                             <span className="text-xs font-medium text-[var(--text-secondary)] md:hidden">
                               {t.receiving.colQuantities}
                             </span>
                             <div className="font-code text-xs tabular-nums text-[var(--text-primary)]">
-                              <div className="sm:whitespace-nowrap">
+                              <div>
                                 {t.receiving.splitCodes.delivered}{" "}
                                 {formatQuantityValue(item.totalDeliveredBaseQuantity, locale)} ·{" "}
                                 {t.receiving.splitCodes.released}{" "}
                                 {formatQuantityValue(item.totalReleasedBaseQuantity, locale)}
                               </div>
-                              <div className="text-[var(--text-secondary)] sm:whitespace-nowrap">
+                              <div className="text-[var(--text-secondary)]">
                                 {t.receiving.splitCodes.held}{" "}
                                 {formatQuantityValue(item.totalHeldBaseQuantity, locale)} ·{" "}
                                 {t.receiving.splitCodes.rejected}{" "}
@@ -1650,14 +1650,14 @@ function ReceivingSheet({ tenantId, entityId }: { tenantId: string; entityId: st
                             </div>
                           </td>
 
-                          <td className="flex items-center justify-between gap-3 py-1.5 md:table-cell md:py-3 md:px-2.5">
+                          <td className="flex items-center justify-between gap-3 py-1.5 md:table-cell md:py-3 md:px-1.5">
                             <span className="text-xs font-medium text-[var(--text-secondary)] md:hidden">
                               {t.receiving.colStatus}
                             </span>
                             <ReceivingStatusBadge status={item.status} label={statusLabel} />
                           </td>
 
-                          <td className="flex items-center justify-end pt-2 md:table-cell md:py-3 md:pl-2.5 md:pr-4 md:text-right">
+                          <td className="flex items-center justify-end pt-2 md:table-cell md:py-3 md:pl-1.5 md:pr-3 md:text-right">
                             <button
                               type="button"
                               onClick={() => void handleOpenReceipt(item.goodsReceiptId)}

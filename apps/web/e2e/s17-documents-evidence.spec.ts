@@ -24,7 +24,7 @@ async function assertNoLayoutClipping(page: Page) {
 }
 
 async function waitForDocumentsLoaded(page: Page) {
-  await expect(page.getByRole("button", { name: /Muat Ulang|Refresh/i })).toBeEnabled({ timeout: 15000 });
+  await expect(page.getByRole("button", { name: /Segarkan|Muat Ulang|Refresh/i })).toBeEnabled({ timeout: 15000 });
   await expect(
     page.getByLabel(/Ringkasan KPI Dokumen|Documents and Operations KPI Summary/i),
   ).toBeVisible();

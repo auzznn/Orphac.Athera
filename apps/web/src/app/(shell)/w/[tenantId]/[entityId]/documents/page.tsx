@@ -344,13 +344,13 @@ export default function DocumentsAndEvidencePage() {
         </div>
       )}
 
-      {/* 4 Baseline-Aligned KPI Cards */}
+      {/* 4 Baseline-Aligned KPI Strip (Joined Single-Sheet Hairline) */}
       {overview && (
         <section
           aria-label={td.kpiAriaLabel}
-          className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          className="grid grid-cols-1 divide-y divide-[var(--border-hairline)] overflow-hidden rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-y-0"
         >
-          <div className="flex flex-col justify-between rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4">
+          <div className="flex flex-col justify-between p-4">
             <p className="text-xs font-medium text-[var(--text-secondary)]">{td.kpiTotalDocs}</p>
             <p className="mt-2 font-code text-lg font-semibold tabular-nums text-[var(--text-primary)]">
               {overview.totalDocuments}
@@ -358,7 +358,7 @@ export default function DocumentsAndEvidencePage() {
             <p className="mt-2 text-xs text-[var(--text-secondary)]">SHA-256 · Append-only</p>
           </div>
 
-          <div className="flex flex-col justify-between rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4">
+          <div className="flex flex-col justify-between p-4">
             <p className="text-xs font-medium text-[var(--text-secondary)]">{td.kpiExceptions}</p>
             <p className="mt-2 font-code text-lg font-semibold tabular-nums text-[var(--text-primary)]">
               {overview.totalExceptions}
@@ -378,7 +378,7 @@ export default function DocumentsAndEvidencePage() {
             </div>
           </div>
 
-          <div className="flex flex-col justify-between rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4">
+          <div className="flex flex-col justify-between p-4">
             <p className="text-xs font-medium text-[var(--text-secondary)]">{td.kpiAuditEvents}</p>
             <p className="mt-2 font-code text-lg font-semibold tabular-nums text-[var(--text-primary)]">
               {overview.auditEvents.length}
@@ -386,7 +386,7 @@ export default function DocumentsAndEvidencePage() {
             <p className="mt-2 text-xs text-[var(--text-secondary)]">WIB (Asia/Jakarta)</p>
           </div>
 
-          <div className="flex flex-col justify-between rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4">
+          <div className="flex flex-col justify-between p-4">
             <p className="text-xs font-medium text-[var(--text-secondary)]">{td.kpiOutboxStatus}</p>
             <p className="mt-2 font-code text-lg font-semibold tabular-nums text-[var(--text-primary)]">
               {overview.failedOutboxCount} / {overview.pendingOutboxCount}
@@ -605,8 +605,8 @@ export default function DocumentsAndEvidencePage() {
           })}
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative flex-1 sm:flex-none">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="relative w-full sm:w-64">
             <Search
               className="pointer-events-none absolute top-1/2 left-2.5 h-3.5 w-3.5 -translate-y-1/2 text-[var(--text-secondary)]"
               strokeWidth={1.75}
@@ -618,7 +618,7 @@ export default function DocumentsAndEvidencePage() {
               onChange={(e) => setSearchText(e.target.value)}
               placeholder={td.searchPlaceholder}
               aria-label={td.searchPlaceholder}
-              className="min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] py-1.5 pr-3 pl-8 text-xs text-[var(--text-primary)] sm:w-64"
+              className="min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] py-1.5 pr-3 pl-8 text-xs text-[var(--text-primary)]"
             />
           </div>
 
@@ -627,7 +627,7 @@ export default function DocumentsAndEvidencePage() {
               aria-label={td.drawerCategoryLabel}
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="min-h-9 rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 py-1.5 text-xs text-[var(--text-primary)]"
+              className="min-h-9 w-full rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-2.5 py-1.5 text-xs text-[var(--text-primary)] sm:w-auto"
             >
               <option value="">{td.filterCategoryAll}</option>
               {Object.entries(td.categoryLabels).map(([k, label]) => (

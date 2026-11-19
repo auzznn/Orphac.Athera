@@ -386,13 +386,13 @@ export default function AccountingReportsPage() {
         </div>
       )}
 
-      {/* 4 Baseline-Aligned KPI Cards */}
+      {/* 4 Baseline-Aligned KPI Strip (Joined Single-Sheet Hairline) */}
       {overview && (
         <section
           aria-label={tr.kpiAriaLabel}
-          className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          className="grid grid-cols-1 divide-y divide-[var(--border-hairline)] overflow-hidden rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] sm:grid-cols-2 lg:grid-cols-4 lg:divide-x lg:divide-y-0"
         >
-          <div className="flex flex-col justify-between rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4">
+          <div className="flex flex-col justify-between p-4">
             <p className="text-xs font-medium text-[var(--text-secondary)]">{tr.kpiTbBalanceLabel}</p>
             <p className="mt-2 font-code text-lg font-semibold tabular-nums text-[var(--text-primary)] whitespace-nowrap">
               {formatIdr(formatNumber(overview.trialBalance.totalEndingDebit))}
@@ -412,7 +412,7 @@ export default function AccountingReportsPage() {
             </div>
           </div>
 
-          <div className="flex flex-col justify-between rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4">
+          <div className="flex flex-col justify-between p-4">
             <p className="text-xs font-medium text-[var(--text-secondary)]">{tr.kpiNetIncomeLabel}</p>
             <p className="mt-2 font-code text-lg font-semibold tabular-nums text-[var(--text-primary)] whitespace-nowrap">
               {formatIdr(formatNumber(overview.profitAndLoss.netIncome))}
@@ -422,7 +422,7 @@ export default function AccountingReportsPage() {
             </p>
           </div>
 
-          <div className="flex flex-col justify-between rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4">
+          <div className="flex flex-col justify-between p-4">
             <p className="text-xs font-medium text-[var(--text-secondary)]">{tr.kpiTotalAssetsLabel}</p>
             <p className="mt-2 font-code text-lg font-semibold tabular-nums text-[var(--text-primary)] whitespace-nowrap">
               {formatIdr(formatNumber(overview.balanceSheet.totalAssets))}
@@ -442,7 +442,7 @@ export default function AccountingReportsPage() {
             </div>
           </div>
 
-          <div className="flex flex-col justify-between rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-surface)] p-4">
+          <div className="flex flex-col justify-between p-4">
             <p className="text-xs font-medium text-[var(--text-secondary)]">{tr.kpiControlStatusLabel}</p>
             <p className="mt-2 font-code text-lg font-semibold tabular-nums text-[var(--text-primary)] whitespace-nowrap">
               {overview.reconciliations.length - varianceCount}/{overview.reconciliations.length}
@@ -607,7 +607,7 @@ export default function AccountingReportsPage() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-left text-xs">
-                <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] text-[var(--text-secondary)] md:table-header-group">
+                <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] text-[var(--text-secondary)] lg:table-header-group">
                   <tr>
                     <th className="px-4 py-2.5 font-medium">{tr.colControlAccount}</th>
                     <th className="px-3 py-2.5 text-right font-medium whitespace-nowrap">{tr.colGlBalance}</th>
@@ -622,40 +622,40 @@ export default function AccountingReportsPage() {
                   {overview.reconciliations.map((row) => (
                     <tr
                       key={row.purposeCode}
-                      className="block p-3.5 hover:bg-[var(--bg-subtle)]/50 md:table-row md:p-0"
+                      className="block p-3.5 hover:bg-[var(--bg-subtle)]/50 lg:table-row lg:p-0"
                     >
-                      <td className="block pb-2 md:table-cell md:px-4 md:py-2.5">
+                      <td className="block pb-2 lg:table-cell lg:px-4 lg:py-2.5">
                         <div className="font-medium text-[var(--text-primary)]">{row.controlLabel}</div>
                         <div className="font-code text-[11px] text-[var(--text-secondary)]">
                           {row.accountCode ? `${row.accountCode} · ${row.accountName}` : "—"}
                         </div>
                       </td>
-                      <td className="flex items-center justify-between py-1 md:table-cell md:px-3 md:py-2.5 md:text-right">
-                        <span className="text-[var(--text-secondary)] md:hidden">{tr.colGlBalance}</span>
+                      <td className="flex items-center justify-between py-1 lg:table-cell lg:px-3 lg:py-2.5 lg:text-right">
+                        <span className="text-[var(--text-secondary)] lg:hidden">{tr.colGlBalance}</span>
                         <span className="font-code tabular-nums text-[var(--text-primary)] whitespace-nowrap">
                           {formatIdr(formatNumber(row.glBalance))}
                         </span>
                       </td>
-                      <td className="flex items-center justify-between py-1 md:table-cell md:px-3 md:py-2.5 md:text-right">
-                        <span className="text-[var(--text-secondary)] md:hidden">{tr.colSubledgerBalance}</span>
+                      <td className="flex items-center justify-between py-1 lg:table-cell lg:px-3 lg:py-2.5 lg:text-right">
+                        <span className="text-[var(--text-secondary)] lg:hidden">{tr.colSubledgerBalance}</span>
                         <span className="font-code tabular-nums text-[var(--text-primary)] whitespace-nowrap">
                           {formatIdr(formatNumber(row.subledgerBalance))}
                         </span>
                       </td>
-                      <td className="flex items-center justify-between py-1 md:table-cell md:px-3 md:py-2.5 md:text-right">
-                        <span className="text-[var(--text-secondary)] md:hidden">{tr.colVariance}</span>
+                      <td className="flex items-center justify-between py-1 lg:table-cell lg:px-3 lg:py-2.5 lg:text-right">
+                        <span className="text-[var(--text-secondary)] lg:hidden">{tr.colVariance}</span>
                         <span className="font-code tabular-nums text-[var(--text-primary)] whitespace-nowrap">
                           {formatIdr(formatNumber(row.varianceAmount))}
                         </span>
                       </td>
-                      <td className="flex items-center justify-between py-1 md:table-cell md:px-3 md:py-2.5 md:text-right">
-                        <span className="text-[var(--text-secondary)] md:hidden">{tr.colOpenItems}</span>
+                      <td className="flex items-center justify-between py-1 lg:table-cell lg:px-3 lg:py-2.5 lg:text-right">
+                        <span className="text-[var(--text-secondary)] lg:hidden">{tr.colOpenItems}</span>
                         <span className="font-code tabular-nums text-[var(--text-secondary)] whitespace-nowrap">
                           {row.openItemCount}
                         </span>
                       </td>
-                      <td className="flex items-center justify-between py-1 md:table-cell md:px-3 md:py-2.5">
-                        <span className="text-[var(--text-secondary)] md:hidden">{tr.colStatus}</span>
+                      <td className="flex items-center justify-between py-1 lg:table-cell lg:px-3 lg:py-2.5">
+                        <span className="text-[var(--text-secondary)] lg:hidden">{tr.colStatus}</span>
                         <span
                           className={`inline-flex items-center gap-1 rounded-[var(--radius-sm)] border px-2 py-0.5 text-[11px] font-medium whitespace-nowrap ${
                             row.status === "RECONCILED"
@@ -671,7 +671,7 @@ export default function AccountingReportsPage() {
                           {tr.reconciliationStatusLabels[row.status] ?? row.status}
                         </span>
                       </td>
-                      <td className="block pt-2 md:table-cell md:px-4 md:py-2.5 md:text-right">
+                      <td className="block pt-2 lg:table-cell lg:px-4 lg:py-2.5 lg:text-right">
                         {row.accountId ? (
                           <button
                             type="button"
@@ -805,7 +805,7 @@ export default function AccountingReportsPage() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full border-collapse text-left text-xs">
-                  <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] text-[var(--text-secondary)] md:table-header-group">
+                  <thead className="hidden border-b border-[var(--border-hairline)] bg-[var(--bg-subtle)] text-[var(--text-secondary)] lg:table-header-group">
                     <tr>
                       <th className="px-4 py-2.5 font-medium whitespace-nowrap">{tr.colPeriodCode}</th>
                       <th className="px-3 py-2.5 font-medium whitespace-nowrap">{tr.colReviewAction}</th>
@@ -817,39 +817,39 @@ export default function AccountingReportsPage() {
                   </thead>
                   <tbody className="divide-y divide-[var(--border-hairline)]">
                     {overview.closeReviews.map((rev) => (
-                      <tr key={rev.closeReviewId} className="block p-3.5 md:table-row md:p-0">
-                        <td className="flex items-center justify-between py-1 md:table-cell md:px-4 md:py-2.5">
-                          <span className="text-[var(--text-secondary)] md:hidden">{tr.colPeriodCode}</span>
+                      <tr key={rev.closeReviewId} className="block p-3.5 lg:table-row lg:p-0">
+                        <td className="flex items-center justify-between py-1 lg:table-cell lg:px-4 lg:py-2.5">
+                          <span className="text-[var(--text-secondary)] lg:hidden">{tr.colPeriodCode}</span>
                           <span className="font-code font-medium tabular-nums text-[var(--text-primary)] whitespace-nowrap">
                             {rev.periodCode}
                           </span>
                         </td>
-                        <td className="flex items-center justify-between py-1 md:table-cell md:px-3 md:py-2.5">
-                          <span className="text-[var(--text-secondary)] md:hidden">{tr.colReviewAction}</span>
+                        <td className="flex items-center justify-between py-1 lg:table-cell lg:px-3 lg:py-2.5">
+                          <span className="text-[var(--text-secondary)] lg:hidden">{tr.colReviewAction}</span>
                           <span className="font-medium text-[var(--text-primary)] whitespace-nowrap">
                             {tr.actionTypeLabels[rev.actionType] ?? rev.actionType}
                           </span>
                         </td>
-                        <td className="flex items-center justify-between py-1 md:table-cell md:px-3 md:py-2.5 md:text-right">
-                          <span className="text-[var(--text-secondary)] md:hidden">{tr.colReviewTb}</span>
+                        <td className="flex items-center justify-between py-1 lg:table-cell lg:px-3 lg:py-2.5 lg:text-right">
+                          <span className="text-[var(--text-secondary)] lg:hidden">{tr.colReviewTb}</span>
                           <span className="font-code tabular-nums text-[var(--text-primary)] whitespace-nowrap">
                             {formatIdr(formatNumber(rev.trialBalanceDebits))}
                           </span>
                         </td>
-                        <td className="flex items-center justify-between py-1 md:table-cell md:px-3 md:py-2.5 md:text-right">
-                          <span className="text-[var(--text-secondary)] md:hidden">{tr.colReviewVariances}</span>
+                        <td className="flex items-center justify-between py-1 lg:table-cell lg:px-3 lg:py-2.5 lg:text-right">
+                          <span className="text-[var(--text-secondary)] lg:hidden">{tr.colReviewVariances}</span>
                           <span className="font-code tabular-nums text-[var(--text-secondary)] whitespace-nowrap">
                             {rev.reconciliationVarianceCount}
                           </span>
                         </td>
-                        <td className="flex items-center justify-between gap-2 py-1 md:table-cell md:px-3 md:py-2.5">
-                          <span className="text-[var(--text-secondary)] md:hidden">{tr.colReviewReason}</span>
-                          <span className="text-right text-[var(--text-secondary)] md:text-left">
+                        <td className="flex items-center justify-between gap-2 py-1 lg:table-cell lg:px-3 lg:py-2.5">
+                          <span className="text-[var(--text-secondary)] lg:hidden">{tr.colReviewReason}</span>
+                          <span className="text-right text-[var(--text-secondary)] lg:text-left">
                             {rev.reason || "—"}
                           </span>
                         </td>
-                        <td className="flex items-center justify-between py-1 md:table-cell md:px-4 md:py-2.5 md:text-right">
-                          <span className="text-[var(--text-secondary)] md:hidden">{tr.colReviewTime}</span>
+                        <td className="flex items-center justify-between py-1 lg:table-cell lg:px-4 lg:py-2.5 lg:text-right">
+                          <span className="text-[var(--text-secondary)] lg:hidden">{tr.colReviewTime}</span>
                           <span className="font-code tabular-nums text-[var(--text-secondary)] whitespace-nowrap">
                             {formatJakartaDateTime(rev.createdAtUtc, locale)}
                           </span>

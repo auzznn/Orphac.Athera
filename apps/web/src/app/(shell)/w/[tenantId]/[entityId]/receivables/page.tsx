@@ -383,11 +383,27 @@ export default function ReceivablesPage() {
     <div className="space-y-5">
       {/* Header */}
       <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 space-y-1">
+          <Link
+            href={`/w/${tenantId}/${entityId}`}
+            className="inline-flex min-h-9 items-center gap-1.5 text-xs font-medium text-[var(--accent-primary)] hover:underline"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
+            <span>{rt.backToEntityLink}</span>
+          </Link>
           <h1 className="text-xl font-bold tracking-tight text-[var(--text-primary)]">{rt.heading}</h1>
-          <p className="mt-1 max-w-3xl text-xs text-[var(--text-secondary)]">{rt.lead}</p>
+          <p className="max-w-3xl text-xs text-[var(--text-secondary)]">{rt.lead}</p>
         </div>
         <div className="flex flex-wrap items-center gap-2 lg:shrink-0">
+          <button
+            type="button"
+            onClick={() => void handleRefresh()}
+            disabled={refreshing}
+            className="inline-flex min-h-9 items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-chrome)] disabled:opacity-60"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`} strokeWidth={1.75} aria-hidden="true" />
+            <span>{refreshing ? rt.refreshing : rt.refreshButton}</span>
+          </button>
           {canManage ? (
             <button
               type="button"
@@ -399,22 +415,6 @@ export default function ReceivablesPage() {
               <span>{rt.bankPanel.importCsvBtn}</span>
             </button>
           ) : null}
-          <Link
-            href={`/w/${tenantId}/${entityId}`}
-            className="inline-flex min-h-9 items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-chrome)]"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" strokeWidth={1.75} aria-hidden="true" />
-            <span>{rt.backToEntityLink}</span>
-          </Link>
-          <button
-            type="button"
-            onClick={() => void handleRefresh()}
-            disabled={refreshing}
-            className="inline-flex min-h-9 items-center gap-1.5 whitespace-nowrap rounded-[var(--radius-sm)] border border-[var(--border-strong)] bg-[var(--bg-surface)] px-3 text-xs font-medium text-[var(--text-primary)] hover:bg-[var(--bg-chrome)] disabled:opacity-60"
-          >
-            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`} strokeWidth={1.75} aria-hidden="true" />
-            <span>{refreshing ? rt.refreshing : rt.refreshButton}</span>
-          </button>
         </div>
       </div>
 
@@ -891,11 +891,11 @@ export default function ReceivablesPage() {
         </section>
       ) : null}
 
-      {/* Responsive Tablist (segmented wrap on mobile, single baseline on desktop) */}
+      {/* Responsive Tablist (unified neutral segmented tray) */}
       <div
         role="tablist"
         aria-label={rt.tabListLabel}
-        className="grid grid-cols-1 gap-1 border-b border-[var(--border-hairline)] pb-1 sm:flex sm:flex-wrap sm:items-center sm:pb-0"
+        className="grid grid-cols-1 gap-1.5 rounded-[var(--radius-md)] border border-[var(--border-hairline)] bg-[var(--bg-subtle)] p-1 sm:flex sm:flex-wrap"
       >
         <button
           type="button"
@@ -904,10 +904,10 @@ export default function ReceivablesPage() {
           aria-selected={activeTab === "bank"}
           aria-controls="ar-panel-bank"
           onClick={() => setActiveTab("bank")}
-          className={`min-h-10 rounded-[var(--radius-sm)] px-3.5 text-left text-xs font-semibold sm:rounded-b-none sm:text-center ${
+          className={`min-h-9 rounded-[var(--radius-sm)] px-3 py-1.5 text-left text-xs font-medium transition-colors sm:text-center ${
             activeTab === "bank"
-              ? "border border-[var(--accent-primary)] bg-[var(--bg-surface)] text-[var(--accent-primary)] sm:border-0 sm:border-b-2"
-              : "text-[var(--text-secondary)] hover:bg-[var(--bg-chrome)]"
+              ? "border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-primary)]"
+              : "border border-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-chrome)] hover:text-[var(--text-primary)]"
           }`}
         >
           {rt.tabs.bankAndReceipts} ({inboundLines.length})
@@ -919,10 +919,10 @@ export default function ReceivablesPage() {
           aria-selected={activeTab === "receipts"}
           aria-controls="ar-panel-receipts"
           onClick={() => setActiveTab("receipts")}
-          className={`min-h-10 rounded-[var(--radius-sm)] px-3.5 text-left text-xs font-semibold sm:rounded-b-none sm:text-center ${
+          className={`min-h-9 rounded-[var(--radius-sm)] px-3 py-1.5 text-left text-xs font-medium transition-colors sm:text-center ${
             activeTab === "receipts"
-              ? "border border-[var(--accent-primary)] bg-[var(--bg-surface)] text-[var(--accent-primary)] sm:border-0 sm:border-b-2"
-              : "text-[var(--text-secondary)] hover:bg-[var(--bg-chrome)]"
+              ? "border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-primary)]"
+              : "border border-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-chrome)] hover:text-[var(--text-primary)]"
           }`}
         >
           {rt.tabs.allocations} ({receipts.length})
@@ -934,10 +934,10 @@ export default function ReceivablesPage() {
           aria-selected={activeTab === "aging"}
           aria-controls="ar-panel-aging"
           onClick={() => setActiveTab("aging")}
-          className={`min-h-10 rounded-[var(--radius-sm)] px-3.5 text-left text-xs font-semibold sm:rounded-b-none sm:text-center ${
+          className={`min-h-9 rounded-[var(--radius-sm)] px-3 py-1.5 text-left text-xs font-medium transition-colors sm:text-center ${
             activeTab === "aging"
-              ? "border border-[var(--accent-primary)] bg-[var(--bg-surface)] text-[var(--accent-primary)] sm:border-0 sm:border-b-2"
-              : "text-[var(--text-secondary)] hover:bg-[var(--bg-chrome)]"
+              ? "border border-[var(--border-hairline)] bg-[var(--bg-surface)] text-[var(--text-primary)]"
+              : "border border-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-chrome)] hover:text-[var(--text-primary)]"
           }`}
         >
           {rt.tabs.aging} ({aging?.customers.length ?? 0})

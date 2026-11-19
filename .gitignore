@@ -48,3 +48,6 @@ secrets.json
 .impeccable/mocks/
 .impeccable/review/
 .impeccable/live/runtime/
+
+# Prompt packages and local zips
+Orphac_Athera_Greenfield_Long_Horizon_v2*
