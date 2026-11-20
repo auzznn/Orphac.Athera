@@ -32,7 +32,8 @@ public sealed class PostgresTestDatabaseFixture : IAsyncLifetime
         await using var adminConn = new NpgsqlConnection(_adminConnectionString);
         await adminConn.OpenAsync();
 
-        await EnsureRolesExistAsync(adminConn);
+        await EnsureRoleExistsAsync(adminConn, "athera_migrator", DefaultMigratorPassword);
+        await EnsureRoleExistsAsync(adminConn, "athera_app", DefaultAppPassword);
 
         await using (var createDb = adminConn.CreateCommand())
         {
@@ -158,20 +159,24 @@ public sealed class PostgresTestDatabaseFixture : IAsyncLifetime
         await dropDb.ExecuteNonQueryAsync();
     }
 
-    private static async Task EnsureRolesExistAsync(NpgsqlConnection adminConn)
+    private static async Task EnsureRoleExistsAsync(NpgsqlConnection adminConn, string roleName, string password)
     {
         await using var cmd = adminConn.CreateCommand();
         cmd.CommandText = $"""
             DO $$
             BEGIN
-              IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'athera_migrator') THEN
-                CREATE ROLE athera_migrator LOGIN PASSWORD '{DefaultMigratorPassword}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
-              END IF;
-              IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'athera_app') THEN
-                CREATE ROLE athera_app LOGIN PASSWORD '{DefaultAppPassword}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+              IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = '{roleName}') THEN
+                CREATE ROLE {roleName} LOGIN PASSWORD '{password}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
               END IF;
             END $$;
             """;
-        await cmd.ExecuteNonQueryAsync();
+        try
+        {
+            await cmd.ExecuteNonQueryAsync();
+        }
+        catch (PostgresException ex) when (ex.SqlState == PostgresErrorCodes.DuplicateObject
+            || (ex.SqlState == PostgresErrorCodes.UniqueViolation && ex.ConstraintName == "pg_authid_rolname_index"))
+        {
+        }
     }
 }
