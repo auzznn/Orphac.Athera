@@ -2,7 +2,7 @@ name: Greenfield Full-Stack CI
 
 on:
   push:
-    branches: [greenfield/mvp]
+    branches: [main]
   pull_request:
   workflow_dispatch:
 
